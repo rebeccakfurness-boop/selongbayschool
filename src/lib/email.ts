@@ -1,0 +1,161 @@
+import { Resend } from 'resend';
+import { siteConfig } from './site-content';
+
+const NOTIFY_TO = siteConfig.contact.email;
+
+function fromAddress(): string {
+  return process.env.RESEND_FROM_EMAIL || 'Selong Bay School <onboarding@resend.dev>';
+}
+
+function getResend(): Resend {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY is not set');
+  }
+  return new Resend(apiKey);
+}
+
+function wrapEmail(title: string, bodyHtml: string): string {
+  return `
+  <div style="font-family: -apple-system, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #fffdf8;">
+    <div style="background: #007c83; padding: 24px 28px;">
+      <span style="color: #fff; font-size: 20px; font-weight: 700;">Selong Bay School</span>
+    </div>
+    <div style="padding: 28px; color: #17282b;">
+      <h1 style="font-size: 20px; margin: 0 0 16px; color: #045157;">${title}</h1>
+      ${bodyHtml}
+    </div>
+    <div style="background: #dad0bc; padding: 16px 28px; font-size: 12px; color: #3f5559;">
+      ${siteConfig.contact.address}<br />
+      ${siteConfig.contact.phone} &middot; ${siteConfig.contact.email}
+    </div>
+  </div>`;
+}
+
+function fieldRows(fields: Array<[string, string | null | undefined]>): string {
+  return `<table style="width: 100%; border-collapse: collapse;">${fields
+    .filter(([, value]) => value)
+    .map(
+      ([label, value]) => `
+      <tr>
+        <td style="padding: 6px 12px 6px 0; font-weight: 700; color: #045157; vertical-align: top; white-space: nowrap;">${label}</td>
+        <td style="padding: 6px 0; color: #17282b;">${value}</td>
+      </tr>`
+    )
+    .join('')}</table>`;
+}
+
+async function send(to: string, subject: string, html: string, replyTo?: string): Promise<boolean> {
+  try {
+    const resend = getResend();
+    const { error } = await resend.emails.send({
+      from: fromAddress(),
+      to,
+      subject,
+      html,
+      ...(replyTo ? { replyTo } : {}),
+    });
+    if (error) {
+      console.error('[email] Resend returned an error', { to, subject, error });
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error('[email] Failed to send email', { to, subject, err });
+    return false;
+  }
+}
+
+export type EnquiryType = 'contact' | 'admissions' | 'high_school';
+
+export interface EnquiryEmailInput {
+  type: EnquiryType;
+  name: string;
+  email: string;
+  phone?: string | null;
+  message?: string | null;
+  childName?: string | null;
+  childAge?: string | null;
+  interest?: string | null;
+}
+
+const enquiryTypeLabels: Record<EnquiryType, string> = {
+  contact: 'General Enquiry',
+  admissions: 'Admissions Enquiry',
+  high_school: 'High School Enquiry',
+};
+
+export async function sendEnquiryNotification(input: EnquiryEmailInput): Promise<boolean> {
+  const label = enquiryTypeLabels[input.type];
+  const html = wrapEmail(
+    `New ${label}`,
+    fieldRows([
+      ['Name', input.name],
+      ['Email', input.email],
+      ['Phone', input.phone],
+      ['Interest', input.interest],
+      ["Child's name", input.childName],
+      ["Child's age", input.childAge],
+      ['Message', input.message?.replace(/\n/g, '<br />')],
+    ])
+  );
+  return send(NOTIFY_TO, `${label}: ${input.name}`, html, input.email);
+}
+
+export async function sendEnquiryAutoReply(input: EnquiryEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    `Thanks for reaching out, ${input.name.split(' ')[0]}!`,
+    `<p>We've received your ${enquiryTypeLabels[input.type].toLowerCase()} and we'll be in touch soon.</p>
+     <p>If anything is urgent, you can reach us directly at
+       <a href="mailto:${siteConfig.contact.email}" style="color:#007c83;">${siteConfig.contact.email}</a>
+       or ${siteConfig.contact.phone}.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.email, "Thanks for your enquiry — Selong Bay School", html);
+}
+
+export interface BookingEmailInput {
+  activityName: string;
+  date: string;
+  time: string;
+  childName: string;
+  childAge: string;
+  parentName: string;
+  parentEmail: string;
+  parentPhone: string;
+  emergencyContact: string;
+}
+
+export async function sendBookingNotification(input: BookingEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    'New Activity Booking',
+    fieldRows([
+      ['Activity', input.activityName],
+      ['Date', input.date],
+      ['Time', input.time],
+      ["Child's name", input.childName],
+      ["Child's age", input.childAge],
+      ['Parent name', input.parentName],
+      ['Parent email', input.parentEmail],
+      ['Parent phone', input.parentPhone],
+      ['Emergency contact', input.emergencyContact],
+    ])
+  );
+  return send(NOTIFY_TO, `Booking: ${input.activityName} — ${input.childName}`, html, input.parentEmail);
+}
+
+export async function sendBookingAutoReply(input: BookingEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    `You're booked in, ${input.parentName.split(' ')[0]}!`,
+    `<p>Thanks for booking <strong>${input.activityName}</strong> for ${input.childName}. Here are the details:</p>
+     ${fieldRows([
+       ['Activity', input.activityName],
+       ['Date', input.date],
+       ['Time', input.time],
+       ['Location', 'Selong Bay School campus, Selong Belanak'],
+     ])}
+     <p style="margin-top: 16px;">If your plans change, just reply to this email or call us on ${siteConfig.contact.phone}.</p>
+     <p style="margin-top: 24px;">See you soon!<br />The Selong Bay School team</p>`
+  );
+  return send(input.parentEmail, `Booking confirmed: ${input.activityName}`, html);
+}
