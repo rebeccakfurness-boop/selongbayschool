@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { testimonials } from '@/lib/site-content';
 
@@ -10,6 +11,11 @@ export default function Testimonials() {
   return (
     <div className="mx-auto max-w-2xl text-center">
       <div className="rounded-md border border-sand-line bg-paper px-8 py-10 shadow-soft transition-opacity duration-300">
+        {testimonial.image && (
+          <div className="relative mx-auto mb-4 h-20 w-20 overflow-hidden rounded-full border-2 border-sand-line">
+            <Image src={testimonial.image.src} alt={testimonial.image.alt} fill sizes="80px" className="object-cover" />
+          </div>
+        )}
         <p className="font-script text-3xl leading-tight text-orange-deep">&ldquo;</p>
         <p className="text-balance font-display text-xl font-medium leading-snug text-ink md:text-2xl">
           {testimonial.quote}

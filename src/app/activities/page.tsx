@@ -20,20 +20,28 @@ const activityImages: Record<string, { src: string; alt: string }> = {
     alt: 'Two students walking the beach carrying a surfboard at Selong Belanak',
   },
   'gymnastics-free-swim': {
-    src: '/images/activity-gymnastics.jpg',
-    alt: 'A toddler exploring a sensory activity book at Selong Bay School',
+    src: '/images/activity-gymnastics-v2.jpg',
+    alt: 'Students practising balance exercises with a coach at Selong Bay School',
   },
   'art-music-bahasa': {
     src: '/images/activity-art-music.jpg',
     alt: 'Students working together on a craft activity at Selong Bay School',
   },
+  'scouts-survival-challenge': {
+    src: '/images/activity-scouts.jpg',
+    alt: 'Students exploring tide pools together at Selong Belanak',
+  },
   'school-tour': {
-    src: '/images/activity-school-tour.jpg',
-    alt: 'A student completing classwork at Selong Bay School',
+    src: '/images/activity-school-tour-v2.jpg',
+    alt: 'Aerial view of the Selong Bay School campus and padel court',
   },
   'adventure-camp-2026-per-day': {
     src: '/images/activity-adventure-camp.jpg',
     alt: 'A student skateboarding at Selong Bay School',
+  },
+  'adventure-camp-2026-full-week': {
+    src: '/images/home-story-beach-tree.jpg',
+    alt: 'Students climbing a beach tree overlooking the ocean at Selong Belanak',
   },
 };
 

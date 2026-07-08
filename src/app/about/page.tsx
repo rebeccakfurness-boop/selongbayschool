@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import StorySection from '@/components/StorySection';
 import Reveal from '@/components/Reveal';
@@ -45,6 +46,20 @@ export default function AboutPage() {
 
       <Reveal>
         <div className="mx-auto max-w-4xl px-6 md:px-8">
+          <div className="overflow-hidden rounded-md border border-sand-line shadow-soft">
+            <Image
+              src="/images/about-yayasan-board.jpg"
+              alt="Yayasan Selong Bay Sekolah, the non-profit foundation board behind the school"
+              width={1920}
+              height={1080}
+              className="w-full"
+            />
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal>
+        <div className="mx-auto max-w-4xl px-6 md:px-8">
           <p className="font-script text-3xl text-orange-deep md:text-4xl">Our campus</p>
           <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">A classroom that includes the ocean</h2>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -81,9 +96,16 @@ export default function AboutPage() {
           <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Families who call Selong Bay home</h2>
           <div className="mt-6 grid gap-5 sm:grid-cols-2">
             {foundingFamilies.map((family) => (
-              <div key={family.name} className="rounded-md border border-sand-line bg-aqua/30 p-6">
-                <h3 className="font-display text-lg font-semibold text-ink">{family.name}</h3>
-                <p className="mt-1 text-[15px] text-ink-soft">{family.detail}</p>
+              <div key={family.name} className="overflow-hidden rounded-md border border-sand-line bg-aqua/30">
+                {family.image && (
+                  <div className="relative h-56 w-full">
+                    <Image src={family.image.src} alt={family.image.alt} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
+                  </div>
+                )}
+                <div className="p-6">
+                  <h3 className="font-display text-lg font-semibold text-ink">{family.name}</h3>
+                  <p className="mt-1 text-[15px] text-ink-soft">{family.detail}</p>
+                </div>
               </div>
             ))}
           </div>

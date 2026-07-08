@@ -9,6 +9,8 @@ export const siteConfig = {
     phoneHref: 'tel:+628135974095',
     email: 'hello@selongbayschool.com',
     instagram: 'https://www.instagram.com/selongbayschool/',
+    facebook: 'https://www.facebook.com/people/Selong-Bay-School/61584318951968/',
+    whatsappHref: 'tel:+628135974095',
     mapQuery: 'Selong Belanak, Praya Barat, Lombok Tengah, Nusa Tenggara Barat',
   },
 };
@@ -34,11 +36,20 @@ export const testimonials = [
       "What made the biggest difference for our family wasn't the classroom. It was the community: other world-schooling parents who understood exactly what we were looking for, and kids who became fast friends.",
     name: 'Will & Brynn Noel',
     detail: 'World Schooling Family, California',
+    image: { src: '/images/testimonial-will-brynn.jpg', alt: 'Will and Brynn Noel' },
   },
   {
     quote: 'We had the best time at Selong Bay School!',
     name: 'Vicente & Margaux Luzuriaga',
     detail: 'Spain',
+    image: { src: '/images/home-testimonial-filler.jpg', alt: 'A student at Selong Bay School' },
+  },
+  {
+    quote:
+      "What I really like about the school is the flexibility and personal approach. The one-on-one sessions with teachers make a big difference and with only six hours of classes each week, it's easy to balance with other things. The teachers also work at your pace, which makes learning feel much more comfortable and effective.",
+    name: 'Dylan Martin',
+    detail: 'Grade 9 Student',
+    image: { src: '/images/testimonial-dylan.jpg', alt: 'Dylan Martin' },
   },
 ];
 
@@ -46,10 +57,12 @@ export const foundingFamilies = [
   {
     name: 'Mark & Liz Berryman',
     detail: 'New Zealand, 2 years in Lombok with sons Elijah & Caleb',
+    image: { src: '/images/berryman-family.jpg', alt: 'The Berryman family' },
   },
   {
     name: 'Jael & Levi Wunderli',
     detail: 'Switzerland, 4 years in Lombok with sons Jonah, Ari & Rio',
+    image: { src: '/images/wunderli-family.jpg', alt: 'The Wunderli family' },
   },
 ];
 

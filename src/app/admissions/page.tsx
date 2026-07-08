@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { Suspense } from 'react';
 import PhotoBanner from '@/components/PhotoBanner';
 import AdmissionsStepper from '@/components/AdmissionsStepper';
@@ -18,7 +19,7 @@ export default function AdmissionsPage() {
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
       <PhotoBanner
         height="sm"
-        image={{ src: '/images/admissions-hero.jpg', alt: 'A smiling student sharing her maths worksheet at Selong Bay School' }}
+        image={{ src: '/images/admissions-hero-v2.jpg', alt: 'A student completing classwork at Selong Bay School' }}
         card={{ script: 'Join our school', heading: 'Enrol your child at Selong Bay', align: 'left' }}
       />
 
@@ -56,17 +57,28 @@ export default function AdmissionsPage() {
       <Reveal>
         <div className="mx-auto max-w-4xl px-6 md:px-8">
           <h2 className="font-display text-2xl font-semibold text-ink">A day at Selong Bay</h2>
-          <div className="mt-5 overflow-x-auto rounded-md border border-sand-line bg-paper">
-            <table className="w-full min-w-[420px] border-collapse text-[15px]">
-              <tbody>
-                {dailySchedule.map((row) => (
-                  <tr key={row.time} className="border-b border-sand-line/60 last:border-0">
-                    <td className="whitespace-nowrap px-5 py-3 font-bold tabular-nums text-teal-deep">{row.time}</td>
-                    <td className="px-5 py-3 text-ink-soft">{row.activity}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="mt-5 grid gap-6 md:grid-cols-2 md:items-stretch">
+            <div className="relative h-56 w-full overflow-hidden rounded-md md:h-auto">
+              <Image
+                src="/images/highschool-classroom-teaching.jpg"
+                alt="A teacher and teaching assistant helping students at Selong Bay School"
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="overflow-x-auto rounded-md border border-sand-line bg-paper">
+              <table className="w-full min-w-[380px] border-collapse text-[15px]">
+                <tbody>
+                  {dailySchedule.map((row) => (
+                    <tr key={row.time} className="border-b border-sand-line/60 last:border-0">
+                      <td className="whitespace-nowrap px-5 py-3 font-bold tabular-nums text-teal-deep">{row.time}</td>
+                      <td className="px-5 py-3 text-ink-soft">{row.activity}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </Reveal>
