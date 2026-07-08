@@ -23,7 +23,7 @@ export default function HomePage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end px-6 pb-16 text-center md:pb-20">
-            <div className="max-w-3xl rounded-2xl bg-black/35 px-6 py-7 backdrop-blur-[2px] md:px-12 md:py-9">
+            <div className="max-w-3xl rounded-2xl bg-teal-deep/40 px-6 py-7 backdrop-blur-[2px] md:px-12 md:py-9">
               <h1 className="text-balance text-white">
                 <span className="font-script block text-5xl leading-none md:text-7xl">We need a</span>
                 <span className="font-display block text-4xl font-semibold md:text-6xl">different kind of school</span>

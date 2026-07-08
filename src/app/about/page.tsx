@@ -104,8 +104,8 @@ export default function AboutPage() {
             {foundingFamilies.map((family) => (
               <div key={family.name} className="overflow-hidden rounded-md border border-sand-line bg-aqua/30">
                 {family.image && (
-                  <div className="relative h-56 w-full">
-                    <Image src={family.image.src} alt={family.image.alt} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
+                  <div className="relative aspect-[4/5] w-full">
+                    <Image src={family.image.src} alt={family.image.alt} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover object-top" />
                   </div>
                 )}
                 <div className="p-6">
