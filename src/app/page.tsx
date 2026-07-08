@@ -67,7 +67,7 @@ export default function HomePage() {
       <Reveal>
         <PhotoBanner
           height="md"
-          placeholderName="students-project-time.jpg"
+          image={{ src: '/images/activities-surfboards.jpg', alt: 'Students with surfboards on the beach at Selong Belanak' }}
           card={{
             script: 'Whilst giving families time to explore',
             heading: 'World leading education for a sustainable future',
@@ -119,7 +119,7 @@ export default function HomePage() {
 
       {/* High School announcement */}
       <Reveal>
-        <HighSchoolBanner />
+        <HighSchoolBanner image={{ src: '/images/home-hero-sunset.jpg', alt: 'Surfers walking the beach at sunset in Selong Belanak' }} />
       </Reveal>
 
       {/* Instagram */}

@@ -14,6 +14,13 @@ export const metadata: Metadata = {
   },
 };
 
+const activityImages: Record<string, { src: string; alt: string }> = {
+  'surfing-selong-belanak': {
+    src: '/images/home-beach-walk.jpg',
+    alt: 'Two students walking the beach carrying a surfboard at Selong Belanak',
+  },
+};
+
 export default function ActivitiesPage() {
   return (
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
@@ -40,7 +47,7 @@ export default function ActivitiesPage() {
           <h2 className="font-display text-2xl font-semibold text-ink">Book an activity</h2>
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {activities.map((activity) => (
-              <ActivityCard key={activity.slug} activity={activity} />
+              <ActivityCard key={activity.slug} activity={activity} image={activityImages[activity.slug]} />
             ))}
           </div>
         </div>

@@ -25,7 +25,11 @@ export default function AboutPage() {
 
       <Reveal>
         <div className="mx-auto max-w-6xl px-6 md:px-8">
-          <StorySection eyebrowScript="Who we are" heading="Built by families, for families" placeholderName="founding-families.jpg">
+          <StorySection
+            eyebrowScript="Who we are"
+            heading="Built by families, for families"
+            image={{ src: '/images/home-beach-walk.jpg', alt: 'Two students walking the beach carrying a surfboard at Selong Belanak' }}
+          >
             <p>
               Selong Bay School began with families who came to South Lombok for a season and stayed for the community.
               Today it operates under Yayasan Selong Bay Intercultural Sekolah, a registered non-profit foundation. We are
