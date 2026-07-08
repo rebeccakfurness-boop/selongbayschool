@@ -20,8 +20,12 @@ const activityImages: Record<string, { src: string; alt: string }> = {
     alt: 'Two students walking the beach carrying a surfboard at Selong Belanak',
   },
   'gymnastics-free-swim': {
-    src: '/images/activity-gymnastics-v2.jpg',
-    alt: 'Students practising balance exercises with a coach at Selong Bay School',
+    src: '/images/activity-gymnastics-v3.jpg',
+    alt: 'A student practising a jump on gym mats at Selong Bay School',
+  },
+  'hip-hop-dance-ninja-warrior': {
+    src: '/images/activity-ninja-hiphop.jpg',
+    alt: 'Students balancing across an obstacle course with a teacher at Selong Bay School',
   },
   'art-music-bahasa': {
     src: '/images/activity-art-music.jpg',

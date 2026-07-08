@@ -23,13 +23,15 @@ export default function HomePage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end px-6 pb-16 text-center md:pb-20">
-            <h1 className="max-w-3xl text-balance text-white drop-shadow-sm">
-              <span className="font-script block text-5xl leading-none md:text-7xl">We need a</span>
-              <span className="font-display block text-4xl font-semibold md:text-6xl">different kind of school</span>
-            </h1>
-            <p className="mt-4 max-w-xl text-balance text-lg text-white/90 md:text-xl">
-              A hybrid on-campus and online school in Lombok, built for families who want an exceptional education and time to explore.
-            </p>
+            <div className="max-w-3xl rounded-2xl bg-black/35 px-6 py-7 backdrop-blur-[2px] md:px-12 md:py-9">
+              <h1 className="text-balance text-white">
+                <span className="font-script block text-5xl leading-none md:text-7xl">We need a</span>
+                <span className="font-display block text-4xl font-semibold md:text-6xl">different kind of school</span>
+              </h1>
+              <p className="mx-auto mt-4 max-w-xl text-balance text-lg text-white/90 md:text-xl">
+                A hybrid on-campus and online school in Lombok, built for families who want an exceptional education and time to explore.
+              </p>
+            </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button href="/contact" variant="accent">
                 Book a Tour
