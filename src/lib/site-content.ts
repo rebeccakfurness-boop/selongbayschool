@@ -42,7 +42,7 @@ export const testimonials = [
     quote: 'We had the best time at Selong Bay School!',
     name: 'Vicente & Margaux Luzuriaga',
     detail: 'Spain',
-    image: { src: '/images/home-testimonial-filler.jpg', alt: 'A student at Selong Bay School' },
+    image: { src: '/images/home-hero-sunset.jpg', alt: 'Sunset over the beach at Selong Belanak, Lombok' },
   },
   {
     quote:
