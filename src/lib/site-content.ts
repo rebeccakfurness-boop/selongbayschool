@@ -66,6 +66,73 @@ export const foundingFamilies = [
   },
 ];
 
+export const values = [
+  {
+    name: 'Humility',
+    tagline: 'We stay teachable.',
+    description:
+      "Humility means we know we don't have all the answers. We welcome feedback because it helps us grow. We celebrate the success of others, treat everyone with equal respect, and never believe we are more important than someone else.",
+    bullets: [
+      'Welcome feedback as a gift.',
+      'Learn from our mistakes.',
+      'Speak respectfully to everyone.',
+      'Celebrate others without comparing ourselves.',
+      'Build others up instead of putting them down.',
+      'Stay curious and open to learning every day.',
+    ],
+    quote: 'Growth begins when we remain teachable.',
+  },
+  {
+    name: 'Kindness',
+    tagline: 'We choose kindness in every interaction.',
+    description:
+      'Kindness is more than being nice, it is an attitude that guides our words and actions. It means showing empathy, helping others, having courageous conversations with compassion, and contributing to our community without expecting anything in return.',
+    bullets: [
+      'Show empathy and compassion.',
+      'Include and encourage others.',
+      'Listen with understanding.',
+      'Have honest conversations with respect.',
+      'Volunteer and serve our community.',
+      'Choose kindness, even when it is difficult.',
+    ],
+    quote: 'Kindness is shown through action.',
+  },
+  {
+    name: 'Integrity',
+    tagline: 'We do the right thing, even when no one is watching.',
+    description:
+      'Integrity means our actions match our values. We are honest, dependable, and trustworthy. We take responsibility for our choices and stand by what is right, even when it is difficult.',
+    bullets: [
+      'Keep our promises.',
+      'Tell the truth.',
+      'Take responsibility for our actions.',
+      'Admit our mistakes and make them right.',
+      'Stay true to our values in every situation.',
+    ],
+    quote: 'Character is revealed through consistent actions.',
+  },
+  {
+    name: 'Agency',
+    tagline: 'We take ownership of our learning and our future.',
+    description:
+      'Agency means believing that our choices matter. We think independently, make informed decisions, solve problems, and take responsibility for ourselves, our relationships, and the world around us.',
+    bullets: [
+      'Make thoughtful decisions.',
+      'Take responsibility for our learning and behaviour.',
+      'Set goals and work towards them.',
+      'Respect ourselves, others, and the Earth.',
+      'Show initiative and perseverance.',
+      'Believe we can make a positive difference.',
+    ],
+    quote: 'Our choices shape our future.',
+  },
+];
+
+export const ourCommitment = [
+  'At Selong Bay School, we strive to develop young people who are humble enough to learn, kind enough to care, honest enough to stand for what is right, and courageous enough to take responsibility for their lives and their community.',
+  'These values shape every classroom, every relationship, and every opportunity to learn. We believe academic excellence is strengthened by strong character, preparing students not only for university and careers, but to become thoughtful leaders who make a positive impact wherever they go.',
+];
+
 export const teachers = [
   {
     name: 'Marwan Desky',

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import StorySection from '@/components/StorySection';
+import OurValues from '@/components/OurValues';
 import Reveal from '@/components/Reveal';
 import { campusFacts, foundingFamilies, teachers } from '@/lib/site-content';
 
@@ -42,6 +43,10 @@ export default function AboutPage() {
             </p>
           </StorySection>
         </div>
+      </Reveal>
+
+      <Reveal>
+        <OurValues />
       </Reveal>
 
       <Reveal>
