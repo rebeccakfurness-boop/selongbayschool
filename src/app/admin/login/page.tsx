@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { Suspense, useState, type FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Button from '@/components/Button';
@@ -39,6 +40,9 @@ function AdminLoginForm() {
 
   return (
     <div className="w-full max-w-sm rounded-md border border-sand-line bg-paper p-8 shadow-soft">
+      <div className="mb-5 flex justify-center rounded-md bg-teal py-5">
+        <Image src="/images/logo-full.png" alt="Selong Bay School" width={378} height={299} className="h-20 w-auto" />
+      </div>
       <h1 className="font-display text-2xl font-semibold text-ink">Admin login</h1>
       <p className="mt-1 text-sm text-ink-soft">Selong Bay School internal tools.</p>
       <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4" noValidate>

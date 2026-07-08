@@ -8,7 +8,10 @@ export const metadata: Metadata = {
   title: 'About',
   description:
     'The story, values, campus, and teachers behind Selong Bay School: a non-profit school for world-schooling and local families in Lombok.',
-  openGraph: { title: 'About - Selong Bay School' },
+  openGraph: {
+    title: 'About - Selong Bay School',
+    images: [{ url: '/images/about-community.jpg', width: 2400, height: 1666, alt: 'Selong Bay School community on the beach' }],
+  },
 };
 
 export default function AboutPage() {
@@ -16,7 +19,7 @@ export default function AboutPage() {
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
       <PhotoBanner
         height="sm"
-        placeholderName="about-campus-wide.jpg"
+        image={{ src: '/images/about-community.jpg', alt: 'Selong Bay School students and families gathered on the beach after a surf session' }}
         card={{ script: 'Our story', heading: 'A different kind of school', align: 'left' }}
       />
 

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { navItems, siteConfig } from '@/lib/site-content';
 
@@ -18,7 +19,7 @@ export default function Footer() {
     <footer className="bg-teal-deep text-white">
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-3 md:px-8">
         <div>
-          <h2 className="font-display text-2xl font-semibold">{siteConfig.name}</h2>
+          <Image src="/images/logo-full.png" alt={siteConfig.name} width={378} height={299} className="h-20 w-auto" />
           <p className="mt-3 max-w-xs text-[15px] leading-relaxed text-white/80">{siteConfig.mission}</p>
           <div className="mt-5 flex gap-3">
             <a

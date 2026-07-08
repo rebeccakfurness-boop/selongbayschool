@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     type: 'website',
     locale: 'en_AU',
+    images: [{ url: '/images/home-hero-sunset.jpg', width: 2400, height: 1800, alt: siteConfig.name }],
   },
 };
 

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Button from '@/components/Button';
 import PhotoBanner from '@/components/PhotoBanner';
 import StorySection from '@/components/StorySection';
@@ -12,11 +13,14 @@ export default function HomePage() {
       {/* Immersive hero */}
       <section className="relative">
         <div className="relative h-[560px] w-full overflow-hidden md:h-[640px]">
-          <div className="absolute inset-0 bg-[linear-gradient(160deg,#0c5a60,#2a9aa1_55%,#dad0bc_100%)]">
-            <span className="absolute left-5 top-24 rounded-full bg-black/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-white/80 md:top-28">
-              Photo needed: hero-campus-kids.jpg
-            </span>
-          </div>
+          <Image
+            src="/images/home-hero-sunset.jpg"
+            alt="Sunset over the beach at Selong Belanak, Lombok"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end px-6 pb-16 text-center md:pb-20">
             <h1 className="max-w-3xl text-balance font-display text-4xl font-semibold text-white drop-shadow-sm md:text-6xl">
@@ -43,7 +47,7 @@ export default function HomePage() {
           <StorySection
             eyebrowScript="Best of both worlds"
             heading="Every landscape becomes a classroom"
-            placeholderName="hybrid-learning-outdoor.jpg"
+            image={{ src: '/images/home-beach-walk.jpg', alt: 'Two students walking the beach carrying a surfboard at Selong Belanak' }}
           >
             <p>
               Selong Bay blends structure and academic rigour through our online curriculum with connection, socialisation, and

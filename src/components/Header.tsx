@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -12,9 +13,16 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 bg-teal shadow-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 md:px-8">
-        <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
-          <span className="inline-block h-3 w-3 rounded-full bg-orange" aria-hidden="true" />
-          <span className="font-display text-xl font-semibold text-white md:text-2xl">{siteConfig.name}</span>
+        <Link href="/" className="flex items-center" onClick={() => setOpen(false)}>
+          <Image
+            src="/images/logo-full.png"
+            alt={siteConfig.name}
+            width={378}
+            height={299}
+            priority
+            className="h-12 w-auto md:h-14"
+          />
+          <span className="sr-only">{siteConfig.name}</span>
         </Link>
 
         <nav className="hidden md:block" aria-label="Primary">

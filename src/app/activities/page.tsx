@@ -8,7 +8,10 @@ export const metadata: Metadata = {
   title: 'Activities & Camps',
   description:
     'Surfing, gymnastics, dance, scouting, and adventure camps at Selong Bay School: open to the whole community, not just enrolled students. Book a slot online.',
-  openGraph: { title: 'Activities & Camps - Selong Bay School' },
+  openGraph: {
+    title: 'Activities & Camps - Selong Bay School',
+    images: [{ url: '/images/activities-surfboards.jpg', width: 1150, height: 964, alt: 'Students with surfboards at Selong Belanak Beach' }],
+  },
 };
 
 export default function ActivitiesPage() {
@@ -16,7 +19,7 @@ export default function ActivitiesPage() {
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
       <PhotoBanner
         height="sm"
-        placeholderName="activities-surf-beach.jpg"
+        image={{ src: '/images/activities-surfboards.jpg', alt: 'Two students with surfboards giving shaka signs on the beach' }}
         card={{ script: 'Open to everyone', heading: 'Activities & Camps', align: 'left' }}
       />
 
