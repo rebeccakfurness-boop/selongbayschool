@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       ok: true,
       id: result.id,
       emailWarning: !result.notifySent
-        ? 'Your message was saved, but our notification email could not be sent — we will still follow up.'
+        ? 'Your message was saved, but our notification email could not be sent. We will still follow up.'
         : undefined,
     });
   } catch (err) {

@@ -1,16 +1,16 @@
-import { Fredoka, Yellowtail, Nunito_Sans } from 'next/font/google';
+import { Telex, Shadows_Into_Light, Nunito_Sans } from 'next/font/google';
 
-export const fredoka = Fredoka({
+export const telex = Telex({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-fredoka',
+  weight: '400',
+  variable: '--font-telex',
   display: 'swap',
 });
 
-export const yellowtail = Yellowtail({
+export const shadowsIntoLight = Shadows_Into_Light({
   subsets: ['latin'],
   weight: '400',
-  variable: '--font-yellowtail',
+  variable: '--font-shadows-into-light',
   display: 'swap',
 });
 

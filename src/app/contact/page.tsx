@@ -6,8 +6,8 @@ import { siteConfig } from '@/lib/site-content';
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description: 'Get in touch with Selong Bay School — address, phone, email, and a contact form for general enquiries.',
-  openGraph: { title: 'Contact — Selong Bay School' },
+  description: 'Get in touch with Selong Bay School: address, phone, email, and a contact form for general enquiries.',
+  openGraph: { title: 'Contact - Selong Bay School' },
 };
 
 export default function ContactPage() {
@@ -30,7 +30,7 @@ export default function ContactPage() {
               <a href="/admissions#enquire" className="font-semibold text-teal-deep underline">
                 admissions form
               </a>{' '}
-              instead — this one is for general questions.
+              instead, this one is for general questions.
             </p>
             <div className="mt-6">
               <ContactForm />

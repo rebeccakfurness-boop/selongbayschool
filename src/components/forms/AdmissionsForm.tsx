@@ -42,7 +42,7 @@ export default function AdmissionsForm() {
     return (
       <FormStatusBanner
         status={status}
-        successMessage="Thanks for your enquiry — we've received your details and will be in touch soon with next steps."
+        successMessage="Thanks for your enquiry. We've received your details and will be in touch soon with next steps."
       />
     );
   }

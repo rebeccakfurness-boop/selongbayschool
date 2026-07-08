@@ -7,8 +7,8 @@ import { campusFacts, foundingFamilies, teachers } from '@/lib/site-content';
 export const metadata: Metadata = {
   title: 'About',
   description:
-    'The story, values, campus, and teachers behind Selong Bay School — a non-profit school for world-schooling and local families in Lombok.',
-  openGraph: { title: 'About — Selong Bay School' },
+    'The story, values, campus, and teachers behind Selong Bay School: a non-profit school for world-schooling and local families in Lombok.',
+  openGraph: { title: 'About - Selong Bay School' },
 };
 
 export default function AboutPage() {
@@ -25,7 +25,7 @@ export default function AboutPage() {
           <StorySection eyebrowScript="Who we are" heading="Built by families, for families" placeholderName="founding-families.jpg">
             <p>
               Selong Bay School began with families who came to South Lombok for a season and stayed for the community.
-              Today it operates under Yayasan Selong Bay Intercultural Sekolah, a registered non-profit foundation — we are
+              Today it operates under Yayasan Selong Bay Intercultural Sekolah, a registered non-profit foundation. We are
               not for profit, we are for the children and the community of South Lombok.
             </p>
             <p>

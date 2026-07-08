@@ -25,7 +25,7 @@ export default function ContactForm() {
   }
 
   if (status === 'success') {
-    return <FormStatusBanner status={status} successMessage="Thanks for reaching out — we've received your message and will be in touch soon." />;
+    return <FormStatusBanner status={status} successMessage="Thanks for reaching out. We've received your message and will be in touch soon." />;
   }
 
   return (

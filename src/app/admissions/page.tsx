@@ -9,8 +9,8 @@ import { ageGroups, dailySchedule, pricing2026, formatIDR } from '@/lib/site-con
 export const metadata: Metadata = {
   title: 'Admissions',
   description:
-    'How to enrol your child at Selong Bay School — curriculum, age groups, 2026 pricing, and our step-by-step admissions process.',
-  openGraph: { title: 'Admissions — Selong Bay School' },
+    'How to enrol your child at Selong Bay School: curriculum, age groups, 2026 pricing, and our step-by-step admissions process.',
+  openGraph: { title: 'Admissions - Selong Bay School' },
 };
 
 export default function AdmissionsPage() {
@@ -40,13 +40,13 @@ export default function AdmissionsPage() {
           <div className="mt-5 space-y-4 text-[17px] leading-relaxed text-ink-soft">
             <p>
               Selong Bay School operates under Yayasan Selong Bay Intercultural Sekolah, a registered non-profit foundation.
-              We are not for profit — we are for the children and the community of South Lombok. All funds are reinvested
+              We are not for profit. We are for the children and the community of South Lombok. All funds are reinvested
               into the school&apos;s development, including scholarships, community programmes, and training opportunities
               for local teachers and staff.
             </p>
             <p>
               Our curriculum blends Cambridge International Education with the Australian National Curriculum and our own
-              Selong Bay approach — play-based in the Early Years, inquiry-based through Primary — alongside Bahasa
+              Selong Bay approach: play-based in the Early Years, inquiry-based through Primary, alongside Bahasa
               Indonesia and Religious Studies as required by Indonesian government regulation.
             </p>
           </div>

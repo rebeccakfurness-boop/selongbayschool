@@ -34,7 +34,7 @@ export default function HighSchoolForm({
     return (
       <FormStatusBanner
         status={status}
-        successMessage="Thanks — your high school enquiry is with us and we'll be in touch soon."
+        successMessage="Thanks, your high school enquiry is with us and we'll be in touch soon."
       />
     );
   }

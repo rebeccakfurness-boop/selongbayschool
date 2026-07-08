@@ -111,7 +111,7 @@ export async function sendEnquiryAutoReply(input: EnquiryEmailInput): Promise<bo
        or ${siteConfig.contact.phone}.</p>
      <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
   );
-  return send(input.email, "Thanks for your enquiry — Selong Bay School", html);
+  return send(input.email, "Thanks for your enquiry: Selong Bay School", html);
 }
 
 export interface BookingEmailInput {
@@ -141,7 +141,7 @@ export async function sendBookingNotification(input: BookingEmailInput): Promise
       ['Emergency contact', input.emergencyContact],
     ])
   );
-  return send(NOTIFY_TO, `Booking: ${input.activityName} — ${input.childName}`, html, input.parentEmail);
+  return send(NOTIFY_TO, `Booking: ${input.activityName} for ${input.childName}`, html, input.parentEmail);
 }
 
 export async function sendBookingAutoReply(input: BookingEmailInput): Promise<boolean> {

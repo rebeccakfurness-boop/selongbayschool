@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: 'High School',
   description:
     'Selong Bay School now offers high school options for students aged 13-18. Cambridge and Australian curriculum, hybrid on-campus and online learning in Lombok.',
-  openGraph: { title: 'High School — Selong Bay School' },
+  openGraph: { title: 'High School - Selong Bay School' },
 };
 
 export default function HighSchoolPage() {
@@ -43,7 +43,7 @@ export default function HighSchoolPage() {
               paired with on-campus connection, project work, and hands-on learning.
             </p>
             <p>
-              Families can choose fully on-site, fully online, or a mix of both — moving between the two as travel or life
+              Families can choose fully on-site, fully online, or a mix of both, moving between the two as travel or life
               demands, without disrupting their teenager&apos;s learning or friendships.
             </p>
           </StorySection>
@@ -55,7 +55,7 @@ export default function HighSchoolPage() {
           <div className="rounded-md border border-sand-line bg-paper p-6">
             <h3 className="font-display text-lg font-semibold text-ink">Already know Selong Bay is right for you?</h3>
             <p className="mt-2 text-[15px] text-ink-soft">
-              Head to our full admissions process — it&apos;s pre-filled with High School as your interest area.
+              Head to our full admissions process: it&apos;s pre-filled with High School as your interest area.
             </p>
             <Button href="/admissions?interest=High%20School" variant="primary" className="mt-4">
               Start the admissions process

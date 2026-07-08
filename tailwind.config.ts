@@ -27,8 +27,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ['var(--font-fredoka)', 'sans-serif'],
-        script: ['var(--font-yellowtail)', 'cursive'],
+        display: ['var(--font-telex)', 'sans-serif'],
+        script: ['var(--font-shadows-into-light)', 'cursive'],
         sans: ['var(--font-nunito-sans)', 'system-ui', 'sans-serif'],
       },
       borderRadius: {

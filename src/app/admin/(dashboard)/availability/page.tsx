@@ -195,7 +195,7 @@ export default function AvailabilityPage() {
               ))}
               {slots && slots.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-6 text-center text-ink-soft">No slots yet — add one above.</td>
+                  <td colSpan={6} className="px-4 py-6 text-center text-ink-soft">No slots yet. Add one above.</td>
                 </tr>
               )}
               {!slots && (

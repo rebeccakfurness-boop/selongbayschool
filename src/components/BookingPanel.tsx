@@ -97,7 +97,7 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
       {!slots && !loadError && <p className="mt-3 text-sm text-ink-soft">Loading availability…</p>}
       {loadError && <p className="mt-3 text-sm text-orange-deep">{loadError}</p>}
       {slots && slots.length === 0 && (
-        <p className="mt-3 text-sm text-ink-soft">No upcoming dates are open for booking yet — please check back soon or contact us directly.</p>
+        <p className="mt-3 text-sm text-ink-soft">No upcoming dates are open for booking yet. Please check back soon or contact us directly.</p>
       )}
 
       {slots && slots.length > 0 && (

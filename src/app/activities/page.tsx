@@ -7,8 +7,8 @@ import { activities, afternoonClubs } from '@/lib/site-content';
 export const metadata: Metadata = {
   title: 'Activities & Camps',
   description:
-    'Surfing, gymnastics, dance, scouting, and adventure camps at Selong Bay School — open to the whole community, not just enrolled students. Book a slot online.',
-  openGraph: { title: 'Activities & Camps — Selong Bay School' },
+    'Surfing, gymnastics, dance, scouting, and adventure camps at Selong Bay School: open to the whole community, not just enrolled students. Book a slot online.',
+  openGraph: { title: 'Activities & Camps - Selong Bay School' },
 };
 
 export default function ActivitiesPage() {
@@ -23,7 +23,7 @@ export default function ActivitiesPage() {
       <Reveal>
         <div className="mx-auto max-w-3xl px-6 text-center md:px-8">
           <h1 className="text-balance font-display text-2xl font-semibold text-teal-deep md:text-3xl">
-            You don&apos;t need to be a Selong Bay student to join us — all activities are open to the wider community.
+            You don&apos;t need to be a Selong Bay student to join us: all activities are open to the wider community.
           </h1>
           <p className="mt-4 text-[16px] leading-relaxed text-ink-soft">
             Whether your family is visiting South Lombok for a week or living here full-time, our afternoon activities and

@@ -31,7 +31,7 @@ export const highSchoolAnnouncement = {
 export const testimonials = [
   {
     quote:
-      "What made the biggest difference for our family wasn't the classroom — it was the community. Other world-schooling parents who understood exactly what we were looking for, and kids who became fast friends.",
+      "What made the biggest difference for our family wasn't the classroom. It was the community: other world-schooling parents who understood exactly what we were looking for, and kids who became fast friends.",
     name: 'Will & Brynn Noel',
     detail: 'World Schooling Family, California',
   },
@@ -45,11 +45,11 @@ export const testimonials = [
 export const foundingFamilies = [
   {
     name: 'Mark & Liz Berryman',
-    detail: 'New Zealand — 2 years in Lombok with sons Elijah & Caleb',
+    detail: 'New Zealand, 2 years in Lombok with sons Elijah & Caleb',
   },
   {
     name: 'Jael & Levi Wunderli',
-    detail: 'Switzerland — 4 years in Lombok with sons Jonah, Ari & Rio',
+    detail: 'Switzerland, 4 years in Lombok with sons Jonah, Ari & Rio',
   },
 ];
 
@@ -91,12 +91,12 @@ export const admissionsSteps = [
   { title: 'Parent & student interview', detail: 'A relaxed conversation, online or in person, to make sure Selong Bay is the right fit.' },
   { title: 'Letter of offer', detail: 'We send a formal offer of a place once the interview is complete.' },
   { title: 'Confirm student details', detail: 'Share your child’s information and passport details to finalise enrolment.' },
-  { title: 'Student starts', detail: 'Welcome to Selong Bay — on campus, online, or both.' },
+  { title: 'Student starts', detail: 'Welcome to Selong Bay: on campus, online, or both.' },
 ];
 
 export const dailySchedule = [
   { time: '08:30', activity: 'Welcome / Religious Studies (optional)' },
-  { time: '08:45', activity: 'Focus Block — Maths, English, Science' },
+  { time: '08:45', activity: 'Focus Block: Maths, English, Science' },
   { time: '10:45', activity: 'Morning Tea' },
   { time: '11:15', activity: 'Project Time' },
   { time: '11:45', activity: 'Art, Bahasa Indonesia, Music' },
@@ -120,7 +120,7 @@ export const campusFacts = [
   'Shuttle bus available from Kuta on request',
 ];
 
-/** Bookable activities — content is locked; do not paraphrase or restructure. */
+/** Bookable activities. Content is locked; do not paraphrase or restructure. */
 export type Activity = {
   slug: string;
   name: string;
@@ -139,7 +139,7 @@ export const activities: Activity[] = [
     day: 'Monday',
     duration: '2 hr',
     priceIDR: 300_000,
-    description: 'High-energy dance moves paired with an obstacle-course challenge — building rhythm, confidence, and coordination.',
+    description: 'High-energy dance moves paired with an obstacle-course challenge, building rhythm, confidence, and coordination.',
     ageGroup: 'All ages',
   },
   {
@@ -185,7 +185,7 @@ export const activities: Activity[] = [
     duration: '1 hr',
     priceIDR: null,
     priceNote: 'Free',
-    description: 'A guided walk through our campus, classrooms, and grounds — a great first step for prospective families.',
+    description: 'A guided walk through our campus, classrooms, and grounds: a great first step for prospective families.',
     ageGroup: 'All ages',
   },
   {
@@ -195,7 +195,7 @@ export const activities: Activity[] = [
     duration: '6 hr',
     priceIDR: 450_000,
     priceNote: 'Confirm pricing',
-    description: 'A full day of adventure activities — surf, scouting, sport, and campus exploration — bookable one day at a time.',
+    description: 'A full day of adventure activities: surf, scouting, sport, and campus exploration, bookable one day at a time.',
     ageGroup: 'All ages',
   },
   {
@@ -205,7 +205,7 @@ export const activities: Activity[] = [
     duration: '6 hr',
     priceIDR: null,
     priceNote: 'Contact us for pricing',
-    description: 'The full Adventure Camp week — surf, scouting, sport, and campus exploration every day.',
+    description: 'The full Adventure Camp week: surf, scouting, sport, and campus exploration every day.',
     ageGroup: 'All ages',
   },
 ];

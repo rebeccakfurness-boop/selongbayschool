@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       ok: true,
       bookingId: booking.id,
-      emailWarning: !notifySent ? 'Booking saved, but our confirmation email could not be sent — we still have your booking on file.' : undefined,
+      emailWarning: !notifySent ? 'Booking saved, but our confirmation email could not be sent. We still have your booking on file.' : undefined,
     });
   } catch (err) {
     console.error('[api/bookings] failed to create booking', err);

@@ -14,8 +14,8 @@ function connectionString(): string {
 }
 
 // Created lazily (on first real query) rather than at module load, so that
-// merely importing this file — e.g. during the Next.js build's page-data
-// collection step — doesn't require a database connection string to exist.
+// merely importing this file, e.g. during the Next.js build's page-data
+// collection step, doesn't require a database connection string to exist.
 let client: NeonQueryFunction<false, false> | null = null;
 
 function getClient(): NeonQueryFunction<false, false> {

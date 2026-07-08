@@ -48,7 +48,7 @@ export default function HomePage() {
             <p>
               Selong Bay blends structure and academic rigour through our online curriculum with connection, socialisation, and
               hands-on learning on our beautiful Lombok campus. Families can attend fully online, fully on-site, or move between
-              the two as life demands — without disrupting learning or friendships.
+              the two as life demands, without disrupting learning or friendships.
             </p>
             <p>
               Our curriculum blends Cambridge International Education with the Australian National Curriculum and our own
@@ -72,7 +72,7 @@ export default function HomePage() {
         />
       </Reveal>
 
-      {/* Equal-weight CTA pair — Enrol / Book an Activity */}
+      {/* Equal-weight CTA pair: Enrol / Book an Activity */}
       <Reveal>
         <div className="mx-auto max-w-5xl px-6 text-center md:px-8">
           <p className="font-script text-3xl text-orange-deep md:text-4xl">Two ways to join us</p>
@@ -90,7 +90,7 @@ export default function HomePage() {
             <div className="flex flex-col items-center gap-4 rounded-lg border border-sand-line bg-paper p-8 shadow-soft">
               <h3 className="font-display text-xl font-semibold text-ink">Just visiting or living locally?</h3>
               <p className="text-[15px] text-ink-soft">
-                You don&apos;t need to be a Selong Bay student — our activities and camps are open to the whole community.
+                You don&apos;t need to be a Selong Bay student: our activities and camps are open to the whole community.
               </p>
               <Button href="/activities" variant="accent" fullWidth>
                 Book an Activity
