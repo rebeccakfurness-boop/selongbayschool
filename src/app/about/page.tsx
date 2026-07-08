@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     'The story, values, campus, and teachers behind Selong Bay School: a non-profit school for world-schooling and local families in Lombok.',
   openGraph: {
     title: 'About - Selong Bay School',
-    images: [{ url: '/images/about-community.jpg', width: 2400, height: 1666, alt: 'Selong Bay School community on the beach' }],
+    images: [{ url: '/images/home-hero-sunset.jpg', width: 2400, height: 1800, alt: 'Sunset over the beach at Selong Belanak, Lombok' }],
   },
 };
 
@@ -19,7 +19,7 @@ export default function AboutPage() {
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
       <PhotoBanner
         height="sm"
-        image={{ src: '/images/about-community.jpg', alt: 'Selong Bay School students and families gathered on the beach after a surf session' }}
+        image={{ src: '/images/home-hero-sunset.jpg', alt: 'Sunset over the beach at Selong Belanak, Lombok' }}
         card={{ script: 'Our story', heading: 'A different kind of school', align: 'left' }}
       />
 
@@ -28,7 +28,7 @@ export default function AboutPage() {
           <StorySection
             eyebrowScript="Who we are"
             heading="Built by families, for families"
-            image={{ src: '/images/home-beach-walk.jpg', alt: 'Two students walking the beach carrying a surfboard at Selong Belanak' }}
+            image={{ src: '/images/about-community.jpg', alt: 'Selong Bay School students and families gathered on the beach after a surf session' }}
           >
             <p>
               Selong Bay School began with families who came to South Lombok for a season and stayed for the community.

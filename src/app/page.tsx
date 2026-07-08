@@ -14,8 +14,8 @@ export default function HomePage() {
       <section className="relative">
         <div className="relative h-[560px] w-full overflow-hidden md:h-[640px]">
           <Image
-            src="/images/home-hero-sunset.jpg"
-            alt="Sunset over the beach at Selong Belanak, Lombok"
+            src="/images/home-hero-science-experiment.jpg"
+            alt="Students gathered around a science experiment at Selong Bay School"
             fill
             priority
             sizes="100vw"
@@ -23,8 +23,9 @@ export default function HomePage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
           <div className="absolute inset-0 flex flex-col items-center justify-end px-6 pb-16 text-center md:pb-20">
-            <h1 className="max-w-3xl text-balance font-display text-4xl font-semibold text-white drop-shadow-sm md:text-6xl">
-              Where curious minds grow alongside the ocean
+            <h1 className="max-w-3xl text-balance text-white drop-shadow-sm">
+              <span className="font-script block text-5xl leading-none md:text-7xl">We need a</span>
+              <span className="font-display block text-4xl font-semibold md:text-6xl">different kind of school</span>
             </h1>
             <p className="mt-4 max-w-xl text-balance text-lg text-white/90 md:text-xl">
               A hybrid on-campus and online school in Lombok, built for families who want an exceptional education and time to explore.
@@ -47,7 +48,7 @@ export default function HomePage() {
           <StorySection
             eyebrowScript="Best of both worlds"
             heading="Every landscape becomes a classroom"
-            image={{ src: '/images/home-beach-walk.jpg', alt: 'Two students walking the beach carrying a surfboard at Selong Belanak' }}
+            image={{ src: '/images/home-story-beach-tree.jpg', alt: 'Students climbing a beach tree overlooking the ocean at Selong Belanak' }}
           >
             <p>
               Selong Bay blends structure and academic rigour through our online curriculum with connection, socialisation, and
@@ -67,7 +68,7 @@ export default function HomePage() {
       <Reveal>
         <PhotoBanner
           height="md"
-          image={{ src: '/images/activities-surfboards.jpg', alt: 'Students with surfboards on the beach at Selong Belanak' }}
+          image={{ src: '/images/home-mission-award-ceremony.jpg', alt: 'Students receiving certificates of achievement at Selong Bay School' }}
           card={{
             script: 'Whilst giving families time to explore',
             heading: 'World leading education for a sustainable future',
@@ -119,7 +120,7 @@ export default function HomePage() {
 
       {/* High School announcement */}
       <Reveal>
-        <HighSchoolBanner image={{ src: '/images/home-hero-sunset.jpg', alt: 'Surfers walking the beach at sunset in Selong Belanak' }} />
+        <HighSchoolBanner image={{ src: '/images/home-highschool-banner-padel.jpg', alt: 'Older students playing padel on the school court' }} />
       </Reveal>
 
       {/* Instagram */}

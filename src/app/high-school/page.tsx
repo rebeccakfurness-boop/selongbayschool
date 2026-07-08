@@ -17,7 +17,7 @@ export default function HighSchoolPage() {
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
       <PhotoBanner
         height="md"
-        image={{ src: '/images/home-hero-sunset.jpg', alt: 'Surfers walking the beach at sunset in Selong Belanak' }}
+        image={{ src: '/images/highschool-hero-algebra.jpg', alt: 'A high school student solving algebra at the whiteboard with a teacher' }}
         card={{ script: 'Now open', heading: 'High School is now open!', align: 'left' }}
       />
 
@@ -35,7 +35,7 @@ export default function HighSchoolPage() {
           <StorySection
             eyebrowScript="Growing up at Selong Bay"
             heading="A curriculum that travels with them"
-            image={{ src: '/images/about-community.jpg', alt: 'Selong Bay School students and families gathered on the beach' }}
+            image={{ src: '/images/highschool-classroom-teaching.jpg', alt: 'A teacher and teaching assistant helping students at Selong Bay School' }}
           >
             <p>
               High school students continue with the same blend that anchors every year level at Selong Bay: Cambridge

@@ -19,6 +19,22 @@ const activityImages: Record<string, { src: string; alt: string }> = {
     src: '/images/home-beach-walk.jpg',
     alt: 'Two students walking the beach carrying a surfboard at Selong Belanak',
   },
+  'gymnastics-free-swim': {
+    src: '/images/activity-gymnastics.jpg',
+    alt: 'A toddler exploring a sensory activity book at Selong Bay School',
+  },
+  'art-music-bahasa': {
+    src: '/images/activity-art-music.jpg',
+    alt: 'Students working together on a craft activity at Selong Bay School',
+  },
+  'school-tour': {
+    src: '/images/activity-school-tour.jpg',
+    alt: 'A student completing classwork at Selong Bay School',
+  },
+  'adventure-camp-2026-per-day': {
+    src: '/images/activity-adventure-camp.jpg',
+    alt: 'A student skateboarding at Selong Bay School',
+  },
 };
 
 export default function ActivitiesPage() {

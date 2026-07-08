@@ -5,6 +5,7 @@ type CardAlign = 'left' | 'right' | 'center';
 export interface PhotoBannerImage {
   src: string;
   alt: string;
+  focalPosition?: 'center' | 'top' | 'bottom';
 }
 
 export interface PhotoBannerCard {
@@ -52,6 +53,7 @@ export default function PhotoBanner({
             fill
             sizes="100vw"
             className="object-cover"
+            style={{ objectPosition: image.focalPosition ? `center ${image.focalPosition}` : 'center' }}
             priority={false}
           />
         ) : (

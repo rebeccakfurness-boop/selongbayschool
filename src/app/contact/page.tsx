@@ -17,7 +17,7 @@ export default function ContactPage() {
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
       <PhotoBanner
         height="sm"
-        image={{ src: '/images/home-hero-sunset.jpg', alt: 'Sunset over the beach at Selong Belanak, Lombok' }}
+        image={{ src: '/images/contact-hero-football.jpg', alt: 'Students playing football on the beach near Kuta, Lombok', focalPosition: 'bottom' }}
         card={{ script: "We'd love to hear from you", heading: 'Contact us', align: 'left' }}
       />
 

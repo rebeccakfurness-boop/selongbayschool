@@ -18,7 +18,7 @@ export default function AdmissionsPage() {
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
       <PhotoBanner
         height="sm"
-        image={{ src: '/images/about-community.jpg', alt: 'Selong Bay School students and families gathered on the beach' }}
+        image={{ src: '/images/admissions-hero.jpg', alt: 'A smiling student sharing her maths worksheet at Selong Bay School' }}
         card={{ script: 'Join our school', heading: 'Enrol your child at Selong Bay', align: 'left' }}
       />
 
