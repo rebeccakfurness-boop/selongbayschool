@@ -68,19 +68,22 @@ export const foundingFamilies = [
 
 export const teachers = [
   {
-    name: 'Chantelle "Shani" Mullins',
-    role: 'Pre-School Years (age 3–5)',
-    bio: '10+ years teaching in South Africa, Hong Kong, and online. Bachelor of Education, TEFL certified, with a Reggio Emilia background and experience across Cambridge, Trinity, phonics, and autism support.',
+    name: 'Marwan Desky',
+    role: 'High School (age 13–18), Maths, Science & Music',
+    bio: 'Marwan Desky is an experienced high school teacher and private tutor from Sumbawa with over 10 years of teaching experience across mathematics, science, and music education. He specialises in advanced statistical modelling and biostatistics, bringing strong analytical and problem-solving skills into the classroom. Pak Desky has extensive experience supporting students in Cambridge IGCSE exam preparation through personalised tutoring, structured revision strategies, and targeted academic support. Alongside his academic teaching, he is also a passionate music teacher who encourages creativity, discipline, and confidence in students through engaging and supportive learning experiences.',
+    image: { src: '/images/teacher-marwan.jpg', alt: 'Marwan Desky, High School teacher at Selong Bay School' },
   },
   {
-    name: 'Kevin Scheunemann',
-    role: 'Elementary Years (age 6–11), PE & Sport',
-    bio: 'Professional footballer for Indonesia and Bachelor of Education graduate (California). Fluent in German, English, and Indonesian.',
+    name: 'Nadine Natali Hanslik (Ms. Nati)',
+    role: 'Secondary School Supervisor',
+    bio: "Nati has a Masters Degree in Education majoring in Chemistry and Physical Education from the University of Education Schwäbisch Gmünd, Germany. She also completed education training at Griffith University in Australia, so she's up to date with the Australian and Cambridge curriculums. Nati is a keen surfer and loves getting kids into outdoor education. She's also a qualified gym instructor with Les Mills and loves to explore and adventure in Lombok. With Nati's Chemistry degree, she's able to support the practical side of subjects for the secondary school that can't be done online. As well as supervising the online programme, she'll lead projects and activities.",
+    image: { src: '/images/teacher-nati.jpg', alt: 'Nadine Natali Hanslik, Secondary School Supervisor at Selong Bay School' },
   },
   {
-    name: 'Marwan Desky Ismansyah',
-    role: 'Elementary Years (age 6–11), Maths & Music',
-    bio: 'Maths degree with published research on brain tumour statistics, and a multi-instrumentalist across piano, drums, guitar, woodwind, and ukulele.',
+    name: 'Roxana Maurer',
+    role: 'High School (age 13–18), Languages & Humanities',
+    bio: 'Roxana Maurer is an experienced secondary school teacher from Switzerland with a strong background in language, humanities, and student-centred learning. She previously taught at Sekundarschule Zentrum Küsnacht from 2022 to 2025, where she taught German, English, Economics, Geography, Work & Household (WAH), and Religions, Cultures & Ethics (RKE) to secondary students across Levels A and B. Roxana also served as a class teacher for a combined secondary class over two school years, supporting students academically and personally through a collaborative and engaging learning environment. Fluent in French, German, and English, she brings a multicultural and supportive approach.',
+    image: { src: '/images/teacher-roxana.jpg', alt: 'Roxana Maurer, High School teacher at Selong Bay School' },
   },
 ];
 

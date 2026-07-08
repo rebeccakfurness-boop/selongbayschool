@@ -80,7 +80,13 @@ export default function AboutPage() {
           <div className="mt-8 grid gap-6 md:grid-cols-3">
             {teachers.map((teacher) => (
               <div key={teacher.name} className="rounded-md border border-sand-line bg-paper p-6">
-                <div className="mb-4 h-40 w-full rounded-sm bg-[linear-gradient(135deg,#0c5a60,#41bcc2_60%,#dad0bc_100%)]" aria-hidden="true" />
+                {teacher.image ? (
+                  <div className="relative mb-4 h-40 w-full overflow-hidden rounded-sm">
+                    <Image src={teacher.image.src} alt={teacher.image.alt} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
+                  </div>
+                ) : (
+                  <div className="mb-4 h-40 w-full rounded-sm bg-[linear-gradient(135deg,#0c5a60,#41bcc2_60%,#dad0bc_100%)]" aria-hidden="true" />
+                )}
                 <h3 className="font-display text-lg font-semibold text-ink">{teacher.name}</h3>
                 <p className="mt-0.5 text-sm font-bold uppercase tracking-wide text-teal-deep">{teacher.role}</p>
                 <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">{teacher.bio}</p>
