@@ -108,17 +108,6 @@ export default function AboutPage() {
                 <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">{teacher.bio}</p>
               </div>
             ))}
-
-            <div className="rounded-md border-2 border-dashed border-sand-line bg-sand/20 p-6">
-              <div className="mb-4 flex h-40 w-full items-center justify-center rounded-sm border-2 border-dashed border-sand-line bg-sand/30 text-sm font-semibold text-ink-soft">
-                Photo coming soon
-              </div>
-              <h3 className="font-display text-lg font-semibold text-ink">Pending content from Liz</h3>
-              <p className="mt-0.5 text-sm font-bold uppercase tracking-wide text-teal-deep">Teacher profile</p>
-              <p className="mt-2 text-[14.5px] italic leading-relaxed text-ink-soft">
-                One more teacher profile is on its way, photo and bio to follow.
-              </p>
-            </div>
           </div>
         </div>
       </Reveal>

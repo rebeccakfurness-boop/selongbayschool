@@ -48,7 +48,7 @@ export default function HowItWorksPage() {
       <div className="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-[220px_1fr] md:items-start md:px-8">
         <HowItWorksNav sections={sections} />
 
-        <div className="flex flex-col gap-16 md:gap-20">
+        <div className="flex min-w-0 flex-col gap-16 md:gap-20">
           <section id="welcome" className="scroll-mt-32">
             <Reveal>
               <p className="font-script text-3xl text-orange-deep md:text-4xl">Meet our principal</p>

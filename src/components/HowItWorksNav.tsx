@@ -35,7 +35,7 @@ export default function HowItWorksNav({ sections }: { sections: HowItWorksSectio
       {/* Mobile: sticky horizontal pill nav */}
       <nav
         aria-label="How It Works sections"
-        className="sticky top-[64px] z-30 -mx-6 mb-8 overflow-x-auto border-b border-sand-line bg-cream/95 px-6 py-3 backdrop-blur md:hidden"
+        className="sticky top-[64px] z-30 -mx-6 mb-8 min-w-0 overflow-x-auto border-b border-sand-line bg-cream/95 px-6 py-3 backdrop-blur md:hidden"
       >
         <ul className="flex gap-2 whitespace-nowrap">
           {sections.map((section) => (
@@ -54,7 +54,7 @@ export default function HowItWorksNav({ sections }: { sections: HowItWorksSectio
       </nav>
 
       {/* Desktop: sticky side nav */}
-      <aside className="sticky top-24 hidden self-start md:block">
+      <aside className="sticky top-24 hidden min-w-0 self-start md:block">
         <p className="mb-3 text-xs font-bold uppercase tracking-wide text-ink-soft">On this page</p>
         <ul className="flex flex-col gap-1 border-l border-sand-line pl-4">
           {sections.map((section) => (
