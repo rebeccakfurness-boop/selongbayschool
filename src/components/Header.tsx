@@ -6,9 +6,18 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { navItems, siteConfig } from '@/lib/site-content';
 
+function ChevronDown({ className = '' }: { className?: string }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  );
+}
+
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [mobileSubOpen, setMobileSubOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50 bg-teal shadow-md">
@@ -28,7 +37,41 @@ export default function Header() {
         <nav className="hidden md:block" aria-label="Primary">
           <ul className="flex items-center gap-1">
             {navItems.map((item) => {
-              const active = pathname === item.href;
+              const active = pathname === item.href || (item.children?.some((c) => c.href === pathname) ?? false);
+
+              if (item.children) {
+                return (
+                  <li key={item.href} className="group relative">
+                    <Link
+                      href={item.href}
+                      className={`flex items-center gap-1 rounded-full px-4 py-2 font-sans text-[15px] font-semibold transition-colors ${
+                        active ? 'bg-white/15 text-white' : 'text-white/90 hover:bg-white/10 hover:text-white'
+                      }`}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      {item.label}
+                      <ChevronDown className="transition-transform group-hover:rotate-180 group-focus-within:rotate-180" />
+                    </Link>
+                    <div className="invisible absolute left-0 top-full z-20 min-w-[200px] pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                      <ul className="overflow-hidden rounded-md border border-sand-line bg-paper py-1.5 shadow-soft">
+                        {item.children.map((child) => (
+                          <li key={child.href}>
+                            <Link
+                              href={child.href}
+                              className={`block px-4 py-2.5 font-sans text-[15px] font-semibold transition-colors ${
+                                pathname === child.href ? 'bg-aqua/40 text-teal-deep' : 'text-ink hover:bg-sand/50'
+                              }`}
+                            >
+                              {child.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </li>
+                );
+              }
+
               return (
                 <li key={item.href}>
                   <Link
@@ -70,7 +113,51 @@ export default function Header() {
         <nav id="mobile-menu" aria-label="Mobile primary" className="border-t border-white/10 bg-teal-deep md:hidden">
           <ul className="flex flex-col px-5 py-3">
             {navItems.map((item) => {
-              const active = pathname === item.href;
+              const active = pathname === item.href || (item.children?.some((c) => c.href === pathname) ?? false);
+
+              if (item.children) {
+                return (
+                  <li key={item.href}>
+                    <div className={`flex items-center justify-between rounded-lg ${active ? 'bg-white/15' : ''}`}>
+                      <Link
+                        href={item.href}
+                        onClick={() => setOpen(false)}
+                        className={`flex-1 px-3 py-3 font-sans text-[16px] font-semibold ${active ? 'text-white' : 'text-white/90'}`}
+                        aria-current={active ? 'page' : undefined}
+                      >
+                        {item.label}
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => setMobileSubOpen((v) => !v)}
+                        aria-expanded={mobileSubOpen}
+                        aria-label={mobileSubOpen ? `Collapse ${item.label} submenu` : `Expand ${item.label} submenu`}
+                        className="px-3 py-3 text-white/90"
+                      >
+                        <ChevronDown className={`transition-transform ${mobileSubOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                    </div>
+                    {mobileSubOpen && (
+                      <ul className="flex flex-col gap-0.5 py-1 pl-6">
+                        {item.children.map((child) => (
+                          <li key={child.href}>
+                            <Link
+                              href={child.href}
+                              onClick={() => setOpen(false)}
+                              className={`block rounded-lg px-3 py-2.5 font-sans text-[15px] font-semibold ${
+                                pathname === child.href ? 'bg-white/15 text-white' : 'text-white/80'
+                              }`}
+                            >
+                              {child.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              }
+
               return (
                 <li key={item.href}>
                   <Link

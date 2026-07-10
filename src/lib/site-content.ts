@@ -17,17 +17,26 @@ export const siteConfig = {
 
 export const navItems = [
   { href: '/', label: 'Home' },
-  { href: '/admissions', label: 'Admissions' },
-  { href: '/high-school', label: 'High School' },
-  { href: '/activities', label: 'Activities & Camps' },
   { href: '/about', label: 'About' },
+  { href: '/how-it-works', label: 'How It Works' },
+  {
+    href: '/admissions',
+    label: 'Admissions',
+    children: [
+      { href: '/admissions/preschool', label: 'Preschool' },
+      { href: '/admissions/primary', label: 'Primary' },
+      { href: '/admissions/secondary-school', label: 'Secondary School' },
+    ],
+  },
+  { href: '/activities', label: 'Activities and Camps' },
   { href: '/contact', label: 'Contact' },
+  { href: '/login', label: 'Log In' },
 ];
 
 export const highSchoolAnnouncement = {
-  headline: 'High School is now Open!',
-  body: 'Selong Bay School now offers high school options for students aged 13 - 18 years old. Contact us for more information.',
-  mailSubject: 'Send me info on the high school please',
+  headline: 'Secondary School is now Open!',
+  body: 'Selong Bay School now offers secondary school options for students aged 13 - 18 years old. Contact us for more information.',
+  mailSubject: 'Send me info on secondary school please',
 };
 
 export const testimonials = [
@@ -58,13 +67,22 @@ export const foundingFamilies = [
     name: 'Mark & Liz Berryman',
     detail: 'New Zealand, 2 years in Lombok with sons Elijah & Caleb',
     image: { src: '/images/berryman-family.jpg', alt: 'The Berryman family' },
+    blurb:
+      'New Zealand family living in Lombok for 2 years, with two boys, Elijah and Caleb. Liz is a medical doctor, university lecturer, and researcher in medical and business schools in Dubai and New Zealand. She is the CEO of a corporate mental health startup and is passionate about science and the future of education. Mark is a serial entrepreneur from the construction industry and holds an MBA, but his current focus is honing his surfing skills.',
   },
   {
     name: 'Jael & Levi Wunderli',
     detail: 'Switzerland, 4 years in Lombok with sons Jonah, Ari & Rio',
     image: { src: '/images/wunderli-family.jpg', alt: 'The Wunderli family' },
+    blurb:
+      'Swiss family living in Lombok for 4 years, with three boys, Jonah, Ari, and Rio. Jael is an experienced Swiss-trained elementary school teacher with experience leading education in Cambodia and social impact projects. Levi is a dedicated surfer and purpose-driven builder with a passion for community development; after founding a wakepark project for an NGO in Cambodia, he brings strong experience in youth empowerment and building supportive environments.',
   },
 ];
+
+export const charitableWork = {
+  heading: 'Charitable Work',
+  body: 'As part of our not-for-profit, charitable commitment to the community of South Lombok, Selong Bay School runs the Serangan English School, a free programme where our team teaches English to the local Serangan village every Sunday morning. This is one of the ways we reinvest in the community that welcomes us.',
+};
 
 export const values = [
   {
@@ -136,9 +154,9 @@ export const ourCommitment = [
 export const teachers = [
   {
     name: 'Marwan Desky',
-    role: 'High School (age 13–18), Maths, Science & Music',
+    role: 'Secondary School (age 13–18), Maths, Science & Music',
     bio: 'Marwan Desky is an experienced high school teacher and private tutor from Sumbawa with over 10 years of teaching experience across mathematics, science, and music education. He specialises in advanced statistical modelling and biostatistics, bringing strong analytical and problem-solving skills into the classroom. Pak Desky has extensive experience supporting students in Cambridge IGCSE exam preparation through personalised tutoring, structured revision strategies, and targeted academic support. Alongside his academic teaching, he is also a passionate music teacher who encourages creativity, discipline, and confidence in students through engaging and supportive learning experiences.',
-    image: { src: '/images/teacher-marwan.jpg', alt: 'Marwan Desky, High School teacher at Selong Bay School' },
+    image: { src: '/images/teacher-marwan.jpg', alt: 'Marwan Desky, Secondary School teacher at Selong Bay School' },
   },
   {
     name: 'Nadine Natali Hanslik (Ms. Nati)',
@@ -148,24 +166,17 @@ export const teachers = [
   },
   {
     name: 'Roxana Maurer',
-    role: 'High School (age 13–18), Languages & Humanities',
+    role: 'Secondary School (age 13–18), Languages & Humanities',
     bio: 'Roxana Maurer is an experienced secondary school teacher from Switzerland with a strong background in language, humanities, and student-centred learning. She previously taught at Sekundarschule Zentrum Küsnacht from 2022 to 2025, where she taught German, English, Economics, Geography, Work & Household (WAH), and Religions, Cultures & Ethics (RKE) to secondary students across Levels A and B. Roxana also served as a class teacher for a combined secondary class over two school years, supporting students academically and personally through a collaborative and engaging learning environment. Fluent in French, German, and English, she brings a multicultural and supportive approach.',
-    image: { src: '/images/teacher-roxana.jpg', alt: 'Roxana Maurer, High School teacher at Selong Bay School' },
+    image: { src: '/images/teacher-roxana.jpg', alt: 'Roxana Maurer, Secondary School teacher at Selong Bay School' },
   },
 ];
 
-export const ageGroups = [
-  { name: 'Early Years', ages: '2–3 years' },
-  { name: 'Pre-School', ages: '4–5 years' },
-  { name: 'Primary', ages: '6–12 years' },
-  { name: 'High School', ages: '13–18 years' },
-];
-
-export const pricing2026 = [
-  { level: 'Early Years (Half Day)', annual: 40_000_000, perTerm: 10_000_000 },
-  { level: 'Early Years (Full Time)', annual: 61_750_000, perTerm: 15_450_000 },
-  { level: 'Pre-School (Full Time)', annual: 73_750_000, perTerm: 18_450_000 },
-  { level: 'Primary Grades 1–6', annual: 95_000_000, perTerm: 23_750_000 },
+/** Combined fee snapshot shown on the How It Works page; each subpage's own Pricing section has the full breakdown. */
+export const feesSummary = [
+  { level: 'Preschool', ages: '2–5 years', perTermFrom: 10_000_000 },
+  { level: 'Primary', ages: '6–12 years', perTermFrom: 23_750_000 },
+  { level: 'Secondary School', ages: '13–18 years', perTermFrom: 27_000_000 },
 ];
 
 export const admissionsSteps = [
@@ -178,7 +189,7 @@ export const admissionsSteps = [
 ];
 
 export const dailySchedule = [
-  { time: '08:30', activity: 'Welcome / Religious Studies (optional)' },
+  { time: '08:30', activity: 'Welcome and Character Studies' },
   { time: '08:45', activity: 'Focus Block: Maths, English, Science' },
   { time: '10:45', activity: 'Morning Tea' },
   { time: '11:15', activity: 'Project Time' },
@@ -290,6 +301,95 @@ export const activities: Activity[] = [
     priceNote: 'Contact us for pricing',
     description: 'The full Adventure Camp week: surf, scouting, sport, and campus exploration every day.',
     ageGroup: 'All ages',
+  },
+];
+
+export const principalWelcome = {
+  name: 'Ms Indhira',
+  role: 'Principal',
+  paragraphs: [
+    'Selong Bay School is a full-time international school offering a complete educational journey from Pre-school through to university entrance. Whether your family calls Lombok home or is spending an extended season here, students become part of a vibrant learning community where academic excellence, character development, and real-world experiences go hand in hand.',
+    'Our students follow internationally recognised academic pathways that prepare them for universities and future careers around the world. In the early years and primary school, learning is inquiry-based, engaging, and designed to build strong foundations in literacy, numeracy, creativity, and wellbeing. As students progress into secondary school, they undertake a rigorous academic programme leading to internationally recognised qualifications for university entrance.',
+    "Learning extends far beyond the classroom. Surrounded by the natural beauty of South Lombok, students regularly engage in outdoor education, environmental stewardship, entrepreneurship, community service, and project-based learning. We believe some of life's greatest lessons are learned by exploring, creating, serving, and solving real problems.",
+    'Small class sizes allow teachers to know every student personally, tailoring learning to individual strengths, interests, and goals while providing the support and challenge each child needs to thrive.',
+    'At Selong Bay School, education is about more than academic success. We intentionally develop young people of character who lead with humility, kindness, integrity, responsibility, and hope. Our graduates leave with the confidence to think critically, the curiosity to keep learning, the resilience to embrace challenges, and the compassion to make a positive difference wherever life takes them.',
+    "From a child's very first day of school through to university preparation, Selong Bay School provides a connected, inspiring pathway that equips students with the knowledge, skills, and character to flourish in a changing world.",
+  ],
+};
+
+export const policyLinks = [
+  { label: 'School Policies', href: '#' },
+  { label: 'Parent Handbook', href: '#' },
+];
+
+export const freeShuttle = {
+  body: 'Selong Bay School offers a free shuttle service from Kuta for enrolled students, making it easy for families based further afield to travel to and from campus. Contact us to check shuttle times and pick-up points for your family.',
+};
+
+export const academicCalendarPdf = '/files/academic-calendar-placeholder.pdf';
+
+export const ourApproach = {
+  heading: 'A curriculum built for both worlds',
+  paragraphs: [
+    "Selong Bay School operates under Yayasan Selong Bay Sekolah, a registered foundation. We are not for profit. We are for the children and the community of South Lombok. All funds are reinvested into the school's development, including scholarships, community programmes such as the Serangan English School, and training opportunities for local teachers and staff.",
+    'Our curriculum blends Cambridge International Education with the Australian National Curriculum and our own Selong Bay approach: play-based in the Early Years, inquiry-based through Primary. More about our approach under "How It Works."',
+  ],
+};
+
+export type AdmissionsGroup = {
+  slug: string;
+  label: string;
+  ages: string;
+  heroImage: { src: string; alt: string };
+  overview: string;
+  curriculum: string;
+  pricing: { programme: string; perTermFrom: number }[];
+};
+
+export const admissionsGroups: AdmissionsGroup[] = [
+  {
+    slug: 'preschool',
+    label: 'Preschool',
+    ages: '2–5 years',
+    heroImage: { src: '/images/unused-toddler-play.jpg', alt: 'Toddlers exploring a sensory play book together at Selong Bay School' },
+    overview:
+      'Our Preschool programme welcomes children aged 2 to 5 into a warm, play-based learning environment. Days are full of exploration, creativity, and social connection, building the foundations for a lifelong love of learning while giving little ones plenty of time to play, explore Lombok, and grow alongside a caring community of teachers and friends.',
+    curriculum:
+      'Preschool at Selong Bay is entirely play-based, drawing on Early Years best practice alongside the Cambridge and Australian National Curriculum frameworks. Children develop language, number sense, motor skills, and social-emotional confidence through hands-on activities, stories, movement, and outdoor exploration, both on campus and along the beach at Selong Belanak.',
+    pricing: [
+      { programme: 'Junior Preschool (Half Day)', perTermFrom: 10_000_000 },
+      { programme: 'Junior Preschool (Full Time)', perTermFrom: 15_450_000 },
+      { programme: 'Senior Preschool (Full Time)', perTermFrom: 18_450_000 },
+    ],
+  },
+  {
+    slug: 'primary',
+    label: 'Primary',
+    ages: '6–12 years',
+    heroImage: { src: '/images/highschool-classroom-teaching.jpg', alt: 'A teacher and teaching assistant helping students at Selong Bay School' },
+    overview:
+      "Primary students aged 6 to 12 follow a hybrid model that blends structured online learning with hands-on, on-campus connection. Small class sizes mean every child is known personally, with learning tailored to their strengths, interests, and pace, all set against the backdrop of South Lombok's beaches, jungle, and community.",
+    curriculum:
+      'Our Primary curriculum blends Cambridge International Education with the Australian National Curriculum and the Selong Bay approach: inquiry-based learning that builds deep understanding of Maths, English, and Science, alongside Bahasa Indonesia, the Arts, and project-based learning that connects classroom concepts to the real world.',
+    pricing: [
+      { programme: 'Junior, age 6–8', perTermFrom: 23_750_000 },
+      { programme: 'Intermediate, age 9–10', perTermFrom: 24_750_000 },
+      { programme: 'Senior, age 11–12', perTermFrom: 25_750_000 },
+    ],
+  },
+  {
+    slug: 'secondary-school',
+    label: 'Secondary School',
+    ages: '13–18 years',
+    heroImage: { src: '/images/highschool-hero-algebra.jpg', alt: 'A secondary school student solving algebra at the whiteboard with a teacher' },
+    overview:
+      'Secondary School students aged 13 to 18 continue with the same hybrid model that makes our Primary years work so well: structured online study paired with on-campus connection, project work, and hands-on learning, preparing students for university entrance and future careers.',
+    curriculum:
+      "Secondary School students follow Cambridge International Education and the Australian National Curriculum, working towards internationally recognised qualifications for university entrance. Alongside core academic subjects, students take part in project-based learning, community service, and outdoor education that build the character and real-world skills they'll need beyond the classroom.",
+    pricing: [
+      { programme: 'Junior Secondary', perTermFrom: 27_000_000 },
+      { programme: 'Senior Secondary', perTermFrom: 30_000_000 },
+    ],
   },
 ];
 

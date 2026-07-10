@@ -29,7 +29,7 @@ export default function HomePage() {
                 <span className="font-display block text-4xl font-semibold md:text-6xl">different kind of school</span>
               </h1>
               <p className="mx-auto mt-4 max-w-xl text-balance text-lg text-white/90 md:text-xl">
-                A hybrid on-campus and online school in Lombok, built for families who want an exceptional education and time to explore.
+                A school in Lombok, built for families who want an exceptional education and time to explore.
               </p>
             </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -53,14 +53,25 @@ export default function HomePage() {
             image={{ src: '/images/home-story-beach-tree.jpg', alt: 'Students climbing a beach tree overlooking the ocean at Selong Belanak' }}
           >
             <p>
-              Selong Bay blends structure and academic rigour through our online curriculum with connection, socialisation, and
-              hands-on learning on our beautiful Lombok campus. Families can attend fully online, fully on-site, or move between
-              the two as life demands, without disrupting learning or friendships.
+              Selong Bay offers a flexible learning experience that combines academic excellence with curiosity, creativity,
+              and real-world learning. Our online curriculum provides structure and rigour, while our beautiful Lombok campus
+              brings learning to life through hands-on, inquiry-based experiences and a strong sense of community.
             </p>
             <p>
-              Our curriculum blends Cambridge International Education with the Australian National Curriculum and our own
-              Selong Bay approach: play-based in the Early Years, inquiry-based through Primary, with Bahasa Indonesia and
-              Religious Studies woven in as required by Indonesian regulation.
+              Families can choose the learning model that suits them best: fully online, fully on campus, or a combination of
+              both, and move between options as life changes, without disrupting their child&apos;s education or friendships.
+            </p>
+            <p>
+              Our curriculum combines Cambridge International Education, the Australian National Curriculum, and the Selong
+              Bay approach. In the Early Years, learning is play-based, building strong foundations through exploration and
+              discovery. Through Primary and High School, students engage in inquiry-based learning that develops deep
+              understanding alongside essential future-ready skills.
+            </p>
+            <p>
+              We believe education should prepare students not only for exams, but for a rapidly changing world. Alongside
+              academic achievement, we nurture creativity, critical thinking, collaboration, communication, emotional
+              resilience and problem-solving: the skills young people need to thrive in an age shaped by technology, AI, and
+              constant change.
             </p>
           </StorySection>
         </div>
@@ -88,7 +99,7 @@ export default function HomePage() {
             <div className="flex flex-col items-center gap-4 rounded-lg border border-sand-line bg-paper p-8 shadow-soft">
               <h3 className="font-display text-xl font-semibold text-ink">Enrol full-time</h3>
               <p className="text-[15px] text-ink-soft">
-                Join our on-campus or online school, from Early Years through High School.
+                Join our on-campus or online school, from Preschool through Secondary School.
               </p>
               <Button href="/admissions" variant="primary" fullWidth>
                 Enrol at Selong Bay School

@@ -7,9 +7,9 @@ import { Field, TextArea, TextInput } from './FormField';
 import FormStatusBanner from './FormStatusBanner';
 import { useFormSubmit } from '@/lib/useFormSubmit';
 
-const interestOptions = ['Early Years', 'Pre-School', 'Primary', 'High School', 'Not sure yet'];
+const interestOptions = ['Preschool', 'Primary', 'Secondary School', 'Not sure yet'];
 
-export default function AdmissionsForm() {
+export default function AdmissionsForm({ defaultInterest }: { defaultInterest?: string } = {}) {
   const { status, errorMessage, submit } = useFormSubmit('/api/admissions');
   const searchParams = useSearchParams();
 
@@ -19,6 +19,7 @@ export default function AdmissionsForm() {
   const [childName, setChildName] = useState('');
   const [childAge, setChildAge] = useState('');
   const [interest, setInterest] = useState(() => {
+    if (defaultInterest && interestOptions.includes(defaultInterest)) return defaultInterest;
     const param = searchParams.get('interest');
     return param && interestOptions.includes(param) ? param : '';
   });

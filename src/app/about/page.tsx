@@ -4,7 +4,8 @@ import PhotoBanner from '@/components/PhotoBanner';
 import StorySection from '@/components/StorySection';
 import OurValues from '@/components/OurValues';
 import Reveal from '@/components/Reveal';
-import { campusFacts, foundingFamilies, teachers } from '@/lib/site-content';
+import { PlaceholderImage } from '@/components/PlaceholderBox';
+import { campusFacts, charitableWork, foundingFamilies, teachers } from '@/lib/site-content';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -51,7 +52,9 @@ export default function AboutPage() {
 
       <Reveal>
         <div className="mx-auto max-w-4xl px-6 md:px-8">
-          <div className="overflow-hidden rounded-md border border-sand-line shadow-soft">
+          <p className="font-script text-3xl text-orange-deep md:text-4xl">Our foundation</p>
+          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Yayasan Selong Bay Sekolah</h2>
+          <div className="mt-6 overflow-hidden rounded-md border border-sand-line shadow-soft">
             <Image
               src="/images/about-yayasan-board.jpg"
               alt="Yayasan Selong Bay Sekolah, the non-profit foundation board behind the school"
@@ -59,6 +62,14 @@ export default function AboutPage() {
               height={1080}
               className="w-full"
             />
+          </div>
+
+          <div id="charitable" className="mt-10 grid scroll-mt-24 items-center gap-6 md:grid-cols-2">
+            <div>
+              <h3 className="font-display text-2xl font-semibold text-ink">{charitableWork.heading}</h3>
+              <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">{charitableWork.body}</p>
+            </div>
+            <PlaceholderImage label="Photo coming soon: Serangan English School" className="h-56" />
           </div>
         </div>
       </Reveal>
@@ -79,7 +90,7 @@ export default function AboutPage() {
       </Reveal>
 
       <Reveal>
-        <div className="mx-auto max-w-6xl px-6 md:px-8">
+        <div id="teachers" className="mx-auto max-w-6xl scroll-mt-24 px-6 md:px-8">
           <p className="font-script text-3xl text-orange-deep md:text-4xl">Our teachers</p>
           <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">The people your child learns with</h2>
           <div className="mt-8 grid gap-6 md:grid-cols-3">
@@ -97,6 +108,17 @@ export default function AboutPage() {
                 <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">{teacher.bio}</p>
               </div>
             ))}
+
+            <div className="rounded-md border-2 border-dashed border-sand-line bg-sand/20 p-6">
+              <div className="mb-4 flex h-40 w-full items-center justify-center rounded-sm border-2 border-dashed border-sand-line bg-sand/30 text-sm font-semibold text-ink-soft">
+                Photo coming soon
+              </div>
+              <h3 className="font-display text-lg font-semibold text-ink">Pending content from Liz</h3>
+              <p className="mt-0.5 text-sm font-bold uppercase tracking-wide text-teal-deep">Teacher profile</p>
+              <p className="mt-2 text-[14.5px] italic leading-relaxed text-ink-soft">
+                One more teacher profile is on its way, photo and bio to follow.
+              </p>
+            </div>
           </div>
         </div>
       </Reveal>
@@ -116,6 +138,7 @@ export default function AboutPage() {
                 <div className="p-6">
                   <h3 className="font-display text-lg font-semibold text-ink">{family.name}</h3>
                   <p className="mt-1 text-[15px] text-ink-soft">{family.detail}</p>
+                  {family.blurb && <p className="mt-3 text-[14.5px] leading-relaxed text-ink-soft">{family.blurb}</p>}
                 </div>
               </div>
             ))}

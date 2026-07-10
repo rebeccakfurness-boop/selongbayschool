@@ -27,7 +27,7 @@ export default function ContactPage() {
             <h2 className="font-display text-2xl font-semibold text-ink">Send us a message</h2>
             <p className="mt-2 text-[15px] text-ink-soft">
               For enrolment enquiries, use our{' '}
-              <a href="/admissions#enquire" className="font-semibold text-teal-deep underline">
+              <a href="/admissions" className="font-semibold text-teal-deep underline">
                 admissions form
               </a>{' '}
               instead, this one is for general questions.
