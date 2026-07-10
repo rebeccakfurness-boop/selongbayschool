@@ -85,11 +85,34 @@ const enquiryTypeLabels: Record<EnquiryType, string> = {
   high_school: 'High School Enquiry',
 };
 
+const admissionsInterestSources: Record<string, string> = {
+  Preschool: 'Preschool Admissions Form',
+  Primary: 'Primary Admissions Form',
+  'Secondary School': 'Secondary School Admissions Form',
+};
+
+/** Human-readable label for exactly which form on the site an enquiry came from, used in the notification subject/heading. */
+function resolveSource(type: EnquiryType, interest?: string | null): string {
+  if (type === 'contact') return 'Contact Page';
+  if (type === 'high_school') return 'Home Page Secondary School Enquiry';
+  return (interest && admissionsInterestSources[interest]) || 'Admissions Form';
+}
+
+function formatSubmittedAt(date: Date): string {
+  const formatted = new Intl.DateTimeFormat('en-AU', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'Asia/Makassar',
+  }).format(date);
+  return `${formatted} (Lombok time)`;
+}
+
 export async function sendEnquiryNotification(input: EnquiryEmailInput): Promise<boolean> {
-  const label = enquiryTypeLabels[input.type];
+  const source = resolveSource(input.type, input.interest);
   const html = wrapEmail(
-    `New ${label}`,
+    `New Enquiry: ${source}`,
     fieldRows([
+      ['Submitted', formatSubmittedAt(new Date())],
       ['Name', input.name],
       ['Email', input.email],
       ['Phone', input.phone],
@@ -99,7 +122,7 @@ export async function sendEnquiryNotification(input: EnquiryEmailInput): Promise
       ['Message', input.message?.replace(/\n/g, '<br />')],
     ])
   );
-  return send(NOTIFY_TO, `${label}: ${input.name}`, html, input.email);
+  return send(NOTIFY_TO, `New Enquiry (${source}): ${input.name}`, html, input.email);
 }
 
 export async function sendEnquiryAutoReply(input: EnquiryEmailInput): Promise<boolean> {
