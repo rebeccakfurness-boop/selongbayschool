@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import ActivityCard from '@/components/ActivityCard';
 import Reveal from '@/components/Reveal';
-import { activities, afternoonClubs } from '@/lib/site-content';
+import { activities, afternoonClubs, activitiesGallery } from '@/lib/site-content';
 
 export const metadata: Metadata = {
   title: 'Activities and WorldSchooling',
@@ -92,6 +93,22 @@ export default function ActivitiesPage() {
               <span key={club} className="rounded-full bg-sand px-4 py-1.5 text-sm font-semibold text-ink">
                 {club}
               </span>
+            ))}
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal>
+        <div className="mx-auto max-w-6xl px-6 md:px-8">
+          <h2 className="font-display text-2xl font-semibold text-ink">Life at Selong Bay</h2>
+          <p className="mt-2 text-[15px] text-ink-soft">
+            A few more moments from our activities, camps, and community outings.
+          </p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {activitiesGallery.map((photo) => (
+              <div key={photo.src} className="relative aspect-square w-full overflow-hidden rounded-md border border-sand-line shadow-soft">
+                <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" className="object-cover" />
+              </div>
             ))}
           </div>
         </div>

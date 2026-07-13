@@ -198,6 +198,25 @@ export const afternoonClubs = [
   'Business & Entrepreneurship', 'Coding and Robotics', 'Craftwork (Weaving)', 'Nature Seekers',
 ];
 
+export const activitiesGallery = [
+  {
+    src: '/images/activities-gallery-beach-swim.jpg',
+    alt: "Students swimming in the shallows at Selong Belanak Beach while a parent watches from the shore, with traditional fishing boats anchored beyond",
+  },
+  {
+    src: '/images/activities-gallery-art-gallery-trip.jpg',
+    alt: 'Selong Bay School students and staff on a community outing to Nyaman Art Gallery, holding a Yayasan Selong Bay Sekolah banner',
+  },
+  {
+    src: '/images/activities-gallery-craft-weaving-1.jpg',
+    alt: 'Students working together on a recycled plastic craft activity in the school garden',
+  },
+  {
+    src: '/images/activities-gallery-craft-weaving-2.jpg',
+    alt: 'Students and staff weaving colourful recycled materials together during a craft session',
+  },
+];
+
 export const campusFacts = [
   'Padel court and football field on site',
   'Three classrooms (finishing January)',
