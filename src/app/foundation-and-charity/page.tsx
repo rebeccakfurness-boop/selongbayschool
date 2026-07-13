@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import Reveal from '@/components/Reveal';
-import { PlaceholderImage } from '@/components/PlaceholderBox';
 import { charitableWork } from '@/lib/site-content';
 
 export const metadata: Metadata = {
@@ -74,7 +73,15 @@ export default function FoundationAndCharityPage() {
                 own students and families.
               </p>
             </div>
-            <PlaceholderImage label="Photo coming soon: Serangan English School" className="h-64" />
+            <div className="relative h-64 w-full overflow-hidden rounded-md">
+              <Image
+                src="/images/foundation-serangan-english-school.jpg"
+                alt="A Selong Bay School teacher and volunteer teaching students at the Serangan English School"
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </Reveal>

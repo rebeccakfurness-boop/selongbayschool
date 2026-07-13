@@ -30,8 +30,8 @@ const sections = [
   { id: 'welcome', label: "Principal's Welcome" },
   { id: 'policies', label: 'Policies & Handbooks' },
   { id: 'hybrid', label: 'Hybrid Approach' },
-  { id: 'guide', label: 'World Schooling Guide' },
   { id: 'temporary-enrolments', label: 'Temporary Enrolments' },
+  { id: 'guide', label: 'World Schooling Guide' },
   { id: 'shuttle', label: 'Free Shuttle' },
   { id: 'calendar', label: 'Academic Calendar' },
   { id: 'approach', label: 'Our Approach' },
@@ -128,21 +128,6 @@ export default function HowItWorksPage() {
             </Reveal>
           </section>
 
-          <section id="guide" className="scroll-mt-32">
-            <Reveal>
-              <p className="font-script text-3xl text-orange-deep md:text-4xl">For travelling families</p>
-              <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">World Schooling Guide</h2>
-              <p className="mt-3 max-w-prose text-[15px] leading-relaxed text-ink-soft">
-                Our guide to world schooling with Selong Bay School is on its way.
-              </p>
-              <div className="mt-5">
-                <Button disabled variant="primary">
-                  Download the World Schooling Guide (Coming Soon)
-                </Button>
-              </div>
-            </Reveal>
-          </section>
-
           <section id="temporary-enrolments" className="scroll-mt-32">
             <Reveal>
               <p className="font-script text-3xl text-orange-deep md:text-4xl">Flexible learning options</p>
@@ -155,6 +140,21 @@ export default function HowItWorksPage() {
               <div className="mt-6">
                 <Button href="/admissions#temporary-enrolments" variant="primary">
                   Learn More
+                </Button>
+              </div>
+            </Reveal>
+          </section>
+
+          <section id="guide" className="scroll-mt-32">
+            <Reveal>
+              <p className="font-script text-3xl text-orange-deep md:text-4xl">For travelling families</p>
+              <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">World Schooling Guide</h2>
+              <p className="mt-3 max-w-prose text-[15px] leading-relaxed text-ink-soft">
+                Our guide to world schooling with Selong Bay School is on its way.
+              </p>
+              <div className="mt-5">
+                <Button disabled variant="primary">
+                  Download the World Schooling Guide (Coming Soon)
                 </Button>
               </div>
             </Reveal>
