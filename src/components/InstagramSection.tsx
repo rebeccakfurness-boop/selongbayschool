@@ -13,8 +13,8 @@ export default function InstagramSection() {
   return (
     <div className="mx-auto max-w-6xl px-6 md:px-8">
       <div className="text-center">
-        <p className="font-script text-3xl text-orange-deep md:text-4xl">Follow along</p>
-        <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">@selongbayschool on Instagram</h2>
+        <p className="font-script text-3xl text-orange-deep md:text-4xl">Follow Along</p>
+        <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">@selongbayschool on Instagram for more!</h2>
       </div>
 
       <div className="mt-8">
@@ -29,11 +29,11 @@ export default function InstagramSection() {
         ) : (
           <div className="mx-auto flex max-w-md flex-col items-center gap-4 rounded-md border border-sand-line bg-aqua/40 px-8 py-10 text-center">
             <p className="text-[15px] text-ink-soft">
-              The live Instagram grid will appear here once it&apos;s connected. In the meantime, see our latest posts
-              directly on Instagram.
+              From surf lessons on Selong Belanak to science experiments, campus adventures, and everything in between,
+              our Instagram is where the everyday magic of Selong Bay comes to life. Come take a look!
             </p>
             <Button href={siteConfig.contact.instagram} variant="accent" external>
-              View @selongbayschool
+              Follow the Adventure on Instagram
             </Button>
           </div>
         )}
