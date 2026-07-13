@@ -218,9 +218,32 @@ export const activitiesGallery = [
 ];
 
 export const communityPartners = [
-  { name: "Endri Foundation (Yayasan Endri's Lombok Forgotten Children)", src: '/images/partner-logo-endri-foundation.png' },
-  { name: 'Buffalo Pond Swim School Lombok', src: '/images/partner-logo-buffalo-pond-swim-school.png' },
-  { name: 'Honest: Island Recycling', src: '/images/partner-logo-honest-island-recycling.png' },
+  {
+    name: 'Endri Foundation',
+    logo: '/images/partner-logo-endri-foundation.png',
+    instagramHandle: '@lombok_forgotton_children',
+    instagramUrl: 'https://www.instagram.com/lombok_forgotton_children/',
+    websiteUrl: 'http://www.endri.org/',
+  },
+  {
+    name: 'Honest Made',
+    logo: '/images/partner-logo-honest-island-recycling.png',
+    instagramHandle: '@honestmade_',
+    instagramUrl: 'https://www.instagram.com/honestmade_/',
+    websiteUrl: 'https://honest-made.co/',
+  },
+  {
+    name: 'Buffalo Pond',
+    subtitle: 'Water Safety',
+    logo: '/images/partner-logo-buffalo-pond-swim-school.png',
+    instagramHandle: '@buffalo.pond',
+    instagramUrl: 'https://www.instagram.com/buffalo.pond/',
+    websiteUrl: 'https://www.buffalopond.org/',
+    photo: {
+      src: '/images/activities-gallery-beach-swim.jpg',
+      alt: 'A Buffalo Pond swim instructor watching students in the water at Selong Belanak Beach',
+    },
+  },
 ];
 
 export const campusFacts = [

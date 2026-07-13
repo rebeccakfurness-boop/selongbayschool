@@ -89,7 +89,7 @@ export default function FoundationAndCharityPage() {
       <Reveal>
         <div className="mx-auto max-w-4xl px-6 md:px-8">
           <p className="font-script text-3xl text-orange-deep md:text-4xl">Working together</p>
-          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Community Partners</h2>
+          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Our Community Partners</h2>
           <p className="mt-3 max-w-prose text-[15px] leading-relaxed text-ink-soft">
             We&apos;re grateful to work alongside local and community organisations who share our commitment to South
             Lombok.
@@ -101,9 +101,37 @@ export default function FoundationAndCharityPage() {
                 className="flex flex-col items-center gap-3 rounded-md border border-sand-line bg-paper p-6 text-center"
               >
                 <div className="relative h-20 w-full">
-                  <Image src={partner.src} alt={partner.name} fill sizes="200px" className="object-contain" />
+                  <Image src={partner.logo} alt={`${partner.name} logo`} fill sizes="200px" className="object-contain" />
                 </div>
-                <p className="text-sm font-semibold text-ink-soft">{partner.name}</p>
+                <div>
+                  <p className="text-sm font-bold text-ink">{partner.name}</p>
+                  {partner.subtitle && (
+                    <p className="mt-0.5 text-xs font-bold uppercase tracking-wide text-teal-deep">{partner.subtitle}</p>
+                  )}
+                </div>
+                {partner.photo && (
+                  <div className="relative h-40 w-full overflow-hidden rounded-md">
+                    <Image src={partner.photo.src} alt={partner.photo.alt} fill sizes="200px" className="object-cover" />
+                  </div>
+                )}
+                <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm">
+                  <a
+                    href={partner.websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-teal-deep underline"
+                  >
+                    Website
+                  </a>
+                  <a
+                    href={partner.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-teal-deep underline"
+                  >
+                    {partner.instagramHandle}
+                  </a>
+                </div>
               </div>
             ))}
           </div>
