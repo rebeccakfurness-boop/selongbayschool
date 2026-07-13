@@ -11,7 +11,7 @@ export const siteConfig = {
     instagram: 'https://www.instagram.com/selongbayschool/',
     facebook: 'https://www.facebook.com/people/Selong-Bay-School/61584318951968/',
     whatsappHref: 'tel:+628135974095',
-    mapQuery: 'SABA Lombok',
+    mapQuery: 'Dusun Serangan, Selong Belanak, Kec. Praya Bar., Kabupaten Lombok Tengah, Nusa Tenggara Bar. 83572',
   },
 };
 
