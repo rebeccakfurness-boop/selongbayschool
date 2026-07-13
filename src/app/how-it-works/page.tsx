@@ -5,7 +5,6 @@ import Reveal from '@/components/Reveal';
 import Button from '@/components/Button';
 import AdmissionsStepper from '@/components/AdmissionsStepper';
 import HowItWorksNav from '@/components/HowItWorksNav';
-import { PlaceholderImage } from '@/components/PlaceholderBox';
 import {
   principalWelcome,
   hybridApproach,
@@ -115,7 +114,15 @@ export default function HowItWorksPage() {
                 <h3 className="font-display text-xl font-semibold text-ink">{googleClassroom.heading}</h3>
                 <div className="mt-4 grid gap-6 md:grid-cols-2 md:items-center">
                   <p className="text-[15px] leading-relaxed text-ink-soft">{googleClassroom.body}</p>
-                  <PlaceholderImage label="Photo coming soon: Google Classroom" className="h-56" />
+                  <div className="relative h-56 w-full overflow-hidden rounded-md">
+                    <Image
+                      src="/images/how-it-works-google-classroom.png"
+                      alt="The Google Classroom home screen showing a student's class cards"
+                      fill
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
                 </div>
               </div>
             </Reveal>
