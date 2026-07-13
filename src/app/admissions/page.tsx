@@ -25,7 +25,7 @@ export default function AdmissionsPage() {
           This page is for families who&apos;d like their child to attend Selong Bay School full-time, on campus, hybrid, or
           online. Looking for a one-off activity or camp instead? Visit{' '}
           <a href="/activities" className="font-semibold text-teal-deep underline">
-            Activities &amp; Camps
+            Activities and WorldSchooling
           </a>
           . Want to know more about how the school runs day to day? See{' '}
           <a href="/how-it-works" className="font-semibold text-teal-deep underline">

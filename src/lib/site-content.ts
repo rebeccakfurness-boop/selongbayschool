@@ -29,7 +29,7 @@ export const navItems = [
       { href: '/admissions/secondary-school', label: 'Secondary School' },
     ],
   },
-  { href: '/activities', label: 'Activities and Camps' },
+  { href: '/activities', label: 'Activities and WorldSchooling' },
   { href: '/online-library', label: 'Library' },
   { href: '/contact', label: 'Contact' },
   { href: '/login', label: 'Log In' },
@@ -200,7 +200,7 @@ export const afternoonClubs = [
 
 export const campusFacts = [
   'Padel court and football field on site',
-  'Two classrooms (finishing January)',
+  'Three classrooms (finishing January)',
   'Beach within walking distance',
   'Beginner, intermediate, and advanced surf spots within a 10-minute drive',
   'Shuttle bus available from Kuta on request',

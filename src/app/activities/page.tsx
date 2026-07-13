@@ -5,11 +5,11 @@ import Reveal from '@/components/Reveal';
 import { activities, afternoonClubs } from '@/lib/site-content';
 
 export const metadata: Metadata = {
-  title: 'Activities & Camps',
+  title: 'Activities and WorldSchooling',
   description:
     'Surfing, gymnastics, dance, scouting, and adventure camps at Selong Bay School: open to the whole community, not just enrolled students. Book a slot online.',
   openGraph: {
-    title: 'Activities & Camps - Selong Bay School',
+    title: 'Activities and WorldSchooling - Selong Bay School',
     images: [{ url: '/images/activities-surfboards.jpg', width: 1150, height: 964, alt: 'Students with surfboards at Selong Belanak Beach' }],
   },
 };
@@ -55,7 +55,7 @@ export default function ActivitiesPage() {
       <PhotoBanner
         height="sm"
         image={{ src: '/images/activities-surfboards.jpg', alt: 'Two students with surfboards giving shaka signs on the beach' }}
-        card={{ script: 'Open to everyone', heading: 'Activities & Camps', align: 'left' }}
+        card={{ script: 'Open to everyone', heading: 'Activities and WorldSchooling', align: 'left' }}
       />
 
       <Reveal>
