@@ -244,9 +244,9 @@ export const communityPartners = [
 
 export const campusFacts = [
   'Padel court and football field on site',
-  'Three classrooms (finishing January)',
+  'Three classrooms',
   'Beach within walking distance',
-  'Beginner, intermediate, and advanced surf spots within a 10-minute drive',
+  'Beginner, intermediate, and advanced surf spots',
   'Shuttle bus available from Kuta on request',
   'Staying connected with Starlink Wifi on campus',
 ];
