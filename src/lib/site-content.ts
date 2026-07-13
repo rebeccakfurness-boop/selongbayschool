@@ -35,6 +35,28 @@ export const navItems = [
   { href: '/login', label: 'Log In' },
 ];
 
+// Separate from navItems (used by the footer) so the header nav can have its
+// own order and labels without affecting the footer's Explore links.
+export const headerNavItems = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/how-it-works', label: 'How It Works' },
+  { href: '/foundation-and-charity', label: 'Our Foundation' },
+  {
+    href: '/admissions',
+    label: 'Admissions',
+    children: [
+      { href: '/admissions/preschool', label: 'Preschool' },
+      { href: '/admissions/primary', label: 'Primary' },
+      { href: '/admissions/secondary-school', label: 'Secondary School' },
+    ],
+  },
+  { href: '/activities', label: 'Activities and WorldSchooling' },
+  { href: '/online-library', label: 'Library' },
+  { href: '/login', label: 'Log In' },
+  { href: '/contact', label: 'Contact' },
+];
+
 export const highSchoolAnnouncement = {
   headline: 'Secondary School is now Open!',
   body: 'Selong Bay School now offers secondary school options for students aged 13 - 18 years old. Contact us for more information.',

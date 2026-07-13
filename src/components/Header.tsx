@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { navItems, siteConfig } from '@/lib/site-content';
+import { headerNavItems, siteConfig } from '@/lib/site-content';
 
 function ChevronDown({ className = '' }: { className?: string }) {
   return (
@@ -36,7 +36,7 @@ export default function Header() {
 
         <nav className="hidden md:block" aria-label="Primary">
           <ul className="flex flex-wrap items-center justify-end gap-0.5">
-            {navItems.map((item) => {
+            {headerNavItems.map((item) => {
               const active = pathname === item.href || (item.children?.some((c) => c.href === pathname) ?? false);
 
               if (item.children) {
@@ -68,6 +68,22 @@ export default function Header() {
                         ))}
                       </ul>
                     </div>
+                  </li>
+                );
+              }
+
+              if (item.href === '/login') {
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`whitespace-nowrap rounded-full bg-orange px-4 py-2 font-sans text-[14px] font-bold text-[#46280a] transition-colors hover:bg-orange-deep hover:text-white ${
+                        active ? 'ring-2 ring-white/70' : ''
+                      }`}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </Link>
                   </li>
                 );
               }
@@ -112,7 +128,7 @@ export default function Header() {
       {open && (
         <nav id="mobile-menu" aria-label="Mobile primary" className="border-t border-white/10 bg-teal-deep md:hidden">
           <ul className="flex flex-col px-5 py-3">
-            {navItems.map((item) => {
+            {headerNavItems.map((item) => {
               const active = pathname === item.href || (item.children?.some((c) => c.href === pathname) ?? false);
 
               if (item.children) {
@@ -154,6 +170,23 @@ export default function Header() {
                         ))}
                       </ul>
                     )}
+                  </li>
+                );
+              }
+
+              if (item.href === '/login') {
+                return (
+                  <li key={item.href} className="mt-1">
+                    <Link
+                      href={item.href}
+                      onClick={() => setOpen(false)}
+                      className={`block rounded-lg bg-orange px-3 py-3 text-center font-sans text-[16px] font-bold text-[#46280a] ${
+                        active ? 'ring-2 ring-white/70' : ''
+                      }`}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </Link>
                   </li>
                 );
               }
