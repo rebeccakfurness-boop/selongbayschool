@@ -11,7 +11,7 @@ export const siteConfig = {
     instagram: 'https://www.instagram.com/selongbayschool/',
     facebook: 'https://www.facebook.com/people/Selong-Bay-School/61584318951968/',
     whatsappHref: 'tel:+628135974095',
-    mapQuery: 'Selong Belanak, Praya Barat, Lombok Tengah, Nusa Tenggara Barat',
+    mapQuery: 'SABA Lombok',
   },
 };
 
@@ -53,8 +53,8 @@ export const headerNavItems = [
   },
   { href: '/activities', label: 'Activities and WorldSchooling' },
   { href: '/online-library', label: 'Library' },
-  { href: '/login', label: 'Log In' },
   { href: '/contact', label: 'Contact' },
+  { href: '/login', label: 'Log In' },
 ];
 
 export const highSchoolAnnouncement = {
@@ -266,7 +266,7 @@ export const communityPartners = [
 
 export const campusFacts = [
   'Padel court and football field on site',
-  'Three classrooms',
+  'Three air-conditioned classrooms',
   'Beach within walking distance',
   'Beginner, intermediate, and advanced surf spots',
   'Shuttle bus available from Kuta on request',
