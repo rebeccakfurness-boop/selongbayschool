@@ -77,9 +77,7 @@ export default function Header() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className={`whitespace-nowrap rounded-full bg-orange px-4 py-2 font-sans text-[14px] font-bold text-[#46280a] transition-colors hover:bg-orange-deep hover:text-white ${
-                        active ? 'ring-2 ring-white/70' : ''
-                      }`}
+                      className="whitespace-nowrap rounded-full border border-orange bg-white/15 px-4 py-2 font-sans text-[14px] font-semibold text-white transition-colors hover:bg-white/25"
                       aria-current={active ? 'page' : undefined}
                     >
                       {item.label}
@@ -180,9 +178,7 @@ export default function Header() {
                     <Link
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className={`block rounded-lg bg-orange px-3 py-3 text-center font-sans text-[16px] font-bold text-[#46280a] ${
-                        active ? 'ring-2 ring-white/70' : ''
-                      }`}
+                      className="block rounded-lg border border-orange bg-white/15 px-3 py-3 text-center font-sans text-[16px] font-semibold text-white"
                       aria-current={active ? 'page' : undefined}
                     >
                       {item.label}
