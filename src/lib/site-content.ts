@@ -44,7 +44,7 @@ export const headerNavItems = [
     label: 'About',
     children: [{ href: '/foundation-and-charity', label: 'Our Foundation' }],
   },
-  { href: '/how-it-works', label: 'How It Works' },
+  { href: '/how-it-works', label: 'Our Approach' },
   {
     href: '/admissions',
     label: 'Admissions',

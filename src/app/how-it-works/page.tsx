@@ -46,7 +46,7 @@ export default function HowItWorksPage() {
       <PhotoBanner
         height="sm"
         image={{ src: '/images/home-mission-award-ceremony.jpg', alt: 'Students receiving certificates of achievement at Selong Bay School' }}
-        card={{ script: 'Everything you need to know', heading: 'How It Works', align: 'left' }}
+        card={{ script: 'Everything you need to know', heading: 'Our Approach: How It Works', align: 'left' }}
       />
 
       <div className="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-[220px_1fr] md:items-start md:px-8">
