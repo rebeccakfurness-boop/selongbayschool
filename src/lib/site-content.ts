@@ -217,6 +217,12 @@ export const activitiesGallery = [
   },
 ];
 
+export const communityPartners = [
+  { name: "Endri Foundation (Yayasan Endri's Lombok Forgotten Children)", src: '/images/partner-logo-endri-foundation.png' },
+  { name: 'Buffalo Pond Swim School Lombok', src: '/images/partner-logo-buffalo-pond-swim-school.png' },
+  { name: 'Honest: Island Recycling', src: '/images/partner-logo-honest-island-recycling.png' },
+];
+
 export const campusFacts = [
   'Padel court and football field on site',
   'Three classrooms (finishing January)',

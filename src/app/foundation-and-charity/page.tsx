@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import Reveal from '@/components/Reveal';
-import { charitableWork } from '@/lib/site-content';
+import { charitableWork, communityPartners } from '@/lib/site-content';
 
 export const metadata: Metadata = {
   title: 'Foundation & Charity',
@@ -82,6 +82,30 @@ export default function FoundationAndCharityPage() {
                 className="object-cover"
               />
             </div>
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal>
+        <div className="mx-auto max-w-4xl px-6 md:px-8">
+          <p className="font-script text-3xl text-orange-deep md:text-4xl">Working together</p>
+          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Community Partners</h2>
+          <p className="mt-3 max-w-prose text-[15px] leading-relaxed text-ink-soft">
+            We&apos;re grateful to work alongside local and community organisations who share our commitment to South
+            Lombok.
+          </p>
+          <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3">
+            {communityPartners.map((partner) => (
+              <div
+                key={partner.name}
+                className="flex flex-col items-center gap-3 rounded-md border border-sand-line bg-paper p-6 text-center"
+              >
+                <div className="relative h-20 w-full">
+                  <Image src={partner.src} alt={partner.name} fill sizes="200px" className="object-contain" />
+                </div>
+                <p className="text-sm font-semibold text-ink-soft">{partner.name}</p>
+              </div>
+            ))}
           </div>
         </div>
       </Reveal>
