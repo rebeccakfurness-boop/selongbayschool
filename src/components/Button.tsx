@@ -32,7 +32,7 @@ export default function Button({
   fullWidth?: boolean;
   external?: boolean;
 }) {
-  const classes = `inline-flex items-center justify-center gap-2 rounded-full font-sans font-extrabold text-[15.5px] px-7 py-3.5 transition-transform duration-150 ease-out hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-lightteal focus-visible:outline-offset-2 disabled:opacity-50 disabled:pointer-events-none ${
+  const classes = `inline-flex items-center justify-center gap-2 rounded-full text-center font-sans font-extrabold text-[15.5px] px-7 py-3.5 transition-transform duration-150 ease-out hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-lightteal focus-visible:outline-offset-2 disabled:opacity-50 disabled:pointer-events-none ${
     variantClasses[variant]
   } ${fullWidth ? 'w-full' : ''} ${className}`;
 

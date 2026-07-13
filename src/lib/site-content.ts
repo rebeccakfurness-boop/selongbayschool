@@ -186,7 +186,7 @@ export const dailySchedule = [
   { time: '10:45', activity: 'Morning Tea' },
   { time: '11:15', activity: 'Project Time' },
   { time: '11:45', activity: 'Art, Bahasa Indonesia, Music' },
-  { time: '12:15', activity: 'Lunch (supplied by Segara Resort)' },
+  { time: '12:15', activity: 'Lunch' },
   { time: '13:30', activity: 'Activities' },
   { time: '15:30', activity: 'School finishes' },
 ];
