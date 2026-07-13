@@ -30,7 +30,7 @@ export const navItems = [
     ],
   },
   { href: '/activities', label: 'Activities and Camps' },
-  { href: '/online-library', label: 'Online Library' },
+  { href: '/online-library', label: 'Library' },
   { href: '/contact', label: 'Contact' },
   { href: '/login', label: 'Log In' },
 ];

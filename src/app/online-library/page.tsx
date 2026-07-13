@@ -3,9 +3,9 @@ import Button from '@/components/Button';
 import { onlineLibrary } from '@/lib/site-content';
 
 export const metadata: Metadata = {
-  title: 'Online Library',
+  title: 'Library',
   description: 'Browse the Selong Bay School library catalogue, powered by Libib, from any device.',
-  openGraph: { title: 'Online Library - Selong Bay School' },
+  openGraph: { title: 'Library - Selong Bay School' },
 };
 
 const catalogueIcons = [
@@ -44,7 +44,7 @@ export default function OnlineLibraryPage() {
   return (
     <div className="flex flex-col items-center px-6 py-20 text-center md:px-8 md:py-28">
       <p className="font-script text-3xl text-orange-deep md:text-4xl">For our students and families</p>
-      <h1 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Online Library</h1>
+      <h1 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Library</h1>
 
       <div className="mt-4 max-w-lg space-y-4 text-[15px] leading-relaxed text-ink-soft">
         {onlineLibrary.paragraphs.map((paragraph) => (
