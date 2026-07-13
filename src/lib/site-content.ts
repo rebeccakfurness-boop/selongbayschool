@@ -239,10 +239,6 @@ export const communityPartners = [
     instagramHandle: '@buffalo.pond',
     instagramUrl: 'https://www.instagram.com/buffalo.pond/',
     websiteUrl: 'https://www.buffalopond.org/',
-    photo: {
-      src: '/images/activities-gallery-beach-swim.jpg',
-      alt: 'A Buffalo Pond swim instructor watching students in the water at Selong Belanak Beach',
-    },
   },
 ];
 

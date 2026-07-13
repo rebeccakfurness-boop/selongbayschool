@@ -94,13 +94,13 @@ export default function FoundationAndCharityPage() {
             We&apos;re grateful to work alongside local and community organisations who share our commitment to South
             Lombok.
           </p>
-          <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3">
+          <div className="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-3">
             {communityPartners.map((partner) => (
               <div
                 key={partner.name}
-                className="flex flex-col items-center gap-3 rounded-md border border-sand-line bg-paper p-6 text-center"
+                className="flex flex-col items-center gap-2 rounded-md border border-sand-line bg-paper p-5 text-center"
               >
-                <div className="relative h-20 w-full">
+                <div className="relative h-14 w-full">
                   <Image src={partner.logo} alt={`${partner.name} logo`} fill sizes="200px" className="object-contain" />
                 </div>
                 <div>
@@ -109,11 +109,6 @@ export default function FoundationAndCharityPage() {
                     <p className="mt-0.5 text-xs font-bold uppercase tracking-wide text-teal-deep">{partner.subtitle}</p>
                   )}
                 </div>
-                {partner.photo && (
-                  <div className="relative h-40 w-full overflow-hidden rounded-md">
-                    <Image src={partner.photo.src} alt={partner.photo.alt} fill sizes="200px" className="object-cover" />
-                  </div>
-                )}
                 <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm">
                   <a
                     href={partner.websiteUrl}
