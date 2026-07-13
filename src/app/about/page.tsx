@@ -5,7 +5,7 @@ import StorySection from '@/components/StorySection';
 import OurValues from '@/components/OurValues';
 import Reveal from '@/components/Reveal';
 import { PlaceholderImage } from '@/components/PlaceholderBox';
-import { campusFacts, charitableWork, foundingFamilies, teachers } from '@/lib/site-content';
+import { campusFacts, foundingFamilies, teachers } from '@/lib/site-content';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -52,32 +52,17 @@ export default function AboutPage() {
 
       <Reveal>
         <div className="mx-auto max-w-4xl px-6 md:px-8">
-          <p className="font-script text-3xl text-orange-deep md:text-4xl">Our foundation</p>
-          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Yayasan Selong Bay Sekolah</h2>
+          <p className="font-script text-3xl text-orange-deep md:text-4xl">Our campus</p>
+          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">A classroom that includes the ocean</h2>
           <div className="mt-6 overflow-hidden rounded-md border border-sand-line shadow-soft">
             <Image
-              src="/images/about-yayasan-board.jpg"
-              alt="Yayasan Selong Bay Sekolah, the non-profit foundation board behind the school"
-              width={1920}
-              height={1080}
+              src="/images/home-story-beach-tree.jpg"
+              alt="Students climbing a beach tree overlooking the ocean at Selong Belanak"
+              width={2000}
+              height={1335}
               className="w-full"
             />
           </div>
-
-          <div id="charitable" className="mt-10 grid scroll-mt-24 items-center gap-6 md:grid-cols-2">
-            <div>
-              <h3 className="font-display text-2xl font-semibold text-ink">{charitableWork.heading}</h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">{charitableWork.body}</p>
-            </div>
-            <PlaceholderImage label="Photo coming soon: Serangan English School" className="h-56" />
-          </div>
-        </div>
-      </Reveal>
-
-      <Reveal>
-        <div className="mx-auto max-w-4xl px-6 md:px-8">
-          <p className="font-script text-3xl text-orange-deep md:text-4xl">Our campus</p>
-          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">A classroom that includes the ocean</h2>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
             {campusFacts.map((fact) => (
               <li key={fact} className="flex items-start gap-3 rounded-md border border-sand-line bg-paper px-5 py-4 text-[15px] text-ink-soft">
@@ -101,7 +86,7 @@ export default function AboutPage() {
                     <Image src={teacher.image.src} alt={teacher.image.alt} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
                   </div>
                 ) : (
-                  <div className="mb-4 h-40 w-full rounded-sm bg-[linear-gradient(135deg,#0c5a60,#41bcc2_60%,#dad0bc_100%)]" aria-hidden="true" />
+                  <PlaceholderImage label={`Photo: ${teacher.name}`} className="mb-4 h-40" />
                 )}
                 <h3 className="font-display text-lg font-semibold text-ink">{teacher.name}</h3>
                 <p className="mt-0.5 text-sm font-bold uppercase tracking-wide text-teal-deep">{teacher.role}</p>
@@ -115,7 +100,7 @@ export default function AboutPage() {
       <Reveal>
         <div className="mx-auto max-w-4xl px-6 md:px-8">
           <p className="font-script text-3xl text-orange-deep md:text-4xl">Our community</p>
-          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Families who call Selong Bay home</h2>
+          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Founding families who call Selong Bay Home</h2>
           <div className="mt-6 grid gap-5 sm:grid-cols-2">
             {foundingFamilies.map((family) => (
               <div key={family.name} className="overflow-hidden rounded-md border border-sand-line bg-aqua/30">

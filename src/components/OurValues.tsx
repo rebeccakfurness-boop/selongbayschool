@@ -2,6 +2,12 @@ import type { ReactNode } from 'react';
 import { values, ourCommitment } from '@/lib/site-content';
 
 const icons: Record<string, ReactNode> = {
+  Hope: (
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="5" />
+      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+    </svg>
+  ),
   Humility: (
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
@@ -18,10 +24,10 @@ const icons: Record<string, ReactNode> = {
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
     </svg>
   ),
-  Agency: (
+  Responsibility: (
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+      <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+      <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
     </svg>
   ),
 };
@@ -46,20 +52,6 @@ export default function OurValues() {
             </div>
 
             <p className="mt-4 text-[15px] leading-relaxed text-ink-soft">{value.description}</p>
-
-            <p className="mt-4 text-sm font-bold text-ink">At Selong Bay School, {value.name.toLowerCase()} means we:</p>
-            <ul className="mt-2 space-y-1.5">
-              {value.bullets.map((bullet) => (
-                <li key={bullet} className="flex items-start gap-2 text-[14.5px] text-ink-soft">
-                  <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-orange" aria-hidden="true" />
-                  {bullet}
-                </li>
-              ))}
-            </ul>
-
-            <p className="mt-5 border-l-2 border-orange pl-4 font-display text-[15px] italic text-teal-deep">
-              &ldquo;{value.quote}&rdquo;
-            </p>
           </div>
         ))}
       </div>

@@ -23,6 +23,13 @@ export default function LoginPage() {
           Student Login
         </Button>
       </div>
+
+      <div className="mt-12 w-full max-w-xs border-t border-sand-line pt-8">
+        <p className="text-sm text-ink-soft">Already a Selong Bay student or family?</p>
+        <Button href="/online-library" variant="ghost" fullWidth className="mt-4">
+          Go to Online Library
+        </Button>
+      </div>
     </div>
   );
 }

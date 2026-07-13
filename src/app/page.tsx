@@ -50,7 +50,7 @@ export default function HomePage() {
           <StorySection
             eyebrowScript="Best of both worlds"
             heading="Every landscape becomes a classroom"
-            image={{ src: '/images/home-story-beach-tree.jpg', alt: 'Students climbing a beach tree overlooking the ocean at Selong Belanak' }}
+            image={{ src: '/images/home-story-tug-of-war.jpg', alt: 'Students playing tug of war together on the beach at Selong Belanak' }}
           >
             <p>
               Selong Bay offers a flexible learning experience that combines academic excellence with curiosity, creativity,

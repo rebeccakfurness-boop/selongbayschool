@@ -22,8 +22,8 @@ export default function AdmissionsPage() {
 
       <div className="mx-auto max-w-4xl px-6 md:px-8">
         <p className="rounded-md border border-teal/20 bg-aqua/40 px-5 py-4 text-[15px] text-ink-soft">
-          This page is for families who&apos;d like their child to attend Selong Bay School full-time, on campus or online.
-          Looking for a one-off activity or camp instead? Visit{' '}
+          This page is for families who&apos;d like their child to attend Selong Bay School full-time, on campus, hybrid, or
+          online. Looking for a one-off activity or camp instead? Visit{' '}
           <a href="/activities" className="font-semibold text-teal-deep underline">
             Activities &amp; Camps
           </a>

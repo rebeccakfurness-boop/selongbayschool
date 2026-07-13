@@ -1,11 +1,18 @@
 import { Suspense } from 'react';
+import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import Reveal from '@/components/Reveal';
 import Button from '@/components/Button';
 import AdmissionsForm from '@/components/forms/AdmissionsForm';
-import { formatIDR, type AdmissionsGroup } from '@/lib/site-content';
+import { PlaceholderImage } from '@/components/PlaceholderBox';
+import { formatIDR, teachers, type AdmissionsGroup } from '@/lib/site-content';
 
 export default function AdmissionsGroupPage({ group }: { group: AdmissionsGroup }) {
+  const hasAgeColumn = group.pricing.some((row) => row.ageRange);
+  const featuredTeachers = group.featuredTeachers
+    .map((name) => teachers.find((t) => t.name === name))
+    .filter((t): t is (typeof teachers)[number] => Boolean(t));
+
   return (
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
       <PhotoBanner
@@ -30,6 +37,7 @@ export default function AdmissionsGroupPage({ group }: { group: AdmissionsGroup 
               <thead>
                 <tr className="border-b border-sand-line bg-sand/40 text-left">
                   <th className="px-5 py-3 font-bold text-ink-soft">Programme</th>
+                  {hasAgeColumn && <th className="px-5 py-3 font-bold text-ink-soft">Age</th>}
                   <th className="px-5 py-3 text-right font-bold text-ink-soft">Per Term (starting from)</th>
                 </tr>
               </thead>
@@ -37,6 +45,7 @@ export default function AdmissionsGroupPage({ group }: { group: AdmissionsGroup 
                 {group.pricing.map((row) => (
                   <tr key={row.programme} className="border-b border-sand-line/60 last:border-0">
                     <td className="px-5 py-3 text-ink">{row.programme}</td>
+                    {hasAgeColumn && <td className="px-5 py-3 text-ink-soft">{row.ageRange ? `Ages ${row.ageRange}` : ''}</td>}
                     <td className="px-5 py-3 text-right tabular-nums text-ink-soft">{formatIDR(row.perTermFrom)}</td>
                   </tr>
                 ))}
@@ -61,7 +70,31 @@ export default function AdmissionsGroupPage({ group }: { group: AdmissionsGroup 
         <div className="mx-auto max-w-4xl px-6 text-center md:px-8">
           <h2 className="font-display text-2xl font-semibold text-ink">Teachers</h2>
           <p className="mt-3 text-[15px] text-ink-soft">Meet the team who&apos;ll get to know your child personally.</p>
-          <div className="mt-5">
+
+          {featuredTeachers.length > 0 && (
+            <div className="mt-6 grid gap-5 text-left sm:grid-cols-2">
+              {featuredTeachers.map((teacher) => (
+                <div key={teacher.name} className="flex gap-4 rounded-md border border-sand-line bg-paper p-5">
+                  {teacher.image ? (
+                    <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-full">
+                      <Image src={teacher.image.src} alt={teacher.image.alt} fill sizes="80px" className="object-cover" />
+                    </div>
+                  ) : (
+                    <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-full">
+                      <PlaceholderImage label={teacher.name.split(' ')[0]} className="h-full text-[10px]" />
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="font-display text-base font-semibold text-ink">{teacher.name}</h3>
+                    <p className="text-xs font-bold uppercase tracking-wide text-teal-deep">{teacher.role}</p>
+                    <p className="mt-1.5 text-[13.5px] leading-relaxed text-ink-soft">{teacher.shortIntro}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-6">
             <Button href="/about#teachers" variant="ghost">
               See All Teachers
             </Button>

@@ -1,12 +1,15 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import Reveal from '@/components/Reveal';
 import Button from '@/components/Button';
 import AdmissionsStepper from '@/components/AdmissionsStepper';
 import HowItWorksNav from '@/components/HowItWorksNav';
-import { PlaceholderImage, PlaceholderText } from '@/components/PlaceholderBox';
+import { PlaceholderImage } from '@/components/PlaceholderBox';
 import {
   principalWelcome,
+  hybridApproach,
+  googleClassroom,
   policyLinks,
   freeShuttle,
   academicCalendarPdf,
@@ -62,7 +65,7 @@ export default function HowItWorksPage() {
                     <p key={paragraph}>{paragraph}</p>
                   ))}
                   <p className="text-sm font-bold uppercase tracking-wide text-teal-deep">
-                    {principalWelcome.name}, {principalWelcome.role}
+                    {principalWelcome.fullName}, {principalWelcome.role}
                   </p>
                 </div>
               </div>
@@ -91,8 +94,25 @@ export default function HowItWorksPage() {
             <Reveal>
               <p className="font-script text-3xl text-orange-deep md:text-4xl">Flexible by design</p>
               <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Hybrid Approach</h2>
+
+              <h3 className="mt-6 font-display text-xl font-semibold text-ink">{hybridApproach.heading}</h3>
+              <div className="mt-4 max-w-prose space-y-4 text-[16px] leading-relaxed text-ink-soft">
+                {hybridApproach.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
               <div className="mt-5">
-                <PlaceholderText label="Content coming soon" />
+                <Button href="/online-library" variant="primary">
+                  Visit the Online Library
+                </Button>
+              </div>
+
+              <div className="mt-10 border-t border-sand-line pt-8">
+                <h3 className="font-display text-xl font-semibold text-ink">{googleClassroom.heading}</h3>
+                <div className="mt-4 grid gap-6 md:grid-cols-2 md:items-center">
+                  <p className="text-[15px] leading-relaxed text-ink-soft">{googleClassroom.body}</p>
+                  <PlaceholderImage label="Photo coming soon: Google Classroom" className="h-56" />
+                </div>
               </div>
             </Reveal>
           </section>
@@ -118,7 +138,9 @@ export default function HowItWorksPage() {
               <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Free Shuttle</h2>
               <div className="mt-5 grid gap-6 md:grid-cols-2 md:items-center">
                 <p className="text-[15px] leading-relaxed text-ink-soft">{freeShuttle.body}</p>
-                <PlaceholderImage label="Photo coming soon: school shuttle" className="h-56" />
+                <div className="relative h-56 w-full overflow-hidden rounded-md">
+                  <Image src="/images/how-it-works-shuttle-van.jpg" alt="The free Selong Bay School shuttle van" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+                </div>
               </div>
             </Reveal>
           </section>
@@ -145,7 +167,7 @@ export default function HowItWorksPage() {
                   <p key={paragraph}>{paragraph}</p>
                 ))}
                 <p>
-                  <a href="/about#charitable" className="font-semibold text-teal-deep underline">
+                  <a href="/foundation-and-charity" className="font-semibold text-teal-deep underline">
                     See more about our charitable work
                   </a>
                 </p>
@@ -202,6 +224,7 @@ export default function HowItWorksPage() {
               <p className="mt-3 text-sm text-ink-soft">
                 Full pricing schedule available upon request. A 5% discount applies if the annual fee is paid upfront.
                 Prices include online membership, development, and resource fees; they exclude activity costs and lunch.
+                See our Admissions pages for specific pricing.
               </p>
             </Reveal>
           </section>
