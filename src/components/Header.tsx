@@ -17,7 +17,7 @@ function ChevronDown({ className = '' }: { className?: string }) {
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [mobileSubOpen, setMobileSubOpen] = useState(false);
+  const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null);
 
   return (
     <header className="sticky top-0 z-50 bg-teal shadow-md">
@@ -143,15 +143,15 @@ export default function Header() {
                       </Link>
                       <button
                         type="button"
-                        onClick={() => setMobileSubOpen((v) => !v)}
-                        aria-expanded={mobileSubOpen}
-                        aria-label={mobileSubOpen ? `Collapse ${item.label} submenu` : `Expand ${item.label} submenu`}
+                        onClick={() => setOpenMobileSubmenu((v) => (v === item.href ? null : item.href))}
+                        aria-expanded={openMobileSubmenu === item.href}
+                        aria-label={openMobileSubmenu === item.href ? `Collapse ${item.label} submenu` : `Expand ${item.label} submenu`}
                         className="px-3 py-3 text-white/90"
                       >
-                        <ChevronDown className={`transition-transform ${mobileSubOpen ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`transition-transform ${openMobileSubmenu === item.href ? 'rotate-180' : ''}`} />
                       </button>
                     </div>
-                    {mobileSubOpen && (
+                    {openMobileSubmenu === item.href && (
                       <ul className="flex flex-col gap-0.5 py-1 pl-6">
                         {item.children.map((child) => (
                           <li key={child.href}>

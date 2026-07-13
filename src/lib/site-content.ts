@@ -39,9 +39,12 @@ export const navItems = [
 // own order and labels without affecting the footer's Explore links.
 export const headerNavItems = [
   { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
+  {
+    href: '/about',
+    label: 'About',
+    children: [{ href: '/foundation-and-charity', label: 'Our Foundation' }],
+  },
   { href: '/how-it-works', label: 'How It Works' },
-  { href: '/foundation-and-charity', label: 'Our Foundation' },
   {
     href: '/admissions',
     label: 'Admissions',
