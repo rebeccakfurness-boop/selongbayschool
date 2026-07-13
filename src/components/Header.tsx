@@ -35,7 +35,7 @@ export default function Header() {
         </Link>
 
         <nav className="hidden md:block" aria-label="Primary">
-          <ul className="flex items-center gap-1">
+          <ul className="flex flex-wrap items-center justify-end gap-1">
             {navItems.map((item) => {
               const active = pathname === item.href || (item.children?.some((c) => c.href === pathname) ?? false);
 
@@ -44,7 +44,7 @@ export default function Header() {
                   <li key={item.href} className="group relative">
                     <Link
                       href={item.href}
-                      className={`flex items-center gap-1 rounded-full px-4 py-2 font-sans text-[15px] font-semibold transition-colors ${
+                      className={`flex items-center gap-1 whitespace-nowrap rounded-full px-4 py-2 font-sans text-[15px] font-semibold transition-colors ${
                         active ? 'bg-white/15 text-white' : 'text-white/90 hover:bg-white/10 hover:text-white'
                       }`}
                       aria-current={active ? 'page' : undefined}
@@ -76,7 +76,7 @@ export default function Header() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className={`rounded-full px-4 py-2 font-sans text-[15px] font-semibold transition-colors ${
+                    className={`whitespace-nowrap rounded-full px-4 py-2 font-sans text-[15px] font-semibold transition-colors ${
                       active ? 'bg-white/15 text-white' : 'text-white/90 hover:bg-white/10 hover:text-white'
                     }`}
                     aria-current={active ? 'page' : undefined}

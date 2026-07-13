@@ -59,7 +59,9 @@ export default function HowItWorksPage() {
                 A message from {principalWelcome.name}
               </h2>
               <div className="mt-6 grid gap-8 md:grid-cols-[240px_1fr] md:items-start">
-                <PlaceholderImage label={`Photo coming soon: ${principalWelcome.name}`} className="h-64 md:h-72" />
+                <div className="relative aspect-square w-full overflow-hidden rounded-md">
+                  <Image src="/images/principal-indhira.jpg" alt="Ms Indhira, Principal of Selong Bay School" fill sizes="(min-width: 768px) 240px, 100vw" className="object-cover" />
+                </div>
                 <div className="space-y-4 text-[16px] leading-relaxed text-ink-soft">
                   {principalWelcome.paragraphs.map((paragraph) => (
                     <p key={paragraph}>{paragraph}</p>
