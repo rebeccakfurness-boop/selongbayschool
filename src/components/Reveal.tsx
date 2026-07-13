@@ -36,7 +36,7 @@ export default function Reveal({
           }
         }
       },
-      { threshold: 0.15 }
+      { threshold: 0 }
     );
     observer.observe(node);
     return () => observer.disconnect();
