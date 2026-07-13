@@ -435,9 +435,9 @@ export const admissionsGroups: AdmissionsGroup[] = [
     curriculum:
       'Preschool at Selong Bay is entirely play-based, drawing on Early Years best practice alongside the Cambridge and Australian National Curriculum frameworks. Children develop language, number sense, motor skills, and social-emotional confidence through hands-on activities, stories, movement, and outdoor exploration, both on campus and along the beach at Selong Belanak.',
     pricing: [
-      { programme: 'Junior Preschool (Half Day)', ageRange: '2–3', perTermFrom: 10_000_000 },
-      { programme: 'Junior Preschool (Full Time)', ageRange: '2–3', perTermFrom: 15_450_000 },
-      { programme: 'Senior Preschool (Full Time)', ageRange: '4–5', perTermFrom: 18_450_000 },
+      { programme: 'Junior Preschool (Half Day)', ageRange: '2–4', perTermFrom: 10_000_000 },
+      { programme: 'Junior Preschool (Full Time)', ageRange: '2–4', perTermFrom: 15_450_000 },
+      { programme: 'Senior Preschool (Full Time)', ageRange: '4–6', perTermFrom: 18_450_000 },
     ],
     featuredTeachers: ['Amorita Christella Anggamsari (Ms Ella)', 'Dewi Mustika N. (Ms Dewi)'],
   },
