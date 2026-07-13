@@ -17,6 +17,7 @@ import {
   dailySchedule,
   feesSummary,
   formatIDR,
+  temporaryEnrolments,
 } from '@/lib/site-content';
 
 export const metadata: Metadata = {
@@ -31,6 +32,7 @@ const sections = [
   { id: 'policies', label: 'Policies & Handbooks' },
   { id: 'hybrid', label: 'Hybrid Approach' },
   { id: 'guide', label: 'World Schooling Guide' },
+  { id: 'temporary-enrolments', label: 'Temporary Enrolments' },
   { id: 'shuttle', label: 'Free Shuttle' },
   { id: 'calendar', label: 'Academic Calendar' },
   { id: 'approach', label: 'Our Approach' },
@@ -129,6 +131,23 @@ export default function HowItWorksPage() {
               <div className="mt-5">
                 <Button disabled variant="primary">
                   Download the World Schooling Guide (Coming Soon)
+                </Button>
+              </div>
+            </Reveal>
+          </section>
+
+          <section id="temporary-enrolments" className="scroll-mt-32">
+            <Reveal>
+              <p className="font-script text-3xl text-orange-deep md:text-4xl">Flexible learning options</p>
+              <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">
+                {temporaryEnrolments.teaser.heading}
+              </h2>
+              <p className="mt-4 max-w-prose text-[16px] leading-relaxed text-ink-soft">
+                {temporaryEnrolments.teaser.body}
+              </p>
+              <div className="mt-6">
+                <Button href="/admissions#temporary-enrolments" variant="primary">
+                  Learn More
                 </Button>
               </div>
             </Reveal>

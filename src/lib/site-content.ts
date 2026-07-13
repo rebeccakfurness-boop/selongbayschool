@@ -321,6 +321,21 @@ export const hybridApproach = {
   ],
 };
 
+export const temporaryEnrolments = {
+  teaser: {
+    heading: 'Temporary Enrolments',
+    body: "Visiting Lombok, worldschooling, homeschooling, or looking for a flexible learning option? Selong Bay School offers temporary enrolments from one week to one month, designed to fit around your family's schedule.",
+  },
+  paragraphs: [
+    "Whether you're visiting Lombok for a short stay, worldschooling, homeschooling, or simply looking for a flexible learning option, Selong Bay School welcomes temporary enrolments to suit your family's needs.",
+    'Our flexible programme is designed around your schedule. Children can join us for as little as one week or up to one month, with attendance options including one day per week through to five days per week, as well as half-day or full-day enrolments.',
+    'For homeschooling and worldschooling families, students are welcome to bring their own curriculum and learning materials. They can work independently in a supportive school environment while being supervised and encouraged by our experienced staff. This provides the benefits of routine, social connection, and access to a safe, engaging learning space, while allowing families to continue following their own educational programme.',
+    'Students joining our regular classes will be welcomed into age-appropriate learning groups, participating in engaging lessons, outdoor education, creative activities, and our vibrant school community.',
+    "As every family's needs are different, fees vary depending on the length of enrolment, attendance schedule, and level of support required. Please contact us to discuss your child's needs, and we'll create a flexible enrolment package that's right for your family.",
+    "Whether you're in Lombok for a holiday, an extended stay, or part of your worldschooling journey, we'd love to welcome your family to Selong Bay School.",
+  ],
+};
+
 export const onlineLibrary = {
   href: 'https://www.libib.com/',
   paragraphs: [

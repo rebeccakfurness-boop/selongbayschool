@@ -3,7 +3,7 @@ import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import Button from '@/components/Button';
 import Reveal from '@/components/Reveal';
-import { admissionsGroups } from '@/lib/site-content';
+import { admissionsGroups, temporaryEnrolments } from '@/lib/site-content';
 
 export const metadata: Metadata = {
   title: 'Admissions',
@@ -58,6 +58,25 @@ export default function AdmissionsPage() {
           </div>
         </div>
       </Reveal>
+
+      <section id="temporary-enrolments" className="scroll-mt-24">
+        <Reveal>
+          <div className="mx-auto max-w-4xl px-6 md:px-8">
+            <p className="font-script text-3xl text-orange-deep md:text-4xl">A flexible way to join us</p>
+            <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Temporary Enrolments</h2>
+            <div className="mt-5 space-y-4 text-[16px] leading-relaxed text-ink-soft">
+              {temporaryEnrolments.paragraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+            <div className="mt-8">
+              <Button href="/contact" variant="primary">
+                Contact Us to Discuss Your Child&apos;s Needs
+              </Button>
+            </div>
+          </div>
+        </Reveal>
+      </section>
     </div>
   );
 }
