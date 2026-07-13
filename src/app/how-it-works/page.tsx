@@ -14,8 +14,6 @@ import {
   academicCalendarPdf,
   ourApproach,
   dailySchedule,
-  feesSummary,
-  formatIDR,
   temporaryEnrolments,
 } from '@/lib/site-content';
 
@@ -36,7 +34,6 @@ const sections = [
   { id: 'calendar', label: 'Academic Calendar' },
   { id: 'approach', label: 'Our Approach' },
   { id: 'day', label: 'A Day at Selong Bay' },
-  { id: 'fees', label: 'Age Groups & Fees' },
   { id: 'enrol', label: 'How to Enrol' },
 ];
 
@@ -221,38 +218,6 @@ export default function HowItWorksPage() {
               </div>
               <p className="mt-3 text-sm text-ink-soft">
                 Students can enrol for 1 week, 1 month, 1 term, or a full year.
-              </p>
-            </Reveal>
-          </section>
-
-          <section id="fees" className="scroll-mt-32">
-            <Reveal>
-              <p className="font-script text-3xl text-orange-deep md:text-4xl">Investing in your child</p>
-              <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Age Groups &amp; 2026 Fees</h2>
-              <div className="mt-5 overflow-x-auto rounded-md border border-sand-line bg-paper">
-                <table className="w-full min-w-[480px] border-collapse text-[15px]">
-                  <thead>
-                    <tr className="border-b border-sand-line bg-sand/40 text-left">
-                      <th className="px-5 py-3 font-bold text-ink-soft">Level</th>
-                      <th className="px-5 py-3 font-bold text-ink-soft">Age</th>
-                      <th className="px-5 py-3 text-right font-bold text-ink-soft">Per Term (starting from)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {feesSummary.map((row) => (
-                      <tr key={row.level} className="border-b border-sand-line/60 last:border-0">
-                        <td className="px-5 py-3 text-ink">{row.level}</td>
-                        <td className="px-5 py-3 text-ink-soft">{row.ages}</td>
-                        <td className="px-5 py-3 text-right tabular-nums text-ink-soft">{formatIDR(row.perTermFrom)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="mt-3 text-sm text-ink-soft">
-                Full pricing schedule available upon request. A 5% discount applies if the annual fee is paid upfront.
-                Prices include online membership, development, and resource fees; they exclude activity costs and lunch.
-                See our Admissions pages for specific pricing.
               </p>
             </Reveal>
           </section>

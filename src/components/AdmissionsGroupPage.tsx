@@ -5,10 +5,9 @@ import Reveal from '@/components/Reveal';
 import Button from '@/components/Button';
 import AdmissionsForm from '@/components/forms/AdmissionsForm';
 import { PlaceholderImage } from '@/components/PlaceholderBox';
-import { formatIDR, teachers, type AdmissionsGroup } from '@/lib/site-content';
+import { teachers, type AdmissionsGroup } from '@/lib/site-content';
 
 export default function AdmissionsGroupPage({ group }: { group: AdmissionsGroup }) {
-  const hasAgeColumn = group.pricing.some((row) => row.ageRange);
   const featuredTeachers = group.featuredTeachers
     .map((name) => teachers.find((t) => t.name === name))
     .filter((t): t is (typeof teachers)[number] => Boolean(t));
@@ -26,36 +25,6 @@ export default function AdmissionsGroupPage({ group }: { group: AdmissionsGroup 
           <p className="font-script text-3xl text-orange-deep md:text-4xl">Overview</p>
           <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">{group.label} at Selong Bay</h2>
           <p className="mt-5 text-[17px] leading-relaxed text-ink-soft">{group.overview}</p>
-        </div>
-      </Reveal>
-
-      <Reveal>
-        <div className="mx-auto max-w-4xl px-6 md:px-8">
-          <h2 className="font-display text-2xl font-semibold text-ink">Pricing</h2>
-          <div className="mt-5 overflow-x-auto rounded-md border border-sand-line bg-paper">
-            <table className="w-full min-w-[420px] border-collapse text-[15px]">
-              <thead>
-                <tr className="border-b border-sand-line bg-sand/40 text-left">
-                  <th className="px-5 py-3 font-bold text-ink-soft">Programme</th>
-                  {hasAgeColumn && <th className="px-5 py-3 font-bold text-ink-soft">Age</th>}
-                  <th className="px-5 py-3 text-right font-bold text-ink-soft">Per Term (starting from)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {group.pricing.map((row) => (
-                  <tr key={row.programme} className="border-b border-sand-line/60 last:border-0">
-                    <td className="px-5 py-3 text-ink">{row.programme}</td>
-                    {hasAgeColumn && <td className="px-5 py-3 text-ink-soft">{row.ageRange ? `Ages ${row.ageRange}` : ''}</td>}
-                    <td className="px-5 py-3 text-right tabular-nums text-ink-soft">{formatIDR(row.perTermFrom)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-3 text-sm text-ink-soft">
-            Full pricing schedule available upon request. A 5% discount applies if the annual fee is paid upfront. Prices
-            include online membership, development, and resource fees; they exclude activity costs and lunch.
-          </p>
         </div>
       </Reveal>
 
