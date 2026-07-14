@@ -55,14 +55,22 @@ Every submission (contact, admissions, high school, activity booking) follows th
 
 ## Booking system
 
-- `activities` holds each bookable activity; `sessions` holds per-activity date/time/capacity
-  (seed both with `npm run db:seed`); `bookings` references a session via `slot_id`.
+- `activities` holds each bookable activity (name, day, default time/capacity, price in
+  `price_idr` as a whole IDR amount with no decimals, and an `is_active` flag); `sessions` holds
+  per-activity dated instances with their own capacity; `bookings` references a session via
+  `slot_id`.
 - Booking creation uses a single atomic SQL statement (an `UPDATE ... RETURNING` feeding an
   `INSERT ... SELECT`) so two people can never book the last spot at the same time: the second
   request simply gets a "that slot just filled up" response.
-- Manage sessions at `/admin/activities` (add/edit capacity/remove). Sessions with existing
-  bookings can't be deleted; set capacity to match spots taken instead, to stop new bookings
-  without losing booking history.
+- Manage activities and sessions at `/admin/activities`: an inline-editable activities table (name,
+  day, time, duration, price, capacity, active/inactive), an "Add Activity" form, and an upcoming
+  sessions list. Inactive activities are hidden from the public `/activities` page.
+- "Cancel this session" marks the session and its bookings cancelled, and emails every booked
+  customer a cancellation notice via Resend. It does not touch any external calendar (no Google
+  Calendar integration exists in this app). Sessions with zero bookings can still be hard-deleted
+  via "Remove"; sessions with bookings can only be cancelled, to preserve booking history.
+- Prices are formatted with `formatIDR()` (thousand separators, e.g. `Rp 150.000`) everywhere
+  they're shown, including the public activity card next to its Book Now button.
 
 ## Admin area
 
@@ -79,8 +87,10 @@ Every submission (contact, admissions, high school, activity booking) follows th
 - `/admin`: dashboard shell with a sidebar (Overview, Activities & Calendar, Bookings, Enquiries,
   Website Updates, Settings)
 - `/admin` (Overview): quick stats — bookings this week, unread enquiries, sessions today
-- `/admin/activities`: manage bookable sessions per activity
-- `/admin/bookings`: every activity booking, with email delivery status
+- `/admin/activities`: manage activities and their bookable sessions (see "Booking system" above)
+- `/admin/bookings`: searchable/filterable table of every activity booking (by customer, activity,
+  status), with email delivery status. No payment collection or refunds exist in this app yet —
+  bookings are a free registration, not a paid transaction.
 - `/admin/enquiries`: every contact/admissions/high-school enquiry, with a read/unread toggle
 - `/admin/website-updates`: status of requested website changes (`change_requests` table)
 - `/admin/settings`: change your admin password

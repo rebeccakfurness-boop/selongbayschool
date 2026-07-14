@@ -193,3 +193,30 @@ export async function sendBookingAutoReply(input: BookingEmailInput): Promise<bo
   );
   return send(input.parentEmail, `Booking confirmed: ${input.activityName}`, html);
 }
+
+export interface SessionCancellationEmailInput {
+  activityName: string;
+  date: string;
+  time: string;
+  parentName: string;
+  parentEmail: string;
+  childName: string;
+}
+
+export async function sendSessionCancellationEmail(input: SessionCancellationEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    'Your session has been cancelled',
+    `<p>Hi ${input.parentName.split(' ')[0]}, we're sorry to let you know that the following session has been cancelled:</p>
+     ${fieldRows([
+       ['Activity', input.activityName],
+       ['Date', input.date],
+       ['Time', input.time],
+       ["Child's name", input.childName],
+     ])}
+     <p style="margin-top: 16px;">Please get in touch and we'll help you find another slot, or answer any questions:
+       <a href="mailto:${siteConfig.contact.email}" style="color:#007c83;">${siteConfig.contact.email}</a>
+       or ${siteConfig.contact.phone}.</p>
+     <p style="margin-top: 24px;">Sorry for the inconvenience,<br />The Selong Bay School team</p>`
+  );
+  return send(input.parentEmail, `Cancelled: ${input.activityName} on ${input.date}`, html);
+}

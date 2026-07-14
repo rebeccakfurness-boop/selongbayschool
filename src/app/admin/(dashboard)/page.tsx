@@ -17,6 +17,7 @@ export default async function AdminOverviewPage() {
     FROM bookings b
     JOIN sessions s ON s.id = b.slot_id
     WHERE date_trunc('week', s.session_date) = date_trunc('week', CURRENT_DATE)
+      AND b.status = 'confirmed'
   `) as unknown as { count: number }[];
 
   const [unreadEnquiries] = (await sql`
@@ -24,7 +25,7 @@ export default async function AdminOverviewPage() {
   `) as unknown as { count: number }[];
 
   const [sessionsToday] = (await sql`
-    SELECT COUNT(*)::int AS count FROM sessions WHERE session_date = CURRENT_DATE
+    SELECT COUNT(*)::int AS count FROM sessions WHERE session_date = CURRENT_DATE AND status = 'active'
   `) as unknown as { count: number }[];
 
   const stats: StatCard[] = [

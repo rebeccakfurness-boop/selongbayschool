@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       WITH slot_update AS (
         UPDATE sessions
         SET spots_remaining = spots_remaining - 1
-        WHERE id = ${input.slotId} AND spots_remaining > 0
+        WHERE id = ${input.slotId} AND spots_remaining > 0 AND status = 'active'
         RETURNING id, activity_id, session_date, session_time
       ),
       slot_with_activity AS (

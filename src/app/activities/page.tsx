@@ -34,6 +34,7 @@ async function getActivities(): Promise<Activity[]> {
   const rows = (await sql`
     SELECT slug, name, day, duration, price_idr, price_note, description, age_group
     FROM activities
+    WHERE is_active = true
     ORDER BY id ASC
   `) as unknown as ActivityRow[];
   return rows.map((row) => ({

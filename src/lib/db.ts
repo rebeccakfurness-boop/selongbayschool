@@ -69,6 +69,10 @@ export function ensureSchema(): Promise<void> {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
+      await sql`ALTER TABLE activities ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT true`;
+      await sql`ALTER TABLE activities ADD COLUMN IF NOT EXISTS default_time TEXT`;
+      await sql`ALTER TABLE activities ADD COLUMN IF NOT EXISTS default_capacity INTEGER NOT NULL DEFAULT 10`;
+
       await sql`
         CREATE TABLE IF NOT EXISTS sessions (
           id BIGSERIAL PRIMARY KEY,
@@ -79,6 +83,10 @@ export function ensureSchema(): Promise<void> {
           spots_remaining INTEGER NOT NULL CHECK (spots_remaining >= 0),
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
+      `;
+      await sql`
+        ALTER TABLE sessions ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'active'
+        CHECK (status IN ('active', 'cancelled'))
       `;
       await sql`
         CREATE INDEX IF NOT EXISTS idx_sessions_activity_date
@@ -100,6 +108,10 @@ export function ensureSchema(): Promise<void> {
           reply_email_status TEXT NOT NULL DEFAULT 'pending',
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
+      `;
+      await sql`
+        ALTER TABLE bookings ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'confirmed'
+        CHECK (status IN ('confirmed', 'cancelled'))
       `;
 
       await sql`

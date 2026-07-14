@@ -10,9 +10,11 @@ export async function GET() {
     const rows = await sql`
       SELECT s.id, a.slug AS activity_slug, a.name AS activity_name,
              s.session_date::text AS slot_date, s.session_time AS slot_time,
-             s.capacity, s.spots_remaining
+             s.capacity, s.spots_remaining, s.status,
+             (SELECT COUNT(*)::int FROM bookings b WHERE b.slot_id = s.id AND b.status = 'confirmed') AS booking_count
       FROM sessions s
       JOIN activities a ON a.id = s.activity_id
+      WHERE s.session_date >= CURRENT_DATE
       ORDER BY s.session_date ASC, s.session_time ASC
     `;
     return NextResponse.json({ slots: rows });
@@ -48,11 +50,11 @@ export async function POST(req: NextRequest) {
       WITH inserted AS (
         INSERT INTO sessions (activity_id, session_date, session_time, capacity, spots_remaining)
         VALUES (${activityId}, ${date}, ${time}, ${capacity}, ${capacity})
-        RETURNING id, activity_id, session_date, session_time, capacity, spots_remaining
+        RETURNING id, activity_id, session_date, session_time, capacity, spots_remaining, status
       )
       SELECT inserted.id, a.slug AS activity_slug, a.name AS activity_name,
              inserted.session_date::text AS slot_date, inserted.session_time AS slot_time,
-             inserted.capacity, inserted.spots_remaining
+             inserted.capacity, inserted.spots_remaining, inserted.status, 0 AS booking_count
       FROM inserted
       JOIN activities a ON a.id = inserted.activity_id
     `;
