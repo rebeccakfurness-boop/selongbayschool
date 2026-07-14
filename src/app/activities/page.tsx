@@ -3,7 +3,10 @@ import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import ActivityCard from '@/components/ActivityCard';
 import Reveal from '@/components/Reveal';
-import { activities, afternoonClubs, activitiesGallery } from '@/lib/site-content';
+import { ensureSchema, sql } from '@/lib/db';
+import { afternoonClubs, activitiesGallery, type Activity } from '@/lib/site-content';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Activities and WorldSchooling',
@@ -14,6 +17,36 @@ export const metadata: Metadata = {
     images: [{ url: '/images/activities-surfboards.jpg', width: 1150, height: 964, alt: 'Students with surfboards at Selong Belanak Beach' }],
   },
 };
+
+interface ActivityRow {
+  slug: string;
+  name: string;
+  day: string | null;
+  duration: string | null;
+  price_idr: number | null;
+  price_note: string | null;
+  description: string;
+  age_group: string | null;
+}
+
+async function getActivities(): Promise<Activity[]> {
+  await ensureSchema();
+  const rows = (await sql`
+    SELECT slug, name, day, duration, price_idr, price_note, description, age_group
+    FROM activities
+    ORDER BY id ASC
+  `) as unknown as ActivityRow[];
+  return rows.map((row) => ({
+    slug: row.slug,
+    name: row.name,
+    day: row.day ?? '',
+    duration: row.duration,
+    priceIDR: row.price_idr,
+    priceNote: row.price_note ?? undefined,
+    description: row.description,
+    ageGroup: row.age_group ?? '',
+  }));
+}
 
 const activityImages: Record<string, { src: string; alt: string }> = {
   'surfing-selong-belanak': {
@@ -50,7 +83,9 @@ const activityImages: Record<string, { src: string; alt: string }> = {
   },
 };
 
-export default function ActivitiesPage() {
+export default async function ActivitiesPage() {
+  const activities = await getActivities();
+
   return (
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
       <PhotoBanner

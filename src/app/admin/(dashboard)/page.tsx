@@ -61,11 +61,11 @@ export default async function AdminSubmissionsPage() {
   `) as unknown as EnquiryRow[];
 
   const bookings = (await sql`
-    SELECT b.id, b.activity_name, s.slot_date::text AS slot_date, s.slot_time, b.child_name, b.child_age,
+    SELECT b.id, b.activity_name, s.session_date::text AS slot_date, s.session_time AS slot_time, b.child_name, b.child_age,
            b.parent_name, b.parent_email, b.parent_phone, b.emergency_contact,
            b.notify_email_status, b.reply_email_status, b.created_at
     FROM bookings b
-    JOIN booking_slots s ON s.id = b.slot_id
+    JOIN sessions s ON s.id = b.slot_id
     ORDER BY b.created_at DESC LIMIT 200
   `) as unknown as BookingRow[];
 

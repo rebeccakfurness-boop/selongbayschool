@@ -50,26 +50,43 @@ export function ensureSchema(): Promise<void> {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
+      // Superseded by activities + sessions below. No longer created for new
+      // databases; left untouched (not dropped) on any database where it
+      // already exists, since booking_slots may still hold historical rows.
+
       await sql`
-        CREATE TABLE IF NOT EXISTS booking_slots (
+        CREATE TABLE IF NOT EXISTS activities (
           id BIGSERIAL PRIMARY KEY,
-          activity_slug TEXT NOT NULL,
-          activity_name TEXT NOT NULL,
-          slot_date DATE NOT NULL,
-          slot_time TEXT NOT NULL,
+          slug TEXT NOT NULL UNIQUE,
+          name TEXT NOT NULL,
+          day TEXT,
+          duration TEXT,
+          price_idr BIGINT,
+          price_note TEXT,
+          description TEXT NOT NULL,
+          age_group TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`
+        CREATE TABLE IF NOT EXISTS sessions (
+          id BIGSERIAL PRIMARY KEY,
+          activity_id BIGINT NOT NULL REFERENCES activities(id),
+          session_date DATE NOT NULL,
+          session_time TEXT NOT NULL,
           capacity INTEGER NOT NULL CHECK (capacity > 0),
           spots_remaining INTEGER NOT NULL CHECK (spots_remaining >= 0),
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
       await sql`
-        CREATE INDEX IF NOT EXISTS idx_booking_slots_activity_date
-        ON booking_slots (activity_slug, slot_date)
+        CREATE INDEX IF NOT EXISTS idx_sessions_activity_date
+        ON sessions (activity_id, session_date)
       `;
       await sql`
         CREATE TABLE IF NOT EXISTS bookings (
           id BIGSERIAL PRIMARY KEY,
-          slot_id BIGINT NOT NULL REFERENCES booking_slots(id),
+          slot_id BIGINT NOT NULL REFERENCES sessions(id),
           activity_slug TEXT NOT NULL,
           activity_name TEXT NOT NULL,
           child_name TEXT NOT NULL,
@@ -81,6 +98,67 @@ export function ensureSchema(): Promise<void> {
           notify_email_status TEXT NOT NULL DEFAULT 'pending',
           reply_email_status TEXT NOT NULL DEFAULT 'pending',
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS admin_users (
+          id BIGSERIAL PRIMARY KEY,
+          email TEXT NOT NULL UNIQUE,
+          password_hash TEXT NOT NULL,
+          reset_token TEXT,
+          reset_token_expires_at TIMESTAMPTZ,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS crm_enquiries (
+          id BIGSERIAL PRIMARY KEY,
+          source TEXT NOT NULL CHECK (source IN ('contact_form', 'email')),
+          customer_name TEXT NOT NULL,
+          customer_email TEXT NOT NULL,
+          customer_phone TEXT,
+          message TEXT,
+          status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'in_progress', 'resolved')),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS email_threads (
+          id BIGSERIAL PRIMARY KEY,
+          enquiry_id BIGINT REFERENCES crm_enquiries(id),
+          gmail_thread_id TEXT NOT NULL UNIQUE,
+          subject TEXT,
+          participant_email TEXT NOT NULL,
+          last_message_at TIMESTAMPTZ
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS email_messages (
+          id BIGSERIAL PRIMARY KEY,
+          thread_id BIGINT NOT NULL REFERENCES email_threads(id),
+          direction TEXT NOT NULL CHECK (direction IN ('inbound', 'outbound')),
+          sender TEXT NOT NULL,
+          body TEXT,
+          sent_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          gmail_message_id TEXT UNIQUE
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS change_requests (
+          id BIGSERIAL PRIMARY KEY,
+          requested_by TEXT NOT NULL,
+          request_text TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'submitted' CHECK (status IN ('submitted', 'in_progress', 'pr_open', 'approved', 'merged', 'rejected')),
+          github_pr_url TEXT,
+          github_pr_number INTEGER,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
     })();

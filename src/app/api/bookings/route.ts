@@ -27,10 +27,15 @@ export async function POST(req: NextRequest) {
     // capacity, preventing a double-booking race between concurrent requests.
     const rows = await sql`
       WITH slot_update AS (
-        UPDATE booking_slots
+        UPDATE sessions
         SET spots_remaining = spots_remaining - 1
         WHERE id = ${input.slotId} AND spots_remaining > 0
-        RETURNING id, activity_slug, activity_name, slot_date, slot_time
+        RETURNING id, activity_id, session_date, session_time
+      ),
+      slot_with_activity AS (
+        SELECT su.id, a.slug AS activity_slug, a.name AS activity_name
+        FROM slot_update su
+        JOIN activities a ON a.id = su.activity_id
       )
       INSERT INTO bookings (
         slot_id, activity_slug, activity_name, child_name, child_age,
@@ -38,7 +43,7 @@ export async function POST(req: NextRequest) {
       )
       SELECT id, activity_slug, activity_name, ${input.childName}, ${input.childAge},
         ${input.parentName}, ${input.parentEmail}, ${input.parentPhone}, ${input.emergencyContact}
-      FROM slot_update
+      FROM slot_with_activity
       RETURNING id, activity_slug, activity_name, slot_id
     `;
 
@@ -50,7 +55,7 @@ export async function POST(req: NextRequest) {
     }
 
     const booking = rows[0];
-    const slotRows = await sql`SELECT slot_date::text AS slot_date, slot_time FROM booking_slots WHERE id = ${input.slotId}`;
+    const slotRows = await sql`SELECT session_date::text AS slot_date, session_time AS slot_time FROM sessions WHERE id = ${input.slotId}`;
     const slot = slotRows[0];
     const dateLabel = slot ? new Date(`${slot.slot_date}T00:00:00`).toLocaleDateString('en-AU', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',

@@ -32,14 +32,21 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   try {
     await ensureSchema();
     const rows = await sql`
-      UPDATE booking_slots
-      SET
-        slot_date = COALESCE(${date ?? null}, slot_date),
-        slot_time = COALESCE(${time ?? null}, slot_time),
-        capacity = COALESCE(${capacity ?? null}, capacity),
-        spots_remaining = COALESCE(${spotsRemaining ?? null}, spots_remaining)
-      WHERE id = ${id}
-      RETURNING id, activity_slug, activity_name, slot_date::text AS slot_date, slot_time, capacity, spots_remaining
+      WITH updated AS (
+        UPDATE sessions
+        SET
+          session_date = COALESCE(${date ?? null}, session_date),
+          session_time = COALESCE(${time ?? null}, session_time),
+          capacity = COALESCE(${capacity ?? null}, capacity),
+          spots_remaining = COALESCE(${spotsRemaining ?? null}, spots_remaining)
+        WHERE id = ${id}
+        RETURNING id, activity_id, session_date, session_time, capacity, spots_remaining
+      )
+      SELECT updated.id, a.slug AS activity_slug, a.name AS activity_name,
+             updated.session_date::text AS slot_date, updated.session_time AS slot_time,
+             updated.capacity, updated.spots_remaining
+      FROM updated
+      JOIN activities a ON a.id = updated.activity_id
     `;
     if (rows.length === 0) {
       return NextResponse.json({ error: 'Slot not found.' }, { status: 404 });
@@ -67,7 +74,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
         { status: 409 }
       );
     }
-    const rows = await sql`DELETE FROM booking_slots WHERE id = ${id} RETURNING id`;
+    const rows = await sql`DELETE FROM sessions WHERE id = ${id} RETURNING id`;
     if (rows.length === 0) {
       return NextResponse.json({ error: 'Slot not found.' }, { status: 404 });
     }

@@ -37,8 +37,9 @@ the env vars above in `.env.local`. Tables are created automatically on first us
 migration step is required, but you can also run:
 
 ```bash
-npm run db:init      # create tables if they don't exist
-npm run db:seed       # seed a few weeks of bookable slots for every activity
+npm run db:init        # create tables if they don't exist
+npm run db:seed        # seed the activities table and a few weeks of bookable sessions
+npm run db:seed-admin  # create the first admin_users row (prints a one-time temporary password)
 ```
 
 ## How the forms work

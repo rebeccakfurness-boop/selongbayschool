@@ -12,10 +12,13 @@ export async function GET(req: NextRequest) {
   try {
     await ensureSchema();
     const rows = await sql`
-      SELECT id, activity_slug, activity_name, slot_date::text AS slot_date, slot_time, capacity, spots_remaining
-      FROM booking_slots
-      WHERE activity_slug = ${activity} AND slot_date >= CURRENT_DATE
-      ORDER BY slot_date ASC, slot_time ASC
+      SELECT s.id, a.slug AS activity_slug, a.name AS activity_name,
+             s.session_date::text AS slot_date, s.session_time AS slot_time,
+             s.capacity, s.spots_remaining
+      FROM sessions s
+      JOIN activities a ON a.id = s.activity_id
+      WHERE a.slug = ${activity} AND s.session_date >= CURRENT_DATE
+      ORDER BY s.session_date ASC, s.session_time ASC
       LIMIT 30
     `;
     return NextResponse.json({ slots: rows });

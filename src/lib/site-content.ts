@@ -276,7 +276,12 @@ export const campusFacts = [
   'Staying connected with Starlink Wifi on campus',
 ];
 
-/** Bookable activities. Content is locked; do not paraphrase or restructure. */
+/**
+ * Bookable activities. Now database-backed (see the `activities` table in
+ * src/lib/db.ts and scripts/seed-activities.ts for the seed data) rather
+ * than a static list; this type is the shared shape used when rendering
+ * rows queried from that table.
+ */
 export type Activity = {
   slug: string;
   name: string;
@@ -287,83 +292,6 @@ export type Activity = {
   description: string;
   ageGroup: string;
 };
-
-export const activities: Activity[] = [
-  {
-    slug: 'hip-hop-dance-ninja-warrior',
-    name: 'Hip Hop Dance and Ninja Warrior',
-    day: 'Monday',
-    duration: '2 hr',
-    priceIDR: 300_000,
-    description: 'High-energy dance moves paired with an obstacle-course challenge, building rhythm, confidence, and coordination.',
-    ageGroup: 'All ages',
-  },
-  {
-    slug: 'gymnastics-free-swim',
-    name: 'Gymnastics for Kids & Free Swim',
-    day: 'Tuesday',
-    duration: null,
-    priceIDR: 300_000,
-    description: 'Foundational gymnastics skills followed by free swim time to cool off.',
-    ageGroup: 'All ages',
-  },
-  {
-    slug: 'surfing-selong-belanak',
-    name: 'Surfing Selong Belanak Beach',
-    day: 'Wednesday',
-    duration: '2 hr',
-    priceIDR: 300_000,
-    description: 'Beginner-friendly surf lessons at Selong Belanak Beach, right on our doorstep.',
-    ageGroup: 'All ages',
-  },
-  {
-    slug: 'art-music-bahasa',
-    name: 'Art, Music and Bahasa Indonesia',
-    day: 'Thursday',
-    duration: null,
-    priceIDR: 300_000,
-    description: 'A creative afternoon blending art and music with hands-on Bahasa Indonesia language learning.',
-    ageGroup: 'All ages',
-  },
-  {
-    slug: 'scouts-survival-challenge',
-    name: 'Scouts and Survival Challenge',
-    day: 'Friday',
-    duration: '2 hr',
-    priceIDR: 300_000,
-    description: 'Outdoor scouting skills and a friendly survival challenge in and around the campus.',
-    ageGroup: 'All ages',
-  },
-  {
-    slug: 'school-tour',
-    name: 'School Tour',
-    day: 'By request',
-    duration: '1 hr',
-    priceIDR: null,
-    priceNote: 'Free',
-    description: 'A guided walk through our campus, classrooms, and grounds: a great first step for prospective families.',
-    ageGroup: 'All ages',
-  },
-  {
-    slug: 'adventure-camp-2026-per-day',
-    name: 'Adventure Camp 2026 (Per Day)',
-    day: 'Mon–Fri',
-    duration: '6 hr',
-    priceIDR: 450_000,
-    description: 'A full day of adventure activities: surf, scouting, sport, and campus exploration, bookable one day at a time.',
-    ageGroup: 'All ages',
-  },
-  {
-    slug: 'adventure-camp-2026-full-week',
-    name: 'Adventure Camp 2026 (Full Week)',
-    day: 'Mon–Fri',
-    duration: '6 hr',
-    priceIDR: null,
-    priceNote: 'Contact us for pricing',
-    description: 'The full Adventure Camp week: surf, scouting, sport, and campus exploration every day.',
-    ageGroup: 'All ages',
-  },
-];
 
 export const principalWelcome = {
   name: 'Ms Indhira',

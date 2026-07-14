@@ -3,7 +3,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import Button from '@/components/Button';
 import { Field, TextInput } from '@/components/forms/FormField';
-import { activities } from '@/lib/site-content';
 
 interface Slot {
   id: number;
@@ -15,10 +14,17 @@ interface Slot {
   spots_remaining: number;
 }
 
+interface ActivityOption {
+  id: number;
+  slug: string;
+  name: string;
+}
+
 export default function AvailabilityPage() {
   const [slots, setSlots] = useState<Slot[] | null>(null);
+  const [activities, setActivities] = useState<ActivityOption[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [activitySlug, setActivitySlug] = useState(activities[0].slug);
+  const [activitySlug, setActivitySlug] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [capacity, setCapacity] = useState('10');
@@ -36,11 +42,26 @@ export default function AvailabilityPage() {
     }
   }
 
+  async function loadActivities() {
+    try {
+      const res = await fetch('/api/admin/activities');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load');
+      setActivities(data.activities);
+      if (data.activities.length > 0) {
+        setActivitySlug((current) => current || data.activities[0].slug);
+      }
+    } catch {
+      setError('Could not load activities.');
+    }
+  }
+
   useEffect(() => {
     // Fetch-on-mount: loadSlots is also re-invoked after add/update/delete,
     // so it can't be replaced with a lazy useState initializer.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadSlots();
+    loadActivities();
   }, []);
 
   async function handleAdd(e: FormEvent) {
