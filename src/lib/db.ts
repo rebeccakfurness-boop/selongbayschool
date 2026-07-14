@@ -50,6 +50,7 @@ export function ensureSchema(): Promise<void> {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
+      await sql`ALTER TABLE enquiries ADD COLUMN IF NOT EXISTS is_read BOOLEAN NOT NULL DEFAULT false`;
       // Superseded by activities + sessions below. No longer created for new
       // databases; left untouched (not dropped) on any database where it
       // already exists, since booking_slots may still hold historical rows.

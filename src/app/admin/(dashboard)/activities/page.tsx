@@ -20,7 +20,7 @@ interface ActivityOption {
   name: string;
 }
 
-export default function AvailabilityPage() {
+export default function ActivitiesPage() {
   const [slots, setSlots] = useState<Slot[] | null>(null);
   const [activities, setActivities] = useState<ActivityOption[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -125,8 +125,9 @@ export default function AvailabilityPage() {
 
   return (
     <div className="flex flex-col gap-10">
+      <h1 className="font-display text-2xl font-semibold text-ink">Activities &amp; Calendar</h1>
       <section>
-        <h1 className="font-display text-2xl font-semibold text-ink">Add a new slot</h1>
+        <h2 className="font-display text-xl font-semibold text-ink">Add a new session</h2>
         <form onSubmit={handleAdd} className="mt-4 grid gap-4 rounded-md border border-sand-line bg-paper p-6 sm:grid-cols-2 lg:grid-cols-4">
           <Field label="Activity" htmlFor="av-activity">
             <select
@@ -162,7 +163,7 @@ export default function AvailabilityPage() {
       {error && <p role="alert" className="font-semibold text-orange-deep">{error}</p>}
 
       <section>
-        <h2 className="font-display text-2xl font-semibold text-ink">All slots</h2>
+        <h2 className="font-display text-xl font-semibold text-ink">All sessions</h2>
         <div className="mt-4 overflow-x-auto rounded-md border border-sand-line bg-paper">
           <table className="w-full min-w-[820px] border-collapse text-sm">
             <thead>

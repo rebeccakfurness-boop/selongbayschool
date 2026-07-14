@@ -67,3 +67,9 @@ export const adminResetPasswordSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters').max(200),
 });
 export type AdminResetPasswordInput = z.infer<typeof adminResetPasswordSchema>;
+
+export const adminChangePasswordSchema = z.object({
+  currentPassword: z.string().min(1, 'Current password is required'),
+  newPassword: z.string().min(8, 'Password must be at least 8 characters').max(200),
+});
+export type AdminChangePasswordInput = z.infer<typeof adminChangePasswordSchema>;

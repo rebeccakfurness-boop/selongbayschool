@@ -60,7 +60,7 @@ Every submission (contact, admissions, high school, activity booking) follows th
 - Booking creation uses a single atomic SQL statement (an `UPDATE ... RETURNING` feeding an
   `INSERT ... SELECT`) so two people can never book the last spot at the same time: the second
   request simply gets a "that slot just filled up" response.
-- Manage sessions at `/admin/availability` (add/edit capacity/remove). Sessions with existing
+- Manage sessions at `/admin/activities` (add/edit capacity/remove). Sessions with existing
   bookings can't be deleted; set capacity to match spots taken instead, to stop new bookings
   without losing booking history.
 
@@ -76,8 +76,14 @@ Every submission (contact, admissions, high school, activity booking) follows th
 - Every `/admin/*` page and `/api/admin/*` route requires a valid session (enforced in
   `src/proxy.ts`); unauthenticated page requests redirect to `/admin/login`, API requests get
   a 401.
-- `/admin`: every enquiry and booking, with email delivery status
-- `/admin/availability`: manage bookable sessions per activity
+- `/admin`: dashboard shell with a sidebar (Overview, Activities & Calendar, Bookings, Enquiries,
+  Website Updates, Settings)
+- `/admin` (Overview): quick stats — bookings this week, unread enquiries, sessions today
+- `/admin/activities`: manage bookable sessions per activity
+- `/admin/bookings`: every activity booking, with email delivery status
+- `/admin/enquiries`: every contact/admissions/high-school enquiry, with a read/unread toggle
+- `/admin/website-updates`: status of requested website changes (`change_requests` table)
+- `/admin/settings`: change your admin password
 
 ## Content & photos
 

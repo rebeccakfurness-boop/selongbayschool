@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
-import AdminNav from '@/components/AdminNav';
+import AdminSidebar from '@/components/AdminSidebar';
 
 export default function AdminDashboardLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-cream">
-      <AdminNav />
-      <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
+    <div className="flex min-h-screen bg-cream">
+      <AdminSidebar />
+      <main className="flex-1 overflow-x-auto px-8 py-10">{children}</main>
     </div>
   );
 }
