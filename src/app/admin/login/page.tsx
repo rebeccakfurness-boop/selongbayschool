@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Suspense, useState, type FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Button from '@/components/Button';
@@ -9,6 +10,7 @@ import { Field, TextInput } from '@/components/forms/FormField';
 function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -21,7 +23,7 @@ function AdminLoginForm() {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -46,12 +48,23 @@ function AdminLoginForm() {
       <h1 className="font-display text-2xl font-semibold text-ink">Admin login</h1>
       <p className="mt-1 text-sm text-ink-soft">Selong Bay School internal tools.</p>
       <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4" noValidate>
+        <Field label="Email" htmlFor="admin-email" required>
+          <TextInput
+            id="admin-email"
+            type="email"
+            required
+            autoFocus
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </Field>
         <Field label="Password" htmlFor="admin-password" required>
           <TextInput
             id="admin-password"
             type="password"
             required
-            autoFocus
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -61,6 +74,11 @@ function AdminLoginForm() {
           {submitting ? 'Logging in…' : 'Log in'}
         </Button>
       </form>
+      <p className="mt-4 text-center text-sm">
+        <Link href="/admin/forgot-password" className="font-semibold text-teal-deep underline">
+          Forgot password?
+        </Link>
+      </p>
     </div>
   );
 }

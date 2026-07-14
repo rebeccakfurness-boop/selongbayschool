@@ -21,8 +21,7 @@ Set these in Vercel (Project Settings → Environment Variables) and in a local 
 | `DATABASE_URL` | Yes | Postgres connection string. When you add the Vercel Postgres (Neon) integration, Vercel sets `POSTGRES_URL` automatically; either name works, `DATABASE_URL` is checked first. |
 | `RESEND_API_KEY` | Yes | API key from [resend.com](https://resend.com). Without it, forms still save to the database but emails will fail (and the UI tells the user so). |
 | `RESEND_FROM_EMAIL` | No | Sender address, e.g. `Selong Bay School <hello@selongbayschool.com>`. Defaults to Resend's sandbox address `onboarding@resend.dev`, which only works for testing. Verify your domain in Resend and set this before going live. |
-| `ADMIN_PASSWORD` | Yes | The single shared password for `/admin`. |
-| `ADMIN_SESSION_SECRET` | No | Secret used to sign the admin session cookie. Defaults to `ADMIN_PASSWORD` if unset; set a separate long random value in production. |
+| `ADMIN_SESSION_SECRET` | Yes | Secret used to encrypt the admin session cookie (via iron-session). Set a long random value; any length works, it's hashed internally to fit iron-session's minimum. |
 | `NEXT_PUBLIC_SNAPWIDGET_ID` | No | Widget ID from [snapwidget.com](https://snapwidget.com) for the homepage's live Instagram grid. Until set, the site shows a "follow us" fallback card instead. |
 
 ## Local development
@@ -56,19 +55,29 @@ Every submission (contact, admissions, high school, activity booking) follows th
 
 ## Booking system
 
-- `booking_slots` holds per-activity date/time/capacity; `bookings` references a slot.
+- `activities` holds each bookable activity; `sessions` holds per-activity date/time/capacity
+  (seed both with `npm run db:seed`); `bookings` references a session via `slot_id`.
 - Booking creation uses a single atomic SQL statement (an `UPDATE ... RETURNING` feeding an
   `INSERT ... SELECT`) so two people can never book the last spot at the same time: the second
   request simply gets a "that slot just filled up" response.
-- Manage slots at `/admin/availability` (add/edit capacity/remove). Slots with existing bookings
-  can't be deleted; set capacity to match spots taken instead, to stop new bookings without
-  losing booking history.
+- Manage sessions at `/admin/availability` (add/edit capacity/remove). Sessions with existing
+  bookings can't be deleted; set capacity to match spots taken instead, to stop new bookings
+  without losing booking history.
 
 ## Admin area
 
-- `/admin/login`: password from `ADMIN_PASSWORD`
+- `/admin/login`: email + password, checked against the `admin_users` table (bcrypt-hashed
+  passwords). Seed the first account with `npm run db:seed-admin` (prints a one-time temporary
+  password to the console - not stored anywhere in the repo).
+- `/admin/forgot-password`: emails a 1-hour reset link via Resend to the address in `admin_users`,
+  if it exists (the response is identical either way, so this can't be used to enumerate admin
+  emails).
+- `/admin/reset-password?token=...`: sets a new password from that link.
+- Every `/admin/*` page and `/api/admin/*` route requires a valid session (enforced in
+  `src/middleware.ts`); unauthenticated page requests redirect to `/admin/login`, API requests get
+  a 401.
 - `/admin`: every enquiry and booking, with email delivery status
-- `/admin/availability`: manage bookable slots per activity
+- `/admin/availability`: manage bookable sessions per activity
 
 ## Content & photos
 

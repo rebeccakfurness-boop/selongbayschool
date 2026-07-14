@@ -138,6 +138,16 @@ export async function sendEnquiryAutoReply(input: EnquiryEmailInput): Promise<bo
   return send(input.email, "Thanks for your enquiry: Selong Bay School", html);
 }
 
+export async function sendAdminPasswordResetEmail(email: string, resetUrl: string): Promise<boolean> {
+  const html = wrapEmail(
+    'Reset your admin password',
+    `<p>We received a request to reset the password for the Selong Bay School admin account associated with this email address.</p>
+     <p><a href="${resetUrl}" style="color:#007c83; font-weight:700;">Reset your password</a></p>
+     <p>This link is valid for 1 hour. If you did not request this, you can safely ignore this email and your password will stay the same.</p>`
+  );
+  return send(email, 'Reset your Selong Bay School admin password', html);
+}
+
 export interface BookingEmailInput {
   activityName: string;
   date: string;

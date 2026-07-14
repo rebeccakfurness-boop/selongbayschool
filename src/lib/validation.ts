@@ -50,3 +50,20 @@ export const availabilitySlotSchema = z.object({
   time: z.string().trim().min(1).max(50),
   capacity: z.coerce.number().int().positive().max(500),
 });
+
+export const adminLoginSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+  password: z.string().min(1, 'Password is required'),
+});
+export type AdminLoginInput = z.infer<typeof adminLoginSchema>;
+
+export const adminForgotPasswordSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+});
+export type AdminForgotPasswordInput = z.infer<typeof adminForgotPasswordSchema>;
+
+export const adminResetPasswordSchema = z.object({
+  token: z.string().trim().min(1, 'Missing reset token'),
+  password: z.string().min(8, 'Password must be at least 8 characters').max(200),
+});
+export type AdminResetPasswordInput = z.infer<typeof adminResetPasswordSchema>;

@@ -1,4 +1,5 @@
-import { randomBytes, scryptSync } from 'crypto';
+import { randomBytes } from 'crypto';
+import bcrypt from 'bcryptjs';
 import { ensureSchema, sql } from '../src/lib/db';
 
 const ADMIN_EMAIL = 'hello@selongbayschool.com';
@@ -14,12 +15,6 @@ function generateTempPassword(): string {
   return out;
 }
 
-function hashPassword(password: string): string {
-  const salt = randomBytes(16).toString('hex');
-  const hash = scryptSync(password, salt, 64).toString('hex');
-  return `${salt}:${hash}`;
-}
-
 async function main() {
   await ensureSchema();
 
@@ -30,7 +25,7 @@ async function main() {
   }
 
   const tempPassword = generateTempPassword();
-  const passwordHash = hashPassword(tempPassword);
+  const passwordHash = await bcrypt.hash(tempPassword, 10);
 
   await sql`
     INSERT INTO admin_users (email, password_hash)
@@ -39,7 +34,7 @@ async function main() {
 
   console.log(`Created admin_users row for ${ADMIN_EMAIL}.`);
   console.log(`Temporary password (shown once, not stored anywhere in the repo): ${tempPassword}`);
-  console.log('Change this on first login.');
+  console.log('Log in at /admin/login and change this on first login.');
 }
 
 main()
