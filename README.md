@@ -74,7 +74,7 @@ Every submission (contact, admissions, high school, activity booking) follows th
   emails).
 - `/admin/reset-password?token=...`: sets a new password from that link.
 - Every `/admin/*` page and `/api/admin/*` route requires a valid session (enforced in
-  `src/middleware.ts`); unauthenticated page requests redirect to `/admin/login`, API requests get
+  `src/proxy.ts`); unauthenticated page requests redirect to `/admin/login`, API requests get
   a 401.
 - `/admin`: every enquiry and booking, with email delivery status
 - `/admin/availability`: manage bookable sessions per activity

@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:init": "tsx scripts/init-db.ts",
-    "db:seed": "tsx scripts/seed-activities.ts",
-    "db:seed-admin": "tsx scripts/seed-admin-user.ts"
+    "db:init": "tsx --env-file-if-exists=.env.local scripts/init-db.ts",
+    "db:seed": "tsx --env-file-if-exists=.env.local scripts/seed-activities.ts",
+    "db:seed-admin": "tsx --env-file-if-exists=.env.local scripts/seed-admin-user.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
