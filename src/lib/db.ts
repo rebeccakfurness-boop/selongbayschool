@@ -1,5 +1,17 @@
 import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
 
+/** Must stay in sync with the `activityImages` fallback map in src/app/activities/page.tsx. */
+const ACTIVITY_PHOTO_BACKFILL: Record<string, string> = {
+  'surfing-selong-belanak': '/images/home-beach-walk.jpg',
+  'gymnastics-free-swim': '/images/activity-gymnastics-v3.jpg',
+  'hip-hop-dance-ninja-warrior': '/images/activity-ninja-hiphop.jpg',
+  'art-music-bahasa': '/images/activity-art-music.jpg',
+  'scouts-survival-challenge': '/images/activity-scouts.jpg',
+  'school-tour': '/images/activity-school-tour-v2.jpg',
+  'adventure-camp-2026-per-day': '/images/activity-adventure-camp.jpg',
+  'adventure-camp-2026-full-week': '/images/home-story-beach-tree.jpg',
+};
+
 function connectionString(): string {
   const url =
     process.env.DATABASE_URL ||
@@ -73,6 +85,14 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE activities ADD COLUMN IF NOT EXISTS default_time TEXT`;
       await sql`ALTER TABLE activities ADD COLUMN IF NOT EXISTS default_capacity INTEGER NOT NULL DEFAULT 10`;
       await sql`ALTER TABLE activities ADD COLUMN IF NOT EXISTS photo_url TEXT`;
+      // Activities created before per-activity photo uploads existed have photo_url = NULL, so the
+      // admin dashboard shows "No photo" even though the public /activities page already displays
+      // an image for them via the code-level fallback in src/app/activities/page.tsx. Backfill
+      // photo_url to that same fallback image so the dashboard matches what's actually live.
+      // Only fills NULLs, so uploading a real photo in the dashboard still overrides it going forward.
+      for (const [slug, photoUrl] of Object.entries(ACTIVITY_PHOTO_BACKFILL)) {
+        await sql`UPDATE activities SET photo_url = ${photoUrl} WHERE slug = ${slug} AND photo_url IS NULL`;
+      }
 
       await sql`
         CREATE TABLE IF NOT EXISTS sessions (
