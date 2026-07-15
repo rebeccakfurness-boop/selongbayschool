@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import Button from '@/components/Button';
 import { Field, TextInput } from '@/components/forms/FormField';
 import FormStatusBanner from '@/components/forms/FormStatusBanner';
+import MaintenanceNotice from '@/components/MaintenanceNotice';
 import { useFormSubmit } from '@/lib/useFormSubmit';
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -77,10 +78,13 @@ function AccountLoginForm() {
 
 export default function AccountLoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-cream px-6">
-      <Suspense fallback={null}>
-        <AccountLoginForm />
-      </Suspense>
+    <div className="flex min-h-screen flex-col bg-cream">
+      <MaintenanceNotice />
+      <div className="flex flex-1 items-center justify-center px-6 py-12">
+        <Suspense fallback={null}>
+          <AccountLoginForm />
+        </Suspense>
+      </div>
     </div>
   );
 }

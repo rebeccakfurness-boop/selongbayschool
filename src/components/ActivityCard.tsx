@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Button from './Button';
 import BookingPanel from './BookingPanel';
+import { MaintenanceNoticeCompact } from './MaintenanceNotice';
 import { formatIDR, type Activity } from '@/lib/site-content';
 
 export default function ActivityCard({ activity, image }: { activity: Activity; image?: { src: string; alt: string } }) {
@@ -41,6 +42,10 @@ export default function ActivityCard({ activity, image }: { activity: Activity; 
           {activity.priceIDR && activity.priceNote && (
             <span className="text-xs font-semibold text-orange-deep">{activity.priceNote}</span>
           )}
+        </div>
+
+        <div className="mt-4">
+          <MaintenanceNoticeCompact />
         </div>
 
         {booking ? (

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import ActivityCard from '@/components/ActivityCard';
 import Reveal from '@/components/Reveal';
+import MaintenanceNotice from '@/components/MaintenanceNotice';
 import { ensureSchema, sql } from '@/lib/db';
 import { afternoonClubs, activitiesGallery, type Activity } from '@/lib/site-content';
 
@@ -102,6 +103,7 @@ export default async function ActivitiesPage() {
 
   return (
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
+      <MaintenanceNotice />
       <PhotoBanner
         height="sm"
         image={{ src: '/images/activities-surfboards.jpg', alt: 'Two students with surfboards giving shaka signs on the beach' }}

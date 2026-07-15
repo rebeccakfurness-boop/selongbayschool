@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Button from './Button';
 import HighSchoolForm from './forms/HighSchoolForm';
+import { MaintenanceNoticeCompact } from './MaintenanceNotice';
 import { highSchoolAnnouncement, siteConfig } from '@/lib/site-content';
 
 export default function HighSchoolBanner({ image }: { image?: { src: string; alt: string } }) {
@@ -31,6 +32,10 @@ export default function HighSchoolBanner({ image }: { image?: { src: string; alt
             {highSchoolAnnouncement.headline}
           </h2>
           <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">{highSchoolAnnouncement.body}</p>
+
+          <div className="mt-5">
+            <MaintenanceNoticeCompact />
+          </div>
 
           {!showForm ? (
             <div className="mt-5 flex flex-col gap-3 sm:flex-row">

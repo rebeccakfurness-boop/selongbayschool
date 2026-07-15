@@ -4,6 +4,7 @@ import PhotoBanner from '@/components/PhotoBanner';
 import Reveal from '@/components/Reveal';
 import Button from '@/components/Button';
 import AdmissionsForm from '@/components/forms/AdmissionsForm';
+import MaintenanceNotice from '@/components/MaintenanceNotice';
 import { PlaceholderImage } from '@/components/PlaceholderBox';
 import { teachers, type AdmissionsGroup } from '@/lib/site-content';
 
@@ -14,6 +15,7 @@ export default function AdmissionsGroupPage({ group }: { group: AdmissionsGroup 
 
   return (
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
+      <MaintenanceNotice />
       <PhotoBanner
         height="sm"
         image={group.heroImage}

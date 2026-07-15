@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import PhotoBanner from '@/components/PhotoBanner';
 import ContactForm from '@/components/forms/ContactForm';
 import Reveal from '@/components/Reveal';
+import MaintenanceNotice from '@/components/MaintenanceNotice';
 import { siteConfig } from '@/lib/site-content';
 
 export const metadata: Metadata = {
@@ -15,6 +16,7 @@ export default function ContactPage() {
 
   return (
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
+      <MaintenanceNotice />
       <PhotoBanner
         height="sm"
         image={{ src: '/images/contact-hero-football.jpg', alt: 'Students playing football on the beach near Kuta, Lombok', focalPosition: 'bottom' }}
