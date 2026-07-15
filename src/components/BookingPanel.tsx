@@ -19,6 +19,13 @@ interface Slot {
   price_note: string | null;
 }
 
+interface Account {
+  id: number;
+  name: string | null;
+  email: string;
+  phone: string | null;
+}
+
 type PaymentMethod = 'pay_online' | 'pay_at_session';
 
 function formatDate(dateStr: string): string {
@@ -33,6 +40,10 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
   const [slots, setSlots] = useState<Slot[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [selectedSlotId, setSelectedSlotId] = useState<number | null>(null);
+
+  const [account, setAccount] = useState<Account | null>(null);
+  const [accountChecked, setAccountChecked] = useState(false);
+  const [continuingAsGuest, setContinuingAsGuest] = useState(false);
 
   const { status, errorMessage, submit } = useFormSubmit<{ bookingId: number; emailWarning?: string }>('/api/bookings');
   const [childName, setChildName] = useState('');
@@ -61,8 +72,29 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
     };
   }, [activitySlug]);
 
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/account/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (cancelled) return;
+        if (data.customer) {
+          setAccount(data.customer);
+          setParentName((current) => current || data.customer.name || '');
+          setParentEmail((current) => current || data.customer.email || '');
+          setParentPhone((current) => current || data.customer.phone || '');
+        }
+        setAccountChecked(true);
+      })
+      .catch(() => setAccountChecked(true));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const selectedSlot = slots?.find((slot) => slot.id === selectedSlotId) ?? null;
   const amountLabel = selectedSlot?.price_idr ? formatIDR(selectedSlot.price_idr) : selectedSlot?.price_note;
+  const showDetailsForm = Boolean(account) || continuingAsGuest;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -142,8 +174,33 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
         </div>
       )}
 
-      {selectedSlotId && (
+      {selectedSlotId && accountChecked && !showDetailsForm && (
+        <div className="mt-6 border-t border-sand-line pt-5">
+          <p className="font-display text-base font-semibold text-ink">How would you like to book?</p>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <Button type="button" variant="primary" onClick={() => setContinuingAsGuest(true)}>
+              Continue as guest
+            </Button>
+            <Button href={`/account/login?next=${encodeURIComponent('/activities')}`} variant="ghost">
+              Log in
+            </Button>
+            <Button href={`/account/signup?next=${encodeURIComponent('/activities')}`} variant="ghost">
+              Sign up
+            </Button>
+          </div>
+          <p className="mt-3 text-xs text-ink-soft">
+            Signing up saves your details for next time and lets you see your booking history. Guest bookings don&apos;t create an account.
+          </p>
+        </div>
+      )}
+
+      {selectedSlotId && showDetailsForm && (
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4 border-t border-sand-line pt-5" noValidate>
+          {account && (
+            <p className="text-sm text-ink-soft">
+              Booking as <span className="font-semibold text-ink">{account.email}</span>.
+            </p>
+          )}
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Child's name" htmlFor="bk-child-name" required>
               <TextInput id="bk-child-name" required value={childName} onChange={(e) => setChildName(e.target.value)} />

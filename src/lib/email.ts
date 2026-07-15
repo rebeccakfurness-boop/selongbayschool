@@ -148,6 +148,16 @@ export async function sendAdminPasswordResetEmail(email: string, resetUrl: strin
   return send(email, 'Reset your Selong Bay School admin password', html);
 }
 
+export async function sendCustomerMagicLinkEmail(email: string, name: string, verifyUrl: string): Promise<boolean> {
+  const html = wrapEmail(
+    `Hi ${name.split(' ')[0]}, here's your login link`,
+    `<p>Click below to access your Selong Bay School account:</p>
+     <p><a href="${verifyUrl}" style="color:#007c83; font-weight:700;">Log in to your account</a></p>
+     <p>This link is valid for 30 minutes and can only be used once. If you didn't request this, you can safely ignore this email.</p>`
+  );
+  return send(email, 'Your Selong Bay School login link', html);
+}
+
 export type PaymentMethod = 'pay_online' | 'pay_at_session';
 
 export interface BookingEmailInput {

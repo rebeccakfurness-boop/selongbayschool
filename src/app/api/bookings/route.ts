@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { getIronSession } from 'iron-session';
 import { ensureSchema, sql } from '@/lib/db';
 import { bookingSchema } from '@/lib/validation';
 import { sendBookingAutoReply, sendBookingNotification } from '@/lib/email';
+import { getCustomerSessionOptions, type CustomerSessionData } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   let body: unknown;
@@ -20,6 +23,12 @@ export async function POST(req: NextRequest) {
   }
   const input = parsed.data;
   const status = input.paymentMethod === 'pay_online' ? 'pending_payment' : 'pay_at_session';
+
+  // Never trust a client-supplied customer id: whoever's booking is determined solely by
+  // their own session cookie, so nobody can attach a booking to someone else's account.
+  const customerSession = await getIronSession<CustomerSessionData>(await cookies(), await getCustomerSessionOptions());
+  const customerId = customerSession.customerId ?? null;
+  const isGuest = !customerId;
 
   try {
     await ensureSchema();
@@ -42,11 +51,12 @@ export async function POST(req: NextRequest) {
       )
       INSERT INTO bookings (
         slot_id, activity_slug, activity_name, child_name, child_age,
-        parent_name, parent_email, parent_phone, emergency_contact, payment_method, status
+        parent_name, parent_email, parent_phone, emergency_contact, payment_method, status,
+        customer_id, is_guest
       )
       SELECT id, activity_slug, activity_name, ${input.childName}, ${input.childAge},
         ${input.parentName}, ${input.parentEmail}, ${input.parentPhone}, ${input.emergencyContact},
-        ${input.paymentMethod}, ${status}
+        ${input.paymentMethod}, ${status}, ${customerId}, ${isGuest}
       FROM slot_with_activity
       RETURNING id, activity_slug, activity_name, slot_id
     `;

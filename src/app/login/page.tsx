@@ -13,10 +13,10 @@ export default function LoginPage() {
       <p className="font-script text-3xl text-orange-deep md:text-4xl">Welcome back</p>
       <h1 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Log In</h1>
       <p className="mt-4 max-w-md text-[15px] leading-relaxed text-ink-soft">
-        Parent and student portals are coming soon. Once available, you&apos;ll be able to log in below.
+        Log in to see your activity booking history. Student portals are coming soon.
       </p>
       <div className="mt-8 flex w-full max-w-xs flex-col gap-4">
-        <Button href="#" variant="primary" fullWidth>
+        <Button href="/account/login" variant="primary" fullWidth>
           Parent Login
         </Button>
         <Button href="#" variant="ghost" fullWidth>

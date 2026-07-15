@@ -130,6 +130,25 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS stripe_session_id TEXT`;
 
       await sql`
+        CREATE TABLE IF NOT EXISTS customers (
+          id BIGSERIAL PRIMARY KEY,
+          email TEXT NOT NULL UNIQUE,
+          password_hash TEXT,
+          name TEXT,
+          phone TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      // Customer auth is magic-link only (see src/app/api/account/*); password_hash stays
+      // unused for every row, kept only in case password login gets added later.
+      await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS magic_link_token TEXT`;
+      await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS magic_link_token_expires_at TIMESTAMPTZ`;
+
+      await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS customer_id BIGINT REFERENCES customers(id)`;
+      // Existing rows all predate customer accounts, so they default to true (guest bookings).
+      await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS is_guest BOOLEAN NOT NULL DEFAULT true`;
+
+      await sql`
         CREATE TABLE IF NOT EXISTS admin_users (
           id BIGSERIAL PRIMARY KEY,
           email TEXT NOT NULL UNIQUE,

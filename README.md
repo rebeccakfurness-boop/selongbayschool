@@ -103,6 +103,34 @@ Every submission (contact, admissions, high school, activity booking) follows th
   also stored; `stripe_session_id` is reserved for a future real payment gateway and isn't written
   to anywhere yet.
 
+## Customer accounts
+
+Entirely separate from the admin login above — a different cookie, a different table (`customers`,
+not `admin_users`), and a different auth mechanism.
+
+- Auth is **magic link only** (no passwords): `/account/signup` (email, name, phone) and
+  `/account/login` (email) both email a one-time link via Resend, valid for 30 minutes, that logs
+  the visitor in when clicked. `customers.password_hash` exists in the schema but stays unused by
+  every row — kept in case password login gets added later, not because guests need it (guests
+  never get a `customers` row at all).
+- When booking, a visitor who isn't logged in sees "Continue as guest" or "Log in / Sign up" after
+  picking a session; a logged-in customer skips straight to the details form, pre-filled from their
+  account. Either way the same details form and the Pay Online / Pay at the Session choice follow.
+  `bookings.customer_id` and `bookings.is_guest` are set purely from the visitor's own session
+  cookie at submit time — never from anything the client sends — so nobody can attach a booking to
+  someone else's account.
+- `/account/bookings` shows a logged-in customer's own upcoming and past bookings. It's protected
+  two ways: `src/proxy.ts` redirects anyone without a customer session to `/account/login`, and the
+  query itself is always scoped to `WHERE customer_id = <their session's id>`, so even if the
+  redirect were somehow bypassed the query still couldn't return anyone else's bookings.
+- Signing up checks for existing guest bookings (`is_guest = true`, no `customer_id`) matching the
+  new account's email and links them, so booking history isn't empty on day one. This only runs on
+  signup, not on every login.
+- The admin and customer sessions share the `ADMIN_SESSION_SECRET` env var as their root secret
+  (no new required env var to configure) but are cryptographically domain-separated — each is
+  hashed with a different salt in `src/lib/auth.ts` — so an admin session cookie and a customer
+  session cookie can never be confused for each other.
+
 ## Admin area
 
 - `/admin/login`: email + password, checked against the `admin_users` table (bcrypt-hashed

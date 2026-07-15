@@ -106,3 +106,15 @@ export const adminChangePasswordSchema = z.object({
   newPassword: z.string().min(8, 'Password must be at least 8 characters').max(200),
 });
 export type AdminChangePasswordInput = z.infer<typeof adminChangePasswordSchema>;
+
+export const customerSignupSchema = z.object({
+  email,
+  name: z.string().trim().min(1, 'Name is required').max(200),
+  phone: z.string().trim().max(50).optional().or(z.literal('')),
+});
+export type CustomerSignupInput = z.infer<typeof customerSignupSchema>;
+
+export const customerLoginSchema = z.object({
+  email,
+});
+export type CustomerLoginInput = z.infer<typeof customerLoginSchema>;
