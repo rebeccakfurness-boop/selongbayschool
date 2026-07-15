@@ -149,6 +149,34 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS is_guest BOOLEAN NOT NULL DEFAULT true`;
 
       await sql`
+        CREATE TABLE IF NOT EXISTS passes (
+          id BIGSERIAL PRIMARY KEY,
+          customer_id BIGINT NOT NULL REFERENCES customers(id),
+          child_name TEXT NOT NULL,
+          total_sessions INTEGER NOT NULL DEFAULT 10,
+          sessions_used INTEGER NOT NULL DEFAULT 0,
+          price_paid_idr BIGINT,
+          purchased_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          expires_at TIMESTAMPTZ NOT NULL DEFAULT (now() + interval '1 month'),
+          payment_method TEXT CHECK (payment_method IN ('pay_online', 'pay_at_session')),
+          status TEXT NOT NULL DEFAULT 'pay_at_session'
+            CHECK (status IN ('pending_payment', 'pay_at_session', 'paid', 'expired', 'cancelled'))
+        )
+      `;
+      // No scheduled job flips status to 'expired' automatically (no background-worker
+      // infrastructure in this app) — "active" is instead always computed live as
+      // status = 'paid' AND expires_at > now() AND sessions_used < total_sessions,
+      // wherever that matters (see /api/passes/active and the pack-session booking path).
+
+      await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS pass_id BIGINT REFERENCES passes(id)`;
+      // A pack-paid booking needs a third payment_method value alongside the original two.
+      await sql`ALTER TABLE bookings DROP CONSTRAINT IF EXISTS bookings_payment_method_check`;
+      await sql`
+        ALTER TABLE bookings ADD CONSTRAINT bookings_payment_method_check
+        CHECK (payment_method IN ('pay_online', 'pay_at_session', 'pack_session'))
+      `;
+
+      await sql`
         CREATE TABLE IF NOT EXISTS admin_users (
           id BIGSERIAL PRIMARY KEY,
           email TEXT NOT NULL UNIQUE,

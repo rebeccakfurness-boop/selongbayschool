@@ -159,6 +159,7 @@ export async function sendCustomerMagicLinkEmail(email: string, name: string, ve
 }
 
 export type PaymentMethod = 'pay_online' | 'pay_at_session';
+export type BookingPaymentMethod = PaymentMethod | 'pack_session';
 
 export interface BookingEmailInput {
   activityName: string;
@@ -170,14 +171,15 @@ export interface BookingEmailInput {
   parentEmail: string;
   parentPhone: string;
   emergencyContact: string;
-  paymentMethod: PaymentMethod;
+  paymentMethod: BookingPaymentMethod;
   priceIDR: number | null;
   priceNote: string | null;
 }
 
-const paymentMethodLabels: Record<PaymentMethod, string> = {
+const paymentMethodLabels: Record<BookingPaymentMethod, string> = {
   pay_online: 'Pay online (bank transfer)',
   pay_at_session: 'Pay at the session',
+  pack_session: 'Paid with activity pack',
 };
 
 function amountLabel(input: Pick<BookingEmailInput, 'priceIDR' | 'priceNote'>): string | null {
@@ -236,12 +238,60 @@ export async function sendBookingAutoReply(input: BookingEmailInput): Promise<bo
      ])}
      ${input.paymentMethod === 'pay_online'
        ? `${bankDetailsHtml()}<p style="margin-top: 16px;">Please complete the transfer before your session. We'll confirm once we've received it.</p>`
-       : `<p style="margin-top: 16px;">You can pay in person when you arrive for the session.</p>`
+       : input.paymentMethod === 'pack_session'
+         ? `<p style="margin-top: 16px;">This session is included in your activity pack — no payment needed.</p>`
+         : `<p style="margin-top: 16px;">You can pay in person when you arrive for the session.</p>`
      }
      <p style="margin-top: 16px;">If your plans change, just reply to this email or call us on ${siteConfig.contact.phone}.</p>
      <p style="margin-top: 24px;">See you soon!<br />The Selong Bay School team</p>`
   );
   return send(input.parentEmail, `Booking confirmed: ${input.activityName}`, html);
+}
+
+export interface PassEmailInput {
+  childName: string;
+  customerName: string;
+  customerEmail: string;
+  totalSessions: number;
+  priceIDR: number;
+  expiresAt: string;
+  paymentMethod: PaymentMethod;
+}
+
+export async function sendPassNotification(input: PassEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    'New Activity Pack Purchase',
+    fieldRows([
+      ["Child's name", input.childName],
+      ['Customer', `${input.customerName} (${input.customerEmail})`],
+      ['Sessions', String(input.totalSessions)],
+      ['Amount', formatIDR(input.priceIDR)],
+      ['Expires', input.expiresAt],
+      ['Payment method', paymentMethodLabels[input.paymentMethod]],
+    ]) + (input.paymentMethod === 'pay_online' ? bankDetailsHtml() : '')
+  );
+  return send(NOTIFY_TO, `Activity pack purchased for ${input.childName}`, html, input.customerEmail);
+}
+
+export async function sendPassAutoReply(input: PassEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    `Your activity pack is on its way, ${input.customerName.split(' ')[0]}!`,
+    `<p>Thanks for buying a ${input.totalSessions}-session activity pack for ${input.childName}. Here are the details:</p>
+     ${fieldRows([
+       ["Child's name", input.childName],
+       ['Sessions', String(input.totalSessions)],
+       ['Amount', formatIDR(input.priceIDR)],
+       ['Expires', input.expiresAt],
+       ['Payment method', paymentMethodLabels[input.paymentMethod]],
+     ])}
+     ${input.paymentMethod === 'pay_online'
+       ? `${bankDetailsHtml()}<p style="margin-top: 16px;">Please complete the transfer soon. We'll confirm your pack once we've received it.</p>`
+       : `<p style="margin-top: 16px;">You can pay in person at the school.</p>`
+     }
+     <p style="margin-top: 16px;">Once confirmed, just choose "Use a session from your pack" when booking any activity for ${input.childName}.</p>
+     <p style="margin-top: 24px;">See you soon!<br />The Selong Bay School team</p>`
+  );
+  return send(input.customerEmail, `Activity pack confirmed for ${input.childName}`, html);
 }
 
 export interface SessionCancellationEmailInput {

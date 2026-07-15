@@ -22,6 +22,14 @@ export const bankTransferDetails = {
   wiseUrl: 'https://wise.com/pay/me/elizabethb3419',
 };
 
+/** Fixed pack price/size — not admin-configurable, defined once so the client display and the
+ * server-side charge can never drift out of sync. */
+export const activityPass = {
+  priceIDR: 3_000_000,
+  totalSessions: 10,
+  validityLabel: '1 month',
+};
+
 export const navItems = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },

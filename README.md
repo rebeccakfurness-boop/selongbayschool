@@ -131,6 +131,36 @@ not `admin_users`), and a different auth mechanism.
   hashed with a different salt in `src/lib/auth.ts` — so an admin session cookie and a customer
   session cookie can never be confused for each other.
 
+### Activity packs
+
+- `/account/buy-pack` (logged-in customers only) sells a fixed pack — `activityPass` in
+  `src/lib/site-content.ts` (currently 10 sessions, Rp 3.000.000, valid 1 month from purchase) is
+  the single source of truth the buy-pack page, `/api/passes`, and the confirmation emails all
+  read from, so the price/size can't drift between what's shown and what's charged. Buying a pack
+  goes through the same Pay Online / Pay at the Session choice as a booking and sends the same two
+  emails (customer confirmation + `hello@selongbayschool.com` notification).
+- A pass is "active" for booking purposes when `status = 'paid'`, `expires_at > now()`, and
+  `sessions_used < total_sessions` — computed live everywhere it matters (`/api/passes/active`, the
+  pack-session booking path), not by a stored flag. Nothing in this app flips a pass to `'expired'`
+  automatically — there's no background-job infrastructure here — so that status value exists for
+  the schema's completeness but isn't set by anything yet.
+- When booking, if a logged-in customer has an active pass for the exact child name they're
+  booking for, "Use a session from your pack" **replaces** the Pay Online / Pay at Session choice
+  entirely (not offered alongside it). Picking it creates the booking with `status = 'paid'` and
+  `payment_method = 'pack_session'` immediately — no separate payment or admin confirmation needed
+  — and atomically increments `passes.sessions_used` in the same statement that decrements the
+  session's `spots_remaining`, so both a double-booking race and a double-spend of the same pack
+  session are impossible. The pack check is always re-verified server-side at submit time, never
+  trusted from the client's earlier "you have an active pack" check.
+- `bookings.pass_id` (not explicitly requested, added because otherwise there'd be no way to trace
+  a pack-paid booking back to the pass it drew from) records which pass paid for a booking. Known
+  gap: cancelling a session doesn't currently refund the pack session it consumed — nothing
+  decrements `sessions_used` back down on cancellation.
+- `/admin/bookings/passes` (a "Passes" tab next to "Bookings") lists every pass — customer, child,
+  sessions remaining, expiry, amount, payment method, status — with the same "Mark as Paid" action
+  as regular bookings (`MarkPaidButton` now takes a `kind` prop so it can PATCH either
+  `/api/admin/bookings/:id` or `/api/admin/passes/:id`).
+
 ## Admin area
 
 - `/admin/login`: email + password, checked against the `admin_users` table (bcrypt-hashed

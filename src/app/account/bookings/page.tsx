@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import Link from 'next/link';
 import { getIronSession } from 'iron-session';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCustomerSessionOptions, type CustomerSessionData } from '@/lib/auth';
@@ -83,8 +84,18 @@ export default async function AccountBookingsPage() {
         </div>
       </div>
       <div className="mx-auto max-w-4xl px-6 py-10">
-        <h1 className="font-display text-2xl font-semibold text-ink">My Bookings</h1>
-        <p className="mt-1 text-sm text-ink-soft">Signed in as {session.email}.</p>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h1 className="font-display text-2xl font-semibold text-ink">My Bookings</h1>
+            <p className="mt-1 text-sm text-ink-soft">Signed in as {session.email}.</p>
+          </div>
+          <Link
+            href="/account/buy-pack"
+            className="rounded-full bg-orange px-5 py-2.5 text-sm font-extrabold text-[#46280a] hover:bg-orange-deep hover:text-white"
+          >
+            Buy an Activity Pack
+          </Link>
+        </div>
 
         <section className="mt-8">
           <h2 className="font-display text-xl font-semibold text-ink">Upcoming</h2>

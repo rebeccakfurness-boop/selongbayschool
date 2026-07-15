@@ -22,7 +22,8 @@ export async function POST(req: NextRequest) {
     );
   }
   const input = parsed.data;
-  const status = input.paymentMethod === 'pay_online' ? 'pending_payment' : 'pay_at_session';
+  const usingPack = input.paymentMethod === 'pack_session';
+  const status = usingPack ? 'paid' : input.paymentMethod === 'pay_online' ? 'pending_payment' : 'pay_at_session';
 
   // Never trust a client-supplied customer id: whoever's booking is determined solely by
   // their own session cookie, so nobody can attach a booking to someone else's account.
@@ -30,38 +31,86 @@ export async function POST(req: NextRequest) {
   const customerId = customerSession.customerId ?? null;
   const isGuest = !customerId;
 
+  if (usingPack && !customerId) {
+    return NextResponse.json({ error: 'Please log in to use a session from your pack.' }, { status: 401 });
+  }
+
   try {
     await ensureSchema();
 
-    // Single atomic statement: only inserts the booking if the slot still has
-    // capacity, preventing a double-booking race between concurrent requests.
-    // Both payment methods are a real commitment, so both decrement spots_remaining
-    // immediately (there's no separate "spots_booked" counter to keep in sync).
-    const rows = await sql`
-      WITH slot_update AS (
-        UPDATE sessions
-        SET spots_remaining = spots_remaining - 1
-        WHERE id = ${input.slotId} AND spots_remaining > 0 AND status = 'active'
-        RETURNING id, activity_id, session_date, session_time
-      ),
-      slot_with_activity AS (
-        SELECT su.id, a.slug AS activity_slug, a.name AS activity_name
-        FROM slot_update su
-        JOIN activities a ON a.id = su.activity_id
-      )
-      INSERT INTO bookings (
-        slot_id, activity_slug, activity_name, child_name, child_age,
-        parent_name, parent_email, parent_phone, emergency_contact, payment_method, status,
-        customer_id, is_guest
-      )
-      SELECT id, activity_slug, activity_name, ${input.childName}, ${input.childAge},
-        ${input.parentName}, ${input.parentEmail}, ${input.parentPhone}, ${input.emergencyContact},
-        ${input.paymentMethod}, ${status}, ${customerId}, ${isGuest}
-      FROM slot_with_activity
-      RETURNING id, activity_slug, activity_name, slot_id
-    `;
+    // Single atomic statement: only inserts the booking if the slot still has capacity
+    // (and, when using a pack, only if the pass is still valid and re-checked server-side,
+    // never trusting the client's earlier "you have an active pack" check), preventing both
+    // a double-booking race and a double-spend of the same pack session.
+    const rows = usingPack
+      ? await sql`
+          WITH slot_update AS (
+            UPDATE sessions
+            SET spots_remaining = spots_remaining - 1
+            WHERE id = ${input.slotId} AND spots_remaining > 0 AND status = 'active'
+            RETURNING id, activity_id
+          ),
+          slot_with_activity AS (
+            SELECT su.id, a.slug AS activity_slug, a.name AS activity_name
+            FROM slot_update su
+            JOIN activities a ON a.id = su.activity_id
+          ),
+          pass_update AS (
+            UPDATE passes
+            SET sessions_used = sessions_used + 1
+            WHERE id = ${input.passId} AND customer_id = ${customerId} AND status = 'paid'
+              AND expires_at > now() AND sessions_used < total_sessions
+            RETURNING id
+          )
+          INSERT INTO bookings (
+            slot_id, activity_slug, activity_name, child_name, child_age,
+            parent_name, parent_email, parent_phone, emergency_contact, payment_method, status,
+            customer_id, is_guest, pass_id
+          )
+          SELECT swa.id, swa.activity_slug, swa.activity_name, ${input.childName}, ${input.childAge},
+            ${input.parentName}, ${input.parentEmail}, ${input.parentPhone}, ${input.emergencyContact},
+            'pack_session', ${status}, ${customerId}, ${isGuest}, pu.id
+          FROM slot_with_activity swa, pass_update pu
+          RETURNING id, activity_slug, activity_name, slot_id
+        `
+      : await sql`
+          WITH slot_update AS (
+            UPDATE sessions
+            SET spots_remaining = spots_remaining - 1
+            WHERE id = ${input.slotId} AND spots_remaining > 0 AND status = 'active'
+            RETURNING id, activity_id
+          ),
+          slot_with_activity AS (
+            SELECT su.id, a.slug AS activity_slug, a.name AS activity_name
+            FROM slot_update su
+            JOIN activities a ON a.id = su.activity_id
+          )
+          INSERT INTO bookings (
+            slot_id, activity_slug, activity_name, child_name, child_age,
+            parent_name, parent_email, parent_phone, emergency_contact, payment_method, status,
+            customer_id, is_guest
+          )
+          SELECT id, activity_slug, activity_name, ${input.childName}, ${input.childAge},
+            ${input.parentName}, ${input.parentEmail}, ${input.parentPhone}, ${input.emergencyContact},
+            ${input.paymentMethod}, ${status}, ${customerId}, ${isGuest}
+          FROM slot_with_activity
+          RETURNING id, activity_slug, activity_name, slot_id
+        `;
 
     if (rows.length === 0) {
+      if (usingPack) {
+        // Distinguish which of the two conditions failed, purely for a clearer error message.
+        const passRows = await sql`
+          SELECT 1 FROM passes WHERE id = ${input.passId} AND customer_id = ${customerId} AND status = 'paid'
+            AND expires_at > now() AND sessions_used < total_sessions
+        `;
+        if (passRows.length === 0) {
+          return NextResponse.json(
+            { error: 'That activity pack no longer has sessions available. Please choose another payment option.' },
+            { status: 409 }
+          );
+        }
+      }
       return NextResponse.json(
         { error: 'Sorry, that slot just filled up. Please pick another date or time.' },
         { status: 409 }
@@ -75,8 +124,16 @@ export async function POST(req: NextRequest) {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
     }) : '';
 
-    const activityRows = await sql`SELECT price_idr, price_note FROM activities WHERE slug = ${booking.activity_slug}`;
-    const activity = activityRows[0];
+    let priceIDR: number | null = null;
+    let priceNote: string | null = null;
+    if (usingPack) {
+      priceNote = 'Included in your activity pack';
+    } else {
+      const activityRows = await sql`SELECT price_idr, price_note FROM activities WHERE slug = ${booking.activity_slug}`;
+      const activity = activityRows[0];
+      priceIDR = (activity?.price_idr as number | undefined) ?? null;
+      priceNote = (activity?.price_note as string | undefined) ?? null;
+    }
 
     const emailInput = {
       activityName: booking.activity_name as string,
@@ -89,8 +146,8 @@ export async function POST(req: NextRequest) {
       parentPhone: input.parentPhone,
       emergencyContact: input.emergencyContact,
       paymentMethod: input.paymentMethod,
-      priceIDR: (activity?.price_idr as number | undefined) ?? null,
-      priceNote: (activity?.price_note as string | undefined) ?? null,
+      priceIDR,
+      priceNote,
     };
 
     const notifySent = await sendBookingNotification(emailInput);

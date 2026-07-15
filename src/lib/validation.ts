@@ -32,16 +32,22 @@ export const highSchoolSchema = z.object({
 });
 export type HighSchoolInput = z.infer<typeof highSchoolSchema>;
 
-export const bookingSchema = z.object({
-  slotId: z.coerce.number().int().positive(),
-  childName: z.string().trim().min(1, "Child's name is required").max(200),
-  childAge: z.string().trim().min(1, "Child's age is required").max(50),
-  parentName: z.string().trim().min(1, 'Parent name is required').max(200),
-  parentEmail: email,
-  parentPhone: phone,
-  emergencyContact: z.string().trim().min(1, 'Emergency contact is required').max(200),
-  paymentMethod: z.enum(['pay_online', 'pay_at_session'], { message: 'Please choose a payment method' }),
-});
+export const bookingSchema = z
+  .object({
+    slotId: z.coerce.number().int().positive(),
+    childName: z.string().trim().min(1, "Child's name is required").max(200),
+    childAge: z.string().trim().min(1, "Child's age is required").max(50),
+    parentName: z.string().trim().min(1, 'Parent name is required').max(200),
+    parentEmail: email,
+    parentPhone: phone,
+    emergencyContact: z.string().trim().min(1, 'Emergency contact is required').max(200),
+    paymentMethod: z.enum(['pay_online', 'pay_at_session', 'pack_session'], { message: 'Please choose a payment option' }),
+    passId: z.coerce.number().int().positive().optional(),
+  })
+  .refine((data) => data.paymentMethod !== 'pack_session' || data.passId !== undefined, {
+    message: 'Missing pack to use for this booking.',
+    path: ['passId'],
+  });
 
 export const updateBookingStatusSchema = z.object({
   status: z.literal('paid'),
@@ -118,3 +124,9 @@ export const customerLoginSchema = z.object({
   email,
 });
 export type CustomerLoginInput = z.infer<typeof customerLoginSchema>;
+
+export const passPurchaseSchema = z.object({
+  childName: z.string().trim().min(1, "Child's name is required").max(200),
+  paymentMethod: z.enum(['pay_online', 'pay_at_session'], { message: 'Please choose a payment method' }),
+});
+export type PassPurchaseInput = z.infer<typeof passPurchaseSchema>;

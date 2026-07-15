@@ -26,7 +26,13 @@ interface Account {
   phone: string | null;
 }
 
-type PaymentMethod = 'pay_online' | 'pay_at_session';
+interface ActivePass {
+  id: number;
+  sessionsRemaining: number;
+  expiresAt: string;
+}
+
+type PaymentMethod = 'pay_online' | 'pay_at_session' | 'pack_session';
 
 function formatDate(dateStr: string): string {
   return new Date(`${dateStr}T00:00:00`).toLocaleDateString('en-AU', {
@@ -54,6 +60,7 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
   const [emergencyContact, setEmergencyContact] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
   const [emailWarning, setEmailWarning] = useState<string | null>(null);
+  const [activePass, setActivePass] = useState<ActivePass | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -92,6 +99,33 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
     };
   }, []);
 
+  useEffect(() => {
+    if (!account || !childName.trim()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActivePass(null);
+      if (paymentMethod === 'pack_session') setPaymentMethod(null);
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      fetch(`/api/passes/active?childName=${encodeURIComponent(childName.trim())}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (cancelled) return;
+          setActivePass(data.pass ?? null);
+          if (!data.pass && paymentMethod === 'pack_session') setPaymentMethod(null);
+        })
+        .catch(() => {
+          if (!cancelled) setActivePass(null);
+        });
+    }, 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, childName]);
+
   const selectedSlot = slots?.find((slot) => slot.id === selectedSlotId) ?? null;
   const amountLabel = selectedSlot?.price_idr ? formatIDR(selectedSlot.price_idr) : selectedSlot?.price_note;
   const showDetailsForm = Boolean(account) || continuingAsGuest;
@@ -99,6 +133,7 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!selectedSlotId || !paymentMethod) return;
+    if (paymentMethod === 'pack_session' && !activePass) return;
     const result = await submit({
       slotId: selectedSlotId,
       childName,
@@ -108,6 +143,7 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
       parentPhone,
       emergencyContact,
       paymentMethod,
+      passId: paymentMethod === 'pack_session' ? activePass?.id : undefined,
     });
     if (result?.emailWarning) setEmailWarning(result.emailWarning);
   }
@@ -120,7 +156,9 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
           successMessage={
             paymentMethod === 'pay_online'
               ? "Your booking is saved! We've emailed you the bank transfer details — please complete payment before your session."
-              : "Your booking is confirmed! We've sent a confirmation email with the details. You can pay in person at the session."
+              : paymentMethod === 'pack_session'
+                ? "Your booking is confirmed using a session from your pack! We've sent a confirmation email with the details."
+                : "Your booking is confirmed! We've sent a confirmation email with the details. You can pay in person at the session."
           }
         />
         {emailWarning && <p className="mt-3 text-sm text-orange-deep">{emailWarning}</p>}
@@ -228,27 +266,41 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
 
           <div className="border-t border-sand-line pt-5">
             <p className="font-display text-base font-semibold text-ink">
-              How would you like to pay?{amountLabel ? ` (${amountLabel})` : ''}
+              How would you like to pay?{!activePass && amountLabel ? ` (${amountLabel})` : ''}
             </p>
             <div className="mt-3 flex flex-wrap gap-3">
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('pay_online')}
-                className={`rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors ${
-                  paymentMethod === 'pay_online' ? 'border-teal bg-teal text-white' : 'border-sand-line bg-white text-ink hover:border-teal'
-                }`}
-              >
-                Pay Online
-              </button>
-              <button
-                type="button"
-                onClick={() => setPaymentMethod('pay_at_session')}
-                className={`rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors ${
-                  paymentMethod === 'pay_at_session' ? 'border-teal bg-teal text-white' : 'border-sand-line bg-white text-ink hover:border-teal'
-                }`}
-              >
-                Pay at the Session
-              </button>
+              {activePass ? (
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('pack_session')}
+                  className={`rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors ${
+                    paymentMethod === 'pack_session' ? 'border-teal bg-teal text-white' : 'border-sand-line bg-white text-ink hover:border-teal'
+                  }`}
+                >
+                  Use a session from your pack ({activePass.sessionsRemaining} left)
+                </button>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('pay_online')}
+                    className={`rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors ${
+                      paymentMethod === 'pay_online' ? 'border-teal bg-teal text-white' : 'border-sand-line bg-white text-ink hover:border-teal'
+                    }`}
+                  >
+                    Pay Online
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('pay_at_session')}
+                    className={`rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors ${
+                      paymentMethod === 'pay_at_session' ? 'border-teal bg-teal text-white' : 'border-sand-line bg-white text-ink hover:border-teal'
+                    }`}
+                  >
+                    Pay at the Session
+                  </button>
+                </>
+              )}
             </div>
 
             {paymentMethod === 'pay_online' && (

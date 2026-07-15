@@ -3,14 +3,14 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function MarkPaidButton({ id }: { id: number }) {
+export default function MarkPaidButton({ id, kind = 'bookings' }: { id: number; kind?: 'bookings' | 'passes' }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
 
   async function markPaid() {
     setPending(true);
     try {
-      await fetch(`/api/admin/bookings/${id}`, {
+      await fetch(`/api/admin/${kind}/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'paid' }),

@@ -3,6 +3,7 @@ import { formatDateTime } from '@/lib/admin-format';
 import { formatIDR } from '@/lib/site-content';
 import StatusPill from '@/components/admin/StatusPill';
 import MarkPaidButton from '@/components/admin/MarkPaidButton';
+import BookingsTabs from '@/components/admin/BookingsTabs';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,6 +30,7 @@ interface BookingRow {
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   pay_online: 'Pay online',
   pay_at_session: 'Pay at session',
+  pack_session: 'Activity pack',
 };
 
 function amountDue(row: Pick<BookingRow, 'price_idr' | 'price_note'>): string {
@@ -94,7 +96,10 @@ export default async function AdminBookingsPage({
 
   return (
     <section>
-      <h1 className="font-display text-2xl font-semibold text-ink">Bookings</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-display text-2xl font-semibold text-ink">Bookings</h1>
+        <BookingsTabs active="bookings" />
+      </div>
       <p className="mt-1 text-sm text-ink-soft">{bookings.length} shown.</p>
 
       <form method="get" className="mt-4 flex flex-wrap items-end gap-3 rounded-md border border-sand-line bg-paper p-4">
