@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import { unstable_cache } from 'next/cache';
 import PhotoBanner from '@/components/PhotoBanner';
 import ActivityCard from '@/components/ActivityCard';
 import Reveal from '@/components/Reveal';
@@ -7,6 +8,10 @@ import MaintenanceNotice from '@/components/MaintenanceNotice';
 import { ensureSchema, sql } from '@/lib/db';
 import { afternoonClubs, activitiesGallery, type Activity } from '@/lib/site-content';
 
+// Kept dynamic (rendered at request time) rather than relying on Next's default static
+// detection, so this never gets prerendered at *build* time (which would require a working
+// database connection on every deploy). The actual caching benefit comes from wrapping the
+// query itself in unstable_cache below, not from this.
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
@@ -33,7 +38,7 @@ interface ActivityRow {
   has_availability: boolean;
 }
 
-async function getActivities(): Promise<Activity[]> {
+async function fetchActivities(): Promise<Activity[]> {
   await ensureSchema();
   const rows = (await sql`
     SELECT a.slug, a.name, a.day, a.duration, a.price_idr, a.price_note, a.description, a.age_group, a.photo_url,
@@ -62,6 +67,14 @@ async function getActivities(): Promise<Activity[]> {
     availability: row.has_availability ? 'available' : row.has_sessions ? 'full' : 'none',
   }));
 }
+
+// Caches the query result (including the ensureSchema() check) for 60 seconds via Next's data
+// cache, so most visits skip both the database round-trip and, on a cold serverless instance,
+// the 35 sequential schema-check statements ensureSchema() runs. Deliberately not page-level
+// ISR (export const revalidate): that would make Next attempt to prerender this page at *build*
+// time, which would require a working database connection on every deploy. This keeps the page
+// rendered at request time as before, just with the expensive part cached.
+const getActivities = unstable_cache(fetchActivities, ['activities-page-list'], { revalidate: 60 });
 
 const activityImages: Record<string, { src: string; alt: string }> = {
   'surfing-selong-belanak': {
