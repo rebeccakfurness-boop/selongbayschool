@@ -149,6 +149,7 @@ export function ensureSchema(): Promise<void> {
       // unused for every row, kept only in case password login gets added later.
       await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS magic_link_token TEXT`;
       await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS magic_link_token_expires_at TIMESTAMPTZ`;
+      await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS last_login_at TIMESTAMPTZ`;
 
       await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS customer_id BIGINT REFERENCES customers(id)`;
       // Existing rows all predate customer accounts, so they default to true (guest bookings).

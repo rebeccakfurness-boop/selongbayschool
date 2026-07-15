@@ -25,7 +25,11 @@ export async function GET(req: NextRequest) {
     }
 
     // Single-use: clear the token immediately so the same email link can't be replayed.
-    await sql`UPDATE customers SET magic_link_token = NULL, magic_link_token_expires_at = NULL WHERE id = ${customer.id}`;
+    await sql`
+      UPDATE customers
+      SET magic_link_token = NULL, magic_link_token_expires_at = NULL, last_login_at = now()
+      WHERE id = ${customer.id}
+    `;
 
     const session = await getIronSession<CustomerSessionData>(await cookies(), await getCustomerSessionOptions());
     session.customerId = customer.id as number;
