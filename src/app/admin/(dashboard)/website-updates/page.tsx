@@ -31,8 +31,17 @@ export default async function WebsiteUpdatesPage() {
 
   return (
     <section>
-      <h1 className="font-display text-2xl font-semibold text-ink">Website Updates</h1>
-      <p className="mt-1 text-sm text-ink-soft">
+      <div className="flex flex-wrap items-center gap-3">
+        <h1 className="font-display text-2xl font-semibold text-ink">Website Updates</h1>
+        <span className="inline-block rounded-full bg-orange/20 px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-orange-deep">
+          Coming Soon
+        </span>
+      </div>
+      <p className="mt-2 max-w-2xl text-[15px] font-semibold text-teal-deep">
+        Soon you&apos;ll be able to type a change straight into this page and watch it go live on the
+        site — no developer, no waiting. We can&apos;t wait to hand you the keys.
+      </p>
+      <p className="mt-2 text-sm text-ink-soft">
         Requested changes to the website and their status. {requests.length} total.
       </p>
       <div className="mt-4 overflow-x-auto rounded-md border border-sand-line bg-paper">
