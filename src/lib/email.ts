@@ -1,27 +1,21 @@
-import nodemailer, { type Transporter } from 'nodemailer';
+import * as brevo from '@getbrevo/brevo';
 import { siteConfig, bankTransferDetails, formatIDR } from './site-content';
 
 const NOTIFY_TO = siteConfig.contact.email;
+const SENDER = { name: 'Selong Bay School', email: siteConfig.contact.email };
 
-function fromAddress(): string {
-  return `Selong Bay School <${process.env.GMAIL_USER}>`;
-}
+let apiInstance: brevo.TransactionalEmailsApi | null = null;
 
-let transporter: Transporter | null = null;
-
-function getTransporter(): Transporter {
-  if (!transporter) {
-    const user = process.env.GMAIL_USER;
-    const pass = process.env.GMAIL_APP_PASSWORD;
-    if (!user || !pass) {
-      throw new Error('GMAIL_USER and GMAIL_APP_PASSWORD are not set');
+function getBrevoClient(): brevo.TransactionalEmailsApi {
+  if (!apiInstance) {
+    const apiKey = process.env.BREVO_API_KEY;
+    if (!apiKey) {
+      throw new Error('BREVO_API_KEY is not set');
     }
-    transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: { user, pass },
-    });
+    apiInstance = new brevo.TransactionalEmailsApi();
+    apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, apiKey);
   }
-  return transporter;
+  return apiInstance;
 }
 
 function wrapEmail(title: string, bodyHtml: string): string {
@@ -62,14 +56,15 @@ async function send(
   options?: { replyTo?: string; cc?: string }
 ): Promise<boolean> {
   try {
-    await getTransporter().sendMail({
-      from: fromAddress(),
-      to,
-      subject,
-      html,
-      ...(options?.replyTo ? { replyTo: options.replyTo } : {}),
-      ...(options?.cc ? { cc: options.cc } : {}),
-    });
+    const email = new brevo.SendSmtpEmail();
+    email.sender = SENDER;
+    email.to = [{ email: to }];
+    email.subject = subject;
+    email.htmlContent = html;
+    if (options?.replyTo) email.replyTo = { email: options.replyTo };
+    if (options?.cc) email.cc = [{ email: options.cc }];
+
+    await getBrevoClient().sendTransacEmail(email);
     return true;
   } catch (err) {
     console.error('[email] Failed to send email', { to, subject, err });
