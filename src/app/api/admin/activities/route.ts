@@ -17,7 +17,7 @@ export async function GET() {
     await ensureSchema();
     const rows = await sql`
       SELECT id, slug, name, day, duration, price_idr, price_note,
-             default_time, default_capacity, is_active, photo_url
+             default_time, default_capacity, is_active, photo_url, description
       FROM activities ORDER BY id ASC
     `;
     return NextResponse.json({ activities: rows });

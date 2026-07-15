@@ -18,6 +18,7 @@ interface ActivityRow {
   default_capacity: number;
   is_active: boolean;
   photo_url: string | null;
+  description: string;
 }
 
 interface Slot {
@@ -37,6 +38,7 @@ function ActivityEditRow({ activity, onSaved }: { activity: ActivityRow; onSaved
   const [day, setDay] = useState(activity.day ?? '');
   const [defaultTime, setDefaultTime] = useState(activity.default_time ?? '');
   const [duration, setDuration] = useState(activity.duration ?? '');
+  const [description, setDescription] = useState(activity.description);
   const [priceIDR, setPriceIDR] = useState(activity.price_idr != null ? String(activity.price_idr) : '');
   const [defaultCapacity, setDefaultCapacity] = useState(String(activity.default_capacity));
   const [saving, setSaving] = useState(false);
@@ -66,6 +68,7 @@ function ActivityEditRow({ activity, onSaved }: { activity: ActivityRow; onSaved
       name,
       day,
       duration,
+      description,
       priceIDR: priceIDR === '' ? null : Number(priceIDR),
       defaultTime,
       defaultCapacity: Number(defaultCapacity),
@@ -85,6 +88,9 @@ function ActivityEditRow({ activity, onSaved }: { activity: ActivityRow; onSaved
       <td className="px-3 py-2"><TextInput value={day} onChange={(e) => setDay(e.target.value)} className="w-28" placeholder="e.g. Tuesdays" /></td>
       <td className="px-3 py-2"><TextInput value={defaultTime} onChange={(e) => setDefaultTime(e.target.value)} className="w-24" placeholder="e.g. 15:00" /></td>
       <td className="px-3 py-2"><TextInput value={duration} onChange={(e) => setDuration(e.target.value)} className="w-24" placeholder="e.g. 1 hour" /></td>
+      <td className="px-3 py-2">
+        <TextArea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} className="w-56 resize-y" />
+      </td>
       <td className="px-3 py-2">
         <TextInput type="number" min={0} step={1000} value={priceIDR} onChange={(e) => setPriceIDR(e.target.value)} className="w-28" />
         <div className="mt-1 text-xs font-semibold text-ink-soft">{priceIDR ? formatIDR(Number(priceIDR)) : '—'}</div>
@@ -292,7 +298,7 @@ export default function ActivitiesPage() {
       <section>
         <h2 className="font-display text-xl font-semibold text-ink">Activities</h2>
         <div className="mt-4 overflow-x-auto rounded-md border border-sand-line bg-paper">
-          <table className="w-full min-w-[900px] border-collapse text-sm">
+          <table className="w-full min-w-[1150px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-sand-line bg-sand/40 text-left">
                 <th className="px-3 py-3 font-bold text-ink-soft">Photo</th>
@@ -300,6 +306,7 @@ export default function ActivitiesPage() {
                 <th className="px-3 py-3 font-bold text-ink-soft">Day</th>
                 <th className="px-3 py-3 font-bold text-ink-soft">Time</th>
                 <th className="px-3 py-3 font-bold text-ink-soft">Duration</th>
+                <th className="px-3 py-3 font-bold text-ink-soft">Description</th>
                 <th className="px-3 py-3 font-bold text-ink-soft">Price (IDR)</th>
                 <th className="px-3 py-3 font-bold text-ink-soft">Capacity</th>
                 <th className="px-3 py-3 font-bold text-ink-soft">Active</th>
@@ -312,12 +319,12 @@ export default function ActivitiesPage() {
               ))}
               {activities && activities.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="px-4 py-6 text-center text-ink-soft">No activities yet. Add one below.</td>
+                  <td colSpan={10} className="px-4 py-6 text-center text-ink-soft">No activities yet. Add one below.</td>
                 </tr>
               )}
               {!activities && (
                 <tr>
-                  <td colSpan={9} className="px-4 py-6 text-center text-ink-soft">Loading…</td>
+                  <td colSpan={10} className="px-4 py-6 text-center text-ink-soft">Loading…</td>
                 </tr>
               )}
             </tbody>

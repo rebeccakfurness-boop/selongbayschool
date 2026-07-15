@@ -87,6 +87,7 @@ export const updateActivitySchema = z.object({
   defaultCapacity: z.coerce.number().int().positive().max(500).optional(),
   isActive: z.boolean().optional(),
   photoUrl: z.string().trim().url().max(2000).optional(),
+  description: z.string().trim().min(1, 'Description is required').max(2000).optional(),
 });
 export type UpdateActivityInput = z.infer<typeof updateActivitySchema>;
 

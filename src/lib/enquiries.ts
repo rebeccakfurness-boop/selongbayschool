@@ -30,6 +30,16 @@ export async function submitEnquiry(record: EnquiryRecord): Promise<SubmitResult
   `;
   const id = rows[0].id as number;
 
+  // The contact form also feeds the newer CRM table (source='contact_form'), which nothing else
+  // writes to yet; admissions/high-school enquiries stay in `enquiries` only, since 'contact_form'
+  // is the only source value that applies to them.
+  if (record.type === 'contact') {
+    await sql`
+      INSERT INTO crm_enquiries (source, customer_name, customer_email, customer_phone, message)
+      VALUES ('contact_form', ${record.name}, ${record.email}, ${record.phone ?? null}, ${record.message ?? null})
+    `;
+  }
+
   const emailInput: EnquiryEmailInput = {
     type: record.type,
     name: record.name,

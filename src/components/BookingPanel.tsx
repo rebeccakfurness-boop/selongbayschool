@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import Button from './Button';
+import BookingCalendar from './BookingCalendar';
 import { Field, TextInput } from './forms/FormField';
 import FormStatusBanner from './forms/FormStatusBanner';
 import { useFormSubmit } from '@/lib/useFormSubmit';
@@ -33,14 +34,6 @@ interface ActivePass {
 }
 
 type PaymentMethod = 'pay_online' | 'pay_at_session' | 'pack_session';
-
-function formatDate(dateStr: string): string {
-  return new Date(`${dateStr}T00:00:00`).toLocaleDateString('en-AU', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-  });
-}
 
 export default function BookingPanel({ activitySlug, onClose }: { activitySlug: string; onClose: () => void }) {
   const [slots, setSlots] = useState<Slot[] | null>(null);
@@ -185,30 +178,8 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
       )}
 
       {slots && slots.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {slots.map((slot) => {
-            const full = slot.spots_remaining <= 0;
-            const selected = selectedSlotId === slot.id;
-            return (
-              <button
-                key={slot.id}
-                type="button"
-                disabled={full}
-                onClick={() => setSelectedSlotId(slot.id)}
-                className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
-                  full
-                    ? 'cursor-not-allowed border-black/10 bg-black/5 text-ink-soft/50 line-through'
-                    : selected
-                      ? 'border-teal bg-teal text-white'
-                      : 'border-sand-line bg-white text-ink hover:border-teal'
-                }`}
-              >
-                {formatDate(slot.slot_date)} &middot; {slot.slot_time}
-                {!full && <span className="ml-1 font-normal opacity-70">({slot.spots_remaining} left)</span>}
-                {full && <span className="ml-1 font-normal">(Full)</span>}
-              </button>
-            );
-          })}
+        <div className="mt-3">
+          <BookingCalendar slots={slots} selectedSlotId={selectedSlotId} onSelectSlot={setSelectedSlotId} />
         </div>
       )}
 

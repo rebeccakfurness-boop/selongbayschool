@@ -175,10 +175,14 @@ export default function HowItWorksPage() {
               <p className="font-script text-3xl text-orange-deep md:text-4xl">Plan ahead</p>
               <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Academic Calendar</h2>
               <p className="mt-3 max-w-prose text-[15px] leading-relaxed text-ink-soft">
-                Browse our academic calendar below, or scroll within the viewer to see the full document.
+                Browse our academic calendar below.
               </p>
               <div className="mt-5 overflow-hidden rounded-md border border-sand-line shadow-soft">
-                <iframe src={academicCalendarPdf} title="Academic Calendar" className="h-[600px] w-full" />
+                <iframe
+                  src={`${academicCalendarPdf}#view=FitH`}
+                  title="Academic Calendar"
+                  className="aspect-[792/612] w-full"
+                />
               </div>
             </Reveal>
           </section>

@@ -54,6 +54,12 @@ Every submission (contact, admissions, high school, activity booking) follows th
 6. Log any email failure server-side (`console.error`) so it can be followed up manually; the
    submission itself is still saved and visible at `/admin`
 
+The contact form additionally writes a second row into `crm_enquiries` (`source = 'contact_form'`),
+the newer CRM table from an earlier schema round that nothing else writes to yet — nothing about
+the existing `/admin/enquiries` flow (the `enquiries` table, still the one that view reads from)
+changed. Admissions and high-school submissions only ever go to `enquiries`, since `'contact_form'`
+is the only `crm_enquiries.source` value that applies to them.
+
 ## Booking system
 
 - `activities` holds each bookable activity (name, day, default time/capacity, price in
@@ -64,8 +70,13 @@ Every submission (contact, admissions, high school, activity booking) follows th
   `INSERT ... SELECT`) so two people can never book the last spot at the same time: the second
   request simply gets a "that slot just filled up" response.
 - Manage activities and sessions at `/admin/activities`: an inline-editable activities table (name,
-  day, time, duration, price, capacity, active/inactive), an "Add Activity" form, and an upcoming
-  sessions list. Inactive activities are hidden from the public `/activities` page.
+  day, time, duration, description, price, capacity, active/inactive), an "Add Activity" form, and
+  an upcoming sessions list. Inactive activities are hidden from the public `/activities` page.
+- Picking a session on the public `/activities` page shows a real month calendar
+  (`src/components/BookingCalendar.tsx`), not a flat list: available days are highlighted, clicking
+  one reveals that day's time slots below it. It's a plain function of a `slots` array with no
+  network calls of its own, which is what let this get verified with mock data (no live database
+  needed) before shipping.
 - "Cancel this session" marks the session and its bookings cancelled (freeing its spots from every
   capacity count and public listing — cancelled sessions are excluded from `/api/bookings/slots`
   and from the "sessions today"/booking-count stats), and emails every booked customer a

@@ -20,7 +20,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message || 'Invalid update.' }, { status: 400 });
   }
-  const { name, day, duration, priceIDR, defaultTime, defaultCapacity, isActive, photoUrl } = parsed.data;
+  const { name, day, duration, priceIDR, defaultTime, defaultCapacity, isActive, photoUrl, description } = parsed.data;
 
   try {
     await ensureSchema();
@@ -34,9 +34,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         default_time = COALESCE(${defaultTime ?? null}, default_time),
         default_capacity = COALESCE(${defaultCapacity ?? null}, default_capacity),
         is_active = COALESCE(${isActive ?? null}, is_active),
-        photo_url = COALESCE(${photoUrl ?? null}, photo_url)
+        photo_url = COALESCE(${photoUrl ?? null}, photo_url),
+        description = COALESCE(${description ?? null}, description)
       WHERE id = ${id}
-      RETURNING id, slug, name, day, duration, price_idr, price_note, default_time, default_capacity, is_active, photo_url
+      RETURNING id, slug, name, day, duration, price_idr, price_note, default_time, default_capacity, is_active, photo_url, description
     `;
     if (rows.length === 0) {
       return NextResponse.json({ error: 'Activity not found.' }, { status: 404 });
