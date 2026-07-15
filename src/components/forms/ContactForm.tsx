@@ -2,9 +2,11 @@
 
 import { useState, type FormEvent } from 'react';
 import Button from '../Button';
-import { Field, TextArea, TextInput } from './FormField';
+import { countWords, Field, TextArea, TextInput, WordCount } from './FormField';
 import FormStatusBanner from './FormStatusBanner';
 import { useFormSubmit } from '@/lib/useFormSubmit';
+
+const MAX_MESSAGE_WORDS = 250;
 
 export default function ContactForm() {
   const { status, errorMessage, submit } = useFormSubmit('/api/contact');
@@ -12,9 +14,11 @@ export default function ContactForm() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
+  const messageTooLong = countWords(message) > MAX_MESSAGE_WORDS;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (messageTooLong) return;
     const result = await submit({ name, email, phone, message });
     if (result) {
       setName('');
@@ -50,11 +54,14 @@ export default function ContactForm() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
+        <div className="flex justify-end">
+          <WordCount value={message} max={MAX_MESSAGE_WORDS} />
+        </div>
       </Field>
 
       <FormStatusBanner status={status} errorMessage={errorMessage} successMessage="" />
 
-      <Button type="submit" variant="primary" disabled={status === 'submitting'}>
+      <Button type="submit" variant="primary" disabled={status === 'submitting' || messageTooLong}>
         {status === 'submitting' ? 'Sending…' : 'Send message'}
       </Button>
     </form>

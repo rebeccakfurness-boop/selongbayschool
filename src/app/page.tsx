@@ -3,7 +3,6 @@ import Button from '@/components/Button';
 import PhotoBanner from '@/components/PhotoBanner';
 import StorySection from '@/components/StorySection';
 import HighSchoolBanner from '@/components/HighSchoolBanner';
-import InstagramSection from '@/components/InstagramSection';
 import Testimonials from '@/components/Testimonials';
 import Reveal from '@/components/Reveal';
 
@@ -136,10 +135,7 @@ export default function HomePage() {
         <HighSchoolBanner image={{ src: '/images/home-highschool-banner-padel.jpg', alt: 'Older students playing padel on the school court' }} />
       </Reveal>
 
-      {/* Instagram */}
-      <Reveal>
-        <InstagramSection />
-      </Reveal>
+      {/* Instagram section temporarily removed - see InstagramSection.tsx to restore */}
     </div>
   );
 }

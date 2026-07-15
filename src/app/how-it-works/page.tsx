@@ -103,7 +103,7 @@ export default function HowItWorksPage() {
               </div>
               <div className="mt-5">
                 <Button href="/online-library" variant="primary">
-                  Visit the Online Library
+                  Visit the Library
                 </Button>
               </div>
 
@@ -195,6 +195,11 @@ export default function HowItWorksPage() {
                 {ourApproach.paragraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
+                <p>
+                  <a href="/admissions" className="font-semibold text-teal-deep underline">
+                    More detailed breakdowns of curriculum under Admissions
+                  </a>
+                </p>
                 <p>
                   <a href="/foundation-and-charity" className="font-semibold text-teal-deep underline">
                     See more about our charitable work

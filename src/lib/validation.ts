@@ -5,11 +5,23 @@ const email = z.string().trim().email('Enter a valid email address').max(320);
 const phone = z.string().trim().min(1, 'Phone number is required').max(50);
 const optionalText = z.string().trim().max(4000).optional().or(z.literal(''));
 
+const MAX_MESSAGE_WORDS = 250;
+function wordCount(value: string): number {
+  const trimmed = value.trim();
+  return trimmed ? trimmed.split(/\s+/).length : 0;
+}
+const maxWords = { message: `Please keep your message to ${MAX_MESSAGE_WORDS} words or fewer.` };
+
 export const contactSchema = z.object({
   name,
   email,
   phone: z.string().trim().max(50).optional().or(z.literal('')),
-  message: z.string().trim().min(1, 'Please add a short message').max(4000),
+  message: z
+    .string()
+    .trim()
+    .min(1, 'Please add a short message')
+    .max(4000)
+    .refine((value) => wordCount(value) <= MAX_MESSAGE_WORDS, maxWords),
 });
 export type ContactInput = z.infer<typeof contactSchema>;
 
@@ -19,7 +31,7 @@ export const admissionsSchema = z.object({
   phone,
   childName: z.string().trim().min(1, "Child's name is required").max(200),
   childAge: z.string().trim().min(1, "Child's age is required").max(50),
-  message: optionalText,
+  message: optionalText.refine((value) => !value || wordCount(value) <= MAX_MESSAGE_WORDS, maxWords),
   interest: z.string().trim().max(200).optional().or(z.literal('')),
 });
 export type AdmissionsInput = z.infer<typeof admissionsSchema>;
@@ -28,7 +40,7 @@ export const highSchoolSchema = z.object({
   name,
   email,
   phone: z.string().trim().max(50).optional().or(z.literal('')),
-  message: optionalText,
+  message: optionalText.refine((value) => !value || wordCount(value) <= MAX_MESSAGE_WORDS, maxWords),
 });
 export type HighSchoolInput = z.infer<typeof highSchoolSchema>;
 

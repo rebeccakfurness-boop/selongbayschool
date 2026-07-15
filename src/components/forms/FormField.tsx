@@ -31,3 +31,17 @@ export function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
 export function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return <textarea {...props} className={`${inputClasses} ${props.className ?? ''}`} />;
 }
+
+export function countWords(value: string): number {
+  const trimmed = value.trim();
+  return trimmed ? trimmed.split(/\s+/).length : 0;
+}
+
+export function WordCount({ value, max }: { value: string; max: number }) {
+  const count = countWords(value);
+  return (
+    <span className={`self-end text-xs font-semibold ${count > max ? 'text-orange-deep' : 'text-ink-soft/70'}`}>
+      {count} / {max} words
+    </span>
+  );
+}

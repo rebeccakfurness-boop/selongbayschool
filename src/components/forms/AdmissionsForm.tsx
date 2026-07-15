@@ -3,11 +3,12 @@
 import { useSearchParams } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 import Button from '../Button';
-import { Field, TextArea, TextInput } from './FormField';
+import { countWords, Field, TextArea, TextInput, WordCount } from './FormField';
 import FormStatusBanner from './FormStatusBanner';
 import { useFormSubmit } from '@/lib/useFormSubmit';
 
 const interestOptions = ['Preschool', 'Primary', 'Secondary School', 'Not sure yet'];
+const MAX_MESSAGE_WORDS = 250;
 
 export default function AdmissionsForm({ defaultInterest }: { defaultInterest?: string } = {}) {
   const { status, errorMessage, submit } = useFormSubmit('/api/admissions');
@@ -24,9 +25,11 @@ export default function AdmissionsForm({ defaultInterest }: { defaultInterest?: 
     return param && interestOptions.includes(param) ? param : '';
   });
   const [message, setMessage] = useState('');
+  const messageTooLong = countWords(message) > MAX_MESSAGE_WORDS;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (messageTooLong) return;
     const result = await submit({ name, email, phone, childName, childAge, interest, message });
     if (result) {
       setName('');
@@ -89,11 +92,14 @@ export default function AdmissionsForm({ defaultInterest }: { defaultInterest?: 
       </div>
       <Field label="Anything else you'd like us to know? (optional)" htmlFor="adm-message">
         <TextArea id="adm-message" name="message" rows={4} value={message} onChange={(e) => setMessage(e.target.value)} />
+        <div className="flex justify-end">
+          <WordCount value={message} max={MAX_MESSAGE_WORDS} />
+        </div>
       </Field>
 
       <FormStatusBanner status={status} errorMessage={errorMessage} successMessage="" />
 
-      <Button type="submit" variant="primary" disabled={status === 'submitting'}>
+      <Button type="submit" variant="primary" disabled={status === 'submitting' || messageTooLong}>
         {status === 'submitting' ? 'Submitting…' : 'Submit enquiry'}
       </Button>
     </form>

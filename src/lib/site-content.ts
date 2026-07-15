@@ -90,7 +90,8 @@ export const testimonials = [
     image: { src: '/images/testimonial-will-brynn.jpg', alt: 'Will and Brynn Noel' },
   },
   {
-    quote: 'We had the best time at Selong Bay School!',
+    quote:
+      "At Selong Bay School our children learned through adventure, nature, and hands-on activities, with opportunities to surf, skateboard, play padel, explore local villages, and experience the culture of Lombok. The school's unique approach made learning feel natural, engaging, and fun. What made it truly special was the warm, close-knit community that welcomed us from day one. We left with unforgettable memories and can't wait to come back.",
     name: 'Vicente & Margaux Luzuriaga',
     detail: 'Spain',
     image: { src: '/images/home-hero-sunset.jpg', alt: 'Sunset over the beach at Selong Belanak, Lombok' },
@@ -380,7 +381,7 @@ export const ourApproach = {
   heading: 'A curriculum built for both worlds',
   paragraphs: [
     "Selong Bay School operates under Yayasan Selong Bay Sekolah, a registered foundation. We are not for profit. We are for the children and the community of South Lombok. All funds are reinvested into the school's development, including scholarships, community programmes such as the Serangan English School, and training opportunities for local teachers and staff.",
-    'Our curriculum blends Cambridge International Education with the Australian National Curriculum and our own Selong Bay approach: play-based in the Early Years, inquiry-based through Primary. More about our approach under "How It Works."',
+    'Our curriculum blends Cambridge International Education with the Australian National Curriculum and our own Selong Bay approach: play-based in the Early Years, inquiry-based through Primary.',
   ],
 };
 
