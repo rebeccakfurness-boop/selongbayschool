@@ -1,14 +1,16 @@
 # Selong Bay School
 
 The Selong Bay School website: Next.js 14+ (App Router), TypeScript, and Tailwind CSS,
-deployed on Vercel with Postgres (Neon) for form/booking storage and Resend for
-transactional email.
+deployed on Vercel with Postgres (Neon) for form/booking storage and Gmail SMTP (via
+nodemailer) for transactional email.
 
 ## Stack
 
 - **Next.js 16** (App Router) + TypeScript + Tailwind CSS
 - **Postgres via Neon** (`@neondatabase/serverless`): enquiries, activity bookings, availability slots
-- **Resend**: every form submission emails `hello@selongbayschool.com` plus an auto-reply to the submitter
+- **Gmail SMTP via nodemailer**: every form submission emails `hello@selongbayschool.com` plus an
+  auto-reply to the submitter, cc'd to `hello@selongbayschool.com` as well, so there's always a
+  copy in the school inbox even if something is wrong with the customer's address
 - **Cookie-based admin auth**: a single shared password protects `/admin`
 - Deployed on **Vercel**, connected to this GitHub repo; every push to `main` triggers a new deployment
 
@@ -19,8 +21,8 @@ Set these in Vercel (Project Settings → Environment Variables) and in a local 
 | Variable | Required | Description |
 |---|---|---|
 | `DATABASE_URL` | Yes | Postgres connection string. When you add the Vercel Postgres (Neon) integration, Vercel sets `POSTGRES_URL` automatically; either name works, `DATABASE_URL` is checked first. |
-| `RESEND_API_KEY` | Yes | API key from [resend.com](https://resend.com). Without it, forms still save to the database but emails will fail (and the UI tells the user so). |
-| `RESEND_FROM_EMAIL` | No | Sender address, e.g. `Selong Bay School <hello@selongbayschool.com>`. Defaults to Resend's sandbox address `onboarding@resend.dev`, which only works for testing. Verify your domain in Resend and set this before going live. |
+| `GMAIL_USER` | Yes | The Gmail address emails are sent from, e.g. `hello@selongbayschool.com` (must be a Gmail or Google Workspace address). Without it (or `GMAIL_APP_PASSWORD`), forms still save to the database but emails will fail (and the UI tells the user so). |
+| `GMAIL_APP_PASSWORD` | Yes | A 16-character [Google App Password](https://myaccount.google.com/apppasswords) for that account (requires 2-Step Verification enabled). This is not the account's normal login password. |
 | `ADMIN_SESSION_SECRET` | Yes | Secret used to encrypt the admin session cookie (via iron-session). Set a long random value; any length works, it's hashed internally to fit iron-session's minimum. |
 | `BLOB_READ_WRITE_TOKEN` | For activity photo uploads | Set automatically when you add the Vercel Blob integration to this project (Storage tab → Create Database → Blob). Without it, activity photo uploads in `/admin/activities` will fail; everything else still works. |
 | `NEXT_PUBLIC_SNAPWIDGET_ID` | No | Widget ID from [snapwidget.com](https://snapwidget.com) for the homepage's live Instagram grid. Until set, the site shows a "follow us" fallback card instead. |
@@ -48,8 +50,8 @@ Every submission (contact, admissions, high school, activity booking) follows th
 
 1. Validate input **server-side** (Zod schemas in `src/lib/validation.ts`)
 2. Write to Postgres **first**, so nothing is lost even if email sending fails
-3. Email `hello@selongbayschool.com` via Resend with the full submission
-4. Send an auto-reply confirmation to whoever submitted the form
+3. Email `hello@selongbayschool.com` via Gmail SMTP with the full submission
+4. Send an auto-reply confirmation to whoever submitted the form, cc'd to `hello@selongbayschool.com`
 5. Return a clear success/failure message to the UI: a form never just spins or fails silently
 6. Log any email failure server-side (`console.error`) so it can be followed up manually; the
    submission itself is still saved and visible at `/admin`
@@ -80,7 +82,8 @@ is the only `crm_enquiries.source` value that applies to them.
 - "Cancel this session" marks the session and its bookings cancelled (freeing its spots from every
   capacity count and public listing — cancelled sessions are excluded from `/api/bookings/slots`
   and from the "sessions today"/booking-count stats), and emails every booked customer a
-  cancellation notice via Resend. If their `payment_method` was `pay_online`, the email also asks
+  cancellation notice via Gmail SMTP (cc'd to `hello@selongbayschool.com`). If their
+  `payment_method` was `pay_online`, the email also asks
   them to get in touch if they'd already sent payment so a manual refund can be arranged (there's
   no automated refund path). It does not touch any external calendar (no Google Calendar
   integration exists in this app). Sessions with zero bookings can still be hard-deleted via
@@ -120,8 +123,9 @@ Entirely separate from the admin login above — a different cookie, a different
 not `admin_users`), and a different auth mechanism.
 
 - Auth is **magic link only** (no passwords): `/account/signup` (email, name, phone) and
-  `/account/login` (email) both email a one-time link via Resend, valid for 30 minutes, that logs
-  the visitor in when clicked. `customers.password_hash` exists in the schema but stays unused by
+  `/account/login` (email) both email a one-time link via Gmail SMTP, valid for 30 minutes, that
+  logs the visitor in when clicked. This one is deliberately **not** cc'd to `hello@selongbayschool.com`
+  since it's a live login link, not a form submission. `customers.password_hash` exists in the schema but stays unused by
   every row — kept in case password login gets added later, not because guests need it (guests
   never get a `customers` row at all).
 - When booking, a visitor who isn't logged in sees "Continue as guest" or "Log in / Sign up" after
@@ -177,9 +181,10 @@ not `admin_users`), and a different auth mechanism.
 - `/admin/login`: email + password, checked against the `admin_users` table (bcrypt-hashed
   passwords). Seed the first account with `npm run db:seed-admin` (prints a one-time temporary
   password to the console - not stored anywhere in the repo).
-- `/admin/forgot-password`: emails a 1-hour reset link via Resend to the address in `admin_users`,
-  if it exists (the response is identical either way, so this can't be used to enumerate admin
-  emails).
+- `/admin/forgot-password`: emails a 1-hour reset link via Gmail SMTP to the address in
+  `admin_users`, if it exists (the response is identical either way, so this can't be used to
+  enumerate admin emails). Also not cc'd to `hello@selongbayschool.com`, same reasoning as the
+  customer magic link above.
 - `/admin/reset-password?token=...`: sets a new password from that link.
 - Every `/admin/*` page and `/api/admin/*` route requires a valid session (enforced in
   `src/proxy.ts`); unauthenticated page requests redirect to `/admin/login`, API requests get

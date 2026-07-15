@@ -1,18 +1,27 @@
-import { Resend } from 'resend';
+import nodemailer, { type Transporter } from 'nodemailer';
 import { siteConfig, bankTransferDetails, formatIDR } from './site-content';
 
 const NOTIFY_TO = siteConfig.contact.email;
 
 function fromAddress(): string {
-  return process.env.RESEND_FROM_EMAIL || 'Selong Bay School <onboarding@resend.dev>';
+  return `Selong Bay School <${process.env.GMAIL_USER}>`;
 }
 
-function getResend(): Resend {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    throw new Error('RESEND_API_KEY is not set');
+let transporter: Transporter | null = null;
+
+function getTransporter(): Transporter {
+  if (!transporter) {
+    const user = process.env.GMAIL_USER;
+    const pass = process.env.GMAIL_APP_PASSWORD;
+    if (!user || !pass) {
+      throw new Error('GMAIL_USER and GMAIL_APP_PASSWORD are not set');
+    }
+    transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user, pass },
+    });
   }
-  return new Resend(apiKey);
+  return transporter;
 }
 
 function wrapEmail(title: string, bodyHtml: string): string {
@@ -46,20 +55,21 @@ function fieldRows(fields: Array<[string, string | null | undefined]>): string {
     .join('')}</table>`;
 }
 
-async function send(to: string, subject: string, html: string, replyTo?: string): Promise<boolean> {
+async function send(
+  to: string,
+  subject: string,
+  html: string,
+  options?: { replyTo?: string; cc?: string }
+): Promise<boolean> {
   try {
-    const resend = getResend();
-    const { error } = await resend.emails.send({
+    await getTransporter().sendMail({
       from: fromAddress(),
       to,
       subject,
       html,
-      ...(replyTo ? { replyTo } : {}),
+      ...(options?.replyTo ? { replyTo: options.replyTo } : {}),
+      ...(options?.cc ? { cc: options.cc } : {}),
     });
-    if (error) {
-      console.error('[email] Resend returned an error', { to, subject, error });
-      return false;
-    }
     return true;
   } catch (err) {
     console.error('[email] Failed to send email', { to, subject, err });
@@ -123,7 +133,7 @@ export async function sendEnquiryNotification(input: EnquiryEmailInput): Promise
       ['Message', input.message?.replace(/\n/g, '<br />')],
     ])
   );
-  return send(NOTIFY_TO, `New Enquiry (${source}): ${input.name}`, html, input.email);
+  return send(NOTIFY_TO, `New Enquiry (${source}): ${input.name}`, html, { replyTo: input.email });
 }
 
 export async function sendEnquiryAutoReply(input: EnquiryEmailInput): Promise<boolean> {
@@ -135,7 +145,7 @@ export async function sendEnquiryAutoReply(input: EnquiryEmailInput): Promise<bo
        or ${siteConfig.contact.phone}.</p>
      <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
   );
-  return send(input.email, "Thanks for your enquiry: Selong Bay School", html);
+  return send(input.email, "Thanks for your enquiry: Selong Bay School", html, { cc: NOTIFY_TO });
 }
 
 export async function sendAdminPasswordResetEmail(email: string, resetUrl: string): Promise<boolean> {
@@ -220,7 +230,7 @@ export async function sendBookingNotification(input: BookingEmailInput): Promise
       ['Amount due', amount],
     ]) + (input.paymentMethod === 'pay_online' ? bankDetailsHtml() : '')
   );
-  return send(NOTIFY_TO, `Booking: ${input.activityName} for ${input.childName}`, html, input.parentEmail);
+  return send(NOTIFY_TO, `Booking: ${input.activityName} for ${input.childName}`, html, { replyTo: input.parentEmail });
 }
 
 export async function sendBookingAutoReply(input: BookingEmailInput): Promise<boolean> {
@@ -245,7 +255,7 @@ export async function sendBookingAutoReply(input: BookingEmailInput): Promise<bo
      <p style="margin-top: 16px;">If your plans change, just reply to this email or call us on ${siteConfig.contact.phone}.</p>
      <p style="margin-top: 24px;">See you soon!<br />The Selong Bay School team</p>`
   );
-  return send(input.parentEmail, `Booking confirmed: ${input.activityName}`, html);
+  return send(input.parentEmail, `Booking confirmed: ${input.activityName}`, html, { cc: NOTIFY_TO });
 }
 
 export interface PassEmailInput {
@@ -270,7 +280,7 @@ export async function sendPassNotification(input: PassEmailInput): Promise<boole
       ['Payment method', paymentMethodLabels[input.paymentMethod]],
     ]) + (input.paymentMethod === 'pay_online' ? bankDetailsHtml() : '')
   );
-  return send(NOTIFY_TO, `Activity pack purchased for ${input.childName}`, html, input.customerEmail);
+  return send(NOTIFY_TO, `Activity pack purchased for ${input.childName}`, html, { replyTo: input.customerEmail });
 }
 
 export async function sendPassAutoReply(input: PassEmailInput): Promise<boolean> {
@@ -291,7 +301,7 @@ export async function sendPassAutoReply(input: PassEmailInput): Promise<boolean>
      <p style="margin-top: 16px;">Once confirmed, just choose "Use a session from your pack" when booking any activity for ${input.childName}.</p>
      <p style="margin-top: 24px;">See you soon!<br />The Selong Bay School team</p>`
   );
-  return send(input.customerEmail, `Activity pack confirmed for ${input.childName}`, html);
+  return send(input.customerEmail, `Activity pack confirmed for ${input.childName}`, html, { cc: NOTIFY_TO });
 }
 
 export interface SessionCancellationEmailInput {
@@ -324,5 +334,5 @@ export async function sendSessionCancellationEmail(input: SessionCancellationEma
        or ${siteConfig.contact.phone}.</p>
      <p style="margin-top: 24px;">Sorry for the inconvenience,<br />The Selong Bay School team</p>`
   );
-  return send(input.parentEmail, `Cancelled: ${input.activityName} on ${input.date}`, html);
+  return send(input.parentEmail, `Cancelled: ${input.activityName} on ${input.date}`, html, { cc: NOTIFY_TO });
 }
