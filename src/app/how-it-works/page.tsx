@@ -82,8 +82,8 @@ export default function HowItWorksPage() {
               </p>
               <div className="mt-5 flex flex-wrap gap-4">
                 {policyLinks.map((link) => (
-                  <Button key={link.label} href={link.href} variant="ghost">
-                    {link.label}
+                  <Button key={link.label} disabled variant="primary">
+                    {link.label} (Coming Soon)
                   </Button>
                 ))}
               </div>
@@ -177,12 +177,18 @@ export default function HowItWorksPage() {
               <p className="mt-3 max-w-prose text-[15px] leading-relaxed text-ink-soft">
                 Browse our academic calendar below.
               </p>
-              <div className="mt-5 overflow-hidden rounded-md border border-sand-line shadow-soft">
+              <div className="mt-5 hidden overflow-hidden rounded-md border border-sand-line shadow-soft md:block">
                 <iframe
                   src={`${academicCalendarPdf}#view=FitH`}
                   title="Academic Calendar"
                   className="aspect-[792/612] w-full"
                 />
+              </div>
+              {/* Mobile browsers don't reliably render embedded PDF iframes, so open it full-screen instead. */}
+              <div className="mt-5 md:hidden">
+                <Button href={academicCalendarPdf} variant="primary" external>
+                  Open the Academic Calendar (PDF)
+                </Button>
               </div>
             </Reveal>
           </section>
