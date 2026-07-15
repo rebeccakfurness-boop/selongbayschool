@@ -39,7 +39,7 @@ export default async function WebsiteUpdatesPage() {
       </div>
       <p className="mt-2 max-w-2xl text-[15px] font-semibold text-teal-deep">
         Soon you&apos;ll be able to type a change straight into this page and watch it go live on the
-        site — no developer, no waiting. We can&apos;t wait to hand you the keys.
+        site — coming in the next update!
       </p>
       <p className="mt-2 text-sm text-ink-soft">
         Requested changes to the website and their status. {requests.length} total.
