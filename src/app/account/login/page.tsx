@@ -33,7 +33,7 @@ function AccountLoginForm() {
         <Image src="/images/logo-full.png" alt="Selong Bay School" width={378} height={299} className="h-20 w-auto" />
       </div>
       <h1 className="font-display text-2xl font-semibold text-ink">Log in</h1>
-      <p className="mt-1 text-sm text-ink-soft">We&apos;ll email you a link — no password needed.</p>
+      <p className="mt-1 text-sm text-ink-soft">We&apos;ll email you a link. No password needed.</p>
 
       {linkError && status !== 'success' && (
         <p className="mt-4 rounded-md border border-orange/30 bg-orange/10 px-4 py-3 text-sm font-semibold text-orange-deep">

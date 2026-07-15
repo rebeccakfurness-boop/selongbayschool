@@ -93,7 +93,7 @@ function ActivityEditRow({ activity, onSaved }: { activity: ActivityRow; onSaved
       </td>
       <td className="px-3 py-2">
         <TextInput type="number" min={0} step={1000} value={priceIDR} onChange={(e) => setPriceIDR(e.target.value)} className="w-28" />
-        <div className="mt-1 text-xs font-semibold text-ink-soft">{priceIDR ? formatIDR(Number(priceIDR)) : '—'}</div>
+        <div className="mt-1 text-xs font-semibold text-ink-soft">{priceIDR ? formatIDR(Number(priceIDR)) : '-'}</div>
       </td>
       <td className="px-3 py-2"><TextInput type="number" min={1} value={defaultCapacity} onChange={(e) => setDefaultCapacity(e.target.value)} className="w-16" /></td>
       <td className="px-3 py-2 text-center">

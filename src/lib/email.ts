@@ -239,7 +239,7 @@ export async function sendBookingAutoReply(input: BookingEmailInput): Promise<bo
      ${input.paymentMethod === 'pay_online'
        ? `${bankDetailsHtml()}<p style="margin-top: 16px;">Please complete the transfer before your session. We'll confirm once we've received it.</p>`
        : input.paymentMethod === 'pack_session'
-         ? `<p style="margin-top: 16px;">This session is included in your activity pack — no payment needed.</p>`
+         ? `<p style="margin-top: 16px;">This session is included in your activity pack. No payment needed.</p>`
          : `<p style="margin-top: 16px;">You can pay in person when you arrive for the session.</p>`
      }
      <p style="margin-top: 16px;">If your plans change, just reply to this email or call us on ${siteConfig.contact.phone}.</p>

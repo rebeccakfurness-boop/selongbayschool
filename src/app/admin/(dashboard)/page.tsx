@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ensureSchema, sql } from '@/lib/db';
+import NewActivityCelebration from '@/components/admin/NewActivityCelebration';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,12 +37,13 @@ export default async function AdminOverviewPage() {
 
   return (
     <div className="flex flex-col gap-10">
+      <NewActivityCelebration />
       <section>
         <h1 className="font-display text-2xl font-semibold text-ink">Overview</h1>
         <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-soft">
           Welcome to your admin dashboard for Selong Bay School. Here, you can manage activity
           bookings and the session calendar, activity packs, and school enquiries from the
-          website&apos;s contact and admissions forms — with the ability to request website
+          website&apos;s contact and admissions forms, with the ability to request website
           updates yourself coming soon.
         </p>
         <p className="mt-4 text-sm text-ink-soft">A quick snapshot of what&apos;s happening across the school:</p>

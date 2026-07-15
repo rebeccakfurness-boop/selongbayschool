@@ -29,7 +29,7 @@ function AccountSignupForm() {
       </div>
       <h1 className="font-display text-2xl font-semibold text-ink">Create an account</h1>
       <p className="mt-1 text-sm text-ink-soft">
-        Save your details for faster bookings, and see your booking history. We&apos;ll email you a link — no password needed.
+        Save your details for faster bookings, and see your booking history. We&apos;ll email you a link. No password needed.
       </p>
 
       {status === 'success' ? (

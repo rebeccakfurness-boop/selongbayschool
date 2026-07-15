@@ -148,7 +148,7 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
           status={status}
           successMessage={
             paymentMethod === 'pay_online'
-              ? "Your booking is saved! We've emailed you the bank transfer details — please complete payment before your session."
+              ? "Your booking is saved! We've emailed you the bank transfer details. Please complete payment before your session."
               : paymentMethod === 'pack_session'
                 ? "Your booking is confirmed using a session from your pack! We've sent a confirmation email with the details."
                 : "Your booking is confirmed! We've sent a confirmation email with the details. You can pay in person at the session."

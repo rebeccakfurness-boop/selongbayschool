@@ -35,7 +35,7 @@ const PAYMENT_METHOD_LABELS: Record<string, string> = {
 
 function amountDue(row: Pick<BookingRow, 'price_idr' | 'price_note'>): string {
   if (row.price_idr) return formatIDR(row.price_idr);
-  return row.price_note || '—';
+  return row.price_note || '-';
 }
 
 interface ActivityOption {
@@ -187,7 +187,7 @@ export default async function AdminBookingsPage({
                 <td className="px-4 py-3 text-ink-soft">{row.emergency_contact}</td>
                 <td className="whitespace-nowrap px-4 py-3 font-semibold text-ink">{amountDue(row)}</td>
                 <td className="whitespace-nowrap px-4 py-3 text-ink-soft">
-                  {row.payment_method ? PAYMENT_METHOD_LABELS[row.payment_method] ?? row.payment_method : '—'}
+                  {row.payment_method ? PAYMENT_METHOD_LABELS[row.payment_method] ?? row.payment_method : '-'}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3">
                   <BookingStatusPill status={row.status} />

@@ -35,7 +35,7 @@ export default function BuyPackPage() {
             status={status}
             successMessage={
               paymentMethod === 'pay_online'
-                ? "Your pack is saved! We've emailed you the bank transfer details — please complete payment to activate it."
+                ? "Your pack is saved! We've emailed you the bank transfer details. Please complete payment to activate it."
                 : "Your pack is confirmed! We've sent a confirmation email with the details. You can pay in person at the school."
             }
           />

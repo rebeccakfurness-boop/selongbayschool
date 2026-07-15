@@ -87,7 +87,7 @@ export default async function AdminPassesPage() {
               <tr key={pass.id} className="border-b border-sand-line/60 last:border-0 align-top">
                 <td className="whitespace-nowrap px-4 py-3 text-ink-soft">{formatDateTime(pass.purchased_at)}</td>
                 <td className="px-4 py-3 text-ink-soft">
-                  <div className="font-semibold text-ink">{pass.customer_name || '—'}</div>
+                  <div className="font-semibold text-ink">{pass.customer_name || '-'}</div>
                   <div>{pass.customer_email}</div>
                 </td>
                 <td className="px-4 py-3 text-ink">{pass.child_name}</td>
@@ -96,10 +96,10 @@ export default async function AdminPassesPage() {
                 </td>
                 <td className="whitespace-nowrap px-4 py-3 text-ink-soft">{formatDateTime(pass.expires_at)}</td>
                 <td className="whitespace-nowrap px-4 py-3 font-semibold text-ink">
-                  {pass.price_paid_idr ? formatIDR(pass.price_paid_idr) : '—'}
+                  {pass.price_paid_idr ? formatIDR(pass.price_paid_idr) : '-'}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3 text-ink-soft">
-                  {pass.payment_method ? PAYMENT_METHOD_LABELS[pass.payment_method] ?? pass.payment_method : '—'}
+                  {pass.payment_method ? PAYMENT_METHOD_LABELS[pass.payment_method] ?? pass.payment_method : '-'}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3">
                   <PassStatusPill status={pass.status} />
