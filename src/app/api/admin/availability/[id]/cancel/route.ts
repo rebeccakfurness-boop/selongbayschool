@@ -7,6 +7,7 @@ interface BookingToNotify {
   parent_name: string;
   parent_email: string;
   child_name: string;
+  payment_method: string | null;
 }
 
 export async function POST(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -31,7 +32,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
     const session = sessionRows[0];
 
     const bookings = (await sql`
-      SELECT activity_name, parent_name, parent_email, child_name
+      SELECT activity_name, parent_name, parent_email, child_name, payment_method
       FROM bookings
       WHERE slot_id = ${id} AND status != 'cancelled'
     `) as unknown as BookingToNotify[];
@@ -52,6 +53,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
         parentName: booking.parent_name,
         parentEmail: booking.parent_email,
         childName: booking.child_name,
+        mayHavePaid: booking.payment_method === 'pay_online',
       });
       if (sent) emailed += 1;
     }

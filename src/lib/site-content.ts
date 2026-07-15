@@ -299,6 +299,8 @@ export type Activity = {
   description: string;
   ageGroup: string;
   photoUrl?: string | null;
+  /** 'available': has an upcoming session with spots left. 'full': has upcoming sessions but all full. 'none': no upcoming sessions scheduled. */
+  availability?: 'available' | 'full' | 'none';
 };
 
 export const principalWelcome = {

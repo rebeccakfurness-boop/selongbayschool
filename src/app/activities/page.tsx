@@ -28,15 +28,25 @@ interface ActivityRow {
   description: string;
   age_group: string | null;
   photo_url: string | null;
+  has_sessions: boolean;
+  has_availability: boolean;
 }
 
 async function getActivities(): Promise<Activity[]> {
   await ensureSchema();
   const rows = (await sql`
-    SELECT slug, name, day, duration, price_idr, price_note, description, age_group, photo_url
-    FROM activities
-    WHERE is_active = true
-    ORDER BY id ASC
+    SELECT a.slug, a.name, a.day, a.duration, a.price_idr, a.price_note, a.description, a.age_group, a.photo_url,
+      EXISTS (
+        SELECT 1 FROM sessions s
+        WHERE s.activity_id = a.id AND s.session_date >= CURRENT_DATE AND s.status = 'active'
+      ) AS has_sessions,
+      EXISTS (
+        SELECT 1 FROM sessions s
+        WHERE s.activity_id = a.id AND s.session_date >= CURRENT_DATE AND s.status = 'active' AND s.spots_remaining > 0
+      ) AS has_availability
+    FROM activities a
+    WHERE a.is_active = true
+    ORDER BY a.id ASC
   `) as unknown as ActivityRow[];
   return rows.map((row) => ({
     slug: row.slug,
@@ -48,6 +58,7 @@ async function getActivities(): Promise<Activity[]> {
     description: row.description,
     ageGroup: row.age_group ?? '',
     photoUrl: row.photo_url,
+    availability: row.has_availability ? 'available' : row.has_sessions ? 'full' : 'none',
   }));
 }
 

@@ -241,6 +241,8 @@ export interface SessionCancellationEmailInput {
   parentName: string;
   parentEmail: string;
   childName: string;
+  /** Whether this booking's payment method was pay_online, i.e. they may already have sent a bank transfer. */
+  mayHavePaid: boolean;
 }
 
 export async function sendSessionCancellationEmail(input: SessionCancellationEmailInput): Promise<boolean> {
@@ -253,6 +255,10 @@ export async function sendSessionCancellationEmail(input: SessionCancellationEma
        ['Time', input.time],
        ["Child's name", input.childName],
      ])}
+     ${input.mayHavePaid
+       ? `<p style="margin-top: 16px;">If you've already sent payment for this session by bank transfer or Wise, please get in touch and we'll arrange a refund.</p>`
+       : ''
+     }
      <p style="margin-top: 16px;">Please get in touch and we'll help you find another slot, or answer any questions:
        <a href="mailto:${siteConfig.contact.email}" style="color:#007c83;">${siteConfig.contact.email}</a>
        or ${siteConfig.contact.phone}.</p>

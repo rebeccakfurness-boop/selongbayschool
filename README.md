@@ -66,10 +66,18 @@ Every submission (contact, admissions, high school, activity booking) follows th
 - Manage activities and sessions at `/admin/activities`: an inline-editable activities table (name,
   day, time, duration, price, capacity, active/inactive), an "Add Activity" form, and an upcoming
   sessions list. Inactive activities are hidden from the public `/activities` page.
-- "Cancel this session" marks the session and its bookings cancelled, and emails every booked
-  customer a cancellation notice via Resend. It does not touch any external calendar (no Google
-  Calendar integration exists in this app). Sessions with zero bookings can still be hard-deleted
-  via "Remove"; sessions with bookings can only be cancelled, to preserve booking history.
+- "Cancel this session" marks the session and its bookings cancelled (freeing its spots from every
+  capacity count and public listing — cancelled sessions are excluded from `/api/bookings/slots`
+  and from the "sessions today"/booking-count stats), and emails every booked customer a
+  cancellation notice via Resend. If their `payment_method` was `pay_online`, the email also asks
+  them to get in touch if they'd already sent payment so a manual refund can be arranged (there's
+  no automated refund path). It does not touch any external calendar (no Google Calendar
+  integration exists in this app). Sessions with zero bookings can still be hard-deleted via
+  "Remove"; sessions with bookings can only be cancelled, to preserve booking history.
+- The public `/activities` page always shows every `is_active` activity, even with no upcoming
+  sessions or none with spots left. The Book Now button is replaced with a "Fully booked" message
+  (has sessions, all full) or a "Contact us for availability" link to `/contact` (no sessions
+  scheduled at all).
 - Prices are formatted with `formatIDR()` (thousand separators, e.g. `Rp 150.000`) everywhere
   they're shown, including the public activity card next to its Book Now button.
 - Each activity can have a photo (`photo_url`), uploaded from the activities table or the Add
@@ -112,8 +120,9 @@ Every submission (contact, admissions, high school, activity booking) follows th
 - `/admin` (Overview): quick stats — bookings this week, unread enquiries, sessions today
 - `/admin/activities`: manage activities and their bookable sessions (see "Booking system" above)
 - `/admin/bookings`: searchable/filterable table of every activity booking (by customer, activity,
-  status), with email delivery status. No payment collection or refunds exist in this app yet —
-  bookings are a free registration, not a paid transaction.
+  status), showing amount due, payment method, and email delivery status. A "Mark as Paid" action
+  appears on `pending_payment` rows — this is the only way a booking becomes `paid`; there's no
+  payment gateway wired up to do it automatically yet (see "Booking system" above).
 - `/admin/enquiries`: every contact/admissions/high-school enquiry, with a read/unread toggle
 - `/admin/website-updates`: status of requested website changes (`change_requests` table)
 - `/admin/settings`: change your admin password

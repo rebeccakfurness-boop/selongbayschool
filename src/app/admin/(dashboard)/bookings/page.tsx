@@ -1,5 +1,6 @@
 import { ensureSchema, sql } from '@/lib/db';
 import { formatDateTime } from '@/lib/admin-format';
+import { formatIDR } from '@/lib/site-content';
 import StatusPill from '@/components/admin/StatusPill';
 import MarkPaidButton from '@/components/admin/MarkPaidButton';
 
@@ -20,7 +21,19 @@ interface BookingRow {
   notify_email_status: string;
   status: string;
   payment_method: string | null;
+  price_idr: number | null;
+  price_note: string | null;
   created_at: string;
+}
+
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  pay_online: 'Pay online',
+  pay_at_session: 'Pay at session',
+};
+
+function amountDue(row: Pick<BookingRow, 'price_idr' | 'price_note'>): string {
+  if (row.price_idr) return formatIDR(row.price_idr);
+  return row.price_note || '—';
 }
 
 interface ActivityOption {
@@ -68,9 +81,10 @@ export default async function AdminBookingsPage({
   const bookings = (await sql`
     SELECT b.id, b.activity_slug, b.activity_name, s.session_date::text AS slot_date, s.session_time AS slot_time,
            b.child_name, b.child_age, b.parent_name, b.parent_email, b.parent_phone, b.emergency_contact,
-           b.notify_email_status, b.status, b.payment_method, b.created_at
+           b.notify_email_status, b.status, b.payment_method, act.price_idr, act.price_note, b.created_at
     FROM bookings b
     JOIN sessions s ON s.id = b.slot_id
+    LEFT JOIN activities act ON act.slug = b.activity_slug
     WHERE
       (${query}::text IS NULL OR b.parent_name ILIKE '%' || ${query} || '%' OR b.parent_email ILIKE '%' || ${query} || '%' OR b.child_name ILIKE '%' || ${query} || '%')
       AND (${activityFilter}::text IS NULL OR b.activity_slug = ${activityFilter})
@@ -138,7 +152,7 @@ export default async function AdminBookingsPage({
       </form>
 
       <div className="mt-4 overflow-x-auto rounded-md border border-sand-line bg-paper">
-        <table className="w-full min-w-[1050px] border-collapse text-sm">
+        <table className="w-full min-w-[1300px] border-collapse text-sm">
           <thead>
             <tr className="border-b border-sand-line bg-sand/40 text-left">
               <th className="px-4 py-3 font-bold text-ink-soft">Booked</th>
@@ -147,6 +161,8 @@ export default async function AdminBookingsPage({
               <th className="px-4 py-3 font-bold text-ink-soft">Child</th>
               <th className="px-4 py-3 font-bold text-ink-soft">Customer</th>
               <th className="px-4 py-3 font-bold text-ink-soft">Emergency contact</th>
+              <th className="px-4 py-3 font-bold text-ink-soft">Amount due</th>
+              <th className="px-4 py-3 font-bold text-ink-soft">Payment method</th>
               <th className="px-4 py-3 font-bold text-ink-soft">Status</th>
               <th className="px-4 py-3 font-bold text-ink-soft">Email</th>
             </tr>
@@ -164,6 +180,10 @@ export default async function AdminBookingsPage({
                   <div>{row.parent_phone}</div>
                 </td>
                 <td className="px-4 py-3 text-ink-soft">{row.emergency_contact}</td>
+                <td className="whitespace-nowrap px-4 py-3 font-semibold text-ink">{amountDue(row)}</td>
+                <td className="whitespace-nowrap px-4 py-3 text-ink-soft">
+                  {row.payment_method ? PAYMENT_METHOD_LABELS[row.payment_method] ?? row.payment_method : '—'}
+                </td>
                 <td className="whitespace-nowrap px-4 py-3">
                   <BookingStatusPill status={row.status} />
                   {row.status === 'pending_payment' && (
@@ -179,7 +199,7 @@ export default async function AdminBookingsPage({
             ))}
             {bookings.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-ink-soft">No bookings match these filters.</td>
+                <td colSpan={10} className="px-4 py-6 text-center text-ink-soft">No bookings match these filters.</td>
               </tr>
             )}
           </tbody>

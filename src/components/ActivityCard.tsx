@@ -43,12 +43,20 @@ export default function ActivityCard({ activity, image }: { activity: Activity; 
           )}
         </div>
 
-        {!booking ? (
+        {booking ? (
+          <BookingPanel activitySlug={activity.slug} onClose={() => setBooking(false)} />
+        ) : activity.availability === 'full' ? (
+          <div className="mt-4 w-full rounded-full border border-orange/40 bg-orange/10 py-3.5 text-center text-[15.5px] font-extrabold text-orange-deep">
+            Fully booked
+          </div>
+        ) : activity.availability === 'none' ? (
+          <Button href="/contact" variant="ghost" className="mt-4 w-full">
+            Contact us for availability
+          </Button>
+        ) : (
           <Button variant="primary" className="mt-4 w-full" onClick={() => setBooking(true)}>
             Book Now
           </Button>
-        ) : (
-          <BookingPanel activitySlug={activity.slug} onClose={() => setBooking(false)} />
         )}
       </div>
     </div>
