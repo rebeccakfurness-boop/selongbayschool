@@ -20,7 +20,7 @@ function wrapEmail(title: string, bodyHtml: string): string {
   return `
   <div style="font-family: -apple-system, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #fffdf8;">
     <div style="background: #007c83; padding: 20px 28px;">
-      <img src="${logoUrl}" alt="Selong Bay School" width="72" height="57" style="display: block; border: 0;" />
+      <img src="${logoUrl}" alt="Selong Bay School" width="140" height="111" style="display: block; border: 0;" />
     </div>
     <div style="padding: 28px; color: #17282b;">
       <h1 style="font-size: 20px; margin: 0 0 16px; color: #045157;">${title}</h1>
