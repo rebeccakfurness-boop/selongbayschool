@@ -110,6 +110,12 @@ export function ensureSchema(): Promise<void> {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
+      // On any database where `bookings` already existed before the activities/sessions
+      // migration, CREATE TABLE IF NOT EXISTS above is a no-op, so slot_id's foreign key is
+      // still silently pointing at the old, unused `booking_slots` table instead of `sessions`
+      // — every booking insert fails with a foreign key violation until this runs.
+      await sql`ALTER TABLE bookings DROP CONSTRAINT IF EXISTS bookings_slot_id_fkey`;
+      await sql`ALTER TABLE bookings ADD CONSTRAINT bookings_slot_id_fkey FOREIGN KEY (slot_id) REFERENCES sessions(id)`;
       await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'pay_at_session'`;
       // Drop the old (confirmed/cancelled) constraint before touching any row values below,
       // otherwise the UPDATE would itself violate the constraint it's trying to migrate away from.
