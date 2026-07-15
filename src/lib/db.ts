@@ -190,10 +190,17 @@ export function ensureSchema(): Promise<void> {
             CHECK (status IN ('pending_payment', 'pay_at_session', 'paid', 'expired', 'cancelled'))
         )
       `;
-      // No scheduled job flips status to 'expired' automatically (no background-worker
-      // infrastructure in this app) — "active" is instead always computed live as
+      // Tracked so the daily /api/cron/passes job (see that route) sends each of these emails
+      // at most once per pass, rather than re-sending on every run until the pass is no longer
+      // eligible.
+      await sql`ALTER TABLE passes ADD COLUMN IF NOT EXISTS expiry_reminder_sent BOOLEAN NOT NULL DEFAULT false`;
+      await sql`ALTER TABLE passes ADD COLUMN IF NOT EXISTS completion_email_sent BOOLEAN NOT NULL DEFAULT false`;
+      // Whether a pass can currently be used for booking is always computed live as
       // status = 'paid' AND expires_at > now() AND sessions_used < total_sessions,
       // wherever that matters (see /api/passes/active and the pack-session booking path).
+      // The daily cron job above is only responsible for the status = 'expired' transition
+      // itself (so it stops showing up in admin/customer lists as active) and for the two
+      // one-time emails, not for gating whether a pass can be spent.
 
       await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS pass_id BIGINT REFERENCES passes(id)`;
       // A pack-paid booking needs a third payment_method value alongside the original two.

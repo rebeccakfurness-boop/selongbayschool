@@ -299,6 +299,48 @@ export async function sendPassAutoReply(input: PassEmailInput): Promise<boolean>
   return send(input.customerEmail, `Activity pack confirmed for ${input.childName}`, html, { cc: NOTIFY_TO });
 }
 
+export interface PassCompletionEmailInput {
+  customerName: string;
+  customerEmail: string;
+  childName: string;
+  totalSessions: number;
+}
+
+/** Sent once by the daily cron job (src/app/api/cron/passes/route.ts) when a pack's sessions are all used up. */
+export async function sendPassCompletionEmail(input: PassCompletionEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    `${input.childName}'s activity pack is complete!`,
+    `<p>Hi ${input.customerName.split(' ')[0]}, thanks for using all ${input.totalSessions} sessions of ${input.childName}'s activity pack.
+       We hope ${input.childName} had a wonderful time!</p>
+     <p>Ready for more? You can buy another pack any time.</p>
+     <p><a href="${siteConfig.url}/account/buy-pack" style="color:#007c83; font-weight:700;">Buy another activity pack &rarr;</a></p>
+     <p style="margin-top: 24px;">See you soon!<br />The Selong Bay School team</p>`
+  );
+  return send(input.customerEmail, `${input.childName}'s activity pack is complete!`, html);
+}
+
+export interface PassExpiryReminderEmailInput {
+  customerName: string;
+  customerEmail: string;
+  childName: string;
+  sessionsRemaining: number;
+  expiresAt: string;
+}
+
+/** Sent once by the daily cron job (src/app/api/cron/passes/route.ts) when a pack is within 7 days of expiring, unless it's already been fully used (sendPassCompletionEmail covers that case instead). */
+export async function sendPassExpiryReminderEmail(input: PassExpiryReminderEmailInput): Promise<boolean> {
+  const sessionsLabel = `${input.sessionsRemaining} session${input.sessionsRemaining === 1 ? '' : 's'}`;
+  const html = wrapEmail(
+    `${input.childName}'s activity pack expires soon`,
+    `<p>Hi ${input.customerName.split(' ')[0]}, just a heads up: ${input.childName}'s activity pack has ${sessionsLabel} remaining
+       and expires on ${input.expiresAt}.</p>
+     <p>Book a session soon so you don't miss out.</p>
+     <p><a href="${siteConfig.url}/activities" style="color:#007c83; font-weight:700;">Book a session &rarr;</a></p>
+     <p style="margin-top: 24px;">See you soon!<br />The Selong Bay School team</p>`
+  );
+  return send(input.customerEmail, `${input.childName}'s activity pack expires in a week`, html);
+}
+
 export interface SessionCancellationEmailInput {
   activityName: string;
   date: string;

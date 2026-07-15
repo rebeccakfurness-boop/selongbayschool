@@ -26,6 +26,7 @@ Set these in Vercel (Project Settings → Environment Variables) and in a local 
 | `ADMIN_SESSION_SECRET` | Yes | Secret used to encrypt the admin session cookie (via iron-session). Set a long random value; any length works, it's hashed internally to fit iron-session's minimum. |
 | `BLOB_READ_WRITE_TOKEN` | For activity photo uploads | Set automatically when you add the Vercel Blob integration to this project (Storage tab → Create Database → Blob). Without it, activity photo uploads in `/admin/activities` will fail; everything else still works. |
 | `NEXT_PUBLIC_SNAPWIDGET_ID` | No | Widget ID from [snapwidget.com](https://snapwidget.com) for the homepage's live Instagram grid. Until set, the site shows a "follow us" fallback card instead. |
+| `CRON_SECRET` | Yes (for the daily passes job) | Any long random string. Vercel automatically sends it as `Authorization: Bearer <value>` when it triggers `/api/cron/passes` (see `vercel.json`); the route rejects any request whose header doesn't match, so without this set the cron job can never run instead of running unauthenticated. |
 
 ## Local development
 
@@ -156,9 +157,10 @@ not `admin_users`), and a different auth mechanism.
   emails (customer confirmation + `hello@selongbayschool.com` notification).
 - A pass is "active" for booking purposes when `status = 'paid'`, `expires_at > now()`, and
   `sessions_used < total_sessions` — computed live everywhere it matters (`/api/passes/active`, the
-  pack-session booking path), not by a stored flag. Nothing in this app flips a pass to `'expired'`
-  automatically — there's no background-job infrastructure here — so that status value exists for
-  the schema's completeness but isn't set by anything yet.
+  pack-session booking path), not by the `status` column alone. The daily cron job below does flip
+  `status` to `'expired'`, but only as a once-a-day cleanup for admin/customer lists (see below);
+  a pass whose `expires_at` has already passed is correctly excluded from booking even before that
+  job runs, since it's re-checked live every time.
 - When booking, if a logged-in customer has an active pass for the exact child name they're
   booking for, "Use a session from your pack" **replaces** the Pay Online / Pay at Session choice
   entirely (not offered alongside it). Picking it creates the booking with `status = 'paid'` and
@@ -175,6 +177,21 @@ not `admin_users`), and a different auth mechanism.
   sessions remaining, expiry, amount, payment method, status — with the same "Mark as Paid" action
   as regular bookings (`MarkPaidButton` now takes a `kind` prop so it can PATCH either
   `/api/admin/bookings/:id` or `/api/admin/passes/:id`).
+- `/account/bookings` has a "My Packs" section showing a customer's own passes (child, sessions
+  remaining, expiry, status), alongside their upcoming/past bookings.
+- `/api/cron/passes` (see `vercel.json`, scheduled daily at 00:00 UTC / 08:00 Lombok time; requires
+  `CRON_SECRET`, see Environment variables above) does three things to every `status = 'paid'` pass:
+  1. Fully used (`sessions_used >= total_sessions`) and `completion_email_sent = false`: sends a
+     "your pack is complete" email with a link to buy another, then sets that flag so it only ever
+     sends once.
+  2. Expiring within 7 days, not already fully used (that's covered by #1 instead, a pack is never
+     sent both emails), and `expiry_reminder_sent = false`: sends a reminder with sessions remaining
+     and the expiry date, then sets that flag so it only ever sends once.
+  3. Past `expires_at` and not fully used: sets `status = 'expired'` (no email, this is purely a
+     once-a-day tidy-up of the status column for admin/customer lists, not what gates whether a
+     pass can actually be spent, see above).
+  If an email send fails, its "sent" flag deliberately stays `false` so the next day's run retries
+  it, rather than silently giving up after one failed attempt.
 
 ## Admin area
 

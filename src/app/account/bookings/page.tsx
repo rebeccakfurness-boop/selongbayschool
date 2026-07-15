@@ -19,6 +19,15 @@ interface BookingRow {
   price_note: string | null;
 }
 
+interface PassRow {
+  id: number;
+  child_name: string;
+  total_sessions: number;
+  sessions_used: number;
+  expires_at: string;
+  status: string;
+}
+
 const STATUS_LABELS: Record<string, string> = {
   pending_payment: 'Pending payment',
   pay_at_session: 'Pay at session',
@@ -31,6 +40,16 @@ const STATUS_STYLES: Record<string, string> = {
   pay_at_session: 'bg-sand text-ink-soft',
   paid: 'bg-teal/15 text-teal-deep',
   cancelled: 'bg-black/10 text-ink-soft',
+};
+
+const PASS_STATUS_LABELS: Record<string, string> = {
+  ...STATUS_LABELS,
+  expired: 'Expired',
+};
+
+const PASS_STATUS_STYLES: Record<string, string> = {
+  ...STATUS_STYLES,
+  expired: 'bg-black/10 text-ink-soft',
 };
 
 function BookingCard({ booking }: { booking: BookingRow }) {
@@ -47,6 +66,28 @@ function BookingCard({ booking }: { booking: BookingRow }) {
         </span>
       </div>
       {amount && <p className="mt-3 text-sm font-semibold text-ink">{amount}</p>}
+    </div>
+  );
+}
+
+function PassCard({ pass }: { pass: PassRow }) {
+  const expiresLabel = new Date(pass.expires_at).toLocaleDateString('en-AU', {
+    year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Makassar',
+  });
+  return (
+    <div className="rounded-md border border-sand-line bg-paper p-5">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <h3 className="font-display text-lg font-semibold text-ink">{pass.child_name}</h3>
+          <p className="mt-1 text-sm text-ink-soft">
+            {pass.total_sessions - pass.sessions_used} of {pass.total_sessions} sessions remaining
+          </p>
+        </div>
+        <span className={`inline-block rounded-full px-2.5 py-1 text-xs font-bold ${PASS_STATUS_STYLES[pass.status] ?? 'bg-sand text-ink-soft'}`}>
+          {PASS_STATUS_LABELS[pass.status] ?? pass.status}
+        </span>
+      </div>
+      <p className="mt-3 text-sm text-ink-soft">Expires {expiresLabel}</p>
     </div>
   );
 }
@@ -69,6 +110,15 @@ export default async function AccountBookingsPage() {
         WHERE b.customer_id = ${customerId}
         ORDER BY s.session_date DESC, s.session_time DESC
       `) as unknown as BookingRow[])
+    : [];
+
+  const passes = customerId
+    ? ((await sql`
+        SELECT id, child_name, total_sessions, sessions_used, expires_at, status
+        FROM passes
+        WHERE customer_id = ${customerId}
+        ORDER BY purchased_at DESC
+      `) as unknown as PassRow[])
     : [];
 
   const today = new Date().toISOString().slice(0, 10);
@@ -98,6 +148,16 @@ export default async function AccountBookingsPage() {
         </div>
 
         <section className="mt-8">
+          <h2 className="font-display text-xl font-semibold text-ink">My Packs</h2>
+          <div className="mt-4 flex flex-col gap-4">
+            {passes.length === 0 && <p className="text-sm text-ink-soft">No activity packs yet.</p>}
+            {passes.map((pass) => (
+              <PassCard key={pass.id} pass={pass} />
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-10">
           <h2 className="font-display text-xl font-semibold text-ink">Upcoming</h2>
           <div className="mt-4 flex flex-col gap-4">
             {upcoming.length === 0 && <p className="text-sm text-ink-soft">No upcoming bookings.</p>}
