@@ -5,6 +5,10 @@ import confetti from 'canvas-confetti';
 
 const STORAGE_KEY = 'sbs_admin_last_visit';
 const BRAND_COLORS = ['#007c83', '#045157', '#fea74a', '#d97f1f', '#aafdfa'];
+// When there's no stored "last visit" yet (a brand new browser, or the very first visit after
+// this feature was deployed), fall back to this window instead of silently going quiet, so
+// genuinely recent activity still gets celebrated instead of only ever setting a baseline.
+const FIRST_VISIT_LOOKBACK_MS = 48 * 60 * 60 * 1000; // 48 hours
 
 const ENCOURAGEMENTS = [
   "Great work, keep it up!",
@@ -42,14 +46,10 @@ export default function NewActivityCelebration() {
   useEffect(() => {
     const lastVisit = window.localStorage.getItem(STORAGE_KEY);
     const now = new Date().toISOString();
-
-    if (!lastVisit) {
-      window.localStorage.setItem(STORAGE_KEY, now);
-      return;
-    }
+    const since = lastVisit ?? new Date(Date.now() - FIRST_VISIT_LOOKBACK_MS).toISOString();
 
     let cancelled = false;
-    fetch(`/api/admin/new-activity?since=${encodeURIComponent(lastVisit)}`)
+    fetch(`/api/admin/new-activity?since=${encodeURIComponent(since)}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data: { newBookings: number; newEnquiries: number } | null) => {
         if (cancelled || !data) return;
