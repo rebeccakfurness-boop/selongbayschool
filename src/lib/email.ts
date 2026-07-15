@@ -1,5 +1,5 @@
 import { Resend } from 'resend';
-import { siteConfig } from './site-content';
+import { siteConfig, bankTransferDetails, formatIDR } from './site-content';
 
 const NOTIFY_TO = siteConfig.contact.email;
 
@@ -148,6 +148,8 @@ export async function sendAdminPasswordResetEmail(email: string, resetUrl: strin
   return send(email, 'Reset your Selong Bay School admin password', html);
 }
 
+export type PaymentMethod = 'pay_online' | 'pay_at_session';
+
 export interface BookingEmailInput {
   activityName: string;
   date: string;
@@ -158,9 +160,38 @@ export interface BookingEmailInput {
   parentEmail: string;
   parentPhone: string;
   emergencyContact: string;
+  paymentMethod: PaymentMethod;
+  priceIDR: number | null;
+  priceNote: string | null;
+}
+
+const paymentMethodLabels: Record<PaymentMethod, string> = {
+  pay_online: 'Pay online (bank transfer)',
+  pay_at_session: 'Pay at the session',
+};
+
+function amountLabel(input: Pick<BookingEmailInput, 'priceIDR' | 'priceNote'>): string | null {
+  if (input.priceIDR) return formatIDR(input.priceIDR);
+  return input.priceNote || null;
+}
+
+function bankDetailsHtml(): string {
+  return `
+    <div style="margin-top: 16px; padding: 16px; background: #f6f1e6; border-radius: 10px;">
+      <p style="margin: 0 0 8px; font-weight: 700; color: #045157;">Bank transfer details</p>
+      ${fieldRows([
+        ['Bank', bankTransferDetails.bank],
+        ['Account Number', bankTransferDetails.accountNumber],
+        ['Name', bankTransferDetails.accountName],
+      ])}
+      <p style="margin: 12px 0 0;">
+        <a href="${bankTransferDetails.wiseUrl}" style="color:#007c83; font-weight:700;">Or pay via Wise &rarr;</a>
+      </p>
+    </div>`;
 }
 
 export async function sendBookingNotification(input: BookingEmailInput): Promise<boolean> {
+  const amount = amountLabel(input);
   const html = wrapEmail(
     'New Activity Booking',
     fieldRows([
@@ -173,12 +204,15 @@ export async function sendBookingNotification(input: BookingEmailInput): Promise
       ['Parent email', input.parentEmail],
       ['Parent phone', input.parentPhone],
       ['Emergency contact', input.emergencyContact],
-    ])
+      ['Payment method', paymentMethodLabels[input.paymentMethod]],
+      ['Amount due', amount],
+    ]) + (input.paymentMethod === 'pay_online' ? bankDetailsHtml() : '')
   );
   return send(NOTIFY_TO, `Booking: ${input.activityName} for ${input.childName}`, html, input.parentEmail);
 }
 
 export async function sendBookingAutoReply(input: BookingEmailInput): Promise<boolean> {
+  const amount = amountLabel(input);
   const html = wrapEmail(
     `You're booked in, ${input.parentName.split(' ')[0]}!`,
     `<p>Thanks for booking <strong>${input.activityName}</strong> for ${input.childName}. Here are the details:</p>
@@ -187,7 +221,13 @@ export async function sendBookingAutoReply(input: BookingEmailInput): Promise<bo
        ['Date', input.date],
        ['Time', input.time],
        ['Location', 'Selong Bay School campus, Selong Belanak'],
+       ['Payment method', paymentMethodLabels[input.paymentMethod]],
+       ['Amount due', amount],
      ])}
+     ${input.paymentMethod === 'pay_online'
+       ? `${bankDetailsHtml()}<p style="margin-top: 16px;">Please complete the transfer before your session. We'll confirm once we've received it.</p>`
+       : `<p style="margin-top: 16px;">You can pay in person when you arrive for the session.</p>`
+     }
      <p style="margin-top: 16px;">If your plans change, just reply to this email or call us on ${siteConfig.contact.phone}.</p>
      <p style="margin-top: 24px;">See you soon!<br />The Selong Bay School team</p>`
   );

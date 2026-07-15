@@ -33,7 +33,7 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ id
     const bookings = (await sql`
       SELECT activity_name, parent_name, parent_email, child_name
       FROM bookings
-      WHERE slot_id = ${id} AND status = 'confirmed'
+      WHERE slot_id = ${id} AND status != 'cancelled'
     `) as unknown as BookingToNotify[];
 
     await sql`UPDATE sessions SET status = 'cancelled' WHERE id = ${id}`;

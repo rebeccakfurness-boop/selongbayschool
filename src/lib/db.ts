@@ -110,10 +110,24 @@ export function ensureSchema(): Promise<void> {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
+      await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'pay_at_session'`;
+      // Drop the old (confirmed/cancelled) constraint before touching any row values below,
+      // otherwise the UPDATE would itself violate the constraint it's trying to migrate away from.
+      await sql`ALTER TABLE bookings DROP CONSTRAINT IF EXISTS bookings_status_check`;
+      // Older rows predate payment methods and were saved as 'confirmed' under that previous
+      // two-value status set; reclassified to 'paid' since those bookings were free registrations
+      // with nothing outstanding, the closest fit among the new values.
+      await sql`UPDATE bookings SET status = 'paid' WHERE status = 'confirmed'`;
       await sql`
-        ALTER TABLE bookings ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'confirmed'
-        CHECK (status IN ('confirmed', 'cancelled'))
+        ALTER TABLE bookings ADD CONSTRAINT bookings_status_check
+        CHECK (status IN ('pending_payment', 'pay_at_session', 'paid', 'cancelled'))
       `;
+      await sql`
+        ALTER TABLE bookings ADD COLUMN IF NOT EXISTS payment_method TEXT
+        CHECK (payment_method IN ('pay_online', 'pay_at_session'))
+      `;
+      // Reserved for a future real payment gateway integration; not written to yet.
+      await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS stripe_session_id TEXT`;
 
       await sql`
         CREATE TABLE IF NOT EXISTS admin_users (

@@ -1,6 +1,7 @@
 import { ensureSchema, sql } from '@/lib/db';
 import { formatDateTime } from '@/lib/admin-format';
 import StatusPill from '@/components/admin/StatusPill';
+import MarkPaidButton from '@/components/admin/MarkPaidButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,6 +19,7 @@ interface BookingRow {
   emergency_contact: string;
   notify_email_status: string;
   status: string;
+  payment_method: string | null;
   created_at: string;
 }
 
@@ -26,15 +28,24 @@ interface ActivityOption {
   name: string;
 }
 
+const STATUS_LABELS: Record<string, string> = {
+  pending_payment: 'Pending payment',
+  pay_at_session: 'Pay at session',
+  paid: 'Paid',
+  cancelled: 'Cancelled',
+};
+
+const STATUS_STYLES: Record<string, string> = {
+  pending_payment: 'bg-orange/20 text-orange-deep',
+  pay_at_session: 'bg-sand text-ink-soft',
+  paid: 'bg-teal/15 text-teal-deep',
+  cancelled: 'bg-black/10 text-ink-soft',
+};
+
 function BookingStatusPill({ status }: { status: string }) {
-  const confirmed = status === 'confirmed';
   return (
-    <span
-      className={`inline-block rounded-full px-2 py-0.5 text-xs font-bold capitalize ${
-        confirmed ? 'bg-teal/15 text-teal-deep' : 'bg-orange/20 text-orange-deep'
-      }`}
-    >
-      {status}
+    <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-bold ${STATUS_STYLES[status] ?? 'bg-sand text-ink-soft'}`}>
+      {STATUS_LABELS[status] ?? status}
     </span>
   );
 }
@@ -57,7 +68,7 @@ export default async function AdminBookingsPage({
   const bookings = (await sql`
     SELECT b.id, b.activity_slug, b.activity_name, s.session_date::text AS slot_date, s.session_time AS slot_time,
            b.child_name, b.child_age, b.parent_name, b.parent_email, b.parent_phone, b.emergency_contact,
-           b.notify_email_status, b.status, b.created_at
+           b.notify_email_status, b.status, b.payment_method, b.created_at
     FROM bookings b
     JOIN sessions s ON s.id = b.slot_id
     WHERE
@@ -107,7 +118,9 @@ export default async function AdminBookingsPage({
             className="rounded-sm border border-sand-line bg-white px-3 py-2 text-sm text-ink focus:border-teal focus:outline-none focus:ring-2 focus:ring-teal/30"
           >
             <option value="">All statuses</option>
-            <option value="confirmed">Confirmed</option>
+            <option value="pending_payment">Pending payment</option>
+            <option value="pay_at_session">Pay at session</option>
+            <option value="paid">Paid</option>
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
@@ -153,6 +166,11 @@ export default async function AdminBookingsPage({
                 <td className="px-4 py-3 text-ink-soft">{row.emergency_contact}</td>
                 <td className="whitespace-nowrap px-4 py-3">
                   <BookingStatusPill status={row.status} />
+                  {row.status === 'pending_payment' && (
+                    <div className="mt-1">
+                      <MarkPaidButton id={row.id} />
+                    </div>
+                  )}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3">
                   <StatusPill status={row.notify_email_status} />

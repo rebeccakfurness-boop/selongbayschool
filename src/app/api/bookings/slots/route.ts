@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
     const rows = await sql`
       SELECT s.id, a.slug AS activity_slug, a.name AS activity_name,
              s.session_date::text AS slot_date, s.session_time AS slot_time,
-             s.capacity, s.spots_remaining
+             s.capacity, s.spots_remaining, a.price_idr, a.price_note
       FROM sessions s
       JOIN activities a ON a.id = s.activity_id
       WHERE a.slug = ${activity} AND s.session_date >= CURRENT_DATE AND s.status = 'active'

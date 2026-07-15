@@ -40,6 +40,11 @@ export const bookingSchema = z.object({
   parentEmail: email,
   parentPhone: phone,
   emergencyContact: z.string().trim().min(1, 'Emergency contact is required').max(200),
+  paymentMethod: z.enum(['pay_online', 'pay_at_session'], { message: 'Please choose a payment method' }),
+});
+
+export const updateBookingStatusSchema = z.object({
+  status: z.literal('paid'),
 });
 export type BookingInput = z.infer<typeof bookingSchema>;
 

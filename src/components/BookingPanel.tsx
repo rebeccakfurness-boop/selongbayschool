@@ -5,6 +5,7 @@ import Button from './Button';
 import { Field, TextInput } from './forms/FormField';
 import FormStatusBanner from './forms/FormStatusBanner';
 import { useFormSubmit } from '@/lib/useFormSubmit';
+import { bankTransferDetails, formatIDR } from '@/lib/site-content';
 
 interface Slot {
   id: number;
@@ -14,7 +15,11 @@ interface Slot {
   slot_time: string;
   capacity: number;
   spots_remaining: number;
+  price_idr: number | null;
+  price_note: string | null;
 }
+
+type PaymentMethod = 'pay_online' | 'pay_at_session';
 
 function formatDate(dateStr: string): string {
   return new Date(`${dateStr}T00:00:00`).toLocaleDateString('en-AU', {
@@ -36,6 +41,7 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
   const [parentEmail, setParentEmail] = useState('');
   const [parentPhone, setParentPhone] = useState('');
   const [emergencyContact, setEmergencyContact] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
   const [emailWarning, setEmailWarning] = useState<string | null>(null);
 
   useEffect(() => {
@@ -55,9 +61,12 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
     };
   }, [activitySlug]);
 
+  const selectedSlot = slots?.find((slot) => slot.id === selectedSlotId) ?? null;
+  const amountLabel = selectedSlot?.price_idr ? formatIDR(selectedSlot.price_idr) : selectedSlot?.price_note;
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!selectedSlotId) return;
+    if (!selectedSlotId || !paymentMethod) return;
     const result = await submit({
       slotId: selectedSlotId,
       childName,
@@ -66,6 +75,7 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
       parentEmail,
       parentPhone,
       emergencyContact,
+      paymentMethod,
     });
     if (result?.emailWarning) setEmailWarning(result.emailWarning);
   }
@@ -75,7 +85,11 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
       <div className="mt-4 rounded-md border border-sand-line bg-paper p-6">
         <FormStatusBanner
           status={status}
-          successMessage="Your booking is confirmed! We've sent a confirmation email with the details."
+          successMessage={
+            paymentMethod === 'pay_online'
+              ? "Your booking is saved! We've emailed you the bank transfer details — please complete payment before your session."
+              : "Your booking is confirmed! We've sent a confirmation email with the details. You can pay in person at the session."
+          }
         />
         {emailWarning && <p className="mt-3 text-sm text-orange-deep">{emailWarning}</p>}
         <Button variant="ghost" className="mt-4" onClick={onClose}>
@@ -155,9 +169,57 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
             </Field>
           </div>
 
+          <div className="border-t border-sand-line pt-5">
+            <p className="font-display text-base font-semibold text-ink">
+              How would you like to pay?{amountLabel ? ` (${amountLabel})` : ''}
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('pay_online')}
+                className={`rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors ${
+                  paymentMethod === 'pay_online' ? 'border-teal bg-teal text-white' : 'border-sand-line bg-white text-ink hover:border-teal'
+                }`}
+              >
+                Pay Online
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod('pay_at_session')}
+                className={`rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors ${
+                  paymentMethod === 'pay_at_session' ? 'border-teal bg-teal text-white' : 'border-sand-line bg-white text-ink hover:border-teal'
+                }`}
+              >
+                Pay at the Session
+              </button>
+            </div>
+
+            {paymentMethod === 'pay_online' && (
+              <div className="mt-4 rounded-md border border-teal/30 bg-aqua/30 p-4 text-sm text-ink">
+                <p className="font-semibold text-teal-deep">Bank transfer details</p>
+                <p className="mt-2 leading-relaxed">
+                  Bank: {bankTransferDetails.bank}
+                  <br />
+                  Account Number: {bankTransferDetails.accountNumber}
+                  <br />
+                  Name: {bankTransferDetails.accountName}
+                </p>
+                <a
+                  href={bankTransferDetails.wiseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-block font-semibold text-teal-deep underline"
+                >
+                  Or pay via Wise →
+                </a>
+                <p className="mt-3 text-xs text-ink-soft">We&apos;ll also email you these details for your records.</p>
+              </div>
+            )}
+          </div>
+
           <FormStatusBanner status={status} errorMessage={errorMessage} successMessage="" />
 
-          <Button type="submit" variant="accent" disabled={status === 'submitting'}>
+          <Button type="submit" variant="accent" disabled={status === 'submitting' || !paymentMethod}>
             {status === 'submitting' ? 'Booking…' : 'Confirm booking'}
           </Button>
         </form>

@@ -11,7 +11,7 @@ export async function GET() {
       SELECT s.id, a.slug AS activity_slug, a.name AS activity_name,
              s.session_date::text AS slot_date, s.session_time AS slot_time,
              s.capacity, s.spots_remaining, s.status,
-             (SELECT COUNT(*)::int FROM bookings b WHERE b.slot_id = s.id AND b.status = 'confirmed') AS booking_count
+             (SELECT COUNT(*)::int FROM bookings b WHERE b.slot_id = s.id AND b.status != 'cancelled') AS booking_count
       FROM sessions s
       JOIN activities a ON a.id = s.activity_id
       WHERE s.session_date >= CURRENT_DATE

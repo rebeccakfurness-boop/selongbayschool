@@ -78,6 +78,22 @@ Every submission (contact, admissions, high school, activity booking) follows th
   `/api/admin/activities/upload`; the returned URL is then saved onto the activity. The public
   `/activities` page shows this photo on the activity's card if set, falling back to the site's
   existing curated photos, then to a placeholder gradient.
+- After picking a session and entering their details, a visitor chooses **Pay Online** or **Pay at
+  the Session**. Either way the booking is created immediately and counts toward capacity right
+  away (`sessions.spots_remaining` decrements the same way for both) — both are treated as a real
+  commitment, not just an intent to pay. Pay Online shows the bank transfer details (Bank Mandiri,
+  account number, name) and a Wise link — defined once in `bankTransferDetails` in
+  `src/lib/site-content.ts` and reused by both the booking form and the emails, so they can't drift
+  out of sync — and sets `bookings.status` to `pending_payment`; Pay at the Session sets it to
+  `pay_at_session`. Both send the same two emails as before (customer confirmation + notification
+  to `hello@selongbayschool.com`), now including the amount due and chosen payment method, plus the
+  bank/Wise details when paying online.
+- `bookings.status` is one of `pending_payment`, `pay_at_session`, `paid`, or `cancelled`.
+  `pending_payment` bookings get a "Mark as Paid" action in `/admin/bookings` once the transfer is
+  confirmed manually — there's no payment gateway wired up yet, so nothing sets this automatically.
+  `bookings.payment_method` (`pay_online`/`pay_at_session`) and `bookings.stripe_session_id` are
+  also stored; `stripe_session_id` is reserved for a future real payment gateway and isn't written
+  to anywhere yet.
 
 ## Admin area
 

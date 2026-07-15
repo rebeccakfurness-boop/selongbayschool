@@ -15,6 +15,13 @@ export const siteConfig = {
   },
 };
 
+export const bankTransferDetails = {
+  bank: 'Mandiri',
+  accountNumber: '1610016965134',
+  accountName: 'Elizabeth Berryman',
+  wiseUrl: 'https://wise.com/pay/me/elizabethb3419',
+};
+
 export const navItems = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },

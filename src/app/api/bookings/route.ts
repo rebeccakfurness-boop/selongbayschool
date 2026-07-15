@@ -19,12 +19,15 @@ export async function POST(req: NextRequest) {
     );
   }
   const input = parsed.data;
+  const status = input.paymentMethod === 'pay_online' ? 'pending_payment' : 'pay_at_session';
 
   try {
     await ensureSchema();
 
     // Single atomic statement: only inserts the booking if the slot still has
     // capacity, preventing a double-booking race between concurrent requests.
+    // Both payment methods are a real commitment, so both decrement spots_remaining
+    // immediately (there's no separate "spots_booked" counter to keep in sync).
     const rows = await sql`
       WITH slot_update AS (
         UPDATE sessions
@@ -39,10 +42,11 @@ export async function POST(req: NextRequest) {
       )
       INSERT INTO bookings (
         slot_id, activity_slug, activity_name, child_name, child_age,
-        parent_name, parent_email, parent_phone, emergency_contact
+        parent_name, parent_email, parent_phone, emergency_contact, payment_method, status
       )
       SELECT id, activity_slug, activity_name, ${input.childName}, ${input.childAge},
-        ${input.parentName}, ${input.parentEmail}, ${input.parentPhone}, ${input.emergencyContact}
+        ${input.parentName}, ${input.parentEmail}, ${input.parentPhone}, ${input.emergencyContact},
+        ${input.paymentMethod}, ${status}
       FROM slot_with_activity
       RETURNING id, activity_slug, activity_name, slot_id
     `;
@@ -61,6 +65,9 @@ export async function POST(req: NextRequest) {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
     }) : '';
 
+    const activityRows = await sql`SELECT price_idr, price_note FROM activities WHERE slug = ${booking.activity_slug}`;
+    const activity = activityRows[0];
+
     const emailInput = {
       activityName: booking.activity_name as string,
       date: dateLabel,
@@ -71,6 +78,9 @@ export async function POST(req: NextRequest) {
       parentEmail: input.parentEmail,
       parentPhone: input.parentPhone,
       emergencyContact: input.emergencyContact,
+      paymentMethod: input.paymentMethod,
+      priceIDR: (activity?.price_idr as number | undefined) ?? null,
+      priceNote: (activity?.price_note as string | undefined) ?? null,
     };
 
     const notifySent = await sendBookingNotification(emailInput);

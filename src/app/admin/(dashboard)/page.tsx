@@ -17,7 +17,7 @@ export default async function AdminOverviewPage() {
     FROM bookings b
     JOIN sessions s ON s.id = b.slot_id
     WHERE date_trunc('week', s.session_date) = date_trunc('week', CURRENT_DATE)
-      AND b.status = 'confirmed'
+      AND b.status != 'cancelled'
   `) as unknown as { count: number }[];
 
   const [unreadEnquiries] = (await sql`
