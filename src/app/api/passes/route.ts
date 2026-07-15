@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     const customerRows = await sql`SELECT name, email FROM customers WHERE id = ${session.customerId}`;
     const customer = customerRows[0];
     const expiresAtLabel = new Date(pass.expires_at as string).toLocaleDateString('en-AU', {
-      year: 'numeric', month: 'long', day: 'numeric',
+      year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Makassar',
     });
 
     const emailInput = {
