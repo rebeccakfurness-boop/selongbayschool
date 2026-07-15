@@ -17,7 +17,7 @@ export async function GET() {
     await ensureSchema();
     const rows = await sql`
       SELECT id, slug, name, day, duration, price_idr, price_note,
-             default_time, default_capacity, is_active
+             default_time, default_capacity, is_active, photo_url
       FROM activities ORDER BY id ASC
     `;
     return NextResponse.json({ activities: rows });
@@ -53,13 +53,13 @@ export async function POST(req: NextRequest) {
 
     const rows = await sql`
       INSERT INTO activities (
-        slug, name, day, duration, price_idr, price_note, default_time, default_capacity, description, age_group
+        slug, name, day, duration, price_idr, price_note, default_time, default_capacity, description, age_group, photo_url
       ) VALUES (
         ${slug}, ${input.name}, ${input.day || null}, ${input.duration || null},
         ${input.priceIDR ?? null}, ${input.priceNote || null}, ${input.defaultTime || null},
-        ${input.defaultCapacity}, ${input.description}, ${input.ageGroup || null}
+        ${input.defaultCapacity}, ${input.description}, ${input.ageGroup || null}, ${input.photoUrl || null}
       )
-      RETURNING id, slug, name, day, duration, price_idr, price_note, default_time, default_capacity, is_active
+      RETURNING id, slug, name, day, duration, price_idr, price_note, default_time, default_capacity, is_active, photo_url
     `;
     return NextResponse.json({ activity: rows[0] });
   } catch (err) {

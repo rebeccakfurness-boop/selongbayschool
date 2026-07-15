@@ -8,12 +8,13 @@ import { formatIDR, type Activity } from '@/lib/site-content';
 
 export default function ActivityCard({ activity, image }: { activity: Activity; image?: { src: string; alt: string } }) {
   const [booking, setBooking] = useState(false);
+  const photo = activity.photoUrl ? { src: activity.photoUrl, alt: activity.name } : image;
 
   return (
     <div className="overflow-hidden rounded-md border border-black/5 bg-paper shadow-soft">
       <div className="relative h-44 w-full">
-        {image ? (
-          <Image src={image.src} alt={image.alt} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
+        {photo ? (
+          <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
         ) : (
           <div className="absolute inset-0 bg-[linear-gradient(135deg,#0c5a60,#41bcc2_60%,#dad0bc_100%)]">
             <span className="absolute left-3 top-3 rounded-full bg-black/20 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white/80">

@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import { formatIDR } from '@/lib/site-content';
+import PhotoUploadField from '@/components/admin/PhotoUploadField';
 
 interface ActivityRow {
   id: number;
@@ -16,6 +17,7 @@ interface ActivityRow {
   default_time: string | null;
   default_capacity: number;
   is_active: boolean;
+  photo_url: string | null;
 }
 
 interface Slot {
@@ -72,6 +74,13 @@ function ActivityEditRow({ activity, onSaved }: { activity: ActivityRow; onSaved
 
   return (
     <tr className={`border-b border-sand-line/60 last:border-0 align-top ${activity.is_active ? '' : 'opacity-60'}`}>
+      <td className="px-3 py-2">
+        <PhotoUploadField
+          currentUrl={activity.photo_url}
+          pathPrefix={`activities/${activity.id}`}
+          onUploaded={(url) => patch({ photoUrl: url })}
+        />
+      </td>
       <td className="px-3 py-2"><TextInput value={name} onChange={(e) => setName(e.target.value)} className="w-40" /></td>
       <td className="px-3 py-2"><TextInput value={day} onChange={(e) => setDay(e.target.value)} className="w-28" placeholder="e.g. Tuesdays" /></td>
       <td className="px-3 py-2"><TextInput value={defaultTime} onChange={(e) => setDefaultTime(e.target.value)} className="w-24" placeholder="e.g. 15:00" /></td>
@@ -120,6 +129,8 @@ export default function ActivitiesPage() {
   const [newDefaultCapacity, setNewDefaultCapacity] = useState('10');
   const [newDescription, setNewDescription] = useState('');
   const [newAgeGroup, setNewAgeGroup] = useState('');
+  const [newPhotoUrl, setNewPhotoUrl] = useState('');
+  const [newPhotoKey, setNewPhotoKey] = useState(() => crypto.randomUUID());
   const [addingActivity, setAddingActivity] = useState(false);
   const [addActivityError, setAddActivityError] = useState<string | null>(null);
 
@@ -175,6 +186,7 @@ export default function ActivitiesPage() {
           defaultCapacity: Number(newDefaultCapacity),
           description: newDescription,
           ageGroup: newAgeGroup,
+          photoUrl: newPhotoUrl || undefined,
         }),
       });
       const data = await res.json();
@@ -187,6 +199,8 @@ export default function ActivitiesPage() {
       setNewDefaultCapacity('10');
       setNewDescription('');
       setNewAgeGroup('');
+      setNewPhotoUrl('');
+      setNewPhotoKey(crypto.randomUUID());
       await loadActivities();
     } catch (err) {
       setAddActivityError(err instanceof Error ? err.message : 'Failed to create activity');
@@ -281,6 +295,7 @@ export default function ActivitiesPage() {
           <table className="w-full min-w-[900px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-sand-line bg-sand/40 text-left">
+                <th className="px-3 py-3 font-bold text-ink-soft">Photo</th>
                 <th className="px-3 py-3 font-bold text-ink-soft">Name</th>
                 <th className="px-3 py-3 font-bold text-ink-soft">Day</th>
                 <th className="px-3 py-3 font-bold text-ink-soft">Time</th>
@@ -297,12 +312,12 @@ export default function ActivitiesPage() {
               ))}
               {activities && activities.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-4 py-6 text-center text-ink-soft">No activities yet. Add one below.</td>
+                  <td colSpan={9} className="px-4 py-6 text-center text-ink-soft">No activities yet. Add one below.</td>
                 </tr>
               )}
               {!activities && (
                 <tr>
-                  <td colSpan={8} className="px-4 py-6 text-center text-ink-soft">Loading…</td>
+                  <td colSpan={9} className="px-4 py-6 text-center text-ink-soft">Loading…</td>
                 </tr>
               )}
             </tbody>
@@ -333,6 +348,13 @@ export default function ActivitiesPage() {
           </Field>
           <Field label="Age group" htmlFor="act-age-group">
             <TextInput id="act-age-group" value={newAgeGroup} onChange={(e) => setNewAgeGroup(e.target.value)} placeholder="e.g. Ages 5-12" />
+          </Field>
+          <Field label="Photo" htmlFor="act-photo">
+            <PhotoUploadField
+              currentUrl={newPhotoUrl || null}
+              pathPrefix={`activities/${newPhotoKey}`}
+              onUploaded={setNewPhotoUrl}
+            />
           </Field>
           <div className="sm:col-span-2 lg:col-span-4">
             <Field label="Description" htmlFor="act-description" required>

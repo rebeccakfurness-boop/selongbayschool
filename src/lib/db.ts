@@ -72,6 +72,7 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE activities ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT true`;
       await sql`ALTER TABLE activities ADD COLUMN IF NOT EXISTS default_time TEXT`;
       await sql`ALTER TABLE activities ADD COLUMN IF NOT EXISTS default_capacity INTEGER NOT NULL DEFAULT 10`;
+      await sql`ALTER TABLE activities ADD COLUMN IF NOT EXISTS photo_url TEXT`;
 
       await sql`
         CREATE TABLE IF NOT EXISTS sessions (

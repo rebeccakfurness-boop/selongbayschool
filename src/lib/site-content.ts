@@ -291,6 +291,7 @@ export type Activity = {
   priceNote?: string;
   description: string;
   ageGroup: string;
+  photoUrl?: string | null;
 };
 
 export const principalWelcome = {

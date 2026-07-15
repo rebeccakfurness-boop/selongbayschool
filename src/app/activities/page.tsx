@@ -27,12 +27,13 @@ interface ActivityRow {
   price_note: string | null;
   description: string;
   age_group: string | null;
+  photo_url: string | null;
 }
 
 async function getActivities(): Promise<Activity[]> {
   await ensureSchema();
   const rows = (await sql`
-    SELECT slug, name, day, duration, price_idr, price_note, description, age_group
+    SELECT slug, name, day, duration, price_idr, price_note, description, age_group, photo_url
     FROM activities
     WHERE is_active = true
     ORDER BY id ASC
@@ -46,6 +47,7 @@ async function getActivities(): Promise<Activity[]> {
     priceNote: row.price_note ?? undefined,
     description: row.description,
     ageGroup: row.age_group ?? '',
+    photoUrl: row.photo_url,
   }));
 }
 

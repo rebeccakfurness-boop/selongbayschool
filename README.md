@@ -22,6 +22,7 @@ Set these in Vercel (Project Settings → Environment Variables) and in a local 
 | `RESEND_API_KEY` | Yes | API key from [resend.com](https://resend.com). Without it, forms still save to the database but emails will fail (and the UI tells the user so). |
 | `RESEND_FROM_EMAIL` | No | Sender address, e.g. `Selong Bay School <hello@selongbayschool.com>`. Defaults to Resend's sandbox address `onboarding@resend.dev`, which only works for testing. Verify your domain in Resend and set this before going live. |
 | `ADMIN_SESSION_SECRET` | Yes | Secret used to encrypt the admin session cookie (via iron-session). Set a long random value; any length works, it's hashed internally to fit iron-session's minimum. |
+| `BLOB_READ_WRITE_TOKEN` | For activity photo uploads | Set automatically when you add the Vercel Blob integration to this project (Storage tab → Create Database → Blob). Without it, activity photo uploads in `/admin/activities` will fail; everything else still works. |
 | `NEXT_PUBLIC_SNAPWIDGET_ID` | No | Widget ID from [snapwidget.com](https://snapwidget.com) for the homepage's live Instagram grid. Until set, the site shows a "follow us" fallback card instead. |
 
 ## Local development
@@ -71,6 +72,12 @@ Every submission (contact, admissions, high school, activity booking) follows th
   via "Remove"; sessions with bookings can only be cancelled, to preserve booking history.
 - Prices are formatted with `formatIDR()` (thousand separators, e.g. `Rp 150.000`) everywhere
   they're shown, including the public activity card next to its Book Now button.
+- Each activity can have a photo (`photo_url`), uploaded from the activities table or the Add
+  Activity form via Vercel Blob (`@vercel/blob`, requires `BLOB_READ_WRITE_TOKEN`). Uploads go
+  straight from the browser to Blob storage using a short-lived client token issued by
+  `/api/admin/activities/upload`; the returned URL is then saved onto the activity. The public
+  `/activities` page shows this photo on the activity's card if set, falling back to the site's
+  existing curated photos, then to a placeholder gradient.
 
 ## Admin area
 

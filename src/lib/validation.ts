@@ -63,6 +63,7 @@ export const createActivitySchema = z.object({
   defaultCapacity: z.coerce.number().int().positive().max(500).default(10),
   description: z.string().trim().min(1, 'Description is required').max(2000),
   ageGroup: z.string().trim().max(100).optional().or(z.literal('')),
+  photoUrl: z.string().trim().url().max(2000).optional().or(z.literal('')),
 });
 export type CreateActivityInput = z.infer<typeof createActivitySchema>;
 
@@ -74,6 +75,7 @@ export const updateActivitySchema = z.object({
   defaultTime: z.string().trim().max(50).optional(),
   defaultCapacity: z.coerce.number().int().positive().max(500).optional(),
   isActive: z.boolean().optional(),
+  photoUrl: z.string().trim().url().max(2000).optional(),
 });
 export type UpdateActivityInput = z.infer<typeof updateActivitySchema>;
 
