@@ -7,7 +7,7 @@ import { siteConfig } from '@/lib/site-content';
  * subpages, and the High School banner on the Home page), and in the booking flow on every
  * activity card, just above the Book Now button.
  */
-export const MAINTENANCE_NOTICE_ENABLED = true;
+export const MAINTENANCE_NOTICE_ENABLED = false;
 
 export const MAINTENANCE_NOTICE_TEXT =
   'Our booking and enquiry system is currently being updated for the new school year. To make a ' +

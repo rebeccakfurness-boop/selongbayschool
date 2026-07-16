@@ -5,6 +5,7 @@ import { ensureSchema, sql } from '@/lib/db';
 import { getCustomerSessionOptions, type CustomerSessionData } from '@/lib/auth';
 import { formatIDR } from '@/lib/site-content';
 import LogoutButton from '@/components/account/LogoutButton';
+import CancelBookingButton from '@/components/account/CancelBookingButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,7 +53,7 @@ const PASS_STATUS_STYLES: Record<string, string> = {
   expired: 'bg-black/10 text-ink-soft',
 };
 
-function BookingCard({ booking }: { booking: BookingRow }) {
+function BookingCard({ booking, showCancel }: { booking: BookingRow; showCancel?: boolean }) {
   const amount = booking.price_idr ? formatIDR(booking.price_idr) : booking.price_note;
   return (
     <div className="rounded-md border border-sand-line bg-paper p-5">
@@ -66,6 +67,9 @@ function BookingCard({ booking }: { booking: BookingRow }) {
         </span>
       </div>
       {amount && <p className="mt-3 text-sm font-semibold text-ink">{amount}</p>}
+      {showCancel && (
+        <CancelBookingButton bookingId={booking.id} activityName={booking.activity_name} date={booking.slot_date} />
+      )}
     </div>
   );
 }
@@ -162,7 +166,7 @@ export default async function AccountBookingsPage() {
           <div className="mt-4 flex flex-col gap-4">
             {upcoming.length === 0 && <p className="text-sm text-ink-soft">No upcoming bookings.</p>}
             {upcoming.map((booking) => (
-              <BookingCard key={booking.id} booking={booking} />
+              <BookingCard key={booking.id} booking={booking} showCancel />
             ))}
           </div>
         </section>

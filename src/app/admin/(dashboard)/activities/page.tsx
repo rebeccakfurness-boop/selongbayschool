@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useState, type FormEvent } from 'react';
+import Link from 'next/link';
 import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import { formatIDR } from '@/lib/site-content';
 import PhotoUploadField from '@/components/admin/PhotoUploadField';
+import CancelSessionButton from '@/components/admin/CancelSessionButton';
 
 interface ActivityRow {
   id: number;
@@ -107,10 +109,15 @@ function ActivityEditRow({ activity, onSaved }: { activity: ActivityRow; onSaved
         </button>
       </td>
       <td className="px-3 py-2">
-        <Button type="button" variant="ghost" className="px-4 py-1.5 text-xs" onClick={save} disabled={saving}>
-          {saving ? 'Saving…' : 'Save'}
-        </Button>
-        {error && <div className="mt-1 max-w-[10rem] text-xs font-semibold text-orange-deep">{error}</div>}
+        <div className="flex flex-col items-start gap-1.5">
+          <Link href={`/admin/activities/${activity.id}`} className="text-xs font-semibold text-teal-deep hover:underline">
+            View &rarr;
+          </Link>
+          <Button type="button" variant="ghost" className="px-4 py-1.5 text-xs" onClick={save} disabled={saving}>
+            {saving ? 'Saving…' : 'Save'}
+          </Button>
+          {error && <div className="max-w-[10rem] text-xs font-semibold text-orange-deep">{error}</div>}
+        </div>
       </td>
     </tr>
   );
@@ -271,19 +278,6 @@ export default function ActivitiesPage() {
       await loadSlots();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete session');
-    }
-  }
-
-  async function cancelSlot(slot: Slot) {
-    if (!confirm(`Cancel the ${slot.activity_name} session on ${slot.slot_date} at ${slot.slot_time}? All booked customers will be emailed.`)) return;
-    setError(null);
-    try {
-      const res = await fetch(`/api/admin/availability/${slot.id}/cancel`, { method: 'POST' });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to cancel');
-      await loadSlots();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to cancel session');
     }
   }
 
@@ -464,13 +458,13 @@ export default function ActivitiesPage() {
                   <td className="px-4 py-3">
                     <div className="flex flex-col gap-1">
                       {slot.status === 'active' && (
-                        <button
-                          type="button"
-                          onClick={() => cancelSlot(slot)}
-                          className="text-left text-sm font-semibold text-orange-deep hover:underline"
-                        >
-                          Cancel this session
-                        </button>
+                        <CancelSessionButton
+                          sessionId={slot.id}
+                          activityName={slot.activity_name}
+                          date={slot.slot_date}
+                          time={slot.slot_time}
+                          onCancelled={loadSlots}
+                        />
                       )}
                       {slot.booking_count === 0 && (
                         <button

@@ -373,3 +373,64 @@ export async function sendSessionCancellationEmail(input: SessionCancellationEma
   );
   return send(input.parentEmail, `Cancelled: ${input.activityName} on ${input.date}`, html, { cc: NOTIFY_TO });
 }
+
+export interface CustomerCancellationConfirmationInput {
+  activityName: string;
+  date: string;
+  time: string;
+  childName: string;
+  parentName: string;
+  parentEmail: string;
+  /** Whether this booking's payment method was pay_online, i.e. they may already have paid. */
+  mayHavePaid: boolean;
+}
+
+/** Sent when a customer cancels their own booking from /account/bookings (as opposed to sendSessionCancellationEmail, sent when an admin cancels the whole session). */
+export async function sendCustomerCancellationConfirmation(input: CustomerCancellationConfirmationInput): Promise<boolean> {
+  const html = wrapEmail(
+    'Your booking has been cancelled',
+    `<p>Hi ${input.parentName.split(' ')[0]}, this confirms your booking has been cancelled:</p>
+     ${fieldRows([
+       ['Activity', input.activityName],
+       ['Date', input.date],
+       ['Time', input.time],
+       ["Child's name", input.childName],
+     ])}
+     ${input.mayHavePaid
+       ? `<p style="margin-top: 16px;">Since you'd already paid for this session, we'll process a refund manually and be in touch shortly to arrange it.</p>`
+       : ''
+     }
+     <p style="margin-top: 16px;">If this was a mistake or you'd like to book another session, just visit the Activities page any time.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.parentEmail, `Booking cancelled: ${input.activityName}`, html);
+}
+
+export interface CustomerCancellationNotificationInput {
+  activityName: string;
+  date: string;
+  time: string;
+  childName: string;
+  parentName: string;
+  parentEmail: string;
+  parentPhone: string;
+  paymentStatusLabel: string;
+}
+
+/** Sent to hello@selongbayschool.com alongside sendCustomerCancellationConfirmation, so the school knows to action a manual refund if payment had already been received. */
+export async function sendCustomerCancellationNotification(input: CustomerCancellationNotificationInput): Promise<boolean> {
+  const html = wrapEmail(
+    'Customer Cancelled a Booking',
+    fieldRows([
+      ['Activity', input.activityName],
+      ['Date', input.date],
+      ['Time', input.time],
+      ["Child's name", input.childName],
+      ['Parent name', input.parentName],
+      ['Parent email', input.parentEmail],
+      ['Parent phone', input.parentPhone],
+      ['Payment status at cancellation', input.paymentStatusLabel],
+    ])
+  );
+  return send(NOTIFY_TO, `Booking cancelled by customer: ${input.activityName} for ${input.childName}`, html, { replyTo: input.parentEmail });
+}
