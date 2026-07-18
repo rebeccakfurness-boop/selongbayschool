@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
       JOIN activities a ON a.id = s.activity_id
       WHERE a.slug = ${activity} AND s.session_date >= CURRENT_DATE AND s.status = 'active'
       ORDER BY s.session_date ASC, s.session_time ASC
-      LIMIT 30
+      LIMIT 400
     `;
     return NextResponse.json({ slots: rows });
   } catch (err) {
