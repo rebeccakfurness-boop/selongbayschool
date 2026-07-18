@@ -4,10 +4,13 @@ import { sendSessionCancellationEmail } from '@/lib/email';
 /**
  * Replaces every current/future session for the five weekday activities and School Tour with
  * a fixed 10-week term (1:30pm-3:30pm for the weekday activities, hourly 9am-1pm Mon-Fri for
- * School Tour). Any existing session for these activities dated today or later that isn't part
- * of the new schedule is removed: deleted outright if nobody has booked it, or cancelled (with
- * the same cancellation email the admin "Cancel session" button sends) if it has real bookings.
- * Past sessions are left untouched, and no other activity (e.g. Adventure Camp) is touched.
+ * School Tour, one booking per School Tour time slot). Any existing session for these
+ * activities dated today or later that isn't part of the new schedule is removed: deleted
+ * outright if nobody has booked it, or cancelled (with the same cancellation email the admin
+ * "Cancel session" button sends) if it has real bookings. A session that already exists but
+ * with a different capacity (e.g. from before this capacity change) has its capacity brought in
+ * line instead. Past sessions are left untouched, and no other activity (e.g. Adventure Camp) is
+ * touched.
  */
 
 const TERM_START = new Date('2026-07-27T00:00:00');
@@ -40,7 +43,7 @@ const WEEKDAY_ACTIVITIES: WeekdayActivity[] = [
 
 const SCHOOL_TOUR_SLUG = 'school-tour';
 const SCHOOL_TOUR_TIMES = ['09:00', '10:00', '11:00', '12:00'];
-const SCHOOL_TOUR_CAPACITY = 15;
+const SCHOOL_TOUR_CAPACITY = 1;
 
 function toDateString(d: Date): string {
   return d.toISOString().slice(0, 10);
@@ -101,20 +104,38 @@ async function buildTargetSessions(): Promise<{ targets: TargetSession[]; activi
   return { targets, activityIds };
 }
 
-async function createTargetSessions(targets: TargetSession[]): Promise<number> {
+/**
+ * Creates any target session that doesn't exist yet. For one that already exists (e.g. from an
+ * earlier run of this same reschedule with a different capacity), brings its capacity in line
+ * with the target instead of leaving it stale — but never below however many people are already
+ * booked into it, so an existing session never ends up with a negative spots_remaining.
+ */
+async function syncTargetSessions(targets: TargetSession[]): Promise<{ created: number; capacityUpdated: number }> {
   let created = 0;
+  let capacityUpdated = 0;
   for (const target of targets) {
     const existing = await sql`
-      SELECT id FROM sessions WHERE activity_id = ${target.activityId} AND session_date = ${target.date} AND session_time = ${target.time}
+      SELECT id, capacity FROM sessions WHERE activity_id = ${target.activityId} AND session_date = ${target.date} AND session_time = ${target.time}
     `;
-    if (existing.length > 0) continue;
-    await sql`
-      INSERT INTO sessions (activity_id, session_date, session_time, capacity, spots_remaining)
-      VALUES (${target.activityId}, ${target.date}, ${target.time}, ${target.capacity}, ${target.capacity})
-    `;
-    created++;
+    if (existing.length === 0) {
+      await sql`
+        INSERT INTO sessions (activity_id, session_date, session_time, capacity, spots_remaining)
+        VALUES (${target.activityId}, ${target.date}, ${target.time}, ${target.capacity}, ${target.capacity})
+      `;
+      created++;
+      continue;
+    }
+
+    const session = existing[0];
+    if (session.capacity === target.capacity) continue;
+
+    const bookingCountRows = await sql`SELECT count(*)::int AS n FROM bookings WHERE slot_id = ${session.id} AND status != 'cancelled'`;
+    const bookingCount = bookingCountRows[0].n as number;
+    const newCapacity = Math.max(target.capacity, bookingCount);
+    await sql`UPDATE sessions SET capacity = ${newCapacity}, spots_remaining = ${newCapacity - bookingCount} WHERE id = ${session.id}`;
+    capacityUpdated++;
   }
-  return created;
+  return { created, capacityUpdated };
 }
 
 interface StaleSessionRow {
@@ -188,6 +209,7 @@ export interface RescheduleResult {
   termStart: string;
   termWeeks: number;
   created: number;
+  capacityUpdated: number;
   deleted: number;
   cancelled: number;
   emailed: number;
@@ -199,7 +221,7 @@ export async function runRescheduleActivities(): Promise<RescheduleResult> {
   const { targets, activityIds } = await buildTargetSessions();
   const keep = new Set(targets.map((t) => `${t.activityId}|${t.date}|${t.time}`));
 
-  const created = await createTargetSessions(targets);
+  const { created, capacityUpdated } = await syncTargetSessions(targets);
 
   const today = toDateString(new Date());
   const candidates = (await sql`
@@ -218,6 +240,7 @@ export async function runRescheduleActivities(): Promise<RescheduleResult> {
     termStart: toDateString(TERM_START),
     termWeeks: TERM_WEEKS,
     created,
+    capacityUpdated,
     deleted,
     cancelled,
     emailed,

@@ -7,6 +7,9 @@ import { runRescheduleActivities } from '../src/lib/reschedule-activities';
 async function main() {
   const result = await runRescheduleActivities();
   console.log(`Created ${result.created} new session(s) for the ${result.termWeeks}-week term starting ${result.termStart}.`);
+  if (result.capacityUpdated > 0) {
+    console.log(`Updated capacity on ${result.capacityUpdated} existing session(s) to match the new schedule.`);
+  }
   if (result.deleted === 0 && result.cancelled === 0) {
     console.log('No stale sessions to remove.');
   } else {

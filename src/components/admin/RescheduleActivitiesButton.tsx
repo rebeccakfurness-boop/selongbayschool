@@ -7,6 +7,7 @@ interface RescheduleResult {
   termStart: string;
   termWeeks: number;
   created: number;
+  capacityUpdated: number;
   deleted: number;
   cancelled: number;
   emailed: number;
@@ -59,8 +60,10 @@ export default function RescheduleActivitiesButton({ onDone }: { onDone?: () => 
       {error && <p className="mt-2 text-sm font-semibold text-orange-deep">{error}</p>}
       {result && (
         <p className="mt-2 text-sm font-semibold text-teal-deep">
-          Done. Created {result.created} new session(s) for the term starting {result.termStart}. Removed {result.deleted} empty
-          session(s) and cancelled {result.cancelled} session(s) that had bookings ({result.emailed} cancellation email(s) sent).
+          Done. Created {result.created} new session(s) for the term starting {result.termStart}
+          {result.capacityUpdated > 0 && <>, updated capacity on {result.capacityUpdated} existing session(s)</>}. Removed{' '}
+          {result.deleted} empty session(s) and cancelled {result.cancelled} session(s) that had bookings ({result.emailed} cancellation
+          email(s) sent).
         </p>
       )}
     </div>
