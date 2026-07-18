@@ -7,6 +7,7 @@ import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import { formatIDR } from '@/lib/site-content';
 import PhotoUploadField from '@/components/admin/PhotoUploadField';
 import CancelSessionButton from '@/components/admin/CancelSessionButton';
+import RescheduleActivitiesButton from '@/components/admin/RescheduleActivitiesButton';
 
 interface ActivityRow {
   id: number;
@@ -288,6 +289,8 @@ export default function ActivitiesPage() {
       <h1 className="font-display text-2xl font-semibold text-ink">Activities &amp; Calendar</h1>
 
       {error && <p role="alert" className="font-semibold text-orange-deep">{error}</p>}
+
+      <RescheduleActivitiesButton onDone={() => { loadSlots(); loadActivities(); }} />
 
       <section>
         <h2 className="font-display text-xl font-semibold text-ink">Activities</h2>
