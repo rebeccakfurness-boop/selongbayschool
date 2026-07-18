@@ -23,7 +23,8 @@ interface BookingRow {
   slot_time: string;
   child_name: string;
   child_age: string;
-  emergency_contact: string;
+  emergency_contact_name: string;
+  emergency_contact_phone: string | null;
   status: string;
   payment_method: string | null;
   created_at: string;
@@ -96,7 +97,8 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
 
   const bookings = (await sql`
     SELECT b.id, b.activity_name, s.session_date::text AS slot_date, s.session_time AS slot_time,
-           b.child_name, b.child_age, b.emergency_contact, b.status, b.payment_method, b.created_at
+           b.child_name, b.child_age, b.emergency_contact_name, b.emergency_contact_phone,
+           b.status, b.payment_method, b.created_at
     FROM bookings b
     JOIN sessions s ON s.id = b.slot_id
     WHERE b.customer_id = ${customerId}
@@ -181,7 +183,10 @@ export default async function AdminCustomerDetailPage({ params }: { params: Prom
                   <td className="px-4 py-3 font-semibold text-ink">{row.activity_name}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-ink-soft">{row.slot_date} &middot; {row.slot_time}</td>
                   <td className="px-4 py-3 text-ink-soft">{row.child_name} ({row.child_age})</td>
-                  <td className="px-4 py-3 text-ink-soft">{row.emergency_contact}</td>
+                  <td className="px-4 py-3 text-ink-soft">
+                    <div>{row.emergency_contact_name}</div>
+                    <div>{row.emergency_contact_phone || '-'}</div>
+                  </td>
                   <td className="whitespace-nowrap px-4 py-3 text-ink-soft">
                     {row.payment_method ? PAYMENT_METHOD_LABELS[row.payment_method] ?? row.payment_method : '-'}
                   </td>

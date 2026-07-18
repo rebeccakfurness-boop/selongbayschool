@@ -134,7 +134,12 @@ export default async function AccountBookingsPage() {
       <div className="border-b border-black/10 bg-teal-deep">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
           <span className="font-display text-lg font-semibold text-white">My Account</span>
-          <LogoutButton />
+          <div className="flex items-center gap-4">
+            <Link href="/account/settings" className="text-sm font-semibold text-white/90 hover:underline">
+              Settings
+            </Link>
+            <LogoutButton />
+          </div>
         </div>
       </div>
       <div className="mx-auto max-w-4xl px-6 py-10">

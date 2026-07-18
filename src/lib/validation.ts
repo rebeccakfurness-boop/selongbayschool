@@ -52,7 +52,8 @@ export const bookingSchema = z
     parentName: z.string().trim().min(1, 'Parent name is required').max(200),
     parentEmail: email,
     parentPhone: phone,
-    emergencyContact: z.string().trim().min(1, 'Emergency contact is required').max(200),
+    emergencyContactName: z.string().trim().min(1, 'Emergency contact name is required').max(200),
+    emergencyContactPhone: z.string().trim().min(1, 'Emergency contact phone is required').max(50),
     paymentMethod: z.enum(['pay_online', 'pay_at_session', 'pack_session'], { message: 'Please choose a payment option' }),
     passId: z.coerce.number().int().positive().optional(),
   })
@@ -143,3 +144,9 @@ export const passPurchaseSchema = z.object({
   paymentMethod: z.enum(['pay_online', 'pay_at_session'], { message: 'Please choose a payment method' }),
 });
 export type PassPurchaseInput = z.infer<typeof passPurchaseSchema>;
+
+export const emergencyContactSchema = z.object({
+  emergencyContactName: z.string().trim().min(1, 'Emergency contact name is required').max(200),
+  emergencyContactPhone: z.string().trim().min(1, 'Emergency contact phone is required').max(50),
+});
+export type EmergencyContactInput = z.infer<typeof emergencyContactSchema>;

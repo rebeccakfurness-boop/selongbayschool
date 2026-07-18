@@ -155,6 +155,20 @@ export function ensureSchema(): Promise<void> {
       // Reserved for a future real payment gateway integration; not written to yet.
       await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS stripe_session_id TEXT`;
 
+      // Replaces the old single `emergency_contact` free-text column with separate name/phone
+      // fields. That old column is left in place (not dropped) so historic bookings keep their
+      // original value visible; new bookings only ever write to the two columns below.
+      await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS emergency_contact_name TEXT`;
+      await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS emergency_contact_phone TEXT`;
+      // Backfill existing rows from the legacy combined field so old bookings aren't left blank,
+      // then require the column going forward now that every row has a value.
+      await sql`UPDATE bookings SET emergency_contact_name = emergency_contact WHERE emergency_contact_name IS NULL`;
+      await sql`ALTER TABLE bookings ALTER COLUMN emergency_contact_name SET NOT NULL`;
+      // No reliable way to split a phone number back out of that old freeform text, so this one
+      // stays nullable for historic rows; every new booking always provides it via the required
+      // form field, enforced at the application layer (matching payment_method above, also added
+      // long after bookings already existed).
+
       await sql`
         CREATE TABLE IF NOT EXISTS customers (
           id BIGSERIAL PRIMARY KEY,
@@ -170,6 +184,11 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS magic_link_token TEXT`;
       await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS magic_link_token_expires_at TIMESTAMPTZ`;
       await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS last_login_at TIMESTAMPTZ`;
+      // Populated the first time a logged-in customer books an activity (or edits it directly at
+      // /account/settings), then pre-filled on every booking after that so they don't have to
+      // re-enter it. Nullable: a brand new account has neither until then.
+      await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS emergency_contact_name TEXT`;
+      await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS emergency_contact_phone TEXT`;
 
       await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS customer_id BIGINT REFERENCES customers(id)`;
       // Existing rows all predate customer accounts, so they default to true (guest bookings).

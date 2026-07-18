@@ -25,6 +25,8 @@ interface Account {
   name: string | null;
   email: string;
   phone: string | null;
+  emergencyContactName: string | null;
+  emergencyContactPhone: string | null;
 }
 
 interface ActivePass {
@@ -50,7 +52,8 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
   const [parentName, setParentName] = useState('');
   const [parentEmail, setParentEmail] = useState('');
   const [parentPhone, setParentPhone] = useState('');
-  const [emergencyContact, setEmergencyContact] = useState('');
+  const [emergencyContactName, setEmergencyContactName] = useState('');
+  const [emergencyContactPhone, setEmergencyContactPhone] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
   const [emailWarning, setEmailWarning] = useState<string | null>(null);
   const [activePass, setActivePass] = useState<ActivePass | null>(null);
@@ -83,6 +86,8 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
           setParentName((current) => current || data.customer.name || '');
           setParentEmail((current) => current || data.customer.email || '');
           setParentPhone((current) => current || data.customer.phone || '');
+          setEmergencyContactName((current) => current || data.customer.emergencyContactName || '');
+          setEmergencyContactPhone((current) => current || data.customer.emergencyContactPhone || '');
         }
         setAccountChecked(true);
       })
@@ -134,7 +139,8 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
       parentName,
       parentEmail,
       parentPhone,
-      emergencyContact,
+      emergencyContactName,
+      emergencyContactPhone,
       paymentMethod,
       passId: paymentMethod === 'pack_session' ? activePass?.id : undefined,
     });
@@ -230,8 +236,23 @@ export default function BookingPanel({ activitySlug, onClose }: { activitySlug: 
             <Field label="Parent phone" htmlFor="bk-parent-phone" required>
               <TextInput id="bk-parent-phone" required value={parentPhone} onChange={(e) => setParentPhone(e.target.value)} />
             </Field>
-            <Field label="Emergency contact" htmlFor="bk-emergency" required>
-              <TextInput id="bk-emergency" required value={emergencyContact} onChange={(e) => setEmergencyContact(e.target.value)} />
+            <Field label="Emergency Contact Name" htmlFor="bk-emergency-name" required>
+              <TextInput
+                id="bk-emergency-name"
+                required
+                value={emergencyContactName}
+                onChange={(e) => setEmergencyContactName(e.target.value)}
+              />
+            </Field>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Emergency Contact Phone" htmlFor="bk-emergency-phone" required>
+              <TextInput
+                id="bk-emergency-phone"
+                required
+                value={emergencyContactPhone}
+                onChange={(e) => setEmergencyContactPhone(e.target.value)}
+              />
             </Field>
           </div>
 

@@ -19,6 +19,8 @@ interface SessionBookingRow {
   parent_name: string | null;
   parent_email: string | null;
   parent_phone: string | null;
+  emergency_contact_name: string | null;
+  emergency_contact_phone: string | null;
   payment_method: string | null;
   booking_status: string | null;
 }
@@ -36,6 +38,8 @@ interface SessionGroup {
     parentName: string;
     parentEmail: string;
     parentPhone: string;
+    emergencyContactName: string;
+    emergencyContactPhone: string;
     paymentMethod: string | null;
     status: string;
   }>;
@@ -84,6 +88,8 @@ function groupSessions(rows: SessionBookingRow[]): SessionGroup[] {
         parentName: row.parent_name ?? '',
         parentEmail: row.parent_email ?? '',
         parentPhone: row.parent_phone ?? '',
+        emergencyContactName: row.emergency_contact_name ?? '',
+        emergencyContactPhone: row.emergency_contact_phone ?? '',
         paymentMethod: row.payment_method,
         status: row.booking_status ?? '',
       });
@@ -117,12 +123,13 @@ function SessionCard({ session, activityName }: { session: SessionGroup; activit
         <p className="mt-4 text-sm text-ink-soft">No bookings for this session yet.</p>
       ) : (
         <div className="mt-4 overflow-x-auto rounded-md border border-sand-line">
-          <table className="w-full min-w-[700px] border-collapse text-sm">
+          <table className="w-full min-w-[850px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-sand-line bg-sand/40 text-left">
                 <th className="px-3 py-2 font-bold text-ink-soft">Child</th>
                 <th className="px-3 py-2 font-bold text-ink-soft">Parent</th>
                 <th className="px-3 py-2 font-bold text-ink-soft">Contact</th>
+                <th className="px-3 py-2 font-bold text-ink-soft">Emergency contact</th>
                 <th className="px-3 py-2 font-bold text-ink-soft">Payment method</th>
                 <th className="px-3 py-2 font-bold text-ink-soft">Status</th>
               </tr>
@@ -135,6 +142,10 @@ function SessionCard({ session, activityName }: { session: SessionGroup; activit
                   <td className="px-3 py-2 text-ink-soft">
                     <div>{booking.parentEmail}</div>
                     <div>{booking.parentPhone}</div>
+                  </td>
+                  <td className="px-3 py-2 text-ink-soft">
+                    <div>{booking.emergencyContactName}</div>
+                    <div>{booking.emergencyContactPhone || '-'}</div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-2 text-ink-soft">
                     {booking.paymentMethod ? PAYMENT_METHOD_LABELS[booking.paymentMethod] ?? booking.paymentMethod : '-'}
@@ -182,6 +193,7 @@ export default async function AdminActivityDetailPage({ params }: { params: Prom
     SELECT s.id AS session_id, s.session_date::text AS session_date, s.session_time,
            s.capacity, s.spots_remaining, s.status AS session_status,
            b.id AS booking_id, b.child_name, b.parent_name, b.parent_email, b.parent_phone,
+           b.emergency_contact_name, b.emergency_contact_phone,
            b.payment_method, b.status AS booking_status
     FROM sessions s
     LEFT JOIN bookings b ON b.slot_id = s.id AND b.status != 'cancelled'

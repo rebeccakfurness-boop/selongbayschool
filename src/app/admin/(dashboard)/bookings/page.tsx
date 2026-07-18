@@ -18,7 +18,8 @@ interface BookingRow {
   parent_name: string;
   parent_email: string;
   parent_phone: string;
-  emergency_contact: string;
+  emergency_contact_name: string;
+  emergency_contact_phone: string | null;
   notify_email_status: string;
   status: string;
   payment_method: string | null;
@@ -82,7 +83,8 @@ export default async function AdminBookingsPage({
 
   const bookings = (await sql`
     SELECT b.id, b.activity_slug, b.activity_name, s.session_date::text AS slot_date, s.session_time AS slot_time,
-           b.child_name, b.child_age, b.parent_name, b.parent_email, b.parent_phone, b.emergency_contact,
+           b.child_name, b.child_age, b.parent_name, b.parent_email, b.parent_phone,
+           b.emergency_contact_name, b.emergency_contact_phone,
            b.notify_email_status, b.status, b.payment_method, act.price_idr, act.price_note, b.created_at
     FROM bookings b
     JOIN sessions s ON s.id = b.slot_id
@@ -184,7 +186,10 @@ export default async function AdminBookingsPage({
                   <div>{row.parent_email}</div>
                   <div>{row.parent_phone}</div>
                 </td>
-                <td className="px-4 py-3 text-ink-soft">{row.emergency_contact}</td>
+                <td className="px-4 py-3 text-ink-soft">
+                  <div>{row.emergency_contact_name}</div>
+                  <div>{row.emergency_contact_phone || '-'}</div>
+                </td>
                 <td className="whitespace-nowrap px-4 py-3 font-semibold text-ink">{amountDue(row)}</td>
                 <td className="whitespace-nowrap px-4 py-3 text-ink-soft">
                   {row.payment_method ? PAYMENT_METHOD_LABELS[row.payment_method] ?? row.payment_method : '-'}

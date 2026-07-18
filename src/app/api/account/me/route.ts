@@ -12,13 +12,23 @@ export async function GET() {
   }
 
   try {
-    const rows = await sql`SELECT id, email, name, phone FROM customers WHERE id = ${session.customerId}`;
+    const rows = await sql`
+      SELECT id, email, name, phone, emergency_contact_name, emergency_contact_phone
+      FROM customers WHERE id = ${session.customerId}
+    `;
     const customer = rows[0];
     if (!customer) {
       return NextResponse.json({ customer: null });
     }
     return NextResponse.json({
-      customer: { id: customer.id, email: customer.email, name: customer.name, phone: customer.phone },
+      customer: {
+        id: customer.id,
+        email: customer.email,
+        name: customer.name,
+        phone: customer.phone,
+        emergencyContactName: customer.emergency_contact_name,
+        emergencyContactPhone: customer.emergency_contact_phone,
+      },
     });
   } catch (err) {
     console.error('[api/account/me] failed', err);

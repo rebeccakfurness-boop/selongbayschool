@@ -64,11 +64,12 @@ export async function POST(req: NextRequest) {
           )
           INSERT INTO bookings (
             slot_id, activity_slug, activity_name, child_name, child_age,
-            parent_name, parent_email, parent_phone, emergency_contact, payment_method, status,
-            customer_id, is_guest, pass_id
+            parent_name, parent_email, parent_phone, emergency_contact_name, emergency_contact_phone,
+            payment_method, status, customer_id, is_guest, pass_id
           )
           SELECT swa.id, swa.activity_slug, swa.activity_name, ${input.childName}, ${input.childAge},
-            ${input.parentName}, ${input.parentEmail}, ${input.parentPhone}, ${input.emergencyContact},
+            ${input.parentName}, ${input.parentEmail}, ${input.parentPhone},
+            ${input.emergencyContactName}, ${input.emergencyContactPhone},
             'pack_session', ${status}, ${customerId}, ${isGuest}, pu.id
           FROM slot_with_activity swa, pass_update pu
           RETURNING id, activity_slug, activity_name, slot_id
@@ -87,11 +88,12 @@ export async function POST(req: NextRequest) {
           )
           INSERT INTO bookings (
             slot_id, activity_slug, activity_name, child_name, child_age,
-            parent_name, parent_email, parent_phone, emergency_contact, payment_method, status,
-            customer_id, is_guest
+            parent_name, parent_email, parent_phone, emergency_contact_name, emergency_contact_phone,
+            payment_method, status, customer_id, is_guest
           )
           SELECT id, activity_slug, activity_name, ${input.childName}, ${input.childAge},
-            ${input.parentName}, ${input.parentEmail}, ${input.parentPhone}, ${input.emergencyContact},
+            ${input.parentName}, ${input.parentEmail}, ${input.parentPhone},
+            ${input.emergencyContactName}, ${input.emergencyContactPhone},
             ${input.paymentMethod}, ${status}, ${customerId}, ${isGuest}
           FROM slot_with_activity
           RETURNING id, activity_slug, activity_name, slot_id
@@ -118,6 +120,18 @@ export async function POST(req: NextRequest) {
     }
 
     const booking = rows[0];
+
+    // Logged-in customers: whatever they just submitted becomes their saved profile value, so
+    // it's pre-filled next time without them having to re-enter it. Guests have no profile row
+    // to attach this to, so it only ever lives on the booking itself for them.
+    if (customerId) {
+      await sql`
+        UPDATE customers
+        SET emergency_contact_name = ${input.emergencyContactName}, emergency_contact_phone = ${input.emergencyContactPhone}
+        WHERE id = ${customerId}
+      `;
+    }
+
     const slotRows = await sql`SELECT session_date::text AS slot_date, session_time AS slot_time FROM sessions WHERE id = ${input.slotId}`;
     const slot = slotRows[0];
     const dateLabel = slot ? new Date(`${slot.slot_date}T00:00:00`).toLocaleDateString('en-AU', {
@@ -144,7 +158,8 @@ export async function POST(req: NextRequest) {
       parentName: input.parentName,
       parentEmail: input.parentEmail,
       parentPhone: input.parentPhone,
-      emergencyContact: input.emergencyContact,
+      emergencyContactName: input.emergencyContactName,
+      emergencyContactPhone: input.emergencyContactPhone,
       paymentMethod: input.paymentMethod,
       priceIDR,
       priceNote,

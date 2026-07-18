@@ -175,7 +175,8 @@ export interface BookingEmailInput {
   parentName: string;
   parentEmail: string;
   parentPhone: string;
-  emergencyContact: string;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
   paymentMethod: BookingPaymentMethod;
   priceIDR: number | null;
   priceNote: string | null;
@@ -220,7 +221,8 @@ export async function sendBookingNotification(input: BookingEmailInput): Promise
       ['Parent name', input.parentName],
       ['Parent email', input.parentEmail],
       ['Parent phone', input.parentPhone],
-      ['Emergency contact', input.emergencyContact],
+      ['Emergency contact name', input.emergencyContactName],
+      ['Emergency contact phone', input.emergencyContactPhone],
       ['Payment method', paymentMethodLabels[input.paymentMethod]],
       ['Amount due', amount],
     ]) + (input.paymentMethod === 'pay_online' ? bankDetailsHtml() : '')
