@@ -9,7 +9,8 @@
     "lint": "next lint",
     "db:init": "tsx --env-file-if-exists=.env.local scripts/init-db.ts",
     "db:seed": "tsx --env-file-if-exists=.env.local scripts/seed-activities.ts",
-    "db:seed-admin": "tsx --env-file-if-exists=.env.local scripts/seed-admin-user.ts"
+    "db:seed-admin": "tsx --env-file-if-exists=.env.local scripts/seed-admin-user.ts",
+    "db:reschedule-activities": "tsx --env-file-if-exists=.env.local scripts/reschedule-activities.ts"
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.4",
