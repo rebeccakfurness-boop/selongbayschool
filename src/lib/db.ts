@@ -168,6 +168,9 @@ export function ensureSchema(): Promise<void> {
       // stays nullable for historic rows; every new booking always provides it via the required
       // form field, enforced at the application layer (matching payment_method above, also added
       // long after bookings already existed).
+      // The old column was NOT NULL and new bookings no longer write to it (see above), so it
+      // must be relaxed here or every new booking insert fails that constraint.
+      await sql`ALTER TABLE bookings ALTER COLUMN emergency_contact DROP NOT NULL`;
 
       await sql`
         CREATE TABLE IF NOT EXISTS customers (
