@@ -366,9 +366,11 @@ export const googleClassroom = {
   body: 'We use Google Classroom to support both online and in person learning through a structured, flexible, and accessible learning environment. Google Classroom allows students to access lesson materials, assignments, recorded sessions, revision resources, and practice examinations in one central location, encouraging self-directed learning and independent study habits. Teachers can track student progress, provide feedback, monitor assignment completion, and support exam preparation effectively. The platform also enables parental oversight by allowing families to stay informed about student learning, deadlines, progress, and communication, helping create a collaborative partnership between students, teachers, and parents.',
 };
 
+export const parentHandbookPdf = '/files/parent-handbook.pdf';
+
 export const policyLinks = [
   { label: 'School Policies', href: '#' },
-  { label: 'Parent Handbook', href: '#' },
+  { label: 'Parent Handbook', href: parentHandbookPdf },
 ];
 
 export const freeShuttle = {

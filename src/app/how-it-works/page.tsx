@@ -81,11 +81,17 @@ export default function HowItWorksPage() {
                 day to day.
               </p>
               <div className="mt-5 flex flex-wrap gap-4">
-                {policyLinks.map((link) => (
-                  <Button key={link.label} disabled variant="primary">
-                    {link.label} (Coming Soon)
-                  </Button>
-                ))}
+                {policyLinks.map((link) =>
+                  link.href === '#' ? (
+                    <Button key={link.label} disabled variant="primary">
+                      {link.label} (Coming Soon)
+                    </Button>
+                  ) : (
+                    <Button key={link.label} href={link.href} variant="primary" external>
+                      {link.label}
+                    </Button>
+                  )
+                )}
               </div>
             </Reveal>
           </section>
