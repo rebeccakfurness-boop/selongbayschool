@@ -62,9 +62,9 @@ export default function Footer() {
           </address>
 
           <h3 className="mt-6 font-sans text-sm font-bold uppercase tracking-wide text-white/70">Explore</h3>
-          <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-[15px] text-white/90">
+          <ul className="mt-3 columns-2 gap-x-4 text-[15px] text-white/90">
             {navItems.map((item) => (
-              <li key={item.href}>
+              <li key={item.href} className="mb-2 break-inside-avoid">
                 <Link href={item.href} className="hover:text-orange">
                   {item.label}
                 </Link>
