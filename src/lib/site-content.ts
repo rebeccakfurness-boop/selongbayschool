@@ -8,7 +8,7 @@ export const siteConfig = {
     phone: '+62 813-5974-095',
     phoneHref: 'tel:+628135974095',
     email: 'hello@selongbayschool.com',
-    instagram: 'https://www.instagram.com/selongbayschool/',
+    instagram: 'https://www.instagram.com/selongbay_school/',
     facebook: 'https://www.facebook.com/people/Selong-Bay-School/61584318951968/',
     whatsappHref: 'tel:+628135974095',
     mapQuery: 'Dusun Serangan, Selong Belanak, Kec. Praya Bar., Kabupaten Lombok Tengah, Nusa Tenggara Bar. 83572',
@@ -166,7 +166,7 @@ export const teachers = [
     role: 'Early Years & Preschool Teacher',
     shortIntro: 'An experienced Early Years and Preschool teacher with a background in psychology and child development.',
     bio: "Amorita Christella Anggamsari holds a Bachelor's degree in Psychology from Airlangga University and has over three years of experience in early childhood education, child development, and mental health support. She most recently worked as a Kindergarten 2 Teacher at Apple Tree Preschool Lombok (2023 to 2025), where she taught a class of 16 students, delivered lessons across key learning areas, monitored student progress, and built strong partnerships with families. She also led school initiatives, including the Read to Me Event 2025, the school newsletter, and teacher training. Alongside her teaching, Amorita has worked as a counselor and facilitator, providing individual and group support to promote emotional wellbeing and personal development. Bilingual in English and Bahasa Indonesia, she is skilled in communication, public speaking, educational content creation, and has presented at both national and international conferences.",
-    image: { src: '/images/teacher-ella.jpg', alt: 'Amorita Christella Anggamsari (Ms Ella), Early Years & Preschool teacher at Selong Bay School' },
+    image: { src: '/images/msellapicture2.png', alt: 'Amorita Christella Anggamsari (Ms Ella), Early Years & Preschool teacher at Selong Bay School' },
   },
   {
     name: 'Dewi Mustika N. (Ms Dewi)',

@@ -2,6 +2,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { navItems, siteConfig } from '@/lib/site-content';
 
+function InstagramIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 function FacebookIcon() {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
@@ -28,8 +38,16 @@ export default function Footer() {
         <div>
           <Image src="/images/logo-full.png" alt={siteConfig.name} width={378} height={299} className="h-20 w-auto" />
           <p className="mt-3 max-w-xs text-[15px] leading-relaxed text-white/80">{siteConfig.mission}</p>
-          {/* Instagram link temporarily removed */}
           <div className="mt-5 flex gap-3">
+            <a
+              href={siteConfig.contact.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-orange hover:text-teal-deep"
+              aria-label="Selong Bay School on Instagram"
+            >
+              <InstagramIcon />
+            </a>
             <a
               href={siteConfig.contact.facebook}
               target="_blank"
