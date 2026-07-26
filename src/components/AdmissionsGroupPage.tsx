@@ -65,6 +65,21 @@ export default function AdmissionsGroupPage({ group }: { group: AdmissionsGroup 
             </div>
           )}
 
+          {group.showcase && (
+            <div className="mx-auto mt-8 max-w-lg">
+              <div className="overflow-hidden rounded-md border border-sand-line shadow-soft">
+                <Image
+                  src={group.showcase.image.src}
+                  alt={group.showcase.image.alt}
+                  width={1920}
+                  height={1080}
+                  className="w-full"
+                />
+              </div>
+              <p className="mt-2 text-[13.5px] text-ink-soft">{group.showcase.caption}</p>
+            </div>
+          )}
+
           <div className="mt-6">
             <Button href="/about#teachers" variant="ghost">
               See All Teachers

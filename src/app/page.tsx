@@ -80,7 +80,7 @@ export default function HomePage() {
       <Reveal>
         <PhotoBanner
           height="md"
-          image={{ src: '/images/home-mission-award-ceremony.jpg', alt: 'Students receiving certificates of achievement at Selong Bay School' }}
+          image={{ src: '/images/home-community-group.jpg', alt: 'Teachers, staff, and students gathered together on campus at Selong Bay School' }}
           card={{
             script: 'Whilst giving families time to explore',
             heading: 'World leading education for a sustainable future',

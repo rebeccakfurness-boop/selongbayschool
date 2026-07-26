@@ -398,6 +398,8 @@ export type AdmissionsGroup = {
   curriculum: string;
   pricing: { programme: string; ageRange?: string; perTermFrom: number }[];
   featuredTeachers: string[];
+  /** Optional extra photo shown alongside the Teachers section, e.g. a candid moment with a featured teacher. */
+  showcase?: { image: { src: string; alt: string }; caption: string };
 };
 
 export const admissionsGroups: AdmissionsGroup[] = [
@@ -416,6 +418,13 @@ export const admissionsGroups: AdmissionsGroup[] = [
       { programme: 'Senior Preschool (Full Time)', ageRange: '4–6', perTermFrom: 18_450_000 },
     ],
     featuredTeachers: ['Amorita Christella Anggamsari (Ms Ella)', 'Dewi Mustika N. (Ms Dewi)'],
+    showcase: {
+      image: {
+        src: '/images/preschool-super-reader-award.jpg',
+        alt: "Ms Ella and a Selong Bay staff member celebrating a student's Super Reader Award certificate",
+      },
+      caption: "Ms Ella celebrating a Preschool student's Super Reader Award.",
+    },
   },
   {
     slug: 'primary',
