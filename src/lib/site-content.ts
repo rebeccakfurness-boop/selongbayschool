@@ -33,7 +33,7 @@ export const activityPass = {
 export const navItems = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
-  { href: '/how-it-works', label: 'How It Works' },
+  { href: '/how-it-works', label: 'Our Approach' },
   { href: '/foundation-and-charity', label: 'Foundation & Charity' },
   {
     href: '/admissions',
