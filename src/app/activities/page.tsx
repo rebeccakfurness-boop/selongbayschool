@@ -51,7 +51,17 @@ async function fetchActivities(): Promise<Activity[]> {
       ) AS has_availability
     FROM activities a
     WHERE a.is_active = true
-    ORDER BY a.id ASC
+    ORDER BY
+      CASE a.day
+        WHEN 'Monday' THEN 1
+        WHEN 'Tuesday' THEN 2
+        WHEN 'Wednesday' THEN 3
+        WHEN 'Thursday' THEN 4
+        WHEN 'Friday' THEN 5
+        ELSE 6
+      END,
+      has_sessions DESC,
+      a.id ASC
   `) as unknown as ActivityRow[];
   return rows.map((row) => ({
     slug: row.slug,
