@@ -11,6 +11,7 @@ interface RescheduleResult {
   deleted: number;
   cancelled: number;
   emailed: number;
+  deactivated: number;
 }
 
 export default function RescheduleActivitiesButton({ onDone }: { onDone?: () => void }) {
@@ -21,10 +22,11 @@ export default function RescheduleActivitiesButton({ onDone }: { onDone?: () => 
   async function run() {
     if (
       !confirm(
-        'This replaces every current and future session for the five weekday activities and School Tour with the new ' +
-        '10-week term (1:30-3:30pm, starting 27 July; School Tour hourly 9am-1pm Mon-Fri). Any old slot that’s not ' +
-        'part of the new schedule will be removed — sessions with real bookings will be cancelled and those ' +
-        'families will be emailed. This cannot be undone. Continue?'
+        'This syncs current and future sessions to the latest term schedule: weekday activities 1:30-3:30pm, School ' +
+        'Tour at midday Mon-Fri (capacity 8), Football replacing Hip Hop Dance and Ninja Warrior on Mondays from ' +
+        '3 August, and Gymnastics for Kids & Free Swim retired. Any old slot that’s not part of the new schedule ' +
+        'will be removed — sessions with real bookings will be cancelled and those families will be emailed. This ' +
+        'cannot be undone. Continue?'
       )
     ) {
       return;
@@ -49,8 +51,8 @@ export default function RescheduleActivitiesButton({ onDone }: { onDone?: () => 
     <div className="rounded-md border border-orange/30 bg-orange/5 p-5">
       <h3 className="font-display text-base font-semibold text-ink">Reschedule to new term</h3>
       <p className="mt-1 text-sm text-ink-soft">
-        Replaces all upcoming sessions for the five weekday activities and School Tour with the new 10-week term
-        schedule, removing every other slot for those activities.
+        Syncs upcoming sessions to the latest term schedule (School Tour midday, Football from 3 August, Gymnastics
+        &amp; Free Swim retired) and removes every slot that no longer belongs.
       </p>
       <div className="mt-3">
         <Button type="button" variant="accent" onClick={run} disabled={pending}>
@@ -63,7 +65,7 @@ export default function RescheduleActivitiesButton({ onDone }: { onDone?: () => 
           Done. Created {result.created} new session(s) for the term starting {result.termStart}
           {result.capacityUpdated > 0 && <>, updated capacity on {result.capacityUpdated} existing session(s)</>}. Removed{' '}
           {result.deleted} empty session(s) and cancelled {result.cancelled} session(s) that had bookings ({result.emailed} cancellation
-          email(s) sent).
+          email(s) sent). Deactivated {result.deactivated} retired activity(ies).
         </p>
       )}
     </div>

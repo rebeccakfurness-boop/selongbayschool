@@ -18,6 +18,9 @@ async function main() {
       `(${result.emailed} cancellation email(s) sent).`
     );
   }
+  if (result.deactivated > 0) {
+    console.log(`Deactivated ${result.deactivated} retired activity(ies).`);
+  }
   console.log('Reschedule complete.');
 }
 

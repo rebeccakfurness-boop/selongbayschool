@@ -2,19 +2,30 @@ import { ensureSchema, sql } from '@/lib/db';
 import { sendSessionCancellationEmail } from '@/lib/email';
 
 /**
- * Replaces every current/future session for the five weekday activities and School Tour with
- * a fixed 10-week term (1:30pm-3:30pm for the weekday activities, hourly 9am-1pm Mon-Fri for
- * School Tour, one booking per School Tour time slot). Any existing session for these
- * activities dated today or later that isn't part of the new schedule is removed: deleted
- * outright if nobody has booked it, or cancelled (with the same cancellation email the admin
- * "Cancel session" button sends) if it has real bookings. A session that already exists but
- * with a different capacity (e.g. from before this capacity change) has its capacity brought in
- * line instead. Past sessions are left untouched, and no other activity (e.g. Adventure Camp) is
- * touched.
+ * Keeps the current/future sessions for the weekday activities and School Tour in sync with a
+ * fixed 10-week term (27 July - 2 October 2026): 1:30pm-3:30pm for the weekday activities, and
+ * midday for School Tour, Monday-Friday. Hip Hop Dance and Ninja Warrior only runs the first
+ * Monday of the term; Football takes over every Monday after that so the already-advertised
+ * 27 July session isn't disrupted. Gymnastics for Kids & Free Swim is retired: deactivated (kept
+ * in the database for historical bookings, just hidden from the public site) and every one of
+ * its current/future sessions is removed the same way as any other stale session below.
+ *
+ * Any existing session for an active target activity that isn't part of the schedule above is
+ * removed: deleted outright if nobody has booked it, or cancelled (with the same cancellation
+ * email the admin "Cancel session" button sends) if it has real bookings. A session that already
+ * exists but with a different capacity has its capacity brought in line instead. Past sessions
+ * are left untouched, and no other activity (e.g. Adventure Camp) is touched.
  */
 
-const TERM_START = new Date('2026-07-27T00:00:00');
+const TERM_START = new Date('2026-07-27T00:00:00'); // Monday
 const TERM_WEEKS = 10;
+const TERM_END_EXCLUSIVE = new Date(TERM_START);
+TERM_END_EXCLUSIVE.setDate(TERM_END_EXCLUSIVE.getDate() + TERM_WEEKS * 7);
+
+// The second Monday of the term: where Hip Hop Dance and Ninja Warrior's run ends (exclusive)
+// and Football's begins (inclusive).
+const SECOND_MONDAY = new Date(TERM_START);
+SECOND_MONDAY.setDate(SECOND_MONDAY.getDate() + 7);
 
 const WEEKDAY_INDEX: Record<string, number> = {
   Sunday: 0,
@@ -31,35 +42,58 @@ interface WeekdayActivity {
   day: keyof typeof WEEKDAY_INDEX;
   time: string;
   capacity: number;
+  start: Date;
+  endExclusive: Date;
+  /** Only needed for an activity that may not exist in the activities table yet. */
+  seed?: { name: string; description: string; priceIDR: number; duration: string; ageGroup: string };
 }
 
 const WEEKDAY_ACTIVITIES: WeekdayActivity[] = [
-  { slug: 'hip-hop-dance-ninja-warrior', day: 'Monday', time: '13:30', capacity: 12 },
-  { slug: 'gymnastics-free-swim', day: 'Tuesday', time: '13:30', capacity: 12 },
-  { slug: 'surfing-selong-belanak', day: 'Wednesday', time: '13:30', capacity: 8 },
-  { slug: 'art-music-bahasa', day: 'Thursday', time: '13:30', capacity: 12 },
-  { slug: 'scouts-survival-challenge', day: 'Friday', time: '13:30', capacity: 12 },
+  { slug: 'hip-hop-dance-ninja-warrior', day: 'Monday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: SECOND_MONDAY },
+  {
+    slug: 'football',
+    day: 'Monday',
+    time: '13:30',
+    capacity: 12,
+    start: SECOND_MONDAY,
+    endExclusive: TERM_END_EXCLUSIVE,
+    seed: {
+      name: 'Football',
+      description: 'Football skills, drills, and friendly matches that build teamwork, fitness, and confidence on the pitch.',
+      priceIDR: 300_000,
+      duration: '2 hr',
+      ageGroup: 'All ages',
+    },
+  },
+  { slug: 'surfing-selong-belanak', day: 'Wednesday', time: '13:30', capacity: 8, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
+  { slug: 'art-music-bahasa', day: 'Thursday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
+  { slug: 'scouts-survival-challenge', day: 'Friday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
 ];
 
+// No longer offered. Every one of its current/future sessions is treated as stale and removed
+// below (its id is still included in the stale-session scan), and the activity itself is
+// deactivated so it drops off the public site, but its row (and any past bookings) stay in the
+// database.
+const DEACTIVATED_ACTIVITY_SLUGS = ['gymnastics-free-swim'];
+
 const SCHOOL_TOUR_SLUG = 'school-tour';
-const SCHOOL_TOUR_TIMES = ['09:00', '10:00', '11:00', '12:00'];
-const SCHOOL_TOUR_CAPACITY = 1;
+const SCHOOL_TOUR_TIMES = ['12:00'];
+const SCHOOL_TOUR_CAPACITY = 8;
 
 function toDateString(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
-/** The first occurrence of `weekday` on or after `start`, then every 7 days after that, `weeks` times total. */
-function weeklyDates(start: Date, weekday: number, weeks: number): string[] {
-  const first = new Date(start);
-  while (first.getDay() !== weekday) {
-    first.setDate(first.getDate() + 1);
+/** Every occurrence of `weekday` from `start` (inclusive) up to `endExclusive`. */
+function datesForWeekdayInRange(weekday: number, start: Date, endExclusive: Date): string[] {
+  const cursor = new Date(start);
+  while (cursor.getDay() !== weekday) {
+    cursor.setDate(cursor.getDate() + 1);
   }
   const dates: string[] = [];
-  for (let w = 0; w < weeks; w++) {
-    const d = new Date(first);
-    d.setDate(d.getDate() + w * 7);
-    dates.push(toDateString(d));
+  while (cursor < endExclusive) {
+    dates.push(toDateString(cursor));
+    cursor.setDate(cursor.getDate() + 7);
   }
   return dates;
 }
@@ -79,14 +113,29 @@ async function activityIdBySlug(slug: string): Promise<number> {
   return rows[0].id as number;
 }
 
+/** Looks up an activity by slug, creating it first (from `activity.seed`) if it doesn't exist yet. */
+async function ensureActivityId(activity: WeekdayActivity): Promise<number> {
+  const rows = await sql`SELECT id FROM activities WHERE slug = ${activity.slug}`;
+  if (rows.length > 0) return rows[0].id as number;
+  if (!activity.seed) {
+    throw new Error(`Activity not found: ${activity.slug}. Run "npm run db:seed" first.`);
+  }
+  const inserted = await sql`
+    INSERT INTO activities (slug, name, day, duration, price_idr, description, age_group)
+    VALUES (${activity.slug}, ${activity.seed.name}, ${activity.day}, ${activity.seed.duration}, ${activity.seed.priceIDR}, ${activity.seed.description}, ${activity.seed.ageGroup})
+    RETURNING id
+  `;
+  return inserted[0].id as number;
+}
+
 async function buildTargetSessions(): Promise<{ targets: TargetSession[]; activityIds: number[] }> {
   const targets: TargetSession[] = [];
   const activityIds: number[] = [];
 
   for (const activity of WEEKDAY_ACTIVITIES) {
-    const id = await activityIdBySlug(activity.slug);
+    const id = await ensureActivityId(activity);
     activityIds.push(id);
-    for (const date of weeklyDates(TERM_START, WEEKDAY_INDEX[activity.day], TERM_WEEKS)) {
+    for (const date of datesForWeekdayInRange(WEEKDAY_INDEX[activity.day], activity.start, activity.endExclusive)) {
       targets.push({ activityId: id, date, time: activity.time, capacity: activity.capacity });
     }
   }
@@ -94,11 +143,15 @@ async function buildTargetSessions(): Promise<{ targets: TargetSession[]; activi
   const schoolTourId = await activityIdBySlug(SCHOOL_TOUR_SLUG);
   activityIds.push(schoolTourId);
   for (const weekday of [1, 2, 3, 4, 5]) {
-    for (const date of weeklyDates(TERM_START, weekday, TERM_WEEKS)) {
+    for (const date of datesForWeekdayInRange(weekday, TERM_START, TERM_END_EXCLUSIVE)) {
       for (const time of SCHOOL_TOUR_TIMES) {
         targets.push({ activityId: schoolTourId, date, time, capacity: SCHOOL_TOUR_CAPACITY });
       }
     }
+  }
+
+  for (const slug of DEACTIVATED_ACTIVITY_SLUGS) {
+    activityIds.push(await activityIdBySlug(slug));
   }
 
   return { targets, activityIds };
@@ -205,6 +258,12 @@ async function removeStaleSessions(ids: number[]): Promise<{ deleted: number; ca
   return { deleted, cancelled, emailed };
 }
 
+async function deactivateActivities(slugs: string[]): Promise<void> {
+  for (const slug of slugs) {
+    await sql`UPDATE activities SET is_active = false WHERE slug = ${slug}`;
+  }
+}
+
 export interface RescheduleResult {
   termStart: string;
   termWeeks: number;
@@ -213,6 +272,7 @@ export interface RescheduleResult {
   deleted: number;
   cancelled: number;
   emailed: number;
+  deactivated: number;
 }
 
 export async function runRescheduleActivities(): Promise<RescheduleResult> {
@@ -222,6 +282,7 @@ export async function runRescheduleActivities(): Promise<RescheduleResult> {
   const keep = new Set(targets.map((t) => `${t.activityId}|${t.date}|${t.time}`));
 
   const { created, capacityUpdated } = await syncTargetSessions(targets);
+  await deactivateActivities(DEACTIVATED_ACTIVITY_SLUGS);
 
   const today = toDateString(new Date());
   const candidates = (await sql`
@@ -244,5 +305,6 @@ export async function runRescheduleActivities(): Promise<RescheduleResult> {
     deleted,
     cancelled,
     emailed,
+    deactivated: DEACTIVATED_ACTIVITY_SLUGS.length,
   };
 }
