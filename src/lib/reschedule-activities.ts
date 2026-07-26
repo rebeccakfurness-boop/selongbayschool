@@ -4,11 +4,11 @@ import { sendSessionCancellationEmail } from '@/lib/email';
 /**
  * Keeps the current/future sessions for the weekday activities and School Tour in sync with a
  * fixed 10-week term (27 July - 2 October 2026): 1:30pm-3:30pm for the weekday activities, and
- * midday for School Tour, Monday-Friday. Hip Hop Dance and Ninja Warrior only runs the first
- * Monday of the term; Football takes over every Monday after that so the already-advertised
- * 27 July session isn't disrupted. Gymnastics for Kids & Free Swim is retired: deactivated (kept
- * in the database for historical bookings, just hidden from the public site) and every one of
- * its current/future sessions is removed the same way as any other stale session below.
+ * midday for School Tour, Monday-Friday. Football is Monday's activity, starting 3 August (the
+ * second Monday of the term). Hip Hop Dance and Ninja Warrior and Gymnastics for Kids & Free Swim
+ * are both retired: deactivated (kept in the database for historical bookings, just hidden from
+ * the public site) and every one of their current/future sessions is removed the same way as any
+ * other stale session below.
  *
  * Any existing session for an active target activity that isn't part of the schedule above is
  * removed: deleted outright if nobody has booked it, or cancelled (with the same cancellation
@@ -22,8 +22,7 @@ const TERM_WEEKS = 10;
 const TERM_END_EXCLUSIVE = new Date(TERM_START);
 TERM_END_EXCLUSIVE.setDate(TERM_END_EXCLUSIVE.getDate() + TERM_WEEKS * 7);
 
-// The second Monday of the term: where Hip Hop Dance and Ninja Warrior's run ends (exclusive)
-// and Football's begins (inclusive).
+// The second Monday of the term: where Football's run begins.
 const SECOND_MONDAY = new Date(TERM_START);
 SECOND_MONDAY.setDate(SECOND_MONDAY.getDate() + 7);
 
@@ -49,7 +48,6 @@ interface WeekdayActivity {
 }
 
 const WEEKDAY_ACTIVITIES: WeekdayActivity[] = [
-  { slug: 'hip-hop-dance-ninja-warrior', day: 'Monday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: SECOND_MONDAY },
   {
     slug: 'football',
     day: 'Monday',
@@ -70,11 +68,11 @@ const WEEKDAY_ACTIVITIES: WeekdayActivity[] = [
   { slug: 'scouts-survival-challenge', day: 'Friday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
 ];
 
-// No longer offered. Every one of its current/future sessions is treated as stale and removed
-// below (its id is still included in the stale-session scan), and the activity itself is
+// No longer offered. Every one of their current/future sessions is treated as stale and removed
+// below (their ids are still included in the stale-session scan), and each activity is
 // deactivated so it drops off the public site, but its row (and any past bookings) stay in the
 // database.
-const DEACTIVATED_ACTIVITY_SLUGS = ['gymnastics-free-swim'];
+const DEACTIVATED_ACTIVITY_SLUGS = ['gymnastics-free-swim', 'hip-hop-dance-ninja-warrior'];
 
 const SCHOOL_TOUR_SLUG = 'school-tour';
 const SCHOOL_TOUR_TIMES = ['12:00'];
