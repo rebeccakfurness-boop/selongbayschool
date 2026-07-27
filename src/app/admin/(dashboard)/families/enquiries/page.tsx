@@ -1,6 +1,8 @@
 import { ensureSchema, sql } from '@/lib/db';
 import { formatDate } from '@/lib/admin-format';
 import { ENQUIRY_SOURCE_LABELS } from '@/lib/family-data';
+import { getCurrentStaff } from '@/lib/current-staff';
+import FamiliesTabs from '@/components/admin/FamiliesTabs';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +22,7 @@ interface EnquiryRow {
 
 export default async function AdmissionsEnquiriesPage() {
   await ensureSchema();
+  const staff = await getCurrentStaff();
   const enquiries = (await sql`
     SELECT id, source, parent_name, child_name, child_age, contact_phone, contact_email,
            plan_to_stay, first_message_date, follow_up_notes, converted_child_id
@@ -29,12 +32,17 @@ export default async function AdmissionsEnquiriesPage() {
 
   return (
     <section>
-      <h1 className="font-display text-2xl font-semibold text-ink">Admissions Pipeline</h1>
-      <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
-        {enquiries.length} leads imported from School Tours, WhatsApp, Old Inquiries, Other Islanders, and Visitor
-        logs. &quot;Visitor&quot; entries include some non-family visits (teacher applicants, training) — review and
-        archive as needed. Converting a lead into a full Family record lands in Phase 2.
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-2xl font-semibold text-ink">Admissions Pipeline</h1>
+          <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
+            {enquiries.length} leads imported from School Tours, WhatsApp, Old Inquiries, Other Islanders, and
+            Visitor logs. &quot;Visitor&quot; entries include some non-family visits (teacher applicants, training) —
+            review and archive as needed. Converting a lead into a full Family record is coming in a later phase.
+          </p>
+        </div>
+        <FamiliesTabs active="enquiries" role={staff.role} />
+      </div>
       <div className="mt-4 overflow-x-auto rounded-md border border-sand-line bg-paper">
         <table className="w-full min-w-[960px] border-collapse text-sm">
           <thead>

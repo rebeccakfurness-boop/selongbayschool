@@ -1,5 +1,7 @@
 import { ensureSchema, sql } from '@/lib/db';
 import { CLASS_BAND_LABELS, CLASS_BAND_ORDER, type ClassBand } from '@/lib/family-data';
+import { requireAdmin } from '@/lib/current-staff';
+import FamiliesTabs from '@/components/admin/FamiliesTabs';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +14,7 @@ interface ForecastRow {
 }
 
 export default async function ClassForecastPage() {
+  const staff = await requireAdmin();
   await ensureSchema();
   const rows = (await sql`
     SELECT forecast_month, class_band, child_display_name, age_or_grade_label, status_tag
@@ -23,11 +26,16 @@ export default async function ClassForecastPage() {
 
   return (
     <section>
-      <h1 className="font-display text-2xl font-semibold text-ink">Class Forecast</h1>
-      <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
-        Monthly roster forecast imported from the &quot;Student Count&quot; sheet — named students per class band per
-        month, including forward-looking placeholders not yet enrolled as real Family records.
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-2xl font-semibold text-ink">Class Forecast</h1>
+          <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
+            Monthly roster forecast imported from the &quot;Student Count&quot; sheet — named students per class band
+            per month, including forward-looking placeholders not yet enrolled as real Family records.
+          </p>
+        </div>
+        <FamiliesTabs active="forecast" role={staff.role} />
+      </div>
 
       {months.length === 0 && (
         <p className="mt-6 text-ink-soft">

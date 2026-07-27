@@ -121,6 +121,68 @@ export const adminResetPasswordSchema = z.object({
 });
 export type AdminResetPasswordInput = z.infer<typeof adminResetPasswordSchema>;
 
+const optionalDate = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional();
+const optionalStr = z.string().trim().max(2000).nullable().optional();
+
+export const updateChildStatusSchema = z.object({
+  status: z.enum(['enquiry', 'booking_waitlist', 'full_time', 'temporary', 'worldschooler', 'hybrid']),
+});
+export type UpdateChildStatusInput = z.infer<typeof updateChildStatusSchema>;
+
+export const updateChildSchema = z.object({
+  status: z.enum(['enquiry', 'booking_waitlist', 'full_time', 'temporary', 'worldschooler', 'hybrid']).optional(),
+  isActive: z.boolean().optional(),
+  programme: optionalStr,
+  classBand: z.enum(['early_years', 'kindergarten', 'primary', 'secondary']).nullable().optional(),
+  className: optionalStr,
+  childFullName: z.string().trim().min(1).max(200).optional(),
+  childNickname: optionalStr,
+  dob: optionalDate,
+  gender: optionalStr,
+  nationality: optionalStr,
+  enrolmentDate: optionalDate,
+  exitDate: optionalDate,
+  parent1Name: optionalStr,
+  parent1Relationship: optionalStr,
+  parent1Nationality: optionalStr,
+  parent2Name: optionalStr,
+  parent2Relationship: optionalStr,
+  parent2Nationality: optionalStr,
+  siblingsAtSchool: optionalStr,
+  siblingDiscountTier: optionalStr,
+  tuitionPlan: optionalStr,
+  paymentStatus: optionalStr,
+  emergencyContactName: optionalStr,
+  emergencyContactPhone: optionalStr,
+  allergiesMedicalNotes: optionalStr,
+  dietaryRequirements: optionalStr,
+  religion: optionalStr,
+  homeLanguage: optionalStr,
+  primaryContactEmail: optionalStr,
+  primaryContactPhone: optionalStr,
+  nisnRequestSigned: z.boolean().optional(),
+  nisnRequestDate: optionalDate,
+  nisnNumber: optionalStr,
+  liabilityFormSigned: z.boolean().optional(),
+  liabilityFormDate: optionalDate,
+  photographySigned: z.boolean().optional(),
+  photographyConsent: optionalStr,
+  photographyFormDate: optionalDate,
+  pickupAuthorizationSigned: z.boolean().optional(),
+  authorizedPickupPersons: optionalStr,
+  pickupFormDate: optionalDate,
+  behavioralFormSigned: z.boolean().optional(),
+  behavioralFormDate: optionalDate,
+  financialAgreementSigned: z.boolean().optional(),
+  financialAgreementDate: optionalDate,
+  parentProtectionAddendumSigned: z.boolean().optional(),
+  dataConsentSigned: z.boolean().optional(),
+  passportCopyUrl: optionalStr,
+  visaStatus: optionalStr,
+  kitasCopyUrl: optionalStr,
+});
+export type UpdateChildInput = z.infer<typeof updateChildSchema>;
+
 export const studentLoginSchema = z.object({
   username: z.string().trim().min(1, 'Username is required').max(100),
   password: z.string().min(1, 'Password is required'),

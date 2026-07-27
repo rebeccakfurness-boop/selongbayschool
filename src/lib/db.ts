@@ -367,6 +367,11 @@ export function ensureSchema(): Promise<void> {
       // Free-text carried over from Sheet1's "Duration of Stay" column; not auto-classified into
       // status (temporary/worldschooler) since that would be a guess — left for admin review.
       await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS duration_of_stay_note TEXT`;
+      // Immigration documents — admin-only visibility (see ChildCard), not shown to teachers even
+      // though they can see the rest of the compliance/health fields above.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS passport_copy_url TEXT`;
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS visa_status TEXT`;
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS kitas_copy_url TEXT`;
       await sql`CREATE INDEX IF NOT EXISTS idx_children_status ON children (status)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_children_class_name ON children (class_name)`;
 

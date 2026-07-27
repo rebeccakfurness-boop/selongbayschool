@@ -218,11 +218,38 @@ not `admin_users`), and a different auth mechanism.
 - `/admin/website-updates`: status of requested website changes (`change_requests` table)
 - `/admin/settings`: change your admin password
 
-## Operations dashboard (families, teachers, students) — Phase 1
+## Operations dashboard (families, teachers, students)
 
-Foundation for the admissions/enrolment/teaching ops system described separately (Family Board,
-Learning Profiles, invoicing, etc. land in later phases). This phase adds the data model, roles,
-and read-only views; drag-and-drop and the full child card are Phase 2.
+Foundation for the admissions/enrolment/teaching ops system described separately (Learning
+Profiles, invoicing, Google Classroom, etc. land in later phases).
+
+### Phase 2: drag-and-drop board, calendar, child card
+
+- **Family Board** (`/admin/families`) is now a real drag-and-drop board (`@dnd-kit/core`) —
+  dragging a card to a different status column PATCHes `children.status` immediately (optimistic
+  update, reverts on failure). Admin-only; teachers get the same board read-only, scoped to their
+  assigned classes.
+- **Family Calendar** (`/admin/families/calendar`) is a custom month-grid calendar (matching the
+  existing `BookingCalendar.tsx` pattern rather than adding FullCalendar/react-big-calendar, to
+  stay consistent with the rest of the app's bespoke, brand-matched components) showing who's
+  on-site each day, derived from `enrolment_date`/`exit_date`. A child with no enrolment date on
+  file shows as on-site every day rather than being silently hidden.
+- **Child Card** (`/admin/families/[id]`) is the full detail view: family/guardian info, health &
+  personal, family & financial, the 7-item compliance checklist (matching the Dashboard sheet's
+  "Forms outstanding" tile — NISN Request is tracked separately since the source sheet doesn't
+  count it as one of the 7), and an admin-only edit form covering all of the above. Learning
+  Profile, Activities, Photo Feed, Invoice status, and Lunch selection are stubbed with "coming in
+  a later phase" notes — those are separate data models arriving in Phases 3-4.
+  - **Immigration documents** (passport copy, visa status, KITAS copy) are a further admin-only
+    addition — not shown on the teacher view of the card at all, unlike the rest of the
+    compliance/health data. Uploads go through a dedicated `/api/admin/children/upload` route
+    (Vercel Blob, admin-only, accepts PDF or image) separate from the activities photo upload
+    route, since these are more sensitive documents.
+- `npm run db:create-staff -- <email> teacher` still has no admin UI for assigning a teacher's
+  classes — insert rows into `teacher_assignments` directly via SQL for now
+  (`INSERT INTO teacher_assignments (admin_user_id, class_name) VALUES (...)`).
+
+### Phase 1: data model, roles, import
 
 - **Roles**: `admin_users.role` is `admin` or `teacher` — both log in at `/admin/login` and share
   the same session cookie/table, but teacher-only pages redirect back to `/admin/families` (see

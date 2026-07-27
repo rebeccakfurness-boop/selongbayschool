@@ -37,6 +37,20 @@ export const ENQUIRY_SOURCE_LABELS: Record<string, string> = {
   other_islander: 'Other Islander',
 };
 
+/** The 7 compliance forms tracked on the Dashboard sheet's "Forms outstanding" tile — NISN
+ * Request is deliberately not one of them there (it's a government ID registration process
+ * tracked separately, not a signed consent form) even though it lives in the same spreadsheet
+ * group. */
+export const COMPLIANCE_ITEMS = [
+  { signedKey: 'liability_form_signed', dateKey: 'liability_form_date', label: 'Liability Form' },
+  { signedKey: 'photography_signed', dateKey: 'photography_form_date', label: 'Photography / Social Media' },
+  { signedKey: 'pickup_authorization_signed', dateKey: 'pickup_form_date', label: 'Pickup Authorization' },
+  { signedKey: 'behavioral_form_signed', dateKey: 'behavioral_form_date', label: 'Behavioral / Code of Conduct' },
+  { signedKey: 'financial_agreement_signed', dateKey: 'financial_agreement_date', label: 'Financial Agreement' },
+  { signedKey: 'parent_protection_addendum_signed', dateKey: null, label: 'Parent Protection Addendum (Primary)' },
+  { signedKey: 'data_consent_signed', dateKey: null, label: 'Personal Data Consent (UU 27/2022)' },
+] as const;
+
 /**
  * Best-effort class-band guess from a free-text class/grade label (e.g. "G 6", "Stars",
  * "Kindergarten"). Grades 1-6 -> primary, 7-9 -> secondary, matching the Dashboard sheet's "By
