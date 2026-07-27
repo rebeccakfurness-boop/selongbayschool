@@ -113,7 +113,15 @@ export default function WorldSchoolingPage() {
           </ul>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <PlaceholderImage label="Photo needed: Surfing at Selong Belanak (Wednesday community get-togethers)" className="aspect-video w-full" />
+            <div className="relative aspect-video w-full overflow-hidden rounded-md border border-sand-line shadow-soft">
+              <Image
+                src="/images/worldschooling-surfing.jpg"
+                alt="Children sitting on surfboards on the beach at Selong Belanak during a surf session"
+                fill
+                sizes="(min-width: 640px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
             <PlaceholderImage label="Photo needed: Students in the library / with learning resources" className="aspect-video w-full" />
           </div>
 
@@ -144,7 +152,15 @@ export default function WorldSchoolingPage() {
             <PlaceholderImage label="Photo needed: Waterfall treks" className="aspect-square w-full" />
             <PlaceholderImage label="Photo needed: Pink Beach" className="aspect-square w-full" />
             <PlaceholderImage label="Photo needed: The Secret Gilis" className="aspect-square w-full" />
-            <PlaceholderImage label="Photo needed: Camp out / adventure week" className="aspect-square w-full" />
+            <div className="relative aspect-square w-full overflow-hidden rounded-md border border-sand-line shadow-soft">
+              <Image
+                src="/images/worldschooling-campout.jpg"
+                alt="Children pitching a tent together on the beach during a camp out"
+                fill
+                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </Reveal>
@@ -162,8 +178,14 @@ export default function WorldSchoolingPage() {
             physical school whenever you&apos;re next in the area.
           </p>
 
-          <div className="mt-6 max-w-lg">
-            <PlaceholderImage label="Photo needed: Family / online-learning style image" className="aspect-video w-full" />
+          <div className="mt-6 max-w-lg overflow-hidden rounded-md border border-sand-line shadow-soft">
+            <Image
+              src="/images/worldschooling-family-beach.jpg"
+              alt="A father walking along the beach at Selong Belanak with a group of children"
+              width={2000}
+              height={1125}
+              className="w-full"
+            />
           </div>
 
           <h3 className="mt-8 font-display text-xl font-semibold text-ink">Choose your curriculum:</h3>
