@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 
-export interface PageSection {
+export interface HowItWorksSection {
   id: string;
   label: string;
 }
 
-export default function PageSectionNav({ sections, ariaLabel }: { sections: PageSection[]; ariaLabel: string }) {
+export default function HowItWorksNav({ sections }: { sections: HowItWorksSection[] }) {
   const [active, setActive] = useState(sections[0]?.id);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function PageSectionNav({ sections, ariaLabel }: { sections: Page
     <>
       {/* Mobile: sticky horizontal pill nav */}
       <nav
-        aria-label={ariaLabel}
+        aria-label="How It Works sections"
         className="sticky top-[64px] z-30 -mx-6 mb-8 min-w-0 overflow-x-auto border-b border-sand-line bg-cream/95 px-6 py-3 backdrop-blur md:hidden"
       >
         <ul className="flex gap-2 whitespace-nowrap">
