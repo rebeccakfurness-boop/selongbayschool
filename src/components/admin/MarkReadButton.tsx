@@ -3,14 +3,23 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function MarkReadButton({ id, isRead }: { id: number; isRead: boolean }) {
+export default function MarkReadButton({
+  id,
+  isRead,
+  endpoint = '/api/admin/enquiries',
+}: {
+  id: number;
+  isRead: boolean;
+  /** Base path for the PATCH request, e.g. '/api/admin/enrolments'. Defaults to enquiries for existing callers. */
+  endpoint?: string;
+}) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
 
   async function toggle() {
     setPending(true);
     try {
-      await fetch(`/api/admin/enquiries/${id}`, {
+      await fetch(`${endpoint}/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isRead: !isRead }),

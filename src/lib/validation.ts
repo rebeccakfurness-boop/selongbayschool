@@ -150,3 +150,43 @@ export const emergencyContactSchema = z.object({
   emergencyContactPhone: z.string().trim().min(1, 'Emergency contact phone is required').max(50),
 });
 export type EmergencyContactInput = z.infer<typeof emergencyContactSchema>;
+
+const isoDate = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date');
+
+export const enrolmentSchema = z.object({
+  studentName: z.string().trim().min(1, "Student's name is required").max(200),
+  studentDob: isoDate,
+  previousSchool: optionalText,
+  previousGrade: z.string().trim().max(100).optional().or(z.literal('')),
+  siblingsAttending: optionalText,
+
+  startDate: isoDate,
+  enrolmentLength: z.enum(['1_week', '1_month', '1_term', 'full_year', 'ongoing', 'other'], {
+    message: 'Please choose the length of enrolment',
+  }),
+  enrolmentLengthOther: z.string().trim().max(200).optional().or(z.literal('')),
+
+  kitasStatus: z.enum(['has_kitas', 'in_progress', 'not_applicable', 'other'], {
+    message: "Please choose the student's KITAS status",
+  }),
+  kitasNotes: optionalText,
+  passportNumber: z.string().trim().max(100).optional().or(z.literal('')),
+  passportNationality: z.string().trim().max(100).optional().or(z.literal('')),
+  passportExpiry: isoDate.optional().or(z.literal('')),
+
+  photographyConsent: z.enum(['yes', 'no'], { message: 'Please choose a photography consent option' }),
+  medicalConditions: optionalText,
+  allergies: optionalText,
+
+  lunchOption: z.enum(['bring_own', 'godspeed', 'other'], { message: 'Please choose a lunch option' }),
+  lunchOtherNotes: optionalText,
+
+  emergencyContactName: z.string().trim().min(1, 'Emergency contact name is required').max(200),
+  emergencyContactPhone: z.string().trim().min(1, 'Emergency contact phone is required').max(50),
+  authorizedPickup: optionalText,
+
+  parentName: z.string().trim().min(1, "Parent/guardian name is required").max(200),
+  parentEmail: email,
+  parentWhatsapp: phone,
+});
+export type EnrolmentInput = z.infer<typeof enrolmentSchema>;

@@ -300,6 +300,40 @@ export function ensureSchema(): Promise<void> {
           updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS enrolment_submissions (
+          id BIGSERIAL PRIMARY KEY,
+          student_name TEXT NOT NULL,
+          student_dob DATE NOT NULL,
+          previous_school TEXT,
+          previous_grade TEXT,
+          siblings_attending TEXT,
+          start_date DATE NOT NULL,
+          enrolment_length TEXT NOT NULL,
+          enrolment_length_other TEXT,
+          kitas_status TEXT NOT NULL,
+          kitas_notes TEXT,
+          passport_number TEXT,
+          passport_nationality TEXT,
+          passport_expiry DATE,
+          photography_consent BOOLEAN NOT NULL,
+          medical_conditions TEXT,
+          allergies TEXT,
+          lunch_option TEXT NOT NULL,
+          lunch_other_notes TEXT,
+          emergency_contact_name TEXT NOT NULL,
+          emergency_contact_phone TEXT NOT NULL,
+          authorized_pickup TEXT,
+          parent_name TEXT NOT NULL,
+          parent_email TEXT NOT NULL,
+          parent_whatsapp TEXT NOT NULL,
+          is_read BOOLEAN NOT NULL DEFAULT false,
+          notify_email_status TEXT NOT NULL DEFAULT 'pending',
+          reply_email_status TEXT NOT NULL DEFAULT 'pending',
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
     })();
   }
   return schemaReady;

@@ -163,6 +163,113 @@ export async function sendCustomerMagicLinkEmail(email: string, name: string, ve
   return send(email, 'Your Selong Bay School login link', html);
 }
 
+export type EnrolmentLength = '1_week' | '1_month' | '1_term' | 'full_year' | 'ongoing' | 'other';
+export type KitasStatus = 'has_kitas' | 'in_progress' | 'not_applicable' | 'other';
+export type LunchOption = 'bring_own' | 'godspeed' | 'other';
+
+export const enrolmentLengthLabels: Record<EnrolmentLength, string> = {
+  '1_week': '1 week',
+  '1_month': '1 month',
+  '1_term': '1 term',
+  full_year: 'Full school year',
+  ongoing: 'Ongoing / permanent enrolment',
+  other: 'Other',
+};
+
+export const kitasStatusLabels: Record<KitasStatus, string> = {
+  has_kitas: 'Has KITAS',
+  in_progress: 'KITAS application in progress',
+  not_applicable: 'Not applicable (Indonesian citizen)',
+  other: 'Other',
+};
+
+export const lunchOptionLabels: Record<LunchOption, string> = {
+  bring_own: 'Bringing their own lunch',
+  godspeed: 'Godspeed direct order',
+  other: 'Other',
+};
+
+export interface EnrolmentEmailInput {
+  studentName: string;
+  studentDob: string;
+  previousSchool?: string | null;
+  previousGrade?: string | null;
+  siblingsAttending?: string | null;
+  startDate: string;
+  enrolmentLength: EnrolmentLength;
+  enrolmentLengthOther?: string | null;
+  kitasStatus: KitasStatus;
+  kitasNotes?: string | null;
+  passportNumber?: string | null;
+  passportNationality?: string | null;
+  passportExpiry?: string | null;
+  photographyConsent: 'yes' | 'no';
+  medicalConditions?: string | null;
+  allergies?: string | null;
+  lunchOption: LunchOption;
+  lunchOtherNotes?: string | null;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
+  authorizedPickup?: string | null;
+  parentName: string;
+  parentEmail: string;
+  parentWhatsapp: string;
+}
+
+export async function sendEnrolmentNotification(input: EnrolmentEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    'New Student Enrolment Submission',
+    fieldRows([
+      ['Submitted', formatSubmittedAt(new Date())],
+      ["Student's name", input.studentName],
+      ["Student's date of birth", input.studentDob],
+      ['Previous school', input.previousSchool],
+      ['Previous grade', input.previousGrade],
+      ['Siblings attending', input.siblingsAttending],
+      ['Start date', input.startDate],
+      [
+        'Length of enrolment',
+        input.enrolmentLength === 'other'
+          ? [enrolmentLengthLabels.other, input.enrolmentLengthOther].filter(Boolean).join(': ')
+          : enrolmentLengthLabels[input.enrolmentLength],
+      ],
+      ['KITAS status', kitasStatusLabels[input.kitasStatus]],
+      ['KITAS notes', input.kitasNotes],
+      ['Passport number', input.passportNumber],
+      ['Passport nationality', input.passportNationality],
+      ['Passport expiry', input.passportExpiry],
+      ['Photography consent', input.photographyConsent === 'yes' ? 'Yes' : 'No'],
+      ['Medical conditions', input.medicalConditions],
+      ['Allergies', input.allergies],
+      [
+        'Lunch option',
+        input.lunchOption === 'other'
+          ? [lunchOptionLabels.other, input.lunchOtherNotes].filter(Boolean).join(': ')
+          : lunchOptionLabels[input.lunchOption],
+      ],
+      ['Emergency contact name', input.emergencyContactName],
+      ['Emergency contact phone', input.emergencyContactPhone],
+      ['Other authorised pickup/drop-off', input.authorizedPickup],
+      ['Parent/guardian name', input.parentName],
+      ['Parent/guardian email', input.parentEmail],
+      ['Parent/guardian WhatsApp', input.parentWhatsapp],
+    ])
+  );
+  return send(NOTIFY_TO, `New Enrolment Submission: ${input.studentName}`, html, { replyTo: input.parentEmail });
+}
+
+export async function sendEnrolmentAutoReply(input: EnrolmentEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    `Thanks for your enrolment submission, ${input.parentName.split(' ')[0]}!`,
+    `<p>We've received the enrolment details for ${input.studentName} and will be in touch soon with next steps.</p>
+     <p>If anything is urgent, you can reach us directly at
+       <a href="mailto:${siteConfig.contact.email}" style="color:#007c83;">${siteConfig.contact.email}</a>
+       or ${siteConfig.contact.phone}.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.parentEmail, 'Thanks for your enrolment submission: Selong Bay School', html, { cc: NOTIFY_TO });
+}
+
 export type PaymentMethod = 'pay_online' | 'pay_at_session';
 export type BookingPaymentMethod = PaymentMethod | 'pack_session';
 

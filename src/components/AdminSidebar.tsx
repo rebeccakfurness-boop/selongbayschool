@@ -9,6 +9,7 @@ const SECTIONS = [
   { href: '/admin/activities', label: 'Activities & Calendar' },
   { href: '/admin/bookings', label: 'Bookings' },
   { href: '/admin/customers', label: 'Parent Accounts' },
+  { href: '/admin/enrolments', label: 'Enrolments' },
   { href: '/admin/enquiries', label: 'Enquiries' },
   { href: '/admin/website-updates', label: 'Website Updates' },
   { href: '/admin/settings', label: 'Settings' },
