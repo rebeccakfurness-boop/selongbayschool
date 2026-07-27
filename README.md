@@ -222,6 +222,31 @@ not `admin_users`), and a different auth mechanism.
 
 Foundation for the admissions/enrolment/teaching ops system described separately.
 
+### Phase 6: Admin master dashboard
+
+The admin Overview page (`/admin`) now aggregates the whole system in one place (teachers still
+get the simpler "go to your Family Board" view from Phase 1 — none of this is relevant to their
+scoped role):
+
+- **By Class** and **By Programme** breakdowns — the Dashboard sheet's own grouping, not
+  reproduced in earlier phases. By Class groups by the real (freeform) `class_name` rather than
+  inventing a rigid "Grade 1-9" enum the sheet used, since school class names don't always follow
+  that pattern (e.g. "Stars", "Nebulas"). By Programme reuses the app's own 4-band `class_band`
+  taxonomy (Early Years/Kindergarten/Primary/Secondary) rather than the sheet's slightly different
+  3-way Kindergarten/Primary/Lower Secondary split, since `class_band` is what the rest of the app
+  (Family Board, Calendar, Forecast) already keys off.
+- **Forms Outstanding** — counts of active children missing each of the 7 compliance signatures,
+  matching the Dashboard sheet's own "FORMS - OUTSTANDING" tile (same 7 items as the Child Card
+  checklist from Phase 2).
+- **Admissions leads**, **On site today** (live calendar occupancy, same on-site logic as the
+  Family Calendar), and **Outstanding invoices** (with overdue count) as linked stat tiles.
+- **Class Forecast** summary table (month × programme band), linking to the full forecast page.
+- **Teacher Activity** — recent lesson plans and work sample uploads, by teacher/class.
+- **Recent Photos** — latest photo feed uploads school-wide.
+- A new **`/admin/invoices`** page (admin only) — the master invoice list across every child, with
+  status filters and Mark as Paid, since until now invoices were only viewable per-child on the
+  Child Card. Linked from both the Overview tile and the sidebar.
+
 ### Phase 5: Google Classroom integration
 
 - **`ClassroomProvider`** (`src/lib/classroom/types.ts`) is the clean interface the rest of the

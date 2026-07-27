@@ -9,6 +9,7 @@ const SECTIONS: { href: string; label: string; adminOnly?: boolean }[] = [
   { href: '/admin', label: 'Overview' },
   { href: '/admin/families', label: 'Family Board' },
   { href: '/admin/teaching', label: 'Teaching' },
+  { href: '/admin/invoices', label: 'Invoices', adminOnly: true },
   { href: '/admin/classroom', label: 'Google Classroom', adminOnly: true },
   { href: '/admin/activities', label: 'Activities & Calendar', adminOnly: true },
   { href: '/admin/bookings', label: 'Bookings', adminOnly: true },
