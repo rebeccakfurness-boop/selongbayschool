@@ -2,7 +2,7 @@ import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
 
 /** Must stay in sync with the `activityImages` fallback map in src/app/activities/page.tsx. */
 const ACTIVITY_PHOTO_BACKFILL: Record<string, string> = {
-  'surfing-selong-belanak': '/images/home-beach-walk.jpg',
+  'surfing-selong-belanak': '/images/activity-surfing-selong-belanak.jpg',
   'gymnastics-free-swim': '/images/activity-gymnastics-v3.jpg',
   'hip-hop-dance-ninja-warrior': '/images/activity-ninja-hiphop.jpg',
   'art-music-bahasa': '/images/activity-art-music.jpg',
@@ -93,6 +93,13 @@ export function ensureSchema(): Promise<void> {
       for (const [slug, photoUrl] of Object.entries(ACTIVITY_PHOTO_BACKFILL)) {
         await sql`UPDATE activities SET photo_url = ${photoUrl} WHERE slug = ${slug} AND photo_url IS NULL`;
       }
+      // One-time photo swap for Surfing Selong Belanak: only touches rows still holding the old
+      // fallback image (i.e. never manually re-uploaded via the dashboard), so a real custom photo
+      // set by an admin is left untouched.
+      await sql`
+        UPDATE activities SET photo_url = '/images/activity-surfing-selong-belanak.jpg'
+        WHERE slug = 'surfing-selong-belanak' AND photo_url = '/images/home-beach-walk.jpg'
+      `;
 
       await sql`
         CREATE TABLE IF NOT EXISTS sessions (
