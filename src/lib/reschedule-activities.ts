@@ -8,13 +8,16 @@ import { sendSessionCancellationEmail } from '@/lib/email';
  * second Monday of the term), and Gymnastics for Kids & Free Swim is back to its normal recurring
  * Tuesday slot. Hip Hop Dance and Ninja Warrior is retired: deactivated (kept in the database for
  * historical bookings, just hidden from the public site) and every one of its current/future
- * sessions is removed the same way as any other stale session below. Every activity in
+ * sessions is removed the same way as any other stale session below. So is "Gymnastics Term 1", a
+ * duplicate activity created directly in the admin dashboard (not by this script) that's being
+ * retired rather than left live alongside Gymnastics for Kids & Free Swim. Every activity in
  * WEEKDAY_ACTIVITIES/School Tour is (re)activated on each run, so bringing one back just means
  * moving it back into that list.
  *
- * Gymnastics Term 2 is a separate "coming soon" activity (its own row, distinct from Gymnastics
- * for Kids & Free Swim above): visible on the site with its day label set to "Coming in
- * September", but with zero sessions for now, so it can't actually be booked yet.
+ * Gymnastics Term 2 is a separate "coming soon" activity (its own row, distinct from both
+ * Gymnastics for Kids & Free Swim and "Gymnastics Term 1" above): visible on the site with its day
+ * label set to "Coming in September", but with zero sessions for now, so it can't actually be
+ * booked yet.
  *
  * Any existing session for an active target activity that isn't part of the schedule above is
  * removed: deleted outright if nobody has booked it, or cancelled (with the same cancellation
@@ -78,7 +81,10 @@ const WEEKDAY_ACTIVITIES: WeekdayActivity[] = [
 // No longer offered. Every one of its current/future sessions is treated as stale and removed
 // below (its id is still included in the stale-session scan), and the activity is deactivated so
 // it drops off the public site, but its row (and any past bookings) stay in the database.
-const DEACTIVATED_ACTIVITY_SLUGS = ['hip-hop-dance-ninja-warrior'];
+// 'gymnastics-term-1' is a duplicate activity created directly in the admin dashboard (guessed
+// slug from the exact admin-entered name "Gymnastics Term 1", via the same slugify() the admin
+// "Add Activity" form uses) — not something this script ever created itself.
+const DEACTIVATED_ACTIVITY_SLUGS = ['hip-hop-dance-ninja-warrior', 'gymnastics-term-1'];
 
 interface ComingSoonActivity {
   slug: string;
@@ -143,6 +149,12 @@ async function activityIdBySlug(slug: string): Promise<number> {
   return rows[0].id as number;
 }
 
+/** Same as activityIdBySlug, but returns null instead of throwing when the slug doesn't exist — for slugs that were guessed (e.g. from an admin-entered activity name) rather than known to be real. */
+async function tryActivityIdBySlug(slug: string): Promise<number | null> {
+  const rows = await sql`SELECT id FROM activities WHERE slug = ${slug}`;
+  return rows.length > 0 ? (rows[0].id as number) : null;
+}
+
 /** Looks up an activity by slug, creating it first (from `activity.seed`) if it doesn't exist yet. */
 async function ensureActivityId(activity: WeekdayActivity): Promise<number> {
   const rows = await sql`SELECT id FROM activities WHERE slug = ${activity.slug}`;
@@ -203,7 +215,8 @@ async function buildTargetSessions(): Promise<{ targets: TargetSession[]; activi
   }
 
   for (const slug of DEACTIVATED_ACTIVITY_SLUGS) {
-    activityIds.push(await activityIdBySlug(slug));
+    const id = await tryActivityIdBySlug(slug);
+    if (id !== null) activityIds.push(id);
   }
 
   for (const activity of COMING_SOON_ACTIVITIES) {
