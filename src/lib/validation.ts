@@ -184,6 +184,11 @@ export const updateChildSchema = z.object({
 });
 export type UpdateChildInput = z.infer<typeof updateChildSchema>;
 
+export const createChildSchema = updateChildSchema.extend({
+  childFullName: z.string().trim().min(1, "Child's full name is required").max(200),
+});
+export type CreateChildInput = z.infer<typeof createChildSchema>;
+
 const socialRating = z.enum(['C', 'U', 'S']).nullable().optional();
 
 export const learningProfileSubjectSchema = z.object({

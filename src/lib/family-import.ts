@@ -35,18 +35,40 @@ function str(value: unknown): string | null {
   return s.length ? s : null;
 }
 
+/** True calendar-date validity check (rejects e.g. month 13, or Feb 30) by round-tripping through
+ * a Date and confirming nothing rolled over. */
+function isValidYMD(year: number, month: number, day: number): boolean {
+  if (month < 1 || month > 12 || day < 1 || day > 31 || year < 1900 || year > 2100) return false;
+  const d = new Date(Date.UTC(year, month - 1, day));
+  return d.getUTCFullYear() === year && d.getUTCMonth() === month - 1 && d.getUTCDate() === day;
+}
+
 /** The sheet stores real dates as Excel serial numbers (via cellDates below they arrive as Date
  * objects) but a handful of rows have hand-typed strings like "10.02.2026" or "30.03.2026" or
- * free text ("Start 6 April") — those are left as null rather than mis-parsed. */
+ * free text ("Start 6 April") — those are left as null rather than mis-parsed. Slash/dot-separated
+ * strings are ambiguous between D/M/Y and M/D/Y (e.g. a real cell in the sheet has "10/21/2020",
+ * which can only be M/D/Y since 21 isn't a valid month) — D/M/Y is tried first since it's the
+ * dominant format elsewhere in this sheet, falling back to M/D/Y only when D/M/Y is invalid, and
+ * to null (never a crash) when neither reading is a real calendar date. */
 function dateStr(value: unknown): string | null {
   if (value === null || value === undefined) return null;
   if (value instanceof Date) return value.toISOString().slice(0, 10);
   const s = str(value);
   if (!s) return null;
   const m = s.match(/^(\d{1,2})[./](\d{1,2})[./](\d{4})$/);
-  if (m) {
-    const [, d, mo, y] = m;
-    return `${y}-${mo.padStart(2, '0')}-${d.padStart(2, '0')}`;
+  if (!m) return null;
+  const [, a, b, y] = m;
+  const year = Number(y);
+  const first = Number(a);
+  const second = Number(b);
+
+  if (isValidYMD(year, second, first)) {
+    // D/M/Y
+    return `${y}-${String(second).padStart(2, '0')}-${String(first).padStart(2, '0')}`;
+  }
+  if (isValidYMD(year, first, second)) {
+    // M/D/Y fallback
+    return `${y}-${String(first).padStart(2, '0')}-${String(second).padStart(2, '0')}`;
   }
   return null;
 }
@@ -333,37 +355,51 @@ export interface ImportSummary {
   enquiriesInserted: number;
   forecastInserted: number;
   enquiriesBySource: Record<string, number>;
+  /** Rows that failed to insert (bad data, not a bug in the loop) — collected instead of thrown,
+   * so one bad row (e.g. an unparseable date) can never abort every row after it. */
+  rowErrors: string[];
 }
 
 /** Writes parsed data to the database. Safe to re-run for `children` (matched by name + DOB,
  * never duplicates) and `class_forecast_entries` (wiped and fully reinserted every run, cheap to
  * regenerate) — but `admissions_enquiries` has no stable ID in the source sheets to de-duplicate
- * against, so `clearExistingEnquiries` should be set on any run after the first. */
+ * against, so `clearExistingEnquiries` should be set on any run after the first.
+ *
+ * Every row is inserted independently (try/catch per row, not one big transaction) — a single
+ * malformed row is recorded in `rowErrors` and skipped, rather than aborting the whole import
+ * partway through, which previously left the database in a partially-imported state whenever any
+ * one row failed (e.g. a date string Postgres rejected). */
 export async function runFamilyImport(
   data: ParsedFamilyData,
   { clearExistingEnquiries = false }: { clearExistingEnquiries?: boolean } = {}
 ): Promise<ImportSummary> {
+  const rowErrors: string[] = [];
+
   let childrenInserted = 0;
   for (const c of data.children) {
-    const existing = await sql`
-      SELECT id FROM children WHERE child_full_name = ${c.child_full_name} AND (dob = ${c.dob}::date OR (dob IS NULL AND ${c.dob}::date IS NULL))
-    `;
-    if (existing.length > 0) continue;
-    await sql`
-      INSERT INTO children (
-        child_full_name, child_nickname, class_name, class_band, dob,
-        parent1_name, parent1_relationship, parent2_name, parent2_relationship,
-        nationality, primary_contact_email, primary_contact_phone, duration_of_stay_note,
-        enrolment_date, exit_date, allergies_medical_notes, status, is_active
-      ) VALUES (
-        ${c.child_full_name}, ${c.child_nickname}, ${c.class_name}, ${c.class_band}, ${c.dob}::date,
-        ${c.parent1_name}, ${c.parent1_relationship}, ${c.parent2_name}, ${c.parent2_relationship},
-        ${c.nationality}, ${c.primary_contact_email}, ${c.primary_contact_phone}, ${c.duration_of_stay_note},
-        ${c.enrolment_date}::date, ${c.exit_date}::date, ${c.allergies_medical_notes}, 'full_time',
-        ${!c.exit_date}
-      )
-    `;
-    childrenInserted++;
+    try {
+      const existing = await sql`
+        SELECT id FROM children WHERE child_full_name = ${c.child_full_name} AND (dob = ${c.dob}::date OR (dob IS NULL AND ${c.dob}::date IS NULL))
+      `;
+      if (existing.length > 0) continue;
+      await sql`
+        INSERT INTO children (
+          child_full_name, child_nickname, class_name, class_band, dob,
+          parent1_name, parent1_relationship, parent2_name, parent2_relationship,
+          nationality, primary_contact_email, primary_contact_phone, duration_of_stay_note,
+          enrolment_date, exit_date, allergies_medical_notes, status, is_active
+        ) VALUES (
+          ${c.child_full_name}, ${c.child_nickname}, ${c.class_name}, ${c.class_band}, ${c.dob}::date,
+          ${c.parent1_name}, ${c.parent1_relationship}, ${c.parent2_name}, ${c.parent2_relationship},
+          ${c.nationality}, ${c.primary_contact_email}, ${c.primary_contact_phone}, ${c.duration_of_stay_note},
+          ${c.enrolment_date}::date, ${c.exit_date}::date, ${c.allergies_medical_notes}, 'full_time',
+          ${!c.exit_date}
+        )
+      `;
+      childrenInserted++;
+    } catch (err) {
+      rowErrors.push(`Child "${c.child_full_name}": ${err instanceof Error ? err.message : String(err)}`);
+    }
   }
 
   if (clearExistingEnquiries) {
@@ -372,33 +408,44 @@ export async function runFamilyImport(
   let enquiriesInserted = 0;
   const enquiriesBySource: Record<string, number> = {};
   for (const e of data.enquiries) {
-    await sql`
-      INSERT INTO admissions_enquiries (
-        source, parent_name, child_name, child_age, contact_phone, contact_email,
-        plan_to_stay, first_message_date, visit_date, booking_date, booking_time, follow_up_notes
-      ) VALUES (
-        ${e.source}, ${e.parent_name}, ${e.child_name}, ${e.child_age}, ${e.contact_phone}, ${e.contact_email},
-        ${e.plan_to_stay}, ${e.first_message_date}::date, ${e.visit_date}::date, ${e.booking_date}::date,
-        ${e.booking_time}, ${e.follow_up_notes}
-      )
-    `;
-    enquiriesInserted++;
-    enquiriesBySource[e.source] = (enquiriesBySource[e.source] || 0) + 1;
+    try {
+      await sql`
+        INSERT INTO admissions_enquiries (
+          source, parent_name, child_name, child_age, contact_phone, contact_email,
+          plan_to_stay, first_message_date, visit_date, booking_date, booking_time, follow_up_notes
+        ) VALUES (
+          ${e.source}, ${e.parent_name}, ${e.child_name}, ${e.child_age}, ${e.contact_phone}, ${e.contact_email},
+          ${e.plan_to_stay}, ${e.first_message_date}::date, ${e.visit_date}::date, ${e.booking_date}::date,
+          ${e.booking_time}, ${e.follow_up_notes}
+        )
+      `;
+      enquiriesInserted++;
+      enquiriesBySource[e.source] = (enquiriesBySource[e.source] || 0) + 1;
+    } catch (err) {
+      rowErrors.push(`Enquiry "${e.parent_name || e.child_name || e.source}": ${err instanceof Error ? err.message : String(err)}`);
+    }
   }
 
   await sql`DELETE FROM class_forecast_entries`;
+  let forecastInserted = 0;
   for (const f of data.forecast) {
-    await sql`
-      INSERT INTO class_forecast_entries (forecast_month, class_band, child_display_name, age_or_grade_label, status_tag)
-      VALUES (${f.forecast_month}, ${f.class_band}, ${f.child_display_name}, ${f.age_or_grade_label}, ${f.status_tag})
-    `;
+    try {
+      await sql`
+        INSERT INTO class_forecast_entries (forecast_month, class_band, child_display_name, age_or_grade_label, status_tag)
+        VALUES (${f.forecast_month}, ${f.class_band}, ${f.child_display_name}, ${f.age_or_grade_label}, ${f.status_tag})
+      `;
+      forecastInserted++;
+    } catch (err) {
+      rowErrors.push(`Forecast entry "${f.child_display_name}": ${err instanceof Error ? err.message : String(err)}`);
+    }
   }
 
   return {
     childrenParsed: data.children.length,
     childrenInserted,
     enquiriesInserted,
-    forecastInserted: data.forecast.length,
+    forecastInserted,
     enquiriesBySource,
+    rowErrors,
   };
 }

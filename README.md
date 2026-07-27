@@ -428,6 +428,17 @@ scoped role):
   (wiped and fully reinserted every run, cheap to regenerate); `admissions_enquiries` has no
   stable ID in the source sheets to de-duplicate against, so clear it first on any run after the
   first (the checkbox / `--clear-enquiries` flag above).
+  - Dates are parsed defensively: `D/M/Y` is tried first (the dominant format elsewhere in the
+    sheet), falling back to `M/D/Y` only when `D/M/Y` isn't a real calendar date (the sheet has at
+    least one genuinely `M/D/Y` cell, `10/21/2020` — "21" can't be a month, so it can only be
+    October 21) — and to skipping just that one field (never a crash) when neither reading is
+    valid. More generally, every row is inserted independently: a bad row anywhere (a rejected
+    date, or anything else Postgres refuses) is caught, recorded in the returned `rowErrors` list,
+    and skipped, rather than aborting every row after it partway through an import.
+- **Add a child directly** (`/admin/families/new`, "+ Add Child" on the Family Board, admin only):
+  for a family that isn't in the imported spreadsheet at all. Only asks for the essentials (name,
+  status, class, parents, contact, medical notes) — compliance forms, immigration documents, and
+  everything else on the Child Card get filled in afterward via the existing edit form.
 - **Compliance data**: `children` holds allergy/medical notes and 7 compliance-form signed?/date
   pairs (including the Indonesian UU 27/2022 personal data consent already tracked in the source
   spreadsheet). Not yet access-restricted beyond the admin/teacher role split above — before real

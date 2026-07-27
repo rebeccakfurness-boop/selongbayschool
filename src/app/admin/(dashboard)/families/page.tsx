@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
 import { STATUS_LEGEND, STATUS_ORDER } from '@/lib/family-data';
@@ -41,7 +42,17 @@ export default async function FamiliesBoardPage() {
               : `${children.length} children across all statuses. Drag a card between columns to change status, or click a name for the full child card.`}
           </p>
         </div>
-        <FamiliesTabs active="board" role={staff.role} />
+        <div className="flex items-start gap-3">
+          {staff.role === 'admin' && (
+            <Link
+              href="/admin/families/new"
+              className="whitespace-nowrap rounded-full bg-teal px-5 py-2 text-sm font-bold text-white hover:bg-teal-deep"
+            >
+              + Add Child
+            </Link>
+          )}
+          <FamiliesTabs active="board" role={staff.role} />
+        </div>
       </div>
 
       <div className="mt-6 flex flex-wrap gap-3">

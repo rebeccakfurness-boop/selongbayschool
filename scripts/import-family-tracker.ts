@@ -47,6 +47,10 @@ async function main() {
     `\nInserted ${summary.childrenInserted} new children (skipped ${summary.childrenParsed - summary.childrenInserted} already-imported), ` +
       `${summary.enquiriesInserted} admissions enquiries (by source: ${JSON.stringify(summary.enquiriesBySource)}), ${summary.forecastInserted} forecast entries.`
   );
+  if (summary.rowErrors.length > 0) {
+    console.log(`\n${summary.rowErrors.length} row(s) skipped due to errors:`);
+    for (const e of summary.rowErrors) console.log(`  - ${e}`);
+  }
   if (!CLEAR_ENQUIRIES) {
     console.log('\nNote: admissions_enquiries has no duplicate check — pass --clear-enquiries if re-running this import.');
   }

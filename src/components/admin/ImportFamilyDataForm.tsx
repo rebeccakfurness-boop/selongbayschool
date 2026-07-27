@@ -19,6 +19,7 @@ interface ImportResult {
   enquiriesInserted: number;
   forecastInserted: number;
   enquiriesBySource: Record<string, number>;
+  rowErrors: string[];
 }
 
 export default function ImportFamilyDataForm() {
@@ -131,6 +132,20 @@ export default function ImportFamilyDataForm() {
               {importResult.enquiriesInserted} admissions enquiries added ({Object.entries(importResult.enquiriesBySource).map(([s, c]) => `${s}: ${c}`).join(', ')})
             </li>
             <li>{importResult.forecastInserted} class forecast entries (fully replaced)</li>
+          </ul>
+        </div>
+      )}
+
+      {importResult && importResult.rowErrors.length > 0 && (
+        <div className="rounded-md border border-orange/30 bg-orange/10 p-6">
+          <h3 className="font-display text-base font-semibold text-orange-deep">
+            {importResult.rowErrors.length} row{importResult.rowErrors.length === 1 ? '' : 's'} skipped
+          </h3>
+          <p className="mt-1 text-sm text-ink-soft">Everything else imported fine — these specific rows had bad data and were skipped:</p>
+          <ul className="mt-2 flex flex-col gap-1 text-sm text-ink">
+            {importResult.rowErrors.map((e, i) => (
+              <li key={i}>{e}</li>
+            ))}
           </ul>
         </div>
       )}
