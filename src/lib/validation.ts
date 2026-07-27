@@ -183,6 +183,79 @@ export const updateChildSchema = z.object({
 });
 export type UpdateChildInput = z.infer<typeof updateChildSchema>;
 
+const socialRating = z.enum(['C', 'U', 'S']).nullable().optional();
+
+export const learningProfileSubjectSchema = z.object({
+  subjectArea: z.string().trim().min(1).max(200),
+  subSubject: z.string().trim().max(200).nullable().optional(),
+  achievement: z.enum(['outstanding', 'high', 'expected', 'basic', 'limited']).nullable().optional(),
+  effort: z.enum(['high', 'satisfactory', 'low']).nullable().optional(),
+  teacherComment: z.string().trim().max(4000).nullable().optional(),
+});
+
+export const upsertLearningProfileSchema = z.object({
+  termLabel: z.string().trim().min(1, 'Term is required').max(100),
+  gradeLabel: z.string().trim().max(100).nullable().optional(),
+  generalComment: z.string().trim().max(4000).nullable().optional(),
+  wholeDaysAbsent: z.string().trim().max(200).nullable().optional(),
+  partialDaysAbsent: z.string().trim().max(200).nullable().optional(),
+  extraActivities: z.string().trim().max(2000).nullable().optional(),
+  positiveAttitude: socialRating,
+  respectsRightsOfOthers: socialRating,
+  respectsClassSchoolRules: socialRating,
+  worksWellIndependently: socialRating,
+  showsInitiativeEnthusiasm: socialRating,
+  helpsEncouragesOthers: socialRating,
+  subjects: z.array(learningProfileSubjectSchema).max(50),
+});
+export type UpsertLearningProfileInput = z.infer<typeof upsertLearningProfileSchema>;
+
+export const upsertLessonPlanSchema = z.object({
+  className: z.string().trim().min(1, 'Class is required').max(100),
+  weekLabel: z.string().trim().min(1, 'Week is required').max(100),
+  subject: z.string().trim().max(200).nullable().optional(),
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  description: z.string().trim().max(4000).nullable().optional(),
+});
+export type UpsertLessonPlanInput = z.infer<typeof upsertLessonPlanSchema>;
+
+export const createWorkSampleSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  fileUrl: z.string().trim().url().max(2000),
+});
+export type CreateWorkSampleInput = z.infer<typeof createWorkSampleSchema>;
+
+export const createPhotoFeedItemSchema = z.object({
+  fileUrl: z.string().trim().url().max(2000),
+  caption: z.string().trim().max(1000).nullable().optional(),
+  className: z.string().trim().max(100).nullable().optional(),
+  childIds: z.array(z.coerce.number().int().positive()).max(20).default([]),
+});
+export type CreatePhotoFeedItemInput = z.infer<typeof createPhotoFeedItemSchema>;
+
+export const createResourceSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  description: z.string().trim().max(2000).nullable().optional(),
+  fileUrl: z.string().trim().url().max(2000),
+  classBand: z.enum(['early_years', 'kindergarten', 'primary', 'secondary']).nullable().optional(),
+});
+export type CreateResourceInput = z.infer<typeof createResourceSchema>;
+
+export const upsertCurriculumUnitSchema = z.object({
+  className: z.string().trim().min(1, 'Class is required').max(100),
+  termLabel: z.string().trim().min(1, 'Term is required').max(100),
+  unitTitle: z.string().trim().min(1, 'Unit title is required').max(300),
+  description: z.string().trim().max(4000).nullable().optional(),
+});
+export type UpsertCurriculumUnitInput = z.infer<typeof upsertCurriculumUnitSchema>;
+
+export const linkGuardianSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+  relationship: z.string().trim().max(100).nullable().optional(),
+});
+export type LinkGuardianInput = z.infer<typeof linkGuardianSchema>;
+
 export const studentLoginSchema = z.object({
   username: z.string().trim().min(1, 'Username is required').max(100),
   password: z.string().min(1, 'Password is required'),

@@ -6,6 +6,9 @@ import Link from 'next/link';
 import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import DocumentUploadField from '@/components/admin/DocumentUploadField';
+import WorkSamplesSection, { type WorkSample } from '@/components/admin/WorkSamplesSection';
+import ChildPhotoFeedSection, { type PhotoFeedItem } from '@/components/admin/ChildPhotoFeedSection';
+import GuardianLinksSection, { type GuardianLink } from '@/components/admin/GuardianLinksSection';
 import { formatDate } from '@/lib/admin-format';
 import { STATUS_LEGEND, STATUS_ORDER, CLASS_BAND_LABELS, CLASS_BAND_ORDER, COMPLIANCE_ITEMS, type ChildStatus, type ClassBand } from '@/lib/family-data';
 
@@ -143,7 +146,21 @@ const COMPLIANCE_FIELD_MAP: Record<string, { signed: keyof FormState; date: keyo
   data_consent_signed: { signed: 'dataConsentSigned', date: null },
 };
 
-export default function ChildCard({ child, canEdit }: { child: ChildDetail; canEdit: boolean }) {
+export default function ChildCard({
+  child,
+  canEdit,
+  learningProfileCount,
+  workSamples,
+  photos,
+  guardians,
+}: {
+  child: ChildDetail;
+  canEdit: boolean;
+  learningProfileCount: number;
+  workSamples: WorkSample[];
+  photos: PhotoFeedItem[];
+  guardians: GuardianLink[];
+}) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState<FormState>(() => toFormState(child));
@@ -362,20 +379,34 @@ export default function ChildCard({ child, canEdit }: { child: ChildDetail; canE
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            <div className="rounded-md border border-dashed border-sand-line bg-paper p-6 text-sm text-ink-soft">
+          <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
+            <div className="flex items-center justify-between">
               <h3 className="font-display text-base font-semibold text-ink">Learning Profile</h3>
-              <p className="mt-2">Curriculum tracking and progress notes are coming in a later phase.</p>
+              <span className="text-sm font-bold text-ink-soft">{learningProfileCount} term report{learningProfileCount === 1 ? '' : 's'}</span>
             </div>
-            <div className="rounded-md border border-dashed border-sand-line bg-paper p-6 text-sm text-ink-soft">
-              <h3 className="font-display text-base font-semibold text-ink">Activities</h3>
-              <p className="mt-2">Booked extracurricular activities are coming in a later phase.</p>
-            </div>
-            <div className="rounded-md border border-dashed border-sand-line bg-paper p-6 text-sm text-ink-soft">
-              <h3 className="font-display text-base font-semibold text-ink">Photo Feed</h3>
-              <p className="mt-2">Timestamped photos tagged to this child are coming in a later phase.</p>
+            <div className="mt-3 flex gap-3">
+              <Link href={`/admin/families/${child.id}/learning-profile`} className="text-sm font-semibold text-teal-deep hover:underline">
+                View reports
+              </Link>
+              {canEdit && (
+                <Link href={`/admin/families/${child.id}/learning-profile/new`} className="text-sm font-semibold text-teal-deep hover:underline">
+                  + New term report
+                </Link>
+              )}
             </div>
           </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <WorkSamplesSection childId={child.id} initial={workSamples} canEdit={canEdit} />
+            <ChildPhotoFeedSection childId={child.id} initial={photos} canEdit={canEdit} />
+          </div>
+
+          <div className="rounded-md border border-dashed border-sand-line bg-paper p-6 text-sm text-ink-soft">
+            <h3 className="font-display text-base font-semibold text-ink">Activities</h3>
+            <p className="mt-2">Booked extracurricular activities are coming in a later phase.</p>
+          </div>
+
+          {canEdit && <GuardianLinksSection childId={child.id} initial={guardians} />}
         </>
       ) : (
         <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
@@ -563,6 +594,7 @@ export default function ChildCard({ child, canEdit }: { child: ChildDetail; canE
                   currentUrl={form.passportCopyUrl}
                   pathPrefix={`children/${child.id}/passport`}
                   label="Passport"
+                  uploadEndpoint="/api/admin/children/upload"
                   onUploaded={(url) => uploadDocument('passportCopyUrl', url)}
                 />
               </Field>
@@ -571,6 +603,7 @@ export default function ChildCard({ child, canEdit }: { child: ChildDetail; canE
                   currentUrl={form.kitasCopyUrl}
                   pathPrefix={`children/${child.id}/kitas`}
                   label="KITAS"
+                  uploadEndpoint="/api/admin/children/upload"
                   onUploaded={(url) => uploadDocument('kitasCopyUrl', url)}
                 />
               </Field>

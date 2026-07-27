@@ -51,6 +51,37 @@ export const COMPLIANCE_ITEMS = [
   { signedKey: 'data_consent_signed', dateKey: null, label: 'Personal Data Consent (UU 27/2022)' },
 ] as const;
 
+export type Achievement = 'outstanding' | 'high' | 'expected' | 'basic' | 'limited';
+export type Effort = 'high' | 'satisfactory' | 'low';
+export type SocialRating = 'C' | 'U' | 'S';
+
+/** Matches the achievement scale on the real Term Report PDF sample exactly (label, letter, and
+ * the parent-facing description shown underneath the scale table). */
+export const ACHIEVEMENT_SCALE: { value: Achievement; label: string; letter: string; description: string }[] = [
+  { value: 'outstanding', label: 'Outstanding', letter: 'A', description: 'Confidently applies knowledge and skills in a range of new and complex situations.' },
+  { value: 'high', label: 'High', letter: 'B', description: 'Confidently applies knowledge and skills in a range of familiar and new situations.' },
+  { value: 'expected', label: 'Expected', letter: 'C', description: 'Applies knowledge and skills in familiar situations.' },
+  { value: 'basic', label: 'Basic', letter: 'D', description: 'Applies knowledge and skills in familiar situations with support.' },
+  { value: 'limited', label: 'Limited', letter: 'E', description: 'Applies knowledge and skills in some familiar situations with significant support.' },
+];
+
+export const EFFORT_SCALE: { value: Effort; label: string; description: string }[] = [
+  { value: 'high', label: 'High', description: 'Actively participates and engages in most learning activities; always tries to complete and present work to a high standard.' },
+  { value: 'satisfactory', label: 'Satisfactory', description: 'Actively participates and engages in most learning activities; regularly tries to complete and present work to the required standard.' },
+  { value: 'low', label: 'Low', description: 'Sometimes participates and engages in learning activities; occasionally tries to complete and present work to the required standard.' },
+];
+
+export const SOCIAL_RATING_LABELS: Record<SocialRating, string> = { C: 'Consistently', U: 'Usually', S: 'Sometimes' };
+
+export const SOCIAL_CRITERIA: { key: string; label: string }[] = [
+  { key: 'positive_attitude', label: 'Displays a positive attitude to learning' },
+  { key: 'works_well_independently', label: 'Works well independently' },
+  { key: 'respects_rights_of_others', label: 'Respects the rights and property of others' },
+  { key: 'shows_initiative_enthusiasm', label: 'Shows initiative and enthusiasm' },
+  { key: 'respects_class_school_rules', label: 'Respects class and school rules' },
+  { key: 'helps_encourages_others', label: 'Helps and encourages others' },
+];
+
 /**
  * Best-effort class-band guess from a free-text class/grade label (e.g. "G 6", "Stars",
  * "Kindergarten"). Grades 1-6 -> primary, 7-9 -> secondary, matching the Dashboard sheet's "By

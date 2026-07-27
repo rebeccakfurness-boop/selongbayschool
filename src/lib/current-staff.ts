@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getIronSession } from 'iron-session';
 import { getSessionOptions, type AdminSessionData, type StaffRole } from '@/lib/auth';
+import { sql } from '@/lib/db';
 
 export interface CurrentStaff {
   adminUserId: number;
@@ -32,4 +33,21 @@ export async function requireAdmin(): Promise<CurrentStaff> {
     redirect('/admin/families');
   }
   return staff;
+}
+
+export async function getAssignedClasses(adminUserId: number): Promise<string[]> {
+  const rows = (await sql`
+    SELECT class_name FROM teacher_assignments WHERE admin_user_id = ${adminUserId}
+  `) as unknown as { class_name: string }[];
+  return rows.map((r) => r.class_name);
+}
+
+/** Admins can touch any class; teachers only their own assignments (used to gate lesson plans,
+ * curriculum units, work samples, and learning profiles by class, alongside the child/board-level
+ * scoping already applied elsewhere). */
+export async function canAccessClass(staff: CurrentStaff, className: string | null): Promise<boolean> {
+  if (staff.role === 'admin') return true;
+  if (!className) return false;
+  const assigned = await getAssignedClasses(staff.adminUserId);
+  return assigned.includes(className);
 }

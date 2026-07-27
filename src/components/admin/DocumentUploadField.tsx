@@ -8,11 +8,15 @@ export default function DocumentUploadField({
   pathPrefix,
   label,
   onUploaded,
+  uploadEndpoint = '/api/admin/lms/upload',
 }: {
   currentUrl: string | null;
   pathPrefix: string;
   label: string;
   onUploaded: (url: string) => void;
+  /** Defaults to the shared admin+teacher LMS upload route; the immigration-documents section of
+   * the child card passes the admin-only /api/admin/children/upload route instead. */
+  uploadEndpoint?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -26,7 +30,7 @@ export default function DocumentUploadField({
     try {
       const blob = await upload(`${pathPrefix}/${file.name}`, file, {
         access: 'public',
-        handleUploadUrl: '/api/admin/children/upload',
+        handleUploadUrl: uploadEndpoint,
       });
       onUploaded(blob.url);
     } catch (err) {

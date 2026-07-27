@@ -455,6 +455,131 @@ export function ensureSchema(): Promise<void> {
           last_login_at TIMESTAMPTZ
         )
       `;
+
+      // --- Phase 3: Learning Profile + LMS (lesson plans, work samples, photo feed, resources) ---
+
+      // One row per child per term. Achievement/effort scales and the 6 social-development
+      // criteria match the real "Noah Term 1 Report" PDF sample; letter grades (A-E) shown on
+      // that PDF are a pure display mapping over `outstanding..limited`, not stored separately.
+      await sql`
+        CREATE TABLE IF NOT EXISTS learning_profiles (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          term_label TEXT NOT NULL,
+          grade_label TEXT,
+          general_comment TEXT,
+          whole_days_absent TEXT,
+          partial_days_absent TEXT,
+          extra_activities TEXT,
+          positive_attitude TEXT CHECK (positive_attitude IN ('C', 'U', 'S')),
+          respects_rights_of_others TEXT CHECK (respects_rights_of_others IN ('C', 'U', 'S')),
+          respects_class_school_rules TEXT CHECK (respects_class_school_rules IN ('C', 'U', 'S')),
+          works_well_independently TEXT CHECK (works_well_independently IN ('C', 'U', 'S')),
+          shows_initiative_enthusiasm TEXT CHECK (shows_initiative_enthusiasm IN ('C', 'U', 'S')),
+          helps_encourages_others TEXT CHECK (helps_encourages_others IN ('C', 'U', 'S')),
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (child_id, term_label)
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS learning_profile_subjects (
+          id BIGSERIAL PRIMARY KEY,
+          learning_profile_id BIGINT NOT NULL REFERENCES learning_profiles(id) ON DELETE CASCADE,
+          subject_area TEXT NOT NULL,
+          sub_subject TEXT,
+          achievement TEXT CHECK (achievement IN ('outstanding', 'high', 'expected', 'basic', 'limited')),
+          effort TEXT CHECK (effort IN ('high', 'satisfactory', 'low')),
+          teacher_comment TEXT,
+          sort_order INTEGER NOT NULL DEFAULT 0
+        )
+      `;
+      await sql`
+        CREATE INDEX IF NOT EXISTS idx_learning_profile_subjects_profile
+        ON learning_profile_subjects (learning_profile_id)
+      `;
+
+      // Tied to class_name (not class_band) since that's the actual teaching unit — a teacher's
+      // assignment in teacher_assignments is also by class_name.
+      await sql`
+        CREATE TABLE IF NOT EXISTS lesson_plans (
+          id BIGSERIAL PRIMARY KEY,
+          class_name TEXT NOT NULL,
+          week_label TEXT NOT NULL,
+          subject TEXT,
+          title TEXT NOT NULL,
+          description TEXT,
+          teacher_id BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_lesson_plans_class ON lesson_plans (class_name)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_units (
+          id BIGSERIAL PRIMARY KEY,
+          class_name TEXT NOT NULL,
+          term_label TEXT NOT NULL,
+          unit_title TEXT NOT NULL,
+          description TEXT,
+          is_current BOOLEAN NOT NULL DEFAULT true,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_curriculum_units_class ON curriculum_units (class_name)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS work_samples (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          teacher_id BIGINT REFERENCES admin_users(id),
+          title TEXT NOT NULL,
+          file_url TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_work_samples_child ON work_samples (child_id)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS photo_feed_items (
+          id BIGSERIAL PRIMARY KEY,
+          uploaded_by BIGINT REFERENCES admin_users(id),
+          file_url TEXT NOT NULL,
+          caption TEXT,
+          class_name TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`
+        CREATE TABLE IF NOT EXISTS photo_feed_tags (
+          id BIGSERIAL PRIMARY KEY,
+          photo_id BIGINT NOT NULL REFERENCES photo_feed_items(id) ON DELETE CASCADE,
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          UNIQUE (photo_id, child_id)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_photo_feed_tags_child ON photo_feed_tags (child_id)`;
+
+      // Downloadable resources — especially important for hybrid/worldschooling parents doing
+      // off-campus homeschooling days. class_band NULL means visible to every family.
+      await sql`
+        CREATE TABLE IF NOT EXISTS resources (
+          id BIGSERIAL PRIMARY KEY,
+          title TEXT NOT NULL,
+          description TEXT,
+          file_url TEXT NOT NULL,
+          class_band TEXT CHECK (class_band IN ('early_years', 'kindergarten', 'primary', 'secondary')),
+          uploaded_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      // Links a parent's customers/`/account` login to the child(ren) they're guardian of — no
+      // admin UI existed to populate this until Phase 3's child card update; without it the
+      // parent portal has no way to know which children belong to which logged-in parent.
+      await sql`CREATE INDEX IF NOT EXISTS idx_guardian_children_customer ON guardian_children (customer_id)`;
     })();
   }
   return schemaReady;

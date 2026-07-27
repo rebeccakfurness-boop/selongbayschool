@@ -220,8 +220,41 @@ not `admin_users`), and a different auth mechanism.
 
 ## Operations dashboard (families, teachers, students)
 
-Foundation for the admissions/enrolment/teaching ops system described separately (Learning
-Profiles, invoicing, Google Classroom, etc. land in later phases).
+Foundation for the admissions/enrolment/teaching ops system described separately (invoicing,
+Google Classroom, etc. land in later phases).
+
+### Phase 3: Learning Profile + LMS portal
+
+- **Learning Profile** (`/admin/families/[id]/learning-profile`): term reports per child —
+  general comment, attendance, a 6-item social-development checklist, and freeform subject rows
+  (learning area/sub-subject/achievement/effort/comment), matching the fields on the real "Noah
+  Term 1 Report" PDF sample. Achievement (Outstanding→Limited) and Effort (High/Satisfactory/Low)
+  scales, plus their A-E letter grades, live in `src/lib/family-data.ts`.
+- **PDF export** (`/api/learning-profiles/:id/pdf`) renders the report with `@react-pdf/renderer`,
+  matching the brand (teal header with the real logo, script "Term Report" headline, orange/teal
+  accents) — not a pixel-perfect clone of the sample PDF's watercolor texture, since only the
+  invoice template (Phase 4) is required to reproduce the source design exactly. Fonts are
+  self-hosted in `public/fonts/` (downloaded from Google Fonts) rather than fetched at request
+  time, so a PDF request can never fail because a font CDN is briefly unreachable. This one route
+  isn't gated by `src/proxy.ts` (that middleware only covers `/admin`, `/account`, `/student`) —
+  it checks all three session types itself, since admin, the assigned teacher, the child's linked
+  guardian, and the child's own student login can all legitimately open it.
+- **Lesson plans, curriculum units, resources** (`/admin/teaching`): class-scoped content teachers
+  (their assigned classes only) or admins (any class) can post; these feed the "upcoming lessons,"
+  "current curriculum unit," and "downloadable resources" views on the parent/student portals —
+  the resources section is aimed particularly at hybrid/worldschooling families' off-campus days.
+- **Work samples & photo feed** are managed per-child directly on the Child Card now (teachers
+  upload for their own classes' children only); the photo feed also matches a class-wide photo
+  with no specific child tags (e.g. a whole-class group photo).
+- **Parent portal** (`/account/learning`): for each linked child — current curriculum unit,
+  upcoming lessons, learning profile PDFs, work samples, resources, and photo feed. Since there
+  was previously no way to connect a parent's `/account` login to a child at all, admins now link
+  guardians directly from the Child Card (creates the `customers` row if the parent has never
+  logged in before) — this populates `guardian_children`, added in Phase 1 but unused until now.
+- **Student portal** (`/student`): upcoming lessons, their own work samples, and resources for
+  their class band.
+- Invoice/payment status and lunch/activity booking are still stubbed on both the Child Card and
+  the parent portal — those are Phase 4 data models.
 
 ### Phase 2: drag-and-drop board, calendar, child card
 

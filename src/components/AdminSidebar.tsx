@@ -8,6 +8,7 @@ import type { StaffRole } from '@/lib/auth';
 const SECTIONS: { href: string; label: string; adminOnly?: boolean }[] = [
   { href: '/admin', label: 'Overview' },
   { href: '/admin/families', label: 'Family Board' },
+  { href: '/admin/teaching', label: 'Teaching' },
   { href: '/admin/activities', label: 'Activities & Calendar', adminOnly: true },
   { href: '/admin/bookings', label: 'Bookings', adminOnly: true },
   { href: '/admin/customers', label: 'Parent Accounts', adminOnly: true },
