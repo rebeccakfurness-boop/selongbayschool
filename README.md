@@ -409,15 +409,25 @@ scoped role):
   `is_active` overall flag), `admissions_enquiries` (unified lead pipeline, tagged by `source`),
   `class_forecast_entries` (monthly roster forecast by class band), `teacher_assignments` (which
   classes a teacher can see — managed at `/admin/staff`, added after Phase 6).
-- **Import**: `npm run db:import-family -- /path/to/Student_Enrollment_and_Forcast.xlsx` (add
-  `--dry-run` to parse and print counts without touching the database) populates `children` from
-  the spreadsheet's real "Sheet1" roster (the "Family Tracker" tab itself was almost empty in the
-  source file — used only to define the column set), `admissions_enquiries` from the "School
-  Tours"/"Inquiries from WA"/"Old Inquiries"/"Other islanders"/"Visitors only" tabs, and
-  `class_forecast_entries` from "Student Count". Safe to re-run for `children` (matched by name +
-  DOB, never duplicates); `admissions_enquiries` has no stable ID in the source sheets to match
-  on, so only run it against an empty table; `class_forecast_entries` is wiped and fully
-  reinserted on every run since it's cheap to regenerate.
+- **Import**: two ways to run the same import (parsing/DB-write logic lives once in
+  `src/lib/family-import.ts` so they can never drift apart):
+  - **`/admin/import`** (admin only, added after Phase 6) — upload the .xlsx directly through the
+    browser once logged into the deployed site. Has a "Preview" mode (parses and shows counts,
+    saves nothing) and an "Import" mode, with a checkbox to clear `admissions_enquiries` first for
+    a safe re-run. This is the one to use for a real deployment — no database credentials ever
+    need to leave Vercel.
+  - **`npm run db:import-family -- /path/to/file.xlsx`** (add `--dry-run` to only parse and print
+    counts, `--clear-enquiries` to wipe `admissions_enquiries` first) — for local/direct-DB-access
+    use, e.g. from a machine with `DATABASE_URL` in `.env.local`.
+
+  Either way: populates `children` from the spreadsheet's real "Sheet1" roster (the "Family
+  Tracker" tab itself was almost empty in the source file — used only to define the column set),
+  `admissions_enquiries` from the "School Tours"/"Inquiries from WA"/"Old Inquiries"/"Other
+  islanders"/"Visitors only" tabs, and `class_forecast_entries` from "Student Count". Safe to
+  re-run for `children` (matched by name + DOB, never duplicates) and `class_forecast_entries`
+  (wiped and fully reinserted every run, cheap to regenerate); `admissions_enquiries` has no
+  stable ID in the source sheets to de-duplicate against, so clear it first on any run after the
+  first (the checkbox / `--clear-enquiries` flag above).
 - **Compliance data**: `children` holds allergy/medical notes and 7 compliance-form signed?/date
   pairs (including the Indonesian UU 27/2022 personal data consent already tracked in the source
   spreadsheet). Not yet access-restricted beyond the admin/teacher role split above — before real
