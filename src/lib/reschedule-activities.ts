@@ -9,7 +9,9 @@ import { sendSessionCancellationEmail } from '@/lib/email';
  * the database for historical bookings, just hidden from the public site) and every one of its
  * current/future sessions is removed the same way as any other stale session below. Every
  * activity in WEEKDAY_ACTIVITIES/School Tour is (re)activated on each run, so bringing one back
- * (like Gymnastics for Kids & Free Swim) just means moving it back into that list.
+ * just means moving it back into that list. Gymnastics for Kids & Free Swim is a "coming soon"
+ * activity: it stays visible on the site with its day label overridden to "Coming in September",
+ * but has zero sessions for now, so it can't actually be booked yet.
  *
  * Any existing session for an active target activity that isn't part of the schedule above is
  * removed: deleted outright if nobody has booked it, or cancelled (with the same cancellation
@@ -64,7 +66,6 @@ const WEEKDAY_ACTIVITIES: WeekdayActivity[] = [
       ageGroup: 'All ages',
     },
   },
-  { slug: 'gymnastics-free-swim', day: 'Tuesday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
   { slug: 'surfing-selong-belanak', day: 'Wednesday', time: '13:30', capacity: 8, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
   { slug: 'art-music-bahasa', day: 'Thursday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
   { slug: 'scouts-survival-challenge', day: 'Friday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
@@ -74,6 +75,12 @@ const WEEKDAY_ACTIVITIES: WeekdayActivity[] = [
 // below (its id is still included in the stale-session scan), and the activity is deactivated so
 // it drops off the public site, but its row (and any past bookings) stay in the database.
 const DEACTIVATED_ACTIVITY_SLUGS = ['hip-hop-dance-ninja-warrior'];
+
+// Stays visible on the public site (unlike DEACTIVATED_ACTIVITY_SLUGS above) but has no bookable
+// sessions yet — its "day" column is overridden with a teaser label instead of a real weekday, and
+// any of its current/future sessions get swept away as stale the same way a retired activity's
+// would, since it isn't in WEEKDAY_ACTIVITIES/School Tour and so has zero target sessions.
+const COMING_SOON_ACTIVITIES = [{ slug: 'gymnastics-free-swim', dayLabel: 'Coming in September' }];
 
 const SCHOOL_TOUR_SLUG = 'school-tour';
 const SCHOOL_TOUR_TIMES = ['12:00'];
@@ -156,7 +163,19 @@ async function buildTargetSessions(): Promise<{ targets: TargetSession[]; activi
     activityIds.push(await activityIdBySlug(slug));
   }
 
+  for (const activity of COMING_SOON_ACTIVITIES) {
+    const id = await activityIdBySlug(activity.slug);
+    activityIds.push(id);
+    liveActivityIds.push(id);
+  }
+
   return { targets, activityIds, liveActivityIds };
+}
+
+async function applyComingSoonLabels(): Promise<void> {
+  for (const activity of COMING_SOON_ACTIVITIES) {
+    await sql`UPDATE activities SET day = ${activity.dayLabel} WHERE slug = ${activity.slug}`;
+  }
 }
 
 /**
@@ -292,6 +311,7 @@ export async function runRescheduleActivities(): Promise<RescheduleResult> {
   const { created, capacityUpdated } = await syncTargetSessions(targets);
   await activateActivities(liveActivityIds);
   await deactivateActivities(DEACTIVATED_ACTIVITY_SLUGS);
+  await applyComingSoonLabels();
 
   const today = toDateString(new Date());
   const candidates = (await sql`

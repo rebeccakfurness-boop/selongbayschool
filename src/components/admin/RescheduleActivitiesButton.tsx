@@ -23,10 +23,10 @@ export default function RescheduleActivitiesButton({ onDone }: { onDone?: () => 
     if (
       !confirm(
         'This syncs current and future sessions to the latest term schedule: weekday activities 1:30-3:30pm ' +
-        '(Gymnastics for Kids & Free Swim on Tuesdays, Football on Mondays from 3 August), and School Tour at ' +
-        'midday Mon-Fri (capacity 8). Hip Hop Dance and Ninja Warrior stays retired. Any old slot that’s not part ' +
-        'of the new schedule will be removed — sessions with real bookings will be cancelled and those families ' +
-        'will be emailed. This cannot be undone. Continue?'
+        '(Football on Mondays from 3 August), and School Tour at midday Mon-Fri (capacity 8). Gymnastics for Kids ' +
+        '& Free Swim switches to "Coming in September" with no bookable sessions for now. Hip Hop Dance and Ninja ' +
+        'Warrior stays retired. Any old slot that’s not part of the new schedule will be removed — sessions with ' +
+        'real bookings will be cancelled and those families will be emailed. This cannot be undone. Continue?'
       )
     ) {
       return;
@@ -52,8 +52,8 @@ export default function RescheduleActivitiesButton({ onDone }: { onDone?: () => 
       <h3 className="font-display text-base font-semibold text-ink">Reschedule to new term</h3>
       <p className="mt-1 text-sm text-ink-soft">
         Syncs upcoming sessions to the latest term schedule (School Tour midday, Football from 3 August, Gymnastics
-        &amp; Free Swim back on Tuesdays, Hip Hop Dance &amp; Ninja Warrior still retired) and removes every slot that
-        no longer belongs.
+        &amp; Free Swim set to &quot;Coming in September&quot; with no bookable sessions yet, Hip Hop Dance &amp; Ninja
+        Warrior still retired) and removes every slot that no longer belongs.
       </p>
       <div className="mt-3">
         <Button type="button" variant="accent" onClick={run} disabled={pending}>
