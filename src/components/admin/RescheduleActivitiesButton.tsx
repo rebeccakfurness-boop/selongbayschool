@@ -23,8 +23,8 @@ export default function RescheduleActivitiesButton({ onDone }: { onDone?: () => 
     if (
       !confirm(
         'This syncs current and future sessions to the latest term schedule: weekday activities 1:30-3:30pm ' +
-        '(Gymnastics for Kids & Free Swim on Tuesdays, Football on Mondays from 3 August, Gardening and Padel on ' +
-        'Fridays), and School Tour at midday Mon-Fri (capacity 8). Gymnastics Term 2 is a separate "Coming in ' +
+        '(Gymnastics for Kids & Free Swim on Tuesdays, Football and Feeling Crafty on Mondays from 3 August, ' +
+        'Gardening and Padel on Fridays), and School Tour at midday Mon-Fri (capacity 8). Gymnastics Term 2 is a separate "Coming in ' +
         'September" activity with no bookable sessions yet. Hip Hop Dance and Ninja Warrior stays retired, and so ' +
         'are the duplicate "Gymnastics Term 1" activity and Scouts and Survival Challenge (replaced by Gardening ' +
         'and Padel). Any old slot that’s not part of the new schedule will be removed — sessions with real ' +
@@ -53,8 +53,8 @@ export default function RescheduleActivitiesButton({ onDone }: { onDone?: () => 
     <div className="rounded-md border border-orange/30 bg-orange/5 p-5">
       <h3 className="font-display text-base font-semibold text-ink">Reschedule to new term</h3>
       <p className="mt-1 text-sm text-ink-soft">
-        Syncs upcoming sessions to the latest term schedule (School Tour midday, Football from 3 August, Gymnastics
-        &amp; Free Swim back on Tuesdays, Gardening and Padel on Fridays, Gymnastics Term 2 set to &quot;Coming in
+        Syncs upcoming sessions to the latest term schedule (School Tour midday, Football and Feeling Crafty from 3
+        August, Gymnastics &amp; Free Swim back on Tuesdays, Gardening and Padel on Fridays, Gymnastics Term 2 set to &quot;Coming in
         September&quot; with no bookable sessions yet, Hip Hop Dance &amp; Ninja Warrior, the duplicate
         &quot;Gymnastics Term 1&quot;, and Scouts and Survival Challenge all retired) and removes every slot that no
         longer belongs.
