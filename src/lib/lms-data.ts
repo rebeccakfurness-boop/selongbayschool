@@ -121,6 +121,29 @@ export async function getResourcesForClassBand(classBand: ClassBand | null): Pro
   `) as unknown as ResourceRow[];
 }
 
+export interface InvoiceSummaryRow {
+  id: number;
+  invoice_number: number;
+  invoice_type: 'tuition' | 'activity';
+  status: 'outstanding' | 'paid' | 'cancelled';
+  issue_date: string;
+  due_date: string;
+  total_amount: number;
+  days_overdue: number;
+}
+
+export async function getInvoicesForChild(childId: number): Promise<InvoiceSummaryRow[]> {
+  return (await sql`
+    SELECT
+      i.id, i.invoice_number, i.invoice_type, i.status, i.issue_date::text, i.due_date::text, i.total_amount,
+      GREATEST(0, (CURRENT_DATE - i.due_date))::int AS days_overdue
+    FROM invoices i
+    JOIN invoice_children ic ON ic.invoice_id = i.id
+    WHERE ic.child_id = ${childId}
+    ORDER BY i.issue_date DESC
+  `) as unknown as InvoiceSummaryRow[];
+}
+
 export async function getLearningProfilesForChild(childId: number): Promise<LearningProfileSummaryRow[]> {
   return (await sql`
     SELECT id, term_label, grade_label, created_at FROM learning_profiles

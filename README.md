@@ -220,8 +220,42 @@ not `admin_users`), and a different auth mechanism.
 
 ## Operations dashboard (families, teachers, students)
 
-Foundation for the admissions/enrolment/teaching ops system described separately (invoicing,
-Google Classroom, etc. land in later phases).
+Foundation for the admissions/enrolment/teaching ops system described separately (Google
+Classroom integration, etc. land in later phases).
+
+### Phase 4: Invoicing
+
+- **`school_settings`** (singleton, `id = 1`): payable-to/bank details, currency, and invoice due
+  days — the invoice PDF template never hardcodes these, only reads this record, so a bank change
+  in the future is a settings edit, not a code change. Seeded with the canonical values confirmed
+  against the real Term 1 invoice. Editable at `/admin/settings` (admin only; teachers still see
+  the page for their own password change, just not this section).
+- **Invoice numbering** continues the school's existing manual sequence — confirmed to start the
+  software's `invoice_number_seq` at 51 (the two sample invoices were #040/#050) so it can't
+  collide with an invoice already sent out manually.
+- **Sibling discount**: confirmed as 5% off the first child's line items, 10% off each additional
+  child's, and *only* when 2+ children are billed on the same invoice — a single-child invoice
+  gets no discount. Nothing in the source spreadsheet or sample invoices defined an actual
+  schedule (just a freeform "Sibling Discount Tier" text field per child), so this rule is
+  confirmed with the school rather than guessed, and lives in one place
+  (`src/app/api/admin/invoices/route.ts`) if it ever needs revisiting.
+- **Generating an invoice** (`/admin/families/:id/invoices/new`, admin only): pick tuition or
+  activity type, optionally add a sibling to bill together, freeform line items per child. A line
+  item with quantity 0 renders as a blank-cell informational row (matching the real invoice's
+  "Lunches - provided by parents" / activities-surcharge note rows) rather than needing a separate
+  notes field for that. The server always recomputes subtotal/discount/total itself — the client
+  preview is just for the admin's benefit, never trusted.
+- **Invoice PDF** (`/api/invoices/:id/pdf`) reproduces the real template closely: logo top-left,
+  script "Invoice" headline, Number/Date top-right, PAYABLE TO + BANK DETAILS blocks, teal-header
+  itemized table, totals box, NOTES block repeating the bank details, teal footer bar. The QR
+  square is a plain visual placeholder (no encoded payment data), per the brief. Same
+  three-session auth pattern as the Learning Profile PDF: admin, any guardian of a billed child,
+  or the billed child's own student login can view it.
+- **Paid/outstanding/overdue** is manual reconciliation (a "Mark as Paid" action), matching how
+  the existing site's activity bookings already work — no payment gateway wired up, confirmed with
+  the school. Days-overdue is computed live from the due date, never stored.
+- Surfaced on the Child Card (with Mark as Paid), and on the parent portal (read-only, plus the
+  PDF link) — both replace the "coming in a later phase" placeholder from Phase 3.
 
 ### Phase 3: Learning Profile + LMS portal
 

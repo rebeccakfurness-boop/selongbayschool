@@ -256,6 +256,49 @@ export const linkGuardianSchema = z.object({
 });
 export type LinkGuardianInput = z.infer<typeof linkGuardianSchema>;
 
+export const invoiceLineItemSchema = z.object({
+  description: z.string().trim().min(1, 'Description is required').max(500),
+  // Zero quantity/price is a valid, deliberate "informational" line item (e.g. "Lunches -
+  // provided by parents") — matches how the real invoice template shows some rows with no
+  // qty/price/total at all, rather than needing a separate freeform notes field for that.
+  quantity: z.coerce.number().min(0).max(10000),
+  unitPrice: z.coerce.number().int('Price must be a whole number of IDR').nonnegative().max(1_000_000_000),
+});
+
+export const invoiceChildSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  lineItems: z.array(invoiceLineItemSchema).min(1, 'Each child needs at least one line item'),
+});
+
+export const createInvoiceSchema = z.object({
+  invoiceType: z.enum(['tuition', 'activity']),
+  billedToName: z.string().trim().min(1, 'Billed-to name is required').max(200),
+  issueDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid issue date'),
+  notes: z.string().trim().max(2000).nullable().optional(),
+  children: z.array(invoiceChildSchema).min(1, 'At least one child is required'),
+});
+export type CreateInvoiceInput = z.infer<typeof createInvoiceSchema>;
+
+export const updateInvoiceStatusSchema = z.object({
+  status: z.enum(['paid', 'outstanding', 'cancelled']),
+});
+export type UpdateInvoiceStatusInput = z.infer<typeof updateInvoiceStatusSchema>;
+
+export const updateSchoolSettingsSchema = z.object({
+  payableTo: z.string().trim().min(1).max(300).optional(),
+  bankName: z.string().trim().min(1).max(300).optional(),
+  accountNumber: z.string().trim().min(1).max(100).optional(),
+  accountName: z.string().trim().min(1).max(300).optional(),
+  swiftCode: z.string().trim().min(1).max(50).optional(),
+  bankAddress: z.string().trim().max(500).nullable().optional(),
+  bankCode: z.string().trim().max(50).nullable().optional(),
+  branchCode: z.string().trim().max(50).nullable().optional(),
+  clearingCode: z.string().trim().max(50).nullable().optional(),
+  currency: z.string().trim().min(1).max(10).optional(),
+  invoiceDueDays: z.coerce.number().int().min(0).max(365).optional(),
+});
+export type UpdateSchoolSettingsInput = z.infer<typeof updateSchoolSettingsSchema>;
+
 export const studentLoginSchema = z.object({
   username: z.string().trim().min(1, 'Username is required').max(100),
   password: z.string().min(1, 'Password is required'),

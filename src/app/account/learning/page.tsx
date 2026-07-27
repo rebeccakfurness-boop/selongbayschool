@@ -12,7 +12,9 @@ import {
   getPhotoFeedForChild,
   getResourcesForClassBand,
   getLearningProfilesForChild,
+  getInvoicesForChild,
 } from '@/lib/lms-data';
+import { formatIDR } from '@/lib/site-content';
 import { formatDate } from '@/lib/admin-format';
 import LogoutButton from '@/components/account/LogoutButton';
 
@@ -52,13 +54,14 @@ export default async function ParentLearningPage() {
         <div className="flex flex-col gap-12">
           {await Promise.all(
             children.map(async (child) => {
-              const [unit, lessons, workSamples, photos, resources, profiles] = await Promise.all([
+              const [unit, lessons, workSamples, photos, resources, profiles, invoices] = await Promise.all([
                 getCurrentCurriculumUnit(child.class_name),
                 getUpcomingLessonPlans(child.class_name, 5),
                 getWorkSamplesForChild(child.id),
                 getPhotoFeedForChild(child.id, child.class_name, 12),
                 getResourcesForClassBand(child.class_band),
                 getLearningProfilesForChild(child.id),
+                getInvoicesForChild(child.id),
               ]);
 
               return (
@@ -152,13 +155,38 @@ export default async function ParentLearningPage() {
                       </div>
                     </div>
 
-                    <div className="rounded-md border border-dashed border-sand-line bg-paper p-5 text-sm text-ink-soft md:col-span-2">
-                      Invoice/payment status and lunch/activity booking for {child.child_nickname || child.child_full_name} are
-                      coming in a later phase. In the meantime, activities can be booked at{' '}
-                      <Link href="/activities" className="font-semibold text-teal-deep underline">
-                        /activities
-                      </Link>
-                      .
+                    <div className="rounded-md border border-sand-line bg-paper p-5 shadow-soft md:col-span-2">
+                      <h3 className="font-display text-base font-semibold text-teal-deep">Invoices</h3>
+                      <ul className="mt-2 flex flex-col gap-2">
+                        {invoices.map((inv) => {
+                          const overdue = inv.status === 'outstanding' && inv.days_overdue > 0;
+                          return (
+                            <li key={inv.id} className="flex items-center justify-between text-sm">
+                              <a href={`/api/invoices/${inv.id}/pdf`} target="_blank" rel="noopener noreferrer" className="font-semibold text-teal-deep underline">
+                                Invoice #{String(inv.invoice_number).padStart(3, '0')}
+                              </a>
+                              <span className="text-ink-soft">
+                                {formatIDR(inv.total_amount)} ·{' '}
+                                <span className={overdue ? 'font-bold text-orange-deep' : 'font-semibold'}>
+                                  {inv.status === 'paid'
+                                    ? 'Paid'
+                                    : overdue
+                                      ? `${inv.days_overdue} day${inv.days_overdue === 1 ? '' : 's'} overdue`
+                                      : 'Outstanding'}
+                                </span>
+                              </span>
+                            </li>
+                          );
+                        })}
+                        {invoices.length === 0 && <li className="text-sm text-ink-soft">No invoices yet.</li>}
+                      </ul>
+                      <p className="mt-3 text-xs text-ink-soft">
+                        Activities can be booked at{' '}
+                        <Link href="/activities" className="font-semibold text-teal-deep underline">
+                          /activities
+                        </Link>
+                        . Lunch selection is coming in a later phase.
+                      </p>
                     </div>
                   </div>
                 </section>

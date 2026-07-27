@@ -580,6 +580,92 @@ export function ensureSchema(): Promise<void> {
       // admin UI existed to populate this until Phase 3's child card update; without it the
       // parent portal has no way to know which children belong to which logged-in parent.
       await sql`CREATE INDEX IF NOT EXISTS idx_guardian_children_customer ON guardian_children (customer_id)`;
+
+      // --- Phase 4: invoicing ---
+
+      // Singleton (id always 1) so bank/payable-to details can be corrected in future without a
+      // code change — never hardcoded in the invoice PDF template itself. Seeded below with the
+      // canonical values confirmed against the real Term 1 invoice.
+      await sql`
+        CREATE TABLE IF NOT EXISTS school_settings (
+          id INTEGER PRIMARY KEY DEFAULT 1,
+          payable_to TEXT NOT NULL,
+          bank_name TEXT NOT NULL,
+          account_number TEXT NOT NULL,
+          account_name TEXT NOT NULL,
+          swift_code TEXT NOT NULL,
+          bank_address TEXT,
+          bank_code TEXT,
+          branch_code TEXT,
+          clearing_code TEXT,
+          currency TEXT NOT NULL DEFAULT 'IDR',
+          invoice_due_days INTEGER NOT NULL DEFAULT 5,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          CHECK (id = 1)
+        )
+      `;
+      await sql`
+        INSERT INTO school_settings (id, payable_to, bank_name, account_number, account_name, swift_code, bank_address, bank_code, branch_code, clearing_code)
+        VALUES (
+          1, 'Yayasan Selong Bay Sekolah', 'PT BANK MANDIRI (PERSERO)', '1610017501474', 'Yayasan Selong Bay Sekolah',
+          'BMRIIDJA', 'Dusun Serangan RT 000 RW 000, Praya Barat, Kode Pos 83571', '008', '16161', '0083894'
+        )
+        ON CONFLICT (id) DO NOTHING
+      `;
+
+      // Continues the school's existing manual invoice numbering (samples seen were #040/#050 in
+      // early July 2026); confirmed with the school to start the software's sequence at 51 so it
+      // can't collide with an invoice already issued outside this system.
+      await sql`CREATE SEQUENCE IF NOT EXISTS invoice_number_seq START 51`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS invoices (
+          id BIGSERIAL PRIMARY KEY,
+          invoice_number INTEGER NOT NULL UNIQUE,
+          invoice_type TEXT NOT NULL CHECK (invoice_type IN ('tuition', 'activity')),
+          billed_to_name TEXT NOT NULL,
+          issue_date DATE NOT NULL DEFAULT CURRENT_DATE,
+          due_date DATE NOT NULL,
+          currency TEXT NOT NULL DEFAULT 'IDR',
+          subtotal_amount BIGINT NOT NULL DEFAULT 0,
+          sibling_discount_amount BIGINT NOT NULL DEFAULT 0,
+          total_amount BIGINT NOT NULL DEFAULT 0,
+          status TEXT NOT NULL DEFAULT 'outstanding' CHECK (status IN ('outstanding', 'paid', 'cancelled')),
+          paid_at TIMESTAMPTZ,
+          notes TEXT,
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      // A child appears here whenever they're billed on an invoice, whether alone or with
+      // siblings — sort_order (the order they were added when the invoice was created) is what
+      // the 5%/10% sibling discount rule keys off (see /api/admin/invoices).
+      await sql`
+        CREATE TABLE IF NOT EXISTS invoice_children (
+          id BIGSERIAL PRIMARY KEY,
+          invoice_id BIGINT NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          discount_percent NUMERIC NOT NULL DEFAULT 0,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          UNIQUE (invoice_id, child_id)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_invoice_children_child ON invoice_children (child_id)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS invoice_line_items (
+          id BIGSERIAL PRIMARY KEY,
+          invoice_id BIGINT NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
+          child_id BIGINT REFERENCES children(id),
+          description TEXT NOT NULL,
+          quantity NUMERIC NOT NULL DEFAULT 1,
+          unit_price BIGINT NOT NULL,
+          line_total BIGINT NOT NULL,
+          sort_order INTEGER NOT NULL DEFAULT 0
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_invoice_line_items_invoice ON invoice_line_items (invoice_id)`;
     })();
   }
   return schemaReady;

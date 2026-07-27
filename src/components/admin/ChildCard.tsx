@@ -9,6 +9,8 @@ import DocumentUploadField from '@/components/admin/DocumentUploadField';
 import WorkSamplesSection, { type WorkSample } from '@/components/admin/WorkSamplesSection';
 import ChildPhotoFeedSection, { type PhotoFeedItem } from '@/components/admin/ChildPhotoFeedSection';
 import GuardianLinksSection, { type GuardianLink } from '@/components/admin/GuardianLinksSection';
+import InvoicesSection from '@/components/admin/InvoicesSection';
+import type { InvoiceSummaryRow } from '@/lib/lms-data';
 import { formatDate } from '@/lib/admin-format';
 import { STATUS_LEGEND, STATUS_ORDER, CLASS_BAND_LABELS, CLASS_BAND_ORDER, COMPLIANCE_ITEMS, type ChildStatus, type ClassBand } from '@/lib/family-data';
 
@@ -153,6 +155,7 @@ export default function ChildCard({
   workSamples,
   photos,
   guardians,
+  invoices,
 }: {
   child: ChildDetail;
   canEdit: boolean;
@@ -160,6 +163,7 @@ export default function ChildCard({
   workSamples: WorkSample[];
   photos: PhotoFeedItem[];
   guardians: GuardianLink[];
+  invoices: InvoiceSummaryRow[];
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
@@ -292,10 +296,9 @@ export default function ChildCard({
                 <InfoRow label="Tuition plan" value={child.tuition_plan} />
                 <InfoRow label="Payment status" value={child.payment_status} />
               </div>
-              <div className="mt-4 rounded-sm border border-dashed border-sand-line p-3 text-xs text-ink-soft">
-                Invoice status (paid / outstanding / overdue) is coming in a later phase.
-              </div>
             </div>
+
+            <InvoicesSection childId={child.id} invoices={invoices} canEdit={canEdit} />
 
             {canEdit && (
               <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
