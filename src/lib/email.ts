@@ -198,13 +198,12 @@ function bankDetailsHtml(): string {
     <div style="margin-top: 16px; padding: 16px; background: #f6f1e6; border-radius: 10px;">
       <p style="margin: 0 0 8px; font-weight: 700; color: #045157;">Bank transfer details</p>
       ${fieldRows([
+        ['Payable To', bankTransferDetails.payableTo],
         ['Bank', bankTransferDetails.bank],
         ['Account Number', bankTransferDetails.accountNumber],
         ['Name', bankTransferDetails.accountName],
+        ['SWIFT Code', bankTransferDetails.swiftCode],
       ])}
-      <p style="margin: 12px 0 0;">
-        <a href="${bankTransferDetails.wiseUrl}" style="color:#007c83; font-weight:700;">Or pay via Wise &rarr;</a>
-      </p>
     </div>`;
 }
 
