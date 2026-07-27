@@ -384,9 +384,10 @@ scoped role):
     compliance/health data. Uploads go through a dedicated `/api/admin/children/upload` route
     (Vercel Blob, admin-only, accepts PDF or image) separate from the activities photo upload
     route, since these are more sensitive documents.
-- `npm run db:create-staff -- <email> teacher` still has no admin UI for assigning a teacher's
-  classes — insert rows into `teacher_assignments` directly via SQL for now
-  (`INSERT INTO teacher_assignments (admin_user_id, class_name) VALUES (...)`).
+- **`/admin/staff`** (added after Phase 6): create admin/teacher accounts and assign a teacher's
+  classes directly in the UI — no more hand-written SQL against `teacher_assignments` or the CLI
+  script for day-to-day use. `npm run db:create-staff` still exists for bootstrapping the very
+  first accounts before any admin session exists to use the UI with.
 
 ### Phase 1: data model, roles, import
 
@@ -407,7 +408,7 @@ scoped role):
   `enquiry`/`booking_waitlist`/`full_time`/`temporary`/`worldschooler`/`hybrid`, plus an
   `is_active` overall flag), `admissions_enquiries` (unified lead pipeline, tagged by `source`),
   `class_forecast_entries` (monthly roster forecast by class band), `teacher_assignments` (which
-  classes a teacher can see — no admin UI yet, insert rows directly via SQL for now).
+  classes a teacher can see — managed at `/admin/staff`, added after Phase 6).
 - **Import**: `npm run db:import-family -- /path/to/Student_Enrollment_and_Forcast.xlsx` (add
   `--dry-run` to parse and print counts without touching the database) populates `children` from
   the spreadsheet's real "Sheet1" roster (the "Family Tracker" tab itself was almost empty in the
