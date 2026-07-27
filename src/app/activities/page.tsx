@@ -114,6 +114,10 @@ const activityImages: Record<string, { src: string; alt: string }> = {
     src: '/images/activity-scouts.jpg',
     alt: 'Students exploring tide pools together at Selong Belanak',
   },
+  'gardening-and-padel': {
+    src: '/images/activity-padel.jpg',
+    alt: 'A secondary student holding a padel racket on the padel court',
+  },
   'school-tour': {
     src: '/images/activity-school-tour-v2.jpg',
     alt: 'Aerial view of the Selong Bay School campus and padel court',

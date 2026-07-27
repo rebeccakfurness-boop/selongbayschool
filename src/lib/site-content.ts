@@ -257,6 +257,10 @@ export const activitiesGallery = [
     src: '/images/activities-gallery-craft-weaving-2.jpg',
     alt: 'Students and staff weaving colourful recycled materials together during a craft session',
   },
+  {
+    src: '/images/activities-gallery-gardening.jpg',
+    alt: 'Students tending a hydroponic vegetable garden with a teacher at Selong Bay School',
+  },
 ];
 
 export const communityPartners = [

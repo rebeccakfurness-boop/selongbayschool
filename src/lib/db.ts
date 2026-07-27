@@ -7,6 +7,7 @@ const ACTIVITY_PHOTO_BACKFILL: Record<string, string> = {
   'hip-hop-dance-ninja-warrior': '/images/activity-ninja-hiphop.jpg',
   'art-music-bahasa': '/images/activity-art-music.jpg',
   'scouts-survival-challenge': '/images/activity-scouts.jpg',
+  'gardening-and-padel': '/images/activity-padel.jpg',
   'school-tour': '/images/activity-school-tour-v2.jpg',
   'adventure-camp-2026-per-day': '/images/activity-adventure-camp.jpg',
   'adventure-camp-2026-full-week': '/images/home-story-beach-tree.jpg',
