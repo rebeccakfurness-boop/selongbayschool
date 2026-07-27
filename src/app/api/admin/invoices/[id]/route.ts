@@ -13,7 +13,11 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   }
 
   await ensureSchema();
-  const invoices = await sql`SELECT * FROM invoices WHERE id = ${id}`;
+  const invoices = await sql`
+    SELECT id, invoice_number, invoice_type, billed_to_name, issue_date::text, due_date::text,
+      currency, subtotal_amount, sibling_discount_amount, total_amount, status, notes
+    FROM invoices WHERE id = ${id}
+  `;
   const invoice = invoices[0];
   if (!invoice) {
     return NextResponse.json({ error: 'Invoice not found.' }, { status: 404 });

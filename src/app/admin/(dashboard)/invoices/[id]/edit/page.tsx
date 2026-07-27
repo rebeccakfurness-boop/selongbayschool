@@ -12,7 +12,10 @@ export default async function EditInvoicePage({ params }: { params: Promise<{ id
   const id = Number(idParam);
   if (!Number.isInteger(id)) notFound();
 
-  const invoices = (await sql`SELECT * FROM invoices WHERE id = ${id}`) as unknown as {
+  const invoices = (await sql`
+    SELECT invoice_number, invoice_type, billed_to_name, issue_date::text
+    FROM invoices WHERE id = ${id}
+  `) as unknown as {
     invoice_number: number;
     invoice_type: 'tuition' | 'activity';
     billed_to_name: string;
