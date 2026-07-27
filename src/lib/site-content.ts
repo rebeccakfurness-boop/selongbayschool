@@ -34,7 +34,7 @@ export const navItems = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/how-it-works', label: 'Our Approach' },
-  { href: '/foundation-and-charity', label: 'Foundation & Charity' },
+  { href: '/foundation-and-charity', label: 'Yayasan Charity' },
   {
     href: '/admissions',
     label: 'Admissions',
@@ -56,12 +56,9 @@ export const navItems = [
 // own order and labels without affecting the footer's Explore links.
 export const headerNavItems = [
   { href: '/', label: 'Home' },
-  {
-    href: '/about',
-    label: 'About',
-    children: [{ href: '/foundation-and-charity', label: 'Our Foundation' }],
-  },
+  { href: '/about', label: 'About' },
   { href: '/how-it-works', label: 'Our Approach' },
+  { href: '/foundation-and-charity', label: 'Yayasan Charity' },
   {
     href: '/admissions',
     label: 'Admissions',
