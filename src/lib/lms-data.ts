@@ -144,6 +144,43 @@ export async function getInvoicesForChild(childId: number): Promise<InvoiceSumma
   `) as unknown as InvoiceSummaryRow[];
 }
 
+export interface ClassroomAssignmentRow {
+  id: number;
+  title: string;
+  description: string | null;
+  due_date: string | null;
+  alternate_link: string | null;
+}
+
+export interface ClassroomSubmissionRow {
+  id: number;
+  classroom_assignment_id: number;
+  assignment_title: string;
+  state: string;
+  alternate_link: string | null;
+}
+
+export async function getClassroomAssignmentsForClass(className: string | null, limit = 10): Promise<ClassroomAssignmentRow[]> {
+  if (!className) return [];
+  return (await sql`
+    SELECT id, title, description, due_date::text, alternate_link
+    FROM classroom_assignments
+    WHERE class_name = ${className}
+    ORDER BY synced_at DESC
+    LIMIT ${limit}
+  `) as unknown as ClassroomAssignmentRow[];
+}
+
+export async function getClassroomSubmissionsForChild(childId: number): Promise<ClassroomSubmissionRow[]> {
+  return (await sql`
+    SELECT s.id, s.classroom_assignment_id, a.title AS assignment_title, s.state, s.alternate_link
+    FROM classroom_submissions s
+    JOIN classroom_assignments a ON a.id = s.classroom_assignment_id
+    WHERE s.child_id = ${childId}
+    ORDER BY s.synced_at DESC
+  `) as unknown as ClassroomSubmissionRow[];
+}
+
 export async function getLearningProfilesForChild(childId: number): Promise<LearningProfileSummaryRow[]> {
   return (await sql`
     SELECT id, term_label, grade_label, created_at FROM learning_profiles

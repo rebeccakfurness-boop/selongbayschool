@@ -10,7 +10,8 @@ import WorkSamplesSection, { type WorkSample } from '@/components/admin/WorkSamp
 import ChildPhotoFeedSection, { type PhotoFeedItem } from '@/components/admin/ChildPhotoFeedSection';
 import GuardianLinksSection, { type GuardianLink } from '@/components/admin/GuardianLinksSection';
 import InvoicesSection from '@/components/admin/InvoicesSection';
-import type { InvoiceSummaryRow } from '@/lib/lms-data';
+import ClassroomSection from '@/components/admin/ClassroomSection';
+import type { InvoiceSummaryRow, ClassroomSubmissionRow } from '@/lib/lms-data';
 import { formatDate } from '@/lib/admin-format';
 import { STATUS_LEGEND, STATUS_ORDER, CLASS_BAND_LABELS, CLASS_BAND_ORDER, COMPLIANCE_ITEMS, type ChildStatus, type ClassBand } from '@/lib/family-data';
 
@@ -68,6 +69,7 @@ export interface ChildDetail {
   passport_copy_url: string | null;
   visa_status: string | null;
   kitas_copy_url: string | null;
+  classroom_student_email: string | null;
 }
 
 function InfoRow({ label, value }: { label: string; value: string | null | undefined }) {
@@ -133,6 +135,7 @@ function toFormState(child: ChildDetail) {
     passportCopyUrl: child.passport_copy_url,
     visaStatus: child.visa_status ?? '',
     kitasCopyUrl: child.kitas_copy_url,
+    classroomStudentEmail: child.classroom_student_email ?? '',
   };
 }
 
@@ -156,6 +159,7 @@ export default function ChildCard({
   photos,
   guardians,
   invoices,
+  classroomSubmissions,
 }: {
   child: ChildDetail;
   canEdit: boolean;
@@ -164,6 +168,7 @@ export default function ChildCard({
   photos: PhotoFeedItem[];
   guardians: GuardianLink[];
   invoices: InvoiceSummaryRow[];
+  classroomSubmissions: ClassroomSubmissionRow[];
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
@@ -404,6 +409,8 @@ export default function ChildCard({
             <ChildPhotoFeedSection childId={child.id} initial={photos} canEdit={canEdit} />
           </div>
 
+          <ClassroomSection classroomStudentEmail={child.classroom_student_email} submissions={classroomSubmissions} />
+
           <div className="rounded-md border border-dashed border-sand-line bg-paper p-6 text-sm text-ink-soft">
             <h3 className="font-display text-base font-semibold text-ink">Activities</h3>
             <p className="mt-2">Booked extracurricular activities are coming in a later phase.</p>
@@ -582,6 +589,15 @@ export default function ChildCard({
               </Field>
               <Field label="Authorized pickup persons" htmlFor="edit-pickup-persons">
                 <TextInput id="edit-pickup-persons" value={form.authorizedPickupPersons} onChange={(e) => set('authorizedPickupPersons', e.target.value)} />
+              </Field>
+              <Field label="Google Classroom email" htmlFor="edit-classroom-email">
+                <TextInput
+                  id="edit-classroom-email"
+                  type="email"
+                  value={form.classroomStudentEmail}
+                  onChange={(e) => set('classroomStudentEmail', e.target.value)}
+                  placeholder="Email used for this child in Google Classroom"
+                />
               </Field>
             </div>
           </div>

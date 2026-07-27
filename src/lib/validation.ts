@@ -180,6 +180,7 @@ export const updateChildSchema = z.object({
   passportCopyUrl: optionalStr,
   visaStatus: optionalStr,
   kitasCopyUrl: optionalStr,
+  classroomStudentEmail: optionalStr,
 });
 export type UpdateChildInput = z.infer<typeof updateChildSchema>;
 

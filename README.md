@@ -220,8 +220,55 @@ not `admin_users`), and a different auth mechanism.
 
 ## Operations dashboard (families, teachers, students)
 
-Foundation for the admissions/enrolment/teaching ops system described separately (Google
-Classroom integration, etc. land in later phases).
+Foundation for the admissions/enrolment/teaching ops system described separately.
+
+### Phase 5: Google Classroom integration
+
+- **`ClassroomProvider`** (`src/lib/classroom/types.ts`) is the clean interface the rest of the
+  app codes against — `getClassroomProvider()` returns a `StubClassroomProvider` (empty results,
+  `isConfigured() === false`) until a Google account is connected, and a real
+  `GoogleClassroomProvider` once one is. Nothing else in the app depends on Classroom being live.
+  `GoogleClassroomProvider` calls the Classroom REST API directly via `fetch` rather than pulling
+  in the `googleapis` package, since it's ultimately about a dozen stable, well-documented GET
+  endpoints.
+- **Required environment variables** (set in Vercel, and locally in `.env.local`):
+  | Variable | Description |
+  |---|---|
+  | `GOOGLE_CLASSROOM_CLIENT_ID` | OAuth 2.0 Client ID from Google Cloud Console. |
+  | `GOOGLE_CLASSROOM_CLIENT_SECRET` | The matching client secret. **Treat as a real secret** — never commit it or paste it in chat/issues. |
+  | `GOOGLE_CLASSROOM_REDIRECT_URI` | Must exactly match an "Authorized redirect URI" on that OAuth client in Google Cloud Console, e.g. `https://www.selongbayschool.com/api/admin/classroom/callback`. A mismatch here is the most common connection failure (`redirect_uri_mismatch` from Google, surfaced on `/admin/classroom` as "Google rejected the connection request"). |
+  - The Classroom API and the "Google Identity" (for `userinfo.email`) API must be enabled on
+    that Google Cloud project, and the OAuth consent screen needs the four Classroom scopes used
+    in `src/app/api/admin/classroom/connect/route.ts` added (readonly: courses, rosters,
+    coursework.students, student-submissions.students). While the consent screen is in "Testing"
+    mode (the default, no Google verification review needed), only Google accounts added as test
+    users in Cloud Console can complete the connect flow — add the school's Google account there
+    first.
+  - **This OAuth flow could not be tested end-to-end from within this sandboxed build
+    environment** (no real domain to receive the callback). Please test "Connect Google Classroom"
+    at `/admin/classroom` once the env vars and Cloud Console config above are in place, and report
+    back anything that errors so it can be fixed.
+- **Connect flow**: `/admin/classroom` → "Connect Google Classroom" → Google consent screen →
+  `/api/admin/classroom/callback` exchanges the code for tokens and stores them in the
+  `classroom_connection` singleton table (one Google account authorizes the whole school, same
+  pattern as `school_settings`). `prompt=consent` is always sent so Google reliably returns a
+  refresh token (without it, the connection can't renew itself after the ~1 hour access token
+  expires) — if Google still doesn't return one, disconnect any prior authorization for this app
+  under the Google Account's own security settings first, then reconnect.
+- **Course mapping**: a Google Classroom course only starts feeding data in once an admin maps it
+  to one of the school's own `class_name` values (`classroom_course_mappings`) — course names in
+  Classroom won't reliably match `class_name` strings automatically.
+- **Sync** (`/api/admin/classroom/sync`, manual "Sync Now" button, no automatic schedule yet):
+  pulls coursework into `classroom_assignments` and student submissions into
+  `classroom_submissions` for every mapped course. A submission is matched to a local `children`
+  row by email — checked against both `children.classroom_student_email` (a new field, editable
+  on the Child Card, for when a student has their own Google account) and
+  `children.primary_contact_email` (since younger students often use a parent's Google account for
+  Classroom) — an unmatched submission is still stored, just with `child_id = NULL`, rather than
+  silently dropped.
+- Synced assignments show up alongside manually-entered lesson plans (as a separate "Google
+  Classroom" block, not merged into the same list) on the parent portal, student portal, and — via
+  matched submissions — the Child Card.
 
 ### Phase 4: Invoicing
 

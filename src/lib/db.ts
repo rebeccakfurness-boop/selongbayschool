@@ -666,6 +666,75 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_invoice_line_items_invoice ON invoice_line_items (invoice_id)`;
+
+      // --- Phase 5: Google Classroom integration ---
+
+      // Used to match a Google Classroom roster entry to a local child — many young students use
+      // a parent's Google account for Classroom, so this is checked in addition to (not instead
+      // of) primary_contact_email when matching synced rosters (see sync-course.ts).
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS classroom_student_email TEXT`;
+
+      // Singleton (id always 1) — one Google account authorizes access for the whole school,
+      // same pattern as school_settings. No connection row means Classroom isn't connected yet
+      // and getClassroomProvider() returns the stub.
+      await sql`
+        CREATE TABLE IF NOT EXISTS classroom_connection (
+          id INTEGER PRIMARY KEY DEFAULT 1,
+          google_account_email TEXT NOT NULL,
+          access_token TEXT NOT NULL,
+          access_token_expires_at TIMESTAMPTZ NOT NULL,
+          refresh_token TEXT NOT NULL,
+          connected_by BIGINT REFERENCES admin_users(id),
+          connected_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          last_synced_at TIMESTAMPTZ,
+          CHECK (id = 1)
+        )
+      `;
+
+      // A Google Classroom "course" only starts feeding data into the app once an admin maps it
+      // to one of the school's own class_name values — courses aren't synced automatically on
+      // connect, since course names in Classroom won't reliably match class_name strings.
+      await sql`
+        CREATE TABLE IF NOT EXISTS classroom_course_mappings (
+          id BIGSERIAL PRIMARY KEY,
+          google_course_id TEXT NOT NULL UNIQUE,
+          google_course_name TEXT NOT NULL,
+          class_name TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS classroom_assignments (
+          id BIGSERIAL PRIMARY KEY,
+          google_coursework_id TEXT NOT NULL UNIQUE,
+          class_name TEXT NOT NULL,
+          title TEXT NOT NULL,
+          description TEXT,
+          due_date DATE,
+          alternate_link TEXT,
+          synced_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_classroom_assignments_class ON classroom_assignments (class_name)`;
+
+      // child_id is nullable: a submission only links to a local child once their Classroom
+      // roster email matches children.classroom_student_email or primary_contact_email — an
+      // unmatched submission is still stored (visible to admin as "unmatched") rather than
+      // silently dropped.
+      await sql`
+        CREATE TABLE IF NOT EXISTS classroom_submissions (
+          id BIGSERIAL PRIMARY KEY,
+          google_submission_id TEXT NOT NULL UNIQUE,
+          classroom_assignment_id BIGINT NOT NULL REFERENCES classroom_assignments(id) ON DELETE CASCADE,
+          child_id BIGINT REFERENCES children(id),
+          google_student_email TEXT,
+          state TEXT NOT NULL,
+          alternate_link TEXT,
+          synced_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_classroom_submissions_child ON classroom_submissions (child_id)`;
     })();
   }
   return schemaReady;

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
-import { getWorkSamplesForChild, getPhotoFeedForChild, getInvoicesForChild } from '@/lib/lms-data';
+import { getWorkSamplesForChild, getPhotoFeedForChild, getInvoicesForChild, getClassroomSubmissionsForChild } from '@/lib/lms-data';
 import ChildCard, { type ChildDetail } from '@/components/admin/ChildCard';
 import type { GuardianLink } from '@/components/admin/GuardianLinksSection';
 
@@ -32,6 +32,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
   const workSamples = await getWorkSamplesForChild(id);
   const photos = await getPhotoFeedForChild(id, child.class_name);
   const invoices = await getInvoicesForChild(id);
+  const classroomSubmissions = await getClassroomSubmissionsForChild(id);
   const guardians = (await sql`
     SELECT gc.customer_id, c.name, c.email, gc.relationship
     FROM guardian_children gc JOIN customers c ON c.id = gc.customer_id
@@ -48,6 +49,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
       photos={photos}
       guardians={guardians}
       invoices={invoices}
+      classroomSubmissions={classroomSubmissions}
     />
   );
 }

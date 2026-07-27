@@ -82,6 +82,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         passport_copy_url = COALESCE(${d.passportCopyUrl ?? null}, passport_copy_url),
         visa_status = COALESCE(${d.visaStatus ?? null}, visa_status),
         kitas_copy_url = COALESCE(${d.kitasCopyUrl ?? null}, kitas_copy_url),
+        classroom_student_email = COALESCE(${d.classroomStudentEmail ?? null}, classroom_student_email),
         updated_at = now()
       WHERE id = ${id}
       RETURNING id

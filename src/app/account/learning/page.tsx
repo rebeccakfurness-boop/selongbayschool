@@ -13,6 +13,8 @@ import {
   getResourcesForClassBand,
   getLearningProfilesForChild,
   getInvoicesForChild,
+  getClassroomAssignmentsForClass,
+  getClassroomSubmissionsForChild,
 } from '@/lib/lms-data';
 import { formatIDR } from '@/lib/site-content';
 import { formatDate } from '@/lib/admin-format';
@@ -54,7 +56,7 @@ export default async function ParentLearningPage() {
         <div className="flex flex-col gap-12">
           {await Promise.all(
             children.map(async (child) => {
-              const [unit, lessons, workSamples, photos, resources, profiles, invoices] = await Promise.all([
+              const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions] = await Promise.all([
                 getCurrentCurriculumUnit(child.class_name),
                 getUpcomingLessonPlans(child.class_name, 5),
                 getWorkSamplesForChild(child.id),
@@ -62,7 +64,10 @@ export default async function ParentLearningPage() {
                 getResourcesForClassBand(child.class_band),
                 getLearningProfilesForChild(child.id),
                 getInvoicesForChild(child.id),
+                getClassroomAssignmentsForClass(child.class_name, 5),
+                getClassroomSubmissionsForChild(child.id),
               ]);
+              const submissionByAssignment = new Map(classroomSubmissions.map((s) => [s.classroom_assignment_id, s]));
 
               return (
                 <section key={child.id}>
@@ -97,6 +102,28 @@ export default async function ParentLearningPage() {
                         {lessons.length === 0 && <li className="text-sm text-ink-soft">No lessons posted yet.</li>}
                       </ul>
                     </div>
+
+                    {classroomAssignments.length > 0 && (
+                      <div className="rounded-md border border-sand-line bg-paper p-5 shadow-soft">
+                        <h3 className="font-display text-base font-semibold text-teal-deep">Google Classroom</h3>
+                        <ul className="mt-2 flex flex-col gap-2">
+                          {classroomAssignments.map((a) => {
+                            const submission = submissionByAssignment.get(a.id);
+                            return (
+                              <li key={a.id} className="text-sm">
+                                <span className="font-semibold text-ink">{a.title}</span>
+                                {submission && <span className="ml-2 text-xs text-teal-deep">{submission.state}</span>}
+                                {a.alternate_link && (
+                                  <a href={a.alternate_link} target="_blank" rel="noopener noreferrer" className="ml-2 text-xs font-semibold text-teal-deep underline">
+                                    Open
+                                  </a>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    )}
 
                     <div className="rounded-md border border-sand-line bg-paper p-5 shadow-soft">
                       <h3 className="font-display text-base font-semibold text-teal-deep">Learning Profile</h3>
