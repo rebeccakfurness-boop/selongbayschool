@@ -144,14 +144,34 @@ export default function WorldSchoolingPage() {
             </Bullet>
           </ul>
 
-          <div className="mt-6 max-w-xs overflow-hidden rounded-md border border-sand-line shadow-soft">
-            <Image
-              src="/images/worldschooling-campout.jpg"
-              alt="Children pitching a tent together on the beach during a camp out"
-              width={1080}
-              height={1080}
-              className="w-full"
-            />
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <div className="relative aspect-square w-full overflow-hidden rounded-md border border-sand-line shadow-soft">
+              <Image
+                src="/images/worldschooling-waterfall.jpg"
+                alt="Visitors climbing near a waterfall on a Lombok waterfall trek"
+                fill
+                sizes="(min-width: 640px) 33vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="relative aspect-square w-full overflow-hidden rounded-md border border-sand-line shadow-soft">
+              <Image
+                src="/images/worldschooling-pinkbeach.jpg"
+                alt="A visitor walking along the pink sand at Pink Beach, Lombok"
+                fill
+                sizes="(min-width: 640px) 33vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="relative aspect-square w-full overflow-hidden rounded-md border border-sand-line shadow-soft">
+              <Image
+                src="/images/worldschooling-campout.jpg"
+                alt="Children pitching a tent together on the beach during a camp out"
+                fill
+                sizes="(min-width: 640px) 33vw, 100vw"
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </Reveal>

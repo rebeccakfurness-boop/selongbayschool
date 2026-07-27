@@ -127,7 +127,10 @@ export default function OnlineHomeschoolingPage() {
               className="w-full"
             />
           </div>
-          <p className="mt-3 text-sm text-ink-soft">In partnership with HSPG Bali.</p>
+          <div className="mt-4 flex items-center gap-3">
+            <Image src="/images/hspg-bali-logo.png" alt="HSPG Bali logo" width={107} height={121} className="h-14 w-auto" />
+            <p className="text-sm text-ink-soft">In partnership with HSPG Bali.</p>
+          </div>
         </div>
       </Reveal>
 
