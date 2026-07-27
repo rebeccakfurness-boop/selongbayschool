@@ -10,7 +10,10 @@
     "db:init": "tsx --env-file-if-exists=.env.local scripts/init-db.ts",
     "db:seed": "tsx --env-file-if-exists=.env.local scripts/seed-activities.ts",
     "db:seed-admin": "tsx --env-file-if-exists=.env.local scripts/seed-admin-user.ts",
-    "db:reschedule-activities": "tsx --env-file-if-exists=.env.local scripts/reschedule-activities.ts"
+    "db:reschedule-activities": "tsx --env-file-if-exists=.env.local scripts/reschedule-activities.ts",
+    "db:import-family": "tsx --env-file-if-exists=.env.local scripts/import-family-tracker.ts",
+    "db:create-staff": "tsx --env-file-if-exists=.env.local scripts/create-staff-user.ts",
+    "db:create-student": "tsx --env-file-if-exists=.env.local scripts/create-student-account.ts"
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.4",
@@ -35,6 +38,7 @@
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.4",
     "tsx": "^4.16.2",
-    "typescript": "^5.5.3"
+    "typescript": "^5.5.3",
+    "xlsx": "^0.18.5"
   }
 }

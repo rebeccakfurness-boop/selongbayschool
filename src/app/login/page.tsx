@@ -20,7 +20,7 @@ export default function LoginPage() {
         <Button href="/account/login" variant="primary" fullWidth>
           Parent Login
         </Button>
-        <Button href="#" variant="ghost" fullWidth>
+        <Button href="/student/login" variant="ghost" fullWidth>
           Student Login
         </Button>
       </div>

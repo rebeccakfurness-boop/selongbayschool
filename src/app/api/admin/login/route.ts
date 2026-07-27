@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await ensureSchema();
-    const rows = await sql`SELECT id, email, password_hash FROM admin_users WHERE email = ${email}`;
+    const rows = await sql`SELECT id, email, password_hash, role FROM admin_users WHERE email = ${email}`;
     const user = rows[0];
 
     if (!user || !(await bcrypt.compare(password, user.password_hash as string))) {
@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
     const session = await getIronSession<AdminSessionData>(await cookies(), await getSessionOptions());
     session.adminUserId = user.id as number;
     session.email = user.email as string;
+    session.role = user.role as AdminSessionData['role'];
     await session.save();
 
     return NextResponse.json({ ok: true });

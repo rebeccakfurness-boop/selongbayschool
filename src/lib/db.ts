@@ -292,6 +292,164 @@ export function ensureSchema(): Promise<void> {
           updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
+
+      // --- Operations dashboard (families, enquiries, forecast, roles) ---
+      // admin_users doubles as the staff table: 'admin' has full access, 'teacher' is scoped to
+      // their assigned classes (see teacher_assignments) at the application layer.
+      await sql`
+        ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'admin'
+        CHECK (role IN ('admin', 'teacher'))
+      `;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS display_name TEXT`;
+
+      // Mirrors the "Family Tracker" spreadsheet tab, which is the canonical schema (its own rows
+      // are mostly empty; real current students come from "Sheet1" instead, mapped onto these
+      // columns by scripts/import-family-tracker.ts). One row per child; siblings share a family_id.
+      await sql`
+        CREATE TABLE IF NOT EXISTS children (
+          id BIGSERIAL PRIMARY KEY,
+          family_id TEXT,
+          status TEXT NOT NULL DEFAULT 'full_time'
+            CHECK (status IN ('enquiry', 'booking_waitlist', 'full_time', 'temporary', 'worldschooler', 'hybrid')),
+          is_active BOOLEAN NOT NULL DEFAULT true,
+          programme TEXT,
+          class_band TEXT CHECK (class_band IN ('early_years', 'kindergarten', 'primary', 'secondary')),
+          class_name TEXT,
+          child_full_name TEXT NOT NULL,
+          child_nickname TEXT,
+          dob DATE,
+          gender TEXT,
+          nationality TEXT,
+          enrolment_date DATE,
+          exit_date DATE,
+          parent1_name TEXT,
+          parent1_relationship TEXT,
+          parent1_nationality TEXT,
+          parent2_name TEXT,
+          parent2_relationship TEXT,
+          parent2_nationality TEXT,
+          siblings_at_school TEXT,
+          sibling_discount_tier TEXT,
+          tuition_plan TEXT,
+          payment_status TEXT,
+          emergency_contact_name TEXT,
+          emergency_contact_phone TEXT,
+          allergies_medical_notes TEXT,
+          dietary_requirements TEXT,
+          religion TEXT,
+          home_language TEXT,
+          nisn_request_signed BOOLEAN NOT NULL DEFAULT false,
+          nisn_request_date DATE,
+          nisn_number TEXT,
+          liability_form_signed BOOLEAN NOT NULL DEFAULT false,
+          liability_form_date DATE,
+          photography_signed BOOLEAN NOT NULL DEFAULT false,
+          photography_consent TEXT,
+          photography_form_date DATE,
+          pickup_authorization_signed BOOLEAN NOT NULL DEFAULT false,
+          authorized_pickup_persons TEXT,
+          pickup_form_date DATE,
+          behavioral_form_signed BOOLEAN NOT NULL DEFAULT false,
+          behavioral_form_date DATE,
+          financial_agreement_signed BOOLEAN NOT NULL DEFAULT false,
+          financial_agreement_date DATE,
+          parent_protection_addendum_signed BOOLEAN NOT NULL DEFAULT false,
+          data_consent_signed BOOLEAN NOT NULL DEFAULT false,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      // Not part of the Family Tracker column set, but needed to actually reach a family (Family
+      // Tracker has no parent email/phone columns at all) and, later, to link a guardian's
+      // `customers` portal login to their child(ren) via guardian_children below.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS primary_contact_email TEXT`;
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS primary_contact_phone TEXT`;
+      // Free-text carried over from Sheet1's "Duration of Stay" column; not auto-classified into
+      // status (temporary/worldschooler) since that would be a guess — left for admin review.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS duration_of_stay_note TEXT`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_children_status ON children (status)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_children_class_name ON children (class_name)`;
+
+      // Unified admissions pipeline: the "School Tours" / "Inquiries from WA" / "Old Inquiries" /
+      // "Other islanders" / "Visitors only" spreadsheet tabs, tagged by source. Distinct from the
+      // existing `enquiries` table above, which is the public site's contact/admissions/high-school
+      // form submissions, not the admissions team's own lead tracker.
+      await sql`
+        CREATE TABLE IF NOT EXISTS admissions_enquiries (
+          id BIGSERIAL PRIMARY KEY,
+          source TEXT NOT NULL CHECK (source IN ('school_tour', 'visitor', 'whatsapp', 'old_inquiry', 'other_islander')),
+          parent_name TEXT,
+          child_name TEXT,
+          child_age TEXT,
+          contact_phone TEXT,
+          contact_email TEXT,
+          plan_to_stay TEXT,
+          first_message_date DATE,
+          visit_date DATE,
+          booking_date DATE,
+          booking_time TEXT,
+          follow_up_notes TEXT,
+          converted_child_id BIGINT REFERENCES children(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      // Mirrors the "Student Count" tab: named students per class band per forecast month.
+      // Entries are frequently forward-looking placeholders (not yet real enrolled children), so
+      // linked_child_id is nullable and only set once a name is matched to a real `children` row.
+      await sql`
+        CREATE TABLE IF NOT EXISTS class_forecast_entries (
+          id BIGSERIAL PRIMARY KEY,
+          forecast_month TEXT NOT NULL,
+          class_band TEXT NOT NULL CHECK (class_band IN ('early_years', 'kindergarten', 'primary', 'secondary')),
+          child_display_name TEXT NOT NULL,
+          age_or_grade_label TEXT,
+          status_tag TEXT,
+          linked_child_id BIGINT REFERENCES children(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`
+        CREATE INDEX IF NOT EXISTS idx_class_forecast_month_band
+        ON class_forecast_entries (forecast_month, class_band)
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS teacher_assignments (
+          id BIGSERIAL PRIMARY KEY,
+          admin_user_id BIGINT NOT NULL REFERENCES admin_users(id),
+          class_name TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (admin_user_id, class_name)
+        )
+      `;
+
+      // Links a parent's existing `customers` portal account (magic-link login, same as activity
+      // booking) to the child(ren) they're guardian of, so the parent LMS portal can scope to
+      // "my children" without a second, separate parent-auth system.
+      await sql`
+        CREATE TABLE IF NOT EXISTS guardian_children (
+          id BIGSERIAL PRIMARY KEY,
+          customer_id BIGINT NOT NULL REFERENCES customers(id),
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          relationship TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (customer_id, child_id)
+        )
+      `;
+
+      // Simple, separate login for the Student role (magic-link email isn't practical for young
+      // children) — one account per child, credentials set by an admin/teacher.
+      await sql`
+        CREATE TABLE IF NOT EXISTS student_accounts (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL UNIQUE REFERENCES children(id),
+          username TEXT NOT NULL UNIQUE,
+          password_hash TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          last_login_at TIMESTAMPTZ
+        )
+      `;
     })();
   }
   return schemaReady;

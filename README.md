@@ -218,6 +218,48 @@ not `admin_users`), and a different auth mechanism.
 - `/admin/website-updates`: status of requested website changes (`change_requests` table)
 - `/admin/settings`: change your admin password
 
+## Operations dashboard (families, teachers, students) — Phase 1
+
+Foundation for the admissions/enrolment/teaching ops system described separately (Family Board,
+Learning Profiles, invoicing, etc. land in later phases). This phase adds the data model, roles,
+and read-only views; drag-and-drop and the full child card are Phase 2.
+
+- **Roles**: `admin_users.role` is `admin` or `teacher` — both log in at `/admin/login` and share
+  the same session cookie/table, but teacher-only pages redirect back to `/admin/families` (see
+  `requireAdmin()` in `src/lib/current-staff.ts`; `AdminSidebar` also hides admin-only nav items
+  for teachers). **Known gap:** `/admin/activities` is a client component and isn't gated yet —
+  low risk (session/booking admin, not child data) but should get the same guard before teacher
+  accounts are handed out.
+  - Parents reuse the existing `customers` table/`/account` login (see "Customer accounts" above);
+    `guardian_children` links a customer to the child(ren) they're guardian of.
+  - Students get their own simple username/password login at `/student/login` (magic-link email
+    isn't practical for young children) — one row per child in `student_accounts`.
+  - Create additional staff/student logins with `npm run db:create-staff -- <email> <admin|teacher>`
+    and `npm run db:create-student -- "<Child Full Name>" <username>` (both print a one-time
+    temporary password, same pattern as `db:seed-admin`).
+- **Tables**: `children` (mirrors the "Family Tracker" spreadsheet schema — status is one of
+  `enquiry`/`booking_waitlist`/`full_time`/`temporary`/`worldschooler`/`hybrid`, plus an
+  `is_active` overall flag), `admissions_enquiries` (unified lead pipeline, tagged by `source`),
+  `class_forecast_entries` (monthly roster forecast by class band), `teacher_assignments` (which
+  classes a teacher can see — no admin UI yet, insert rows directly via SQL for now).
+- **Import**: `npm run db:import-family -- /path/to/Student_Enrollment_and_Forcast.xlsx` (add
+  `--dry-run` to parse and print counts without touching the database) populates `children` from
+  the spreadsheet's real "Sheet1" roster (the "Family Tracker" tab itself was almost empty in the
+  source file — used only to define the column set), `admissions_enquiries` from the "School
+  Tours"/"Inquiries from WA"/"Old Inquiries"/"Other islanders"/"Visitors only" tabs, and
+  `class_forecast_entries` from "Student Count". Safe to re-run for `children` (matched by name +
+  DOB, never duplicates); `admissions_enquiries` has no stable ID in the source sheets to match
+  on, so only run it against an empty table; `class_forecast_entries` is wiped and fully
+  reinserted on every run since it's cheap to regenerate.
+- **Compliance data**: `children` holds allergy/medical notes and 7 compliance-form signed?/date
+  pairs (including the Indonesian UU 27/2022 personal data consent already tracked in the source
+  spreadsheet). Not yet access-restricted beyond the admin/teacher role split above — before real
+  student data goes in, revisit exactly who should see medical notes vs. just compliance status.
+- **Admin nav additions**: Family Board (`/admin/families`, grouped by status — read-only for now),
+  Admissions Pipeline (`/admin/families/enquiries`), Class Forecast (`/admin/families/forecast`,
+  admin-only), plus enrolment summary tiles (Total Registered/Active/Inactive/Waitlist) on the
+  Overview page, matching the spreadsheet's own Dashboard tab.
+
 ## Content & photos
 
 Written content (curriculum, pricing, admissions steps, activities, staff bios, contact details)

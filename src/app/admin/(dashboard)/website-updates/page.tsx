@@ -1,5 +1,6 @@
 import { ensureSchema, sql } from '@/lib/db';
 import { formatDateTime } from '@/lib/admin-format';
+import { requireAdmin } from '@/lib/current-staff';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,6 +24,7 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default async function WebsiteUpdatesPage() {
+  await requireAdmin();
   await ensureSchema();
   const requests = (await sql`
     SELECT id, requested_by, request_text, status, github_pr_url, github_pr_number, created_at
