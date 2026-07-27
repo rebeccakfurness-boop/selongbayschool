@@ -1,32 +1,38 @@
-import path from 'path';
 import { Font } from '@react-pdf/renderer';
+import {
+  NUNITO_SANS_REGULAR_DATA_URL,
+  NUNITO_SANS_BOLD_DATA_URL,
+  NUNITO_SANS_EXTRABOLD_DATA_URL,
+  TELEX_REGULAR_DATA_URL,
+  SHADOWS_INTO_LIGHT_REGULAR_DATA_URL,
+} from './assets';
 
 /**
- * Registered from local files in public/fonts (downloaded from Google Fonts) rather than fetched
- * over the network at request time — a PDF route failing because an external font CDN is briefly
- * unreachable would be a bad failure mode, so these ship in the repo instead.
+ * Registered from the inlined font data URLs in ./assets.ts (originally downloaded from Google
+ * Fonts) rather than fetched over the network at request time or read from the filesystem — see
+ * assets.ts for why a filesystem read isn't reliable in Vercel's serverless bundling, and why
+ * fonts specifically need a data: URL string rather than a raw Buffer.
  */
 let registered = false;
 
 export function registerBrandFonts() {
   if (registered) return;
   registered = true;
-  const dir = path.join(process.cwd(), 'public/fonts');
   Font.register({
     family: 'Nunito Sans',
     fonts: [
-      { src: path.join(dir, 'NunitoSans-Regular.woff'), fontWeight: 400 },
-      { src: path.join(dir, 'NunitoSans-Bold.woff'), fontWeight: 700 },
-      { src: path.join(dir, 'NunitoSans-ExtraBold.woff'), fontWeight: 800 },
+      { src: NUNITO_SANS_REGULAR_DATA_URL, fontWeight: 400 },
+      { src: NUNITO_SANS_BOLD_DATA_URL, fontWeight: 700 },
+      { src: NUNITO_SANS_EXTRABOLD_DATA_URL, fontWeight: 800 },
     ],
   });
   Font.register({
     family: 'Telex',
-    src: path.join(dir, 'Telex-Regular.woff'),
+    src: TELEX_REGULAR_DATA_URL,
   });
   Font.register({
     family: 'Shadows Into Light',
-    src: path.join(dir, 'ShadowsIntoLight-Regular.woff'),
+    src: SHADOWS_INTO_LIGHT_REGULAR_DATA_URL,
   });
 }
 

@@ -303,7 +303,7 @@ export default function ChildCard({
               </div>
             </div>
 
-            <InvoicesSection childId={child.id} invoices={invoices} canEdit={canEdit} />
+            <InvoicesSection childId={child.id} invoices={invoices} canEdit={canEdit} defaultEmail={child.primary_contact_email ?? ''} />
 
             {canEdit && (
               <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">

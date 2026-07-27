@@ -41,11 +41,11 @@ export default async function NewInvoicePage({
       </h1>
       <div className="mt-6">
         <InvoiceForm
-          initialChildId={childId}
-          initialChildLabel={label}
-          defaultInvoiceType={invoiceType}
-          defaultBilledToName={billedToName}
-          defaultFirstLineItem={defaultFirstLineItem}
+          initialInvoiceType={invoiceType}
+          initialBilledToName={billedToName}
+          initialIssueDate={new Date().toISOString().slice(0, 10)}
+          initialChildren={[{ childId, label, lineItems: [{ description: defaultFirstLineItem, quantity: '1', unitPrice: '' }] }]}
+          redirectTo={`/admin/families/${childId}`}
         />
       </div>
     </section>

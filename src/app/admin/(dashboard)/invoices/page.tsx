@@ -1,8 +1,10 @@
+import Link from 'next/link';
 import { ensureSchema, sql } from '@/lib/db';
 import { requireAdmin } from '@/lib/current-staff';
 import { formatDate } from '@/lib/admin-format';
 import { formatIDR } from '@/lib/site-content';
 import MarkInvoicePaidButton from '@/components/admin/MarkInvoicePaidButton';
+import SendInvoiceButton from '@/components/admin/SendInvoiceButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +19,7 @@ interface InvoiceRow {
   status: 'outstanding' | 'paid' | 'cancelled';
   days_overdue: number;
   children_names: string | null;
+  default_email: string | null;
 }
 
 const STATUS_STYLES: Record<string, string> = {
@@ -40,7 +43,8 @@ export default async function AdminInvoicesPage({
       i.id, i.invoice_number, i.invoice_type, i.billed_to_name, i.issue_date::text, i.due_date::text,
       i.total_amount, i.status,
       GREATEST(0, (CURRENT_DATE - i.due_date))::int AS days_overdue,
-      string_agg(COALESCE(c.child_nickname, c.child_full_name), ', ' ORDER BY ic.sort_order) AS children_names
+      string_agg(COALESCE(c.child_nickname, c.child_full_name), ', ' ORDER BY ic.sort_order) AS children_names,
+      (array_agg(c.primary_contact_email ORDER BY ic.sort_order))[1] AS default_email
     FROM invoices i
     LEFT JOIN invoice_children ic ON ic.invoice_id = i.id
     LEFT JOIN children c ON c.id = ic.child_id
@@ -123,7 +127,13 @@ export default async function AdminInvoicesPage({
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-4 py-3">
-                    {inv.status === 'outstanding' && <MarkInvoicePaidButton invoiceId={inv.id} />}
+                    <div className="flex flex-wrap items-center gap-3">
+                      <SendInvoiceButton invoiceId={inv.id} defaultEmail={inv.default_email ?? ''} />
+                      <Link href={`/admin/invoices/${inv.id}/edit`} className="text-xs font-semibold text-teal-deep hover:underline">
+                        Edit
+                      </Link>
+                      {inv.status === 'outstanding' && <MarkInvoicePaidButton invoiceId={inv.id} />}
+                    </div>
                   </td>
                 </tr>
               );

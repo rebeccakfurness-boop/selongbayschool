@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { InvoiceSummaryRow } from '@/lib/lms-data';
 import MarkInvoicePaidButton from '@/components/admin/MarkInvoicePaidButton';
+import SendInvoiceButton from '@/components/admin/SendInvoiceButton';
 
 const STATUS_STYLES: Record<string, string> = {
   outstanding: 'bg-orange/20 text-orange-deep',
@@ -17,7 +18,17 @@ function statusLabel(invoice: InvoiceSummaryRow): string {
   return 'Cancelled';
 }
 
-export default function InvoicesSection({ childId, invoices, canEdit }: { childId: number; invoices: InvoiceSummaryRow[]; canEdit: boolean }) {
+export default function InvoicesSection({
+  childId,
+  invoices,
+  canEdit,
+  defaultEmail,
+}: {
+  childId: number;
+  invoices: InvoiceSummaryRow[];
+  canEdit: boolean;
+  defaultEmail: string;
+}) {
   return (
     <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
       <div className="flex items-center justify-between">
@@ -35,17 +46,23 @@ export default function InvoicesSection({ childId, invoices, canEdit }: { childI
       </div>
       <ul className="mt-3 flex flex-col gap-2">
         {invoices.map((inv) => (
-          <li key={inv.id} className="flex items-center justify-between gap-2 rounded-sm border border-sand-line px-3 py-2 text-sm">
+          <li key={inv.id} className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-sand-line px-3 py-2 text-sm">
             <div>
               <a href={`/api/invoices/${inv.id}/pdf`} target="_blank" rel="noopener noreferrer" className="font-semibold text-teal-deep underline">
                 Invoice #{String(inv.invoice_number).padStart(3, '0')}
               </a>
               <span className="ml-2 text-xs text-ink-soft capitalize">{inv.invoice_type}</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-3">
               <span className={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-bold ${STATUS_STYLES[inv.status]}`}>
                 {statusLabel(inv)}
               </span>
+              {canEdit && <SendInvoiceButton invoiceId={inv.id} defaultEmail={defaultEmail} />}
+              {canEdit && (
+                <Link href={`/admin/invoices/${inv.id}/edit`} className="text-xs font-semibold text-teal-deep hover:underline">
+                  Edit
+                </Link>
+              )}
               {canEdit && inv.status === 'outstanding' && <MarkInvoicePaidButton invoiceId={inv.id} />}
             </div>
           </li>

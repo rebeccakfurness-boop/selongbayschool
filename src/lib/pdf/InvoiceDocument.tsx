@@ -1,10 +1,8 @@
-import path from 'path';
 import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
 import { registerBrandFonts, BRAND_COLORS } from './fonts';
+import { LOGO_PNG_BUFFER } from './assets';
 
 registerBrandFonts();
-
-const LOGO_PATH = path.join(process.cwd(), 'public/images/logo-full.png');
 
 export interface InvoiceLineItemData {
   child_id: number | null;
@@ -101,7 +99,7 @@ export function InvoiceDocument({
       <Page size="A4" style={styles.page}>
         <View style={styles.body}>
           <View style={styles.topRow}>
-            <Image src={LOGO_PATH} style={styles.logo} />
+            <Image src={LOGO_PNG_BUFFER} style={styles.logo} />
             <View>
               <Text style={styles.scriptTitle}>Invoice</Text>
               <Text style={styles.invoiceMeta}>Number: {String(invoice.invoice_number).padStart(3, '0')}</Text>

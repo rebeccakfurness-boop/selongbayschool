@@ -53,7 +53,7 @@ async function send(
   to: string,
   subject: string,
   html: string,
-  options?: { replyTo?: string; cc?: string }
+  options?: { replyTo?: string; cc?: string; attachment?: { name: string; content: string }[] }
 ): Promise<boolean> {
   try {
     const email = new brevo.SendSmtpEmail();
@@ -63,6 +63,7 @@ async function send(
     email.htmlContent = html;
     if (options?.replyTo) email.replyTo = { email: options.replyTo };
     if (options?.cc) email.cc = [{ email: options.cc }];
+    if (options?.attachment) email.attachment = options.attachment;
 
     await getBrevoClient().sendTransacEmail(email);
     return true;
@@ -434,4 +435,38 @@ export async function sendCustomerCancellationNotification(input: CustomerCancel
     ])
   );
   return send(NOTIFY_TO, `Booking cancelled by customer: ${input.activityName} for ${input.childName}`, html, { replyTo: input.parentEmail });
+}
+
+export interface InvoiceEmailInput {
+  toEmail: string;
+  billedToName: string;
+  invoiceNumber: number;
+  invoiceType: 'tuition' | 'activity';
+  totalAmount: number;
+  currency: string;
+  dueDate: string;
+  pdfBuffer: Buffer;
+}
+
+/** Sent from the "Send to parent" action on an invoice (Child Card, invoice edit page, or the
+ * master invoice list) — cc'd to the school inbox so there's always a record even if the parent's
+ * address is wrong, same pattern as every other outbound email in this app. */
+export async function sendInvoiceEmail(input: InvoiceEmailInput): Promise<boolean> {
+  const amount = input.currency === 'IDR' ? formatIDR(input.totalAmount) : `${input.totalAmount} ${input.currency}`;
+  const html = wrapEmail(
+    `Invoice #${String(input.invoiceNumber).padStart(3, '0')}`,
+    `<p>Dear ${input.billedToName},</p>
+     <p>Please find attached your ${input.invoiceType} invoice from Selong Bay School.</p>
+     ${fieldRows([
+       ['Invoice number', `#${String(input.invoiceNumber).padStart(3, '0')}`],
+       ['Amount due', amount],
+       ['Due date', input.dueDate],
+     ])}
+     <p style="margin-top: 16px;">Bank transfer details are included in the attached PDF. If you have any questions, just reply to this email.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `Invoice #${String(input.invoiceNumber).padStart(3, '0')} — Selong Bay School`, html, {
+    cc: NOTIFY_TO,
+    attachment: [{ name: `invoice-${input.invoiceNumber}.pdf`, content: input.pdfBuffer.toString('base64') }],
+  });
 }

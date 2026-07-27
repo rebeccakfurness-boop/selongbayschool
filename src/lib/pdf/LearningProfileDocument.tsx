@@ -1,6 +1,6 @@
-import path from 'path';
 import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
 import { registerBrandFonts, BRAND_COLORS } from './fonts';
+import { LOGO_PNG_BUFFER } from './assets';
 import {
   ACHIEVEMENT_SCALE,
   EFFORT_SCALE,
@@ -12,8 +12,6 @@ import {
 } from '@/lib/family-data';
 
 registerBrandFonts();
-
-const LOGO_PATH = path.join(process.cwd(), 'public/images/logo-full.png');
 
 export interface LearningProfileSubjectData {
   subject_area: string;
@@ -152,7 +150,7 @@ function ScaleLegend() {
 function Header({ subtitle }: { subtitle: string }) {
   return (
     <View style={styles.header} fixed>
-      <Image src={LOGO_PATH} style={styles.logo} />
+      <Image src={LOGO_PNG_BUFFER} style={styles.logo} />
       <View style={styles.headerRight}>
         <Text style={styles.scriptTitle}>Term Report</Text>
         <Text style={styles.subTitle}>{subtitle}</Text>

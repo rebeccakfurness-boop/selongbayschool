@@ -222,6 +222,42 @@ not `admin_users`), and a different auth mechanism.
 
 Foundation for the admissions/enrolment/teaching ops system described separately.
 
+### Post-launch fixes: PDF generation, invoice editing, invoice emailing
+
+Three issues reported after real invoices were being created in production:
+
+- **PDF generation was failing in production** (`{"error":"Could not generate PDF."}`) while
+  working fine locally. Root cause: `InvoiceDocument`/`LearningProfileDocument` read the logo and
+  brand fonts off disk at request time via `path.join(process.cwd(), 'public/...')`. Vercel's
+  serverless bundler (Node File Trace) doesn't reliably include files only referenced through a
+  dynamically-built path like that, so the function couldn't find them once deployed. Fixed by
+  embedding the logo and fonts as base64 constants directly in `src/lib/pdf/assets.ts`, decoded at
+  module load — no filesystem access at all in the PDF-rendering path. One subtlety:
+  `@react-pdf/renderer`'s `Font.register` only accepts a `src` that's a string (file path, URL, or
+  `data:` URL) — a raw `Buffer` throws inside `@react-pdf/font`. So fonts are exported as
+  `data:font/woff;base64,...` string constants, while the logo (which `Image`'s `src` accepts as a
+  raw `Buffer`) stays a `Buffer` export. Both PDF API routes now also return the real error message
+  in their JSON response instead of a generic one — safe here since these are admin-only internal
+  routes, and it makes any future failure immediately diagnosable from the browser instead of
+  requiring a log dig.
+- **No way to edit an invoice after creation** — only the paid/outstanding status could be changed.
+  Added a `PUT /api/admin/invoices/[id]` handler that revalidates the full invoice content
+  (billed-to name, issue date, per-child line items), recomputes totals and the sibling discount,
+  and replaces the invoice's line items and children wholesale (leaving `invoice_number` and
+  `status` untouched). The totals/discount math was pulled out of the create route into
+  `src/lib/invoice-calc.ts` (`computeInvoiceTotals`) so create and edit can never calculate
+  differently. `InvoiceForm` now takes an optional `invoiceId` prop and switches between POST
+  (create) and PUT (edit) — a new `/admin/invoices/[id]/edit` page reuses it, and "Edit" links were
+  added next to every invoice on both the Child Card and the master `/admin/invoices` list.
+- **No way to email an invoice to a parent** — the only distribution method was a parent finding
+  the PDF link themselves inside the parent portal. Added attachment support to the Brevo `send()`
+  helper (`src/lib/email.ts`) and a `sendInvoiceEmail()` function that renders the invoice PDF
+  server-side and attaches it as base64. A new `POST /api/admin/invoices/[id]/send` route (email
+  address validated, defaults to the child's `primary_contact_email`) and a `SendInvoiceButton`
+  component (inline expand-to-confirm-address UI) are wired into both the Child Card and the master
+  `/admin/invoices` list, next to the existing Edit/Mark as Paid actions. Like the school's other
+  transactional emails, it cc's the school's own inbox.
+
 ### Phase 6: Admin master dashboard
 
 The admin Overview page (`/admin`) now aggregates the whole system in one place (teachers still

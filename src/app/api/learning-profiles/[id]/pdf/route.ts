@@ -86,6 +86,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     });
   } catch (err) {
     console.error('[api/learning-profiles/:id/pdf] failed to render', err);
-    return NextResponse.json({ error: 'Could not generate PDF.' }, { status: 500 });
+    // Admin-only internal route, so it's fine to return the real error rather than a generic
+    // message — this is what actually let the missing-asset PDF bug get diagnosed and fixed.
+    return NextResponse.json({ error: `Could not generate PDF: ${err instanceof Error ? err.message : String(err)}` }, { status: 500 });
   }
 }

@@ -12,7 +12,7 @@ interface LineItemForm {
   unitPrice: string;
 }
 
-interface ChildEntry {
+export interface ChildEntry {
   childId: number;
   label: string;
   lineItems: LineItemForm[];
@@ -33,25 +33,27 @@ function siblingDiscountPercent(index: number, total: number): number {
 }
 
 export default function InvoiceForm({
-  initialChildId,
-  initialChildLabel,
-  defaultInvoiceType,
-  defaultBilledToName,
-  defaultFirstLineItem,
+  invoiceId,
+  initialInvoiceType,
+  initialBilledToName,
+  initialIssueDate,
+  initialChildren,
+  redirectTo,
 }: {
-  initialChildId: number;
-  initialChildLabel: string;
-  defaultInvoiceType: 'tuition' | 'activity';
-  defaultBilledToName: string;
-  defaultFirstLineItem: string;
+  /** Set when editing an existing invoice (PUT); omitted when creating a new one (POST). */
+  invoiceId?: number;
+  initialInvoiceType: 'tuition' | 'activity';
+  initialBilledToName: string;
+  initialIssueDate: string;
+  initialChildren: ChildEntry[];
+  redirectTo: string;
 }) {
   const router = useRouter();
-  const [invoiceType, setInvoiceType] = useState<'tuition' | 'activity'>(defaultInvoiceType);
-  const [billedToName, setBilledToName] = useState(defaultBilledToName);
-  const [issueDate, setIssueDate] = useState(() => new Date().toISOString().slice(0, 10));
-  const [children, setChildren] = useState<ChildEntry[]>([
-    { childId: initialChildId, label: initialChildLabel, lineItems: [{ ...emptyLineItem(), description: defaultFirstLineItem }] },
-  ]);
+  const isEditing = invoiceId !== undefined;
+  const [invoiceType, setInvoiceType] = useState<'tuition' | 'activity'>(initialInvoiceType);
+  const [billedToName, setBilledToName] = useState(initialBilledToName);
+  const [issueDate, setIssueDate] = useState(initialIssueDate);
+  const [children, setChildren] = useState<ChildEntry[]>(initialChildren);
   const [siblingQuery, setSiblingQuery] = useState('');
   const [siblingResults, setSiblingResults] = useState<SearchResult[]>([]);
   const [saving, setSaving] = useState(false);
@@ -132,17 +134,17 @@ export default function InvoiceForm({
             })),
         })),
       };
-      const res = await fetch('/api/admin/invoices', {
-        method: 'POST',
+      const res = await fetch(isEditing ? `/api/admin/invoices/${invoiceId}` : '/api/admin/invoices', {
+        method: isEditing ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Failed to create invoice');
-      router.push(`/admin/families/${initialChildId}`);
+      if (!res.ok) throw new Error(data.error || `Failed to ${isEditing ? 'save' : 'create'} invoice`);
+      router.push(redirectTo);
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create invoice');
+      setError(err instanceof Error ? err.message : `Failed to ${isEditing ? 'save' : 'create'} invoice`);
     } finally {
       setSaving(false);
     }
@@ -293,10 +295,10 @@ export default function InvoiceForm({
 
       {error && <p role="alert" className="font-semibold text-orange-deep">{error}</p>}
       <div className="flex gap-3">
-        <Button type="button" variant="primary" onClick={submit} disabled={saving || !billedToName.trim() || grandTotal < 0}>
-          {saving ? 'Creating…' : 'Create invoice'}
+        <Button type="button" variant="primary" onClick={submit} disabled={saving || !billedToName.trim() || children.length === 0 || grandTotal < 0}>
+          {saving ? (isEditing ? 'Saving…' : 'Creating…') : isEditing ? 'Save changes' : 'Create invoice'}
         </Button>
-        <Button href={`/admin/families/${initialChildId}`} variant="ghost">
+        <Button href={redirectTo} variant="ghost">
           Cancel
         </Button>
       </div>
