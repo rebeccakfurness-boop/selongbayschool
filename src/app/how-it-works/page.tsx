@@ -4,7 +4,7 @@ import PhotoBanner from '@/components/PhotoBanner';
 import Reveal from '@/components/Reveal';
 import Button from '@/components/Button';
 import AdmissionsStepper from '@/components/AdmissionsStepper';
-import HowItWorksNav from '@/components/HowItWorksNav';
+import PageSectionNav from '@/components/PageSectionNav';
 import {
   principalWelcome,
   hybridApproach,
@@ -47,7 +47,7 @@ export default function HowItWorksPage() {
       />
 
       <div className="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-[220px_1fr] md:items-start md:px-8">
-        <HowItWorksNav sections={sections} />
+        <PageSectionNav sections={sections} ariaLabel="How It Works sections" />
 
         <div className="flex min-w-0 flex-col gap-16 md:gap-20">
           <section id="welcome" className="scroll-mt-32">

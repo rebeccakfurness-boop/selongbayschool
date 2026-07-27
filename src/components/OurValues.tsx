@@ -34,7 +34,7 @@ const icons: Record<string, ReactNode> = {
 
 export default function OurValues() {
   return (
-    <div className="mx-auto max-w-6xl px-6 md:px-8">
+    <div>
       <p className="font-script text-3xl text-orange-deep md:text-4xl">Our values</p>
       <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Selong Bay School Values</h2>
 

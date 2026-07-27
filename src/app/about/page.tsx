@@ -4,6 +4,7 @@ import PhotoBanner from '@/components/PhotoBanner';
 import StorySection from '@/components/StorySection';
 import OurValues from '@/components/OurValues';
 import Reveal from '@/components/Reveal';
+import PageSectionNav from '@/components/PageSectionNav';
 import { PlaceholderImage } from '@/components/PlaceholderBox';
 import { campusFacts, foundingFamilies, teachers } from '@/lib/site-content';
 
@@ -17,6 +18,14 @@ export const metadata: Metadata = {
   },
 };
 
+const sections = [
+  { id: 'story', label: 'Our Story' },
+  { id: 'values', label: 'Our Values' },
+  { id: 'campus', label: 'Our Campus' },
+  { id: 'teachers', label: 'Our Teachers' },
+  { id: 'community', label: 'Our Community' },
+];
+
 export default function AboutPage() {
   return (
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
@@ -26,99 +35,107 @@ export default function AboutPage() {
         card={{ script: 'Our story', heading: 'A different kind of school', align: 'left' }}
       />
 
-      <Reveal>
-        <div className="mx-auto max-w-6xl px-6 md:px-8">
-          <StorySection
-            eyebrowScript="Who we are"
-            heading="Built by families, for families"
-            image={{ src: '/images/about-community.jpg', alt: 'Selong Bay School students and families gathered on the beach after a surf session' }}
-          >
-            <p>
-              Selong Bay School began with families who came to South Lombok for a season and stayed for the community.
-              Today it operates under Yayasan Selong Bay Intercultural Sekolah, a registered non-profit foundation. We are
-              not for profit, we are for the children and the community of South Lombok.
-            </p>
-            <p>
-              Every fee is reinvested into the school&apos;s development: scholarships, community programmes, and training
-              for local teachers and staff.
-            </p>
-          </StorySection>
-        </div>
-      </Reveal>
+      <div className="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-[220px_1fr] md:items-start md:px-8">
+        <PageSectionNav sections={sections} ariaLabel="About sections" />
 
-      <Reveal>
-        <OurValues />
-      </Reveal>
+        <div className="flex min-w-0 flex-col gap-16 md:gap-20">
+          <section id="story" className="scroll-mt-32">
+            <Reveal>
+              <StorySection
+                eyebrowScript="Who we are"
+                heading="Built by families, for families"
+                image={{ src: '/images/about-community.jpg', alt: 'Selong Bay School students and families gathered on the beach after a surf session' }}
+              >
+                <p>
+                  Selong Bay School began with families who came to South Lombok for a season and stayed for the community.
+                  Today it operates under Yayasan Selong Bay Intercultural Sekolah, a registered non-profit foundation. We
+                  are not for profit, we are for the children and the community of South Lombok.
+                </p>
+                <p>
+                  Every fee is reinvested into the school&apos;s development: scholarships, community programmes, and
+                  training for local teachers and staff.
+                </p>
+              </StorySection>
+            </Reveal>
+          </section>
 
-      <Reveal>
-        <div className="mx-auto max-w-4xl px-6 md:px-8">
-          <p className="font-script text-3xl text-orange-deep md:text-4xl">Our campus</p>
-          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">A classroom that includes the ocean</h2>
-          <div className="mt-6 overflow-hidden rounded-md border border-sand-line shadow-soft">
-            <Image
-              src="/images/home-story-beach-tree.jpg"
-              alt="Students climbing a beach tree overlooking the ocean at Selong Belanak"
-              width={2000}
-              height={1335}
-              className="w-full"
-            />
-          </div>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-            {campusFacts.map((fact) => (
-              <li key={fact} className="flex items-start gap-3 rounded-md border border-sand-line bg-paper px-5 py-4 text-[15px] text-ink-soft">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-orange" aria-hidden="true" />
-                {fact}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </Reveal>
+          <section id="values" className="scroll-mt-32">
+            <Reveal>
+              <OurValues />
+            </Reveal>
+          </section>
 
-      <Reveal>
-        <div id="teachers" className="mx-auto max-w-6xl scroll-mt-24 px-6 md:px-8">
-          <p className="font-script text-3xl text-orange-deep md:text-4xl">Our teachers</p>
-          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">The people your child learns with</h2>
-          <div className="mt-8 grid gap-6 md:grid-cols-3">
-            {teachers.map((teacher) => (
-              <div key={teacher.name} className="rounded-md border border-sand-line bg-paper p-6">
-                {teacher.image ? (
-                  <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-sm">
-                    <Image src={teacher.image.src} alt={teacher.image.alt} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
-                  </div>
-                ) : (
-                  <PlaceholderImage label={`Photo: ${teacher.name}`} className="mb-4 aspect-square h-auto" />
-                )}
-                <h3 className="font-display text-lg font-semibold text-ink">{teacher.name}</h3>
-                <p className="mt-0.5 text-sm font-bold uppercase tracking-wide text-teal-deep">{teacher.role}</p>
-                <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">{teacher.bio}</p>
+          <section id="campus" className="scroll-mt-32">
+            <Reveal>
+              <p className="font-script text-3xl text-orange-deep md:text-4xl">Our campus</p>
+              <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">A classroom that includes the ocean</h2>
+              <div className="mt-6 overflow-hidden rounded-md border border-sand-line shadow-soft">
+                <Image
+                  src="/images/home-story-beach-tree.jpg"
+                  alt="Students climbing a beach tree overlooking the ocean at Selong Belanak"
+                  width={2000}
+                  height={1335}
+                  className="w-full"
+                />
               </div>
-            ))}
-          </div>
-        </div>
-      </Reveal>
+              <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+                {campusFacts.map((fact) => (
+                  <li key={fact} className="flex items-start gap-3 rounded-md border border-sand-line bg-paper px-5 py-4 text-[15px] text-ink-soft">
+                    <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-orange" aria-hidden="true" />
+                    {fact}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          </section>
 
-      <Reveal>
-        <div className="mx-auto max-w-4xl px-6 md:px-8">
-          <p className="font-script text-3xl text-orange-deep md:text-4xl">Our community</p>
-          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Founding families who call Selong Bay Home</h2>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2">
-            {foundingFamilies.map((family) => (
-              <div key={family.name} className="overflow-hidden rounded-md border border-sand-line bg-aqua/30">
-                {family.image && (
-                  <div className="relative aspect-[4/5] w-full">
-                    <Image src={family.image.src} alt={family.image.alt} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover object-top" />
+          <section id="teachers" className="scroll-mt-32">
+            <Reveal>
+              <p className="font-script text-3xl text-orange-deep md:text-4xl">Our teachers</p>
+              <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">The people your child learns with</h2>
+              <div className="mt-8 grid gap-6 sm:grid-cols-2">
+                {teachers.map((teacher) => (
+                  <div key={teacher.name} className="rounded-md border border-sand-line bg-paper p-6">
+                    {teacher.image ? (
+                      <div className="relative mb-4 aspect-square w-full overflow-hidden rounded-sm">
+                        <Image src={teacher.image.src} alt={teacher.image.alt} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
+                      </div>
+                    ) : (
+                      <PlaceholderImage label={`Photo: ${teacher.name}`} className="mb-4 aspect-square h-auto" />
+                    )}
+                    <h3 className="font-display text-lg font-semibold text-ink">{teacher.name}</h3>
+                    <p className="mt-0.5 text-sm font-bold uppercase tracking-wide text-teal-deep">{teacher.role}</p>
+                    <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">{teacher.bio}</p>
                   </div>
-                )}
-                <div className="p-6">
-                  <h3 className="font-display text-lg font-semibold text-ink">{family.name}</h3>
-                  <p className="mt-1 text-[15px] text-ink-soft">{family.detail}</p>
-                  {family.blurb && <p className="mt-3 text-[14.5px] leading-relaxed text-ink-soft">{family.blurb}</p>}
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </Reveal>
+          </section>
+
+          <section id="community" className="scroll-mt-32">
+            <Reveal>
+              <p className="font-script text-3xl text-orange-deep md:text-4xl">Our community</p>
+              <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Founding families who call Selong Bay Home</h2>
+              <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                {foundingFamilies.map((family) => (
+                  <div key={family.name} className="overflow-hidden rounded-md border border-sand-line bg-aqua/30">
+                    {family.image && (
+                      <div className="relative aspect-[4/5] w-full">
+                        <Image src={family.image.src} alt={family.image.alt} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover object-top" />
+                      </div>
+                    )}
+                    <div className="p-6">
+                      <h3 className="font-display text-lg font-semibold text-ink">{family.name}</h3>
+                      <p className="mt-1 text-[15px] text-ink-soft">{family.detail}</p>
+                      {family.blurb && <p className="mt-3 text-[14.5px] leading-relaxed text-ink-soft">{family.blurb}</p>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+          </section>
         </div>
-      </Reveal>
+      </div>
     </div>
   );
 }
