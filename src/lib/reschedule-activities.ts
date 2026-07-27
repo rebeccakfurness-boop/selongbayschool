@@ -5,13 +5,16 @@ import { sendSessionCancellationEmail } from '@/lib/email';
  * Keeps the current/future sessions for the weekday activities and School Tour in sync with a
  * fixed 10-week term (27 July - 2 October 2026): 1:30pm-3:30pm for the weekday activities, and
  * midday for School Tour, Monday-Friday. Football is Monday's activity, starting 3 August (the
- * second Monday of the term). Hip Hop Dance and Ninja Warrior is retired: deactivated (kept in
- * the database for historical bookings, just hidden from the public site) and every one of its
- * current/future sessions is removed the same way as any other stale session below. Every
- * activity in WEEKDAY_ACTIVITIES/School Tour is (re)activated on each run, so bringing one back
- * just means moving it back into that list. Gymnastics for Kids & Free Swim is a "coming soon"
- * activity: it stays visible on the site with its day label overridden to "Coming in September",
- * but has zero sessions for now, so it can't actually be booked yet.
+ * second Monday of the term), and Gymnastics for Kids & Free Swim is back to its normal recurring
+ * Tuesday slot. Hip Hop Dance and Ninja Warrior is retired: deactivated (kept in the database for
+ * historical bookings, just hidden from the public site) and every one of its current/future
+ * sessions is removed the same way as any other stale session below. Every activity in
+ * WEEKDAY_ACTIVITIES/School Tour is (re)activated on each run, so bringing one back just means
+ * moving it back into that list.
+ *
+ * Gymnastics Term 2 is a separate "coming soon" activity (its own row, distinct from Gymnastics
+ * for Kids & Free Swim above): visible on the site with its day label set to "Coming in
+ * September", but with zero sessions for now, so it can't actually be booked yet.
  *
  * Any existing session for an active target activity that isn't part of the schedule above is
  * removed: deleted outright if nobody has booked it, or cancelled (with the same cancellation
@@ -66,6 +69,7 @@ const WEEKDAY_ACTIVITIES: WeekdayActivity[] = [
       ageGroup: 'All ages',
     },
   },
+  { slug: 'gymnastics-free-swim', day: 'Tuesday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
   { slug: 'surfing-selong-belanak', day: 'Wednesday', time: '13:30', capacity: 8, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
   { slug: 'art-music-bahasa', day: 'Thursday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
   { slug: 'scouts-survival-challenge', day: 'Friday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
@@ -76,11 +80,31 @@ const WEEKDAY_ACTIVITIES: WeekdayActivity[] = [
 // it drops off the public site, but its row (and any past bookings) stay in the database.
 const DEACTIVATED_ACTIVITY_SLUGS = ['hip-hop-dance-ninja-warrior'];
 
+interface ComingSoonActivity {
+  slug: string;
+  dayLabel: string;
+  /** Only needed for an activity that may not exist in the activities table yet. */
+  seed?: { name: string; description: string; priceIDR: number; duration: string | null; ageGroup: string };
+}
+
 // Stays visible on the public site (unlike DEACTIVATED_ACTIVITY_SLUGS above) but has no bookable
 // sessions yet — its "day" column is overridden with a teaser label instead of a real weekday, and
 // any of its current/future sessions get swept away as stale the same way a retired activity's
-// would, since it isn't in WEEKDAY_ACTIVITIES/School Tour and so has zero target sessions.
-const COMING_SOON_ACTIVITIES = [{ slug: 'gymnastics-free-swim', dayLabel: 'Coming in September' }];
+// would, since it isn't in WEEKDAY_ACTIVITIES/School Tour and so has zero target sessions. This is
+// a separate activity/row from Gymnastics for Kids & Free Swim above, not the same one relabelled.
+const COMING_SOON_ACTIVITIES: ComingSoonActivity[] = [
+  {
+    slug: 'gymnastics-term-2',
+    dayLabel: 'Coming in September',
+    seed: {
+      name: 'Gymnastics Term 2',
+      description: 'A new term of gymnastics skills and free swim time, opening for bookings in September.',
+      priceIDR: 300_000,
+      duration: null,
+      ageGroup: 'All ages',
+    },
+  },
+];
 
 const SCHOOL_TOUR_SLUG = 'school-tour';
 const SCHOOL_TOUR_TIMES = ['12:00'];
@@ -134,6 +158,21 @@ async function ensureActivityId(activity: WeekdayActivity): Promise<number> {
   return inserted[0].id as number;
 }
 
+/** Looks up a coming-soon activity by slug, creating it first (from `activity.seed`) if it doesn't exist yet. Its "day" label is applied separately, after creation, by applyComingSoonLabels(). */
+async function ensureComingSoonActivityId(activity: ComingSoonActivity): Promise<number> {
+  const rows = await sql`SELECT id FROM activities WHERE slug = ${activity.slug}`;
+  if (rows.length > 0) return rows[0].id as number;
+  if (!activity.seed) {
+    throw new Error(`Activity not found: ${activity.slug}. Run "npm run db:seed" first.`);
+  }
+  const inserted = await sql`
+    INSERT INTO activities (slug, name, duration, price_idr, description, age_group)
+    VALUES (${activity.slug}, ${activity.seed.name}, ${activity.seed.duration}, ${activity.seed.priceIDR}, ${activity.seed.description}, ${activity.seed.ageGroup})
+    RETURNING id
+  `;
+  return inserted[0].id as number;
+}
+
 async function buildTargetSessions(): Promise<{ targets: TargetSession[]; activityIds: number[]; liveActivityIds: number[] }> {
   const targets: TargetSession[] = [];
   const activityIds: number[] = [];
@@ -141,6 +180,10 @@ async function buildTargetSessions(): Promise<{ targets: TargetSession[]; activi
 
   for (const activity of WEEKDAY_ACTIVITIES) {
     const id = await ensureActivityId(activity);
+    // Corrects the "day" column back to a real weekday for anything that previously had a
+    // "coming soon"-style label applied (e.g. Gymnastics for Kids & Free Swim's old "Coming in
+    // September" text) — ensureActivityId only sets it on first creation, never afterwards.
+    await sql`UPDATE activities SET day = ${activity.day} WHERE id = ${id} AND day IS DISTINCT FROM ${activity.day}`;
     activityIds.push(id);
     liveActivityIds.push(id);
     for (const date of datesForWeekdayInRange(WEEKDAY_INDEX[activity.day], activity.start, activity.endExclusive)) {
@@ -164,7 +207,7 @@ async function buildTargetSessions(): Promise<{ targets: TargetSession[]; activi
   }
 
   for (const activity of COMING_SOON_ACTIVITIES) {
-    const id = await activityIdBySlug(activity.slug);
+    const id = await ensureComingSoonActivityId(activity);
     activityIds.push(id);
     liveActivityIds.push(id);
   }

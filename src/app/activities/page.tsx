@@ -94,6 +94,10 @@ const activityImages: Record<string, { src: string; alt: string }> = {
     src: '/images/activity-gymnastics-v3.jpg',
     alt: 'A student practising a jump on gym mats at Selong Bay School',
   },
+  'gymnastics-term-2': {
+    src: '/images/activity-gymnastics-v3.jpg',
+    alt: 'A student practising a jump on gym mats at Selong Bay School',
+  },
   'hip-hop-dance-ninja-warrior': {
     src: '/images/activity-ninja-hiphop.jpg',
     alt: 'Students balancing across an obstacle course with a teacher at Selong Bay School',
