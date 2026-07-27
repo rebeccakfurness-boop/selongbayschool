@@ -86,6 +86,10 @@ async function fetchActivities(): Promise<Activity[]> {
 const getActivities = unstable_cache(fetchActivities, ['activities-page-list'], { revalidate: 60 });
 
 const activityImages: Record<string, { src: string; alt: string }> = {
+  football: {
+    src: '/images/activity-football.jpg',
+    alt: 'A football resting on the grass pitch line',
+  },
   'surfing-selong-belanak': {
     src: '/images/home-beach-walk.jpg',
     alt: 'Two students walking the beach carrying a surfboard at Selong Belanak',
