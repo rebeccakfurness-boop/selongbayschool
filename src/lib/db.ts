@@ -735,6 +735,22 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_classroom_submissions_child ON classroom_submissions (child_id)`;
+
+      // One signature per (child, form) — signing again overwrites rather than accumulating a
+      // history, since these are point-in-time consent forms, not documents that get amended.
+      // signature_data_url is the raw data: URL a <canvas> produces (image/png;base64,...),
+      // embedded directly into the generated PDF — no separate file storage needed.
+      await sql`
+        CREATE TABLE IF NOT EXISTS compliance_signatures (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          form_key TEXT NOT NULL,
+          signed_by_name TEXT NOT NULL,
+          signature_data_url TEXT NOT NULL,
+          signed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (child_id, form_key)
+        )
+      `;
     })();
   }
   return schemaReady;

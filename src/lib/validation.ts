@@ -290,6 +290,19 @@ export const updateInvoiceStatusSchema = z.object({
 });
 export type UpdateInvoiceStatusInput = z.infer<typeof updateInvoiceStatusSchema>;
 
+export const signComplianceFormSchema = z.object({
+  signedByName: z.string().trim().min(1, 'Signed-by name is required').max(200),
+  signatureDataUrl: z
+    .string()
+    .trim()
+    .regex(/^data:image\/png;base64,[A-Za-z0-9+/]+=*$/, 'Invalid signature image'),
+});
+export type SignComplianceFormInput = z.infer<typeof signComplianceFormSchema>;
+
+export const sendComplianceFormSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+});
+
 export const updateSchoolSettingsSchema = z.object({
   payableTo: z.string().trim().min(1).max(300).optional(),
   bankName: z.string().trim().min(1).max(300).optional(),

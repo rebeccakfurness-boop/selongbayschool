@@ -222,6 +222,39 @@ not `admin_users`), and a different auth mechanism.
 
 Foundation for the admissions/enrolment/teaching ops system described separately.
 
+### Forms & Compliance: clickable documents, e-signature, send to parent
+
+Each of the 7 Child Card compliance items (Liability Form, Photography/Social Media, Pickup
+Authorization, Behavioral/Code of Conduct, Financial Agreement, Parent Protection Addendum,
+Personal Data Consent) is now clickable, opening a modal with:
+
+- **View / download PDF** — generated on the fly (same `@react-pdf/renderer` pattern as invoices)
+  from placeholder legal text in `src/lib/compliance-forms.ts`. **The text is a placeholder and
+  needs the school's real wording swapped in** before these are used for anything binding — each
+  form's `paragraphs` array is clearly marked.
+- **Sign** — a plain `<canvas>` signature pad (`SignaturePad.tsx`, pointer events, no external
+  library) plus a "signed by" name field. Saving embeds the drawn signature (a PNG data URL) into
+  a new `compliance_signatures` table (one row per child+form, overwritten on re-sign) and flips
+  the existing `children.{form}_signed` / `{form}_date` columns so the rest of the app (the
+  compliance checklist itself, the Overview dashboard's "Forms Outstanding" tile) keeps working
+  unchanged. The next PDF generated for that form embeds the stored signature image and signed-by
+  name/date — nothing is pre-rendered or stored as a static file.
+- **Send to parent** — emails the generated PDF (signed or not) to an address defaulting to the
+  child's contact email, same Brevo attachment pattern as invoices (`sendComplianceFormEmail` in
+  `src/lib/email.ts`).
+
+This is a real but informal e-signature (a drawn mark embedded in the PDF, not a
+cryptographically-verified signature) — appropriate for internal consent-form tracking, not a
+legal e-signature product. Admin can also still remove a saved signature (reverting the item to
+"Not signed") if it was captured in error.
+
+The three new routes that call `renderToBuffer` (`/api/admin/compliance/[childId]/[formKey]/pdf`,
+`/sign`, `/send`) live under the Pages Router for the same reason as the invoice PDF/send routes —
+see the round-2 fixes below. `src/proxy.ts`'s existing `/api/admin/:path*` matcher already
+requires a logged-in staff member for all three regardless of router; signing/sending additionally
+check for the admin role directly (teachers can view compliance PDFs for their own assigned
+classes, matching how learning profile PDFs are scoped, but can't sign or send).
+
 ### Post-launch fixes, round 2: date fields, and PDF rendering moved to the Pages Router
 
 Two further bugs surfaced once real invoices were being edited/sent/downloaded in production,

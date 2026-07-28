@@ -470,3 +470,33 @@ export async function sendInvoiceEmail(input: InvoiceEmailInput): Promise<boolea
     attachment: [{ name: `invoice-${input.invoiceNumber}.pdf`, content: input.pdfBuffer.toString('base64') }],
   });
 }
+
+export interface ComplianceFormEmailInput {
+  toEmail: string;
+  childFullName: string;
+  formTitle: string;
+  alreadySigned: boolean;
+  pdfBuffer: Buffer;
+}
+
+/** Sent from the "Send to parent" action on a Forms & Compliance item (Child Card) — cc'd to the
+ * school inbox, same pattern as sendInvoiceEmail. Works whether the form has already been signed
+ * (parent gets a copy for their records) or not (parent gets it to review/sign and return). */
+export async function sendComplianceFormEmail(input: ComplianceFormEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    input.formTitle,
+    input.alreadySigned
+      ? `<p>Dear parent/guardian of ${input.childFullName},</p>
+         <p>Please find attached a copy of the signed <strong>${input.formTitle}</strong> on file for ${input.childFullName}.</p>
+         <p style="margin-top: 16px;">If you have any questions, just reply to this email.</p>
+         <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+      : `<p>Dear parent/guardian of ${input.childFullName},</p>
+         <p>Please find attached the <strong>${input.formTitle}</strong> for ${input.childFullName}. This form still needs to be signed and returned to the school office.</p>
+         <p style="margin-top: 16px;">If you have any questions, just reply to this email.</p>
+         <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `${input.formTitle} — ${input.childFullName} — Selong Bay School`, html, {
+    cc: NOTIFY_TO,
+    attachment: [{ name: `${input.formTitle.replace(/[^a-z0-9]+/gi, '-')}-${input.childFullName.replace(/[^a-z0-9]+/gi, '-')}.pdf`, content: input.pdfBuffer.toString('base64') }],
+  });
+}

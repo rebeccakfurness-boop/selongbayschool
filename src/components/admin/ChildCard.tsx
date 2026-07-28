@@ -11,6 +11,7 @@ import ChildPhotoFeedSection, { type PhotoFeedItem } from '@/components/admin/Ch
 import GuardianLinksSection, { type GuardianLink } from '@/components/admin/GuardianLinksSection';
 import InvoicesSection from '@/components/admin/InvoicesSection';
 import ClassroomSection from '@/components/admin/ClassroomSection';
+import ComplianceFormModal from '@/components/admin/ComplianceFormModal';
 import type { InvoiceSummaryRow, ClassroomSubmissionRow } from '@/lib/lms-data';
 import { formatDate } from '@/lib/admin-format';
 import { STATUS_LEGEND, STATUS_ORDER, CLASS_BAND_LABELS, CLASS_BAND_ORDER, COMPLIANCE_ITEMS, type ChildStatus, type ClassBand } from '@/lib/family-data';
@@ -175,6 +176,7 @@ export default function ChildCard({
   const [form, setForm] = useState<FormState>(() => toFormState(child));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [openComplianceForm, setOpenComplianceForm] = useState<string | null>(null);
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -366,16 +368,19 @@ export default function ChildCard({
                 const signed = Boolean(child[item.signedKey as keyof ChildDetail]);
                 const dateValue = item.dateKey ? (child[item.dateKey as keyof ChildDetail] as string | null) : null;
                 return (
-                  <li
-                    key={item.signedKey}
-                    className={`flex items-center justify-between gap-2 rounded-sm px-3 py-2 text-sm ${
-                      signed ? 'bg-teal/10 text-teal-deep' : 'bg-orange/10 text-orange-deep'
-                    }`}
-                  >
-                    <span className="font-semibold">{item.label}</span>
-                    <span className="whitespace-nowrap text-xs font-bold">
-                      {signed ? `Signed${dateValue ? ` ${formatDate(dateValue)}` : ''}` : 'Not signed'}
-                    </span>
+                  <li key={item.signedKey}>
+                    <button
+                      type="button"
+                      onClick={() => setOpenComplianceForm(item.signedKey)}
+                      className={`flex w-full items-center justify-between gap-2 rounded-sm px-3 py-2 text-left text-sm transition-colors hover:opacity-80 ${
+                        signed ? 'bg-teal/10 text-teal-deep' : 'bg-orange/10 text-orange-deep'
+                      }`}
+                    >
+                      <span className="font-semibold underline">{item.label}</span>
+                      <span className="whitespace-nowrap text-xs font-bold">
+                        {signed ? `Signed${dateValue ? ` ${formatDate(dateValue)}` : ''}` : 'Not signed'}
+                      </span>
+                    </button>
                   </li>
                 );
               })}
@@ -648,6 +653,28 @@ export default function ChildCard({
           </div>
         </div>
       )}
+
+      {openComplianceForm &&
+        (() => {
+          const item = COMPLIANCE_ITEMS.find((i) => i.signedKey === openComplianceForm)!;
+          const signed = Boolean(child[item.signedKey as keyof ChildDetail]);
+          const dateValue = item.dateKey ? (child[item.dateKey as keyof ChildDetail] as string | null) : null;
+          return (
+            <ComplianceFormModal
+              childId={child.id}
+              formKey={item.signedKey}
+              label={item.label}
+              signed={signed}
+              signedDate={dateValue}
+              defaultEmail={child.primary_contact_email ?? ''}
+              canEdit={canEdit}
+              onClose={() => setOpenComplianceForm(null)}
+              onChanged={() => {
+                router.refresh();
+              }}
+            />
+          );
+        })()}
     </div>
   );
 }
