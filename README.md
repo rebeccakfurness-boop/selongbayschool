@@ -222,6 +222,42 @@ not `admin_users`), and a different auth mechanism.
 
 Foundation for the admissions/enrolment/teaching ops system described separately.
 
+### Post-launch fixes, round 2: date fields, and PDF rendering moved to the Pages Router
+
+Two further bugs surfaced once real invoices were being edited/sent/downloaded in production,
+both only reachable after the round-1 fixes below let PDF rendering actually get further than it
+used to:
+
+- **`issue_date`/`due_date` came back as JS `Date` objects, not strings**, from any query that did
+  a bare `SELECT * FROM invoices` — Postgres `date` columns get parsed into `Date` objects unless
+  explicitly cast. `InvoiceDocument`'s `formatDateLabel()` calls `.split('-')` on the date (crashing
+  with `e.split is not a function`), and the edit page called `.slice(0, 10)` on it directly
+  (crashing with a generic "Something went wrong"). Fixed by adding `::text` casts to `issue_date`/
+  `due_date` in every query feeding these code paths — the invoices list page already did this;
+  the PDF route, send route, edit page, and `GET /api/admin/invoices/[id]` didn't.
+- **PDF rendering crashed with `Minified React error #31` ("Objects are not valid as a React
+  child") whenever it was actually reached from a route handler** — reproducible with a minimal
+  hardcoded invoice, and confirmed (via a temporary test route, removed afterward) to happen only
+  from *App Router* route handlers; the exact same `InvoiceDocument`/`renderToBuffer` call renders
+  correctly from a plain Node/`tsx` script, and from a *Pages Router* API route, with the same
+  package versions and the same bundler (Turbopack or webpack — both were tried; neither mattered).
+  This is a real, currently-unresolved upstream incompatibility between `@react-pdf/renderer`'s own
+  bundled React reconciler and how Next.js's App Router bundles/aliases React for route handlers
+  (matches several open, unresolved issues on the react-pdf repo for Next 15/16). Downgrading
+  `@react-pdf/renderer` to v3 didn't help — the same crash reproduced there too, ruling out a
+  v4-specific regression. The fix: the three routes that call `renderToBuffer` now live under the
+  **Pages Router** instead (`src/pages/api/invoices/[id]/pdf.ts`, `src/pages/api/learning-profiles/
+  [id]/pdf.ts`, `src/pages/api/admin/invoices/[id]/send.ts`), coexisting with the rest of the app's
+  App Router pages — Next.js fully supports both routers in one project. Session auth in these
+  three routes reads cookies via iron-session's `getIronSession(req, res, options)` (the Pages
+  Router signature) instead of `getIronSession(await cookies(), options)` (App Router-only), and
+  role checks that used to redirect via `requireAdmin()` now just return a 403 JSON body directly,
+  since `next/navigation`'s `redirect()` doesn't work outside the App Router.
+  - Side effect: adding a `src/pages` directory changed Next's typing for `useSearchParams()`/
+    `usePathname()` from non-null to `| null` app-wide (a real hybrid-router compatibility case,
+    not a false positive), which failed the production build at 7 call sites that assumed a
+    non-null value. All seven now null-check (`searchParams?.get(...)`, `pathname ?? ''`).
+
 ### Post-launch fixes: PDF generation, invoice editing, invoice emailing
 
 Three issues reported after real invoices were being created in production:

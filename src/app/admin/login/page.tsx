@@ -31,7 +31,7 @@ function AdminLoginForm() {
         setSubmitting(false);
         return;
       }
-      const next = searchParams.get('next') || '/admin';
+      const next = searchParams?.get('next') || '/admin';
       router.push(next);
       router.refresh();
     } catch {

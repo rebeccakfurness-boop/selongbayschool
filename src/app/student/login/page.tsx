@@ -10,7 +10,7 @@ import { useFormSubmit } from '@/lib/useFormSubmit';
 function StudentLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get('next') || '/student';
+  const next = searchParams?.get('next') || '/student';
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { status, errorMessage, submit } = useFormSubmit<{ ok: true }>('/api/student/login');

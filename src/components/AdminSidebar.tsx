@@ -40,7 +40,7 @@ export default function AdminSidebar({ role }: { role: StaffRole }) {
       </div>
       <nav className="flex flex-1 flex-col gap-1 px-4">
         {sections.map((section) => {
-          const active = section.href === '/admin' ? pathname === '/admin' : pathname.startsWith(section.href);
+          const active = section.href === '/admin' ? pathname === '/admin' : (pathname ?? '').startsWith(section.href);
           return (
             <Link
               key={section.href}

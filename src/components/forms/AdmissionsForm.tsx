@@ -21,7 +21,7 @@ export default function AdmissionsForm({ defaultInterest }: { defaultInterest?: 
   const [childAge, setChildAge] = useState('');
   const [interest, setInterest] = useState(() => {
     if (defaultInterest && interestOptions.includes(defaultInterest)) return defaultInterest;
-    const param = searchParams.get('interest');
+    const param = searchParams?.get('interest');
     return param && interestOptions.includes(param) ? param : '';
   });
   const [message, setMessage] = useState('');
