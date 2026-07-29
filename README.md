@@ -222,6 +222,77 @@ not `admin_users`), and a different auth mechanism.
 
 Foundation for the admissions/enrolment/teaching ops system described separately.
 
+### Parent-editable profiles, profile photo, and the parent student-card view
+
+Three policy questions were asked before this phase (direct-edit vs. approval-queue for parent
+edits; whether medical/dietary edits should auto-notify anyone; how identity documents should be
+stored) and went unanswered, so it shipped with the recommended default from each — flagged here
+rather than silently assumed:
+
+- **Direct edit, not an approval queue.** A parent's edit to their own child's contact/dietary/
+  medical/language/previous-school fields saves immediately — there's no pending/approval state
+  anywhere in this app today, and building one (a review queue, an admin approve/reject UI, a
+  "pending" badge on the card) would have been a much bigger, separate piece of work. If stale
+  medical data slipping straight to "live" without a human gate turns out to be too risky in
+  practice, the fields to gate are `allergies_medical_notes`, `dietary_requirements`, and
+  `lunch_option` specifically — those are the ones with real safety weight.
+- **Auto-notify on medical/dietary/lunch edits: admin inbox + the child's assigned teacher(s).**
+  `sendChildProfileEditNotification()` (`src/lib/email.ts`) fires whenever a parent edit changes
+  `allergies_medical_notes`, `dietary_requirements`, or `lunch_option`, listing old → new values.
+  This doesn't expose anything a teacher couldn't already see — those fields are already visible,
+  ungated, on the admin/teacher Child Card — it just makes sure the person actually with the child
+  day-to-day notices the change instead of finding out next time they happen to open the card.
+- **Identity documents: extended the existing 2 fields, added a 3rd**, rather than building a new
+  general-purpose documents table. `children.passport_copy_url` and `.kitas_copy_url` already
+  existed (admin-only); this phase makes both parent-writable too (their own child only) and adds
+  `birth_certificate_url` alongside them. This was the smaller build of the two options — it can't
+  grow to arbitrary future document types without another migration each time, which is the
+  tradeoff for not building the more open-ended table now.
+
+**Compliance forms — explicitly not touched or linked.** None of the 3 identity-document fields
+above (passport/KITAS/birth certificate) are wired to any of the 7 Forms & Compliance checklist
+items (`COMPLIANCE_ITEMS` in `src/lib/family-data.ts`). Those 7 are signed consent forms (liability,
+photography, pickup authorization, etc.); identity documents are a categorically different thing
+that already lived in its own "Immigration Documents" section before this phase. Uploading a
+passport does not mark anything as signed — flagging this since it was explicitly asked about,
+not assumed either way.
+
+What shipped:
+
+- **`children.photo_url`** (+ `photo_updated_by_label`, `photo_updated_at`, set server-side on
+  every change, never from client input) — a circular avatar (`src/components/ChildAvatar.tsx`)
+  now appears next to the child's name on the Family Board tile, the Child Card header
+  (admin+teacher — same component, so both views got it in one change), and the parent portal.
+  Both admin and the child's own parent can upload/replace it
+  (`src/components/AvatarUploadField.tsx`, images only, 5MB cap) — matching the "who last updated
+  it" accountability the photo specifically needed, given it's a children's-safety-adjacent field.
+- **`children.previous_school`, `.lunch_option`** — two new free-text columns; `lunch_option`
+  replaces the Child Card's old "Lunch selection is coming in a later phase" placeholder.
+- **Parent profile card** (`src/components/account/ParentChildProfileCard.tsx`, on the existing
+  `/account/learning` page — the parent's per-child dashboard already existed from the LMS phase,
+  this extends it rather than building a new page tree) shows the same core info as the admin
+  Child Card (contact, medical/allergies, dietary/lunch, previous school, nationality, class,
+  status) and lets a parent edit the fields decided above, plus upload/replace the 3 identity
+  documents and the profile photo — all gated server-side by a `guardian_children` ownership check
+  (`guardianOwnsChild()` in `src/lib/lms-data.ts`), not just hidden client-side.
+- **Term report download and upcoming lessons were already built** (Learning Profile PDF download,
+  `getUpcomingLessonPlans` filtered by class) — the existing `/account/learning` page already had
+  both, reusing the identical `lesson_plans` table/query the teacher portal (`/admin/teaching`)
+  itself uses. No new code needed for either.
+- **Photo feed: left as-is, not narrowed.** The existing Photo Feed section on `/account/learning`
+  shows photos tagged to the child *or* untagged class-wide broadcasts
+  (`getPhotoFeedForChild()` in `src/lib/lms-data.ts`) — broader than "only photos tagged with this
+  specific child." Narrowing it (or adding a second, stricter section next to it) would either
+  change existing behavior other things depend on, or duplicate a very similar gallery twice on
+  the same page for a subtle distinction — flagging the discrepancy here rather than guessing which
+  one was actually wanted.
+
+Parent-facing upload route (`/api/account/children/[childId]/upload`) mirrors the existing admin
+one but checks `guardianOwnsChild` before issuing a token *and* re-checks the requested blob
+pathname inside `onBeforeGenerateToken` against `children/{childId}/` — defense in depth against a
+client that passes the ownership check for its own child but tries to point the actual upload at a
+different child's folder.
+
 ### Letter of Offer: editable PDF, send to parent, parent-facing acceptance
 
 A new "Letter of Offer" section on the Child Card, above Invoices, works like a lighter-weight

@@ -42,6 +42,18 @@ export async function getAssignedClasses(adminUserId: number): Promise<string[]>
   return rows.map((r) => r.class_name);
 }
 
+/** Inverse of getAssignedClasses — every teacher assigned to a class, by email. Used to notify a
+ * child's own teacher(s) when a parent edits medical/dietary info, alongside the school inbox. */
+export async function getTeacherEmailsForClass(className: string | null): Promise<string[]> {
+  if (!className) return [];
+  const rows = (await sql`
+    SELECT DISTINCT au.email FROM teacher_assignments ta
+    JOIN admin_users au ON au.id = ta.admin_user_id
+    WHERE ta.class_name = ${className}
+  `) as unknown as { email: string }[];
+  return rows.map((r) => r.email);
+}
+
 /** Admins can touch any class; teachers only their own assignments (used to gate lesson plans,
  * curriculum units, work samples, and learning profiles by class, alongside the child/board-level
  * scoping already applied elsewhere). */

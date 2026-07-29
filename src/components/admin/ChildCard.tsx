@@ -5,7 +5,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
-import DocumentUploadField from '@/components/admin/DocumentUploadField';
+import ChildAvatar from '@/components/ChildAvatar';
+import AvatarUploadField from '@/components/AvatarUploadField';
+import DocumentUploadField from '@/components/DocumentUploadField';
 import WorkSamplesSection, { type WorkSample } from '@/components/admin/WorkSamplesSection';
 import ChildPhotoFeedSection, { type PhotoFeedItem } from '@/components/admin/ChildPhotoFeedSection';
 import GuardianLinksSection, { type GuardianLink } from '@/components/admin/GuardianLinksSection';
@@ -72,6 +74,12 @@ export interface ChildDetail {
   passport_copy_url: string | null;
   visa_status: string | null;
   kitas_copy_url: string | null;
+  birth_certificate_url: string | null;
+  previous_school: string | null;
+  lunch_option: string | null;
+  photo_url: string | null;
+  photo_updated_by_label: string | null;
+  photo_updated_at: string | null;
   classroom_student_email: string | null;
 }
 
@@ -138,6 +146,10 @@ function toFormState(child: ChildDetail) {
     passportCopyUrl: child.passport_copy_url,
     visaStatus: child.visa_status ?? '',
     kitasCopyUrl: child.kitas_copy_url,
+    birthCertificateUrl: child.birth_certificate_url,
+    previousSchool: child.previous_school ?? '',
+    lunchOption: child.lunch_option ?? '',
+    photoUrl: child.photo_url,
     classroomStudentEmail: child.classroom_student_email ?? '',
   };
 }
@@ -186,7 +198,7 @@ export default function ChildCard({
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  async function uploadDocument(field: 'passportCopyUrl' | 'kitasCopyUrl', url: string) {
+  async function uploadDocument(field: 'passportCopyUrl' | 'kitasCopyUrl' | 'birthCertificateUrl' | 'photoUrl', url: string) {
     set(field, url);
     try {
       await fetch(`/api/admin/children/${child.id}`, {
@@ -237,23 +249,36 @@ export default function ChildCard({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-start justify-between gap-4 rounded-md border border-sand-line bg-paper p-6 shadow-soft">
-        <div>
-          <p className="font-script text-2xl text-orange-deep">{child.child_nickname || child.child_full_name}</p>
-          <h1 className="mt-1 font-display text-2xl font-semibold text-ink">{child.child_full_name}</h1>
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold ${STATUS_LEGEND[child.status].badgeClass}`}>
-              <span className={`h-2 w-2 rounded-full ${STATUS_LEGEND[child.status].dotClass}`} />
-              {STATUS_LEGEND[child.status].label}
-            </span>
-            {!child.is_active && (
-              <span className="rounded-full bg-ink/10 px-3 py-1 text-xs font-bold text-ink-soft">Inactive</span>
-            )}
-            {child.class_name && (
-              <span className="rounded-full bg-teal/10 px-3 py-1 text-xs font-bold text-teal-deep">
-                {child.class_name}
-                {child.class_band && ` · ${CLASS_BAND_LABELS[child.class_band]}`}
+        <div className="flex items-start gap-4">
+          {editing && canEdit ? (
+            <AvatarUploadField
+              childId={child.id}
+              currentUrl={form.photoUrl}
+              name={child.child_full_name}
+              uploadEndpoint="/api/admin/children/upload?kind=avatar"
+              onUploaded={(url) => uploadDocument('photoUrl', url)}
+            />
+          ) : (
+            <ChildAvatar photoUrl={child.photo_url} name={child.child_full_name} size="lg" />
+          )}
+          <div>
+            <p className="font-script text-2xl text-orange-deep">{child.child_nickname || child.child_full_name}</p>
+            <h1 className="mt-1 font-display text-2xl font-semibold text-ink">{child.child_full_name}</h1>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-bold ${STATUS_LEGEND[child.status].badgeClass}`}>
+                <span className={`h-2 w-2 rounded-full ${STATUS_LEGEND[child.status].dotClass}`} />
+                {STATUS_LEGEND[child.status].label}
               </span>
-            )}
+              {!child.is_active && (
+                <span className="rounded-full bg-ink/10 px-3 py-1 text-xs font-bold text-ink-soft">Inactive</span>
+              )}
+              {child.class_name && (
+                <span className="rounded-full bg-teal/10 px-3 py-1 text-xs font-bold text-teal-deep">
+                  {child.class_name}
+                  {child.class_band && ` · ${CLASS_BAND_LABELS[child.class_band]}`}
+                </span>
+              )}
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -282,6 +307,7 @@ export default function ChildCard({
                 <InfoRow label="Exit / withdrawal date" value={child.exit_date ? formatDate(child.exit_date) : null} />
                 <InfoRow label="Home language" value={child.home_language} />
                 <InfoRow label="Religion" value={child.religion} />
+                <InfoRow label="Previous school" value={child.previous_school} />
               </div>
             </div>
 
@@ -349,6 +375,22 @@ export default function ChildCard({
                       )}
                     </div>
                   </div>
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">Birth certificate</div>
+                    <div className="mt-1">
+                      {child.birth_certificate_url ? (
+                        <a href={child.birth_certificate_url} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-teal-deep underline">
+                          View birth certificate
+                        </a>
+                      ) : (
+                        <span className="text-sm text-ink-soft">Not uploaded</span>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-xs text-ink-soft">
+                    The child&apos;s own parent can also view and upload these from their portal — not one of the
+                    Forms &amp; Compliance checklist items below, just identity documents on file.
+                  </p>
                 </div>
               </div>
             )}
@@ -362,10 +404,8 @@ export default function ChildCard({
                   </div>
                 )}
                 <InfoRow label="Dietary requirements" value={child.dietary_requirements} />
+                <InfoRow label="Lunch choice" value={child.lunch_option} />
                 <InfoRow label="Duration of stay note" value={child.duration_of_stay_note} />
-              </div>
-              <div className="mt-4 rounded-sm border border-dashed border-sand-line p-3 text-xs text-ink-soft">
-                Lunch selection is coming in a later phase.
               </div>
             </div>
           </div>
@@ -507,6 +547,9 @@ export default function ChildCard({
             <Field label="Religion" htmlFor="edit-religion">
               <TextInput id="edit-religion" value={form.religion} onChange={(e) => set('religion', e.target.value)} />
             </Field>
+            <Field label="Previous school" htmlFor="edit-previous-school">
+              <TextInput id="edit-previous-school" value={form.previousSchool} onChange={(e) => set('previousSchool', e.target.value)} />
+            </Field>
 
             <Field label="Parent 1 name" htmlFor="edit-parent1-name">
               <TextInput id="edit-parent1-name" value={form.parent1Name} onChange={(e) => set('parent1Name', e.target.value)} />
@@ -553,6 +596,9 @@ export default function ChildCard({
             </Field>
             <Field label="Dietary requirements" htmlFor="edit-dietary">
               <TextInput id="edit-dietary" value={form.dietaryRequirements} onChange={(e) => set('dietaryRequirements', e.target.value)} />
+            </Field>
+            <Field label="Lunch choice" htmlFor="edit-lunch-option">
+              <TextInput id="edit-lunch-option" value={form.lunchOption} onChange={(e) => set('lunchOption', e.target.value)} placeholder="e.g. Bring own, Godspeed order" />
             </Field>
             <div className="sm:col-span-2 lg:col-span-3">
               <Field label="Allergies / medical notes" htmlFor="edit-allergies">
@@ -643,7 +689,20 @@ export default function ChildCard({
                   onUploaded={(url) => uploadDocument('kitasCopyUrl', url)}
                 />
               </Field>
+              <Field label="Birth certificate" htmlFor="edit-birth-certificate">
+                <DocumentUploadField
+                  currentUrl={form.birthCertificateUrl}
+                  pathPrefix={`children/${child.id}/birth-certificate`}
+                  label="Birth certificate"
+                  uploadEndpoint="/api/admin/children/upload"
+                  onUploaded={(url) => uploadDocument('birthCertificateUrl', url)}
+                />
+              </Field>
             </div>
+            <p className="mt-3 text-xs text-ink-soft">
+              Passport, KITAS, and birth certificate are visible to the child&apos;s own parent in their portal, and
+              admin here — never to teachers. These aren&apos;t part of the Forms &amp; Compliance checklist above.
+            </p>
           </div>
 
           {error && <p role="alert" className="mt-4 font-semibold text-orange-deep">{error}</p>}

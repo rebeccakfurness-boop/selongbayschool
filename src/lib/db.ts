@@ -380,6 +380,25 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS passport_copy_url TEXT`;
       await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS visa_status TEXT`;
       await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS kitas_copy_url TEXT`;
+      // Same "similar ID document" class as passport/KITAS above — visible to admin and the
+      // child's own parent (via guardian_children), never to teachers. Not one of the 7 Forms &
+      // Compliance checklist items (COMPLIANCE_ITEMS): those are signed consent forms, a different
+      // concern from identity documents, so uploading one here never touches compliance state.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS birth_certificate_url TEXT`;
+      // Free-text, carried the same way duration_of_stay_note is: not on the original Family
+      // Tracker sheet, added so the parent-facing profile card (and admin) has somewhere to record
+      // it. previous_school parallels enrolment_submissions.previous_school (a different table, the
+      // public enrolment form's own submission record) but the two are never auto-synced.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS previous_school TEXT`;
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS lunch_option TEXT`;
+      // Profile photo shown as a circular avatar wherever a child's name appears (board tile, Child
+      // Card, teacher view, parent portal). photo_updated_by_label/photo_updated_at are set
+      // server-side whenever photo_url changes (never taken from client input) — an accountability
+      // trail given this is a children's-safety-adjacent feature, not a field either admin or
+      // parent edits directly.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS photo_url TEXT`;
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS photo_updated_by_label TEXT`;
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS photo_updated_at TIMESTAMPTZ`;
       await sql`CREATE INDEX IF NOT EXISTS idx_children_status ON children (status)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_children_class_name ON children (class_name)`;
 

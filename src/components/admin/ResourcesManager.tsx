@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
-import DocumentUploadField from '@/components/admin/DocumentUploadField';
+import DocumentUploadField from '@/components/DocumentUploadField';
 import { CLASS_BAND_LABELS, CLASS_BAND_ORDER, type ClassBand } from '@/lib/family-data';
 
 export interface Resource {

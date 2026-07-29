@@ -663,3 +663,36 @@ export async function sendLetterOfOfferAcceptedConfirmation(toEmail: string, chi
   );
   return send(toEmail, `Thanks for accepting — ${childFullName} — Selong Bay School`, html, { cc: NOTIFY_TO });
 }
+
+export interface ChildProfileFieldChange {
+  label: string;
+  oldValue: string | null;
+  newValue: string | null;
+}
+
+/** Sent whenever a parent edits allergies_medical_notes, dietary_requirements, or lunch_option on
+ * their own child's profile — these are the fields where stale data going unnoticed is a safety
+ * risk, so the edit is pushed to people rather than only showing up next time someone opens the
+ * card. Goes to the school inbox and every teacher assigned to the child's class (the same people
+ * who can already see these fields on the admin Child Card today — this doesn't expose anything
+ * new, it just makes sure they actually see the change). send() only takes one "to" address at a
+ * time, so this loops rather than extending it for a one-off multi-recipient case. */
+export async function sendChildProfileEditNotification(input: {
+  childFullName: string;
+  editedByLabel: string;
+  changes: ChildProfileFieldChange[];
+  teacherEmails: string[];
+}): Promise<boolean> {
+  const html = wrapEmail(
+    'Child profile updated',
+    `<p>${input.editedByLabel} updated the following for <strong>${input.childFullName}</strong>:</p>
+     ${fieldRows(
+       input.changes.map((c) => [c.label, `${c.oldValue || '(none)'} → ${c.newValue || '(none)'}`])
+     )}
+     <p style="margin-top: 16px;">Please review this in the Child Card if anything looks like it needs follow-up.</p>`
+  );
+  const subject = `Profile updated — ${input.childFullName} — Selong Bay School`;
+  const recipients = [NOTIFY_TO, ...input.teacherEmails.filter((e) => e !== NOTIFY_TO)];
+  const results = await Promise.all(recipients.map((to) => send(to, subject, html)));
+  return results.every(Boolean);
+}

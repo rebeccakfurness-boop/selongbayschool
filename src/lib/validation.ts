@@ -180,6 +180,10 @@ export const updateChildSchema = z.object({
   passportCopyUrl: optionalStr,
   visaStatus: optionalStr,
   kitasCopyUrl: optionalStr,
+  birthCertificateUrl: optionalStr,
+  previousSchool: optionalStr,
+  lunchOption: optionalStr,
+  photoUrl: optionalStr,
   classroomStudentEmail: optionalStr,
 });
 export type UpdateChildInput = z.infer<typeof updateChildSchema>;
@@ -188,6 +192,28 @@ export const createChildSchema = updateChildSchema.extend({
   childFullName: z.string().trim().min(1, "Child's full name is required").max(200),
 });
 export type CreateChildInput = z.infer<typeof createChildSchema>;
+
+/** What a parent/guardian may edit on their own linked child, via /api/account/children/[id] —
+ * deliberately a much smaller field set than updateChildSchema. Enrollment status, class,
+ * programme, and every financial field are absent on purpose (never parent-editable, regardless
+ * of what's shown read-only on the card); zod drops any other key a client sends rather than
+ * erroring, so this list is the actual security boundary, not just a UI nicety. */
+export const updateOwnChildSchema = z.object({
+  primaryContactEmail: optionalStr,
+  primaryContactPhone: optionalStr,
+  emergencyContactName: optionalStr,
+  emergencyContactPhone: optionalStr,
+  allergiesMedicalNotes: optionalStr,
+  dietaryRequirements: optionalStr,
+  lunchOption: optionalStr,
+  homeLanguage: optionalStr,
+  previousSchool: optionalStr,
+  photoUrl: optionalStr,
+  passportCopyUrl: optionalStr,
+  kitasCopyUrl: optionalStr,
+  birthCertificateUrl: optionalStr,
+});
+export type UpdateOwnChildInput = z.infer<typeof updateOwnChildSchema>;
 
 const socialRating = z.enum(['C', 'U', 'S']).nullable().optional();
 

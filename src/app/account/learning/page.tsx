@@ -19,6 +19,7 @@ import {
 import { formatIDR } from '@/lib/site-content';
 import { formatDate } from '@/lib/admin-format';
 import LogoutButton from '@/components/account/LogoutButton';
+import ParentChildProfileCard from '@/components/account/ParentChildProfileCard';
 
 export const dynamic = 'force-dynamic';
 
@@ -71,12 +72,11 @@ export default async function ParentLearningPage() {
 
               return (
                 <section key={child.id}>
-                  <h2 className="font-display text-2xl font-semibold text-ink">
-                    {child.child_nickname || child.child_full_name}
-                  </h2>
-                  <p className="text-sm text-ink-soft">{child.class_name || 'No class set'}</p>
+                  <ParentChildProfileCard child={child} />
 
-                  <div className="mt-6 grid gap-6 md:grid-cols-2">
+                  <h2 className="mt-8 font-display text-xl font-semibold text-ink">Learning</h2>
+
+                  <div className="mt-4 grid gap-6 md:grid-cols-2">
                     <div className="rounded-md border border-sand-line bg-paper p-5 shadow-soft">
                       <h3 className="font-display text-base font-semibold text-teal-deep">Current Curriculum Unit</h3>
                       {unit ? (

@@ -21,7 +21,7 @@ export default async function FamiliesBoardPage() {
 
   const children = (await sql`
     SELECT
-      id, status, is_active, class_name, class_band, child_full_name, child_nickname,
+      id, status, is_active, class_name, class_band, child_full_name, child_nickname, photo_url,
       parent1_name, parent2_name, allergies_medical_notes, enrolment_date,
       (liability_form_signed::int + photography_signed::int + pickup_authorization_signed::int +
        behavioral_form_signed::int + financial_agreement_signed::int +

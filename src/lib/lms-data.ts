@@ -49,22 +49,65 @@ export interface LearningProfileSummaryRow {
   created_at: string;
 }
 
+/** Everything the parent-facing profile card shows or edits — deliberately excludes
+ * enrollment/financial/immigration-status fields not asked for on that card (visa_status,
+ * payment_status, tuition_plan, sibling_discount_tier, nisn_number, and every compliance-signed
+ * flag stay admin/teacher-only, same as today). */
 export interface GuardianChildRow {
   id: number;
-  child_full_name: string;
-  child_nickname: string | null;
+  status: string;
   class_name: string | null;
   class_band: ClassBand | null;
+  programme: string | null;
+  child_full_name: string;
+  child_nickname: string | null;
+  dob: string | null;
+  gender: string | null;
+  nationality: string | null;
+  parent1_name: string | null;
+  parent1_relationship: string | null;
+  parent2_name: string | null;
+  parent2_relationship: string | null;
+  primary_contact_email: string | null;
+  primary_contact_phone: string | null;
+  emergency_contact_name: string | null;
+  emergency_contact_phone: string | null;
+  allergies_medical_notes: string | null;
+  dietary_requirements: string | null;
+  religion: string | null;
+  home_language: string | null;
+  previous_school: string | null;
+  lunch_option: string | null;
+  photo_url: string | null;
+  photo_updated_by_label: string | null;
+  photo_updated_at: string | null;
+  passport_copy_url: string | null;
+  kitas_copy_url: string | null;
+  birth_certificate_url: string | null;
 }
 
 export async function getChildrenForGuardian(customerId: number): Promise<GuardianChildRow[]> {
   return (await sql`
-    SELECT c.id, c.child_full_name, c.child_nickname, c.class_name, c.class_band
+    SELECT c.id, c.status, c.class_name, c.class_band, c.programme, c.child_full_name, c.child_nickname,
+      c.dob::text, c.gender, c.nationality, c.parent1_name, c.parent1_relationship, c.parent2_name, c.parent2_relationship,
+      c.primary_contact_email, c.primary_contact_phone, c.emergency_contact_name, c.emergency_contact_phone,
+      c.allergies_medical_notes, c.dietary_requirements, c.religion, c.home_language, c.previous_school, c.lunch_option,
+      c.photo_url, c.photo_updated_by_label, c.photo_updated_at::text,
+      c.passport_copy_url, c.kitas_copy_url, c.birth_certificate_url
     FROM guardian_children gc
     JOIN children c ON c.id = gc.child_id
     WHERE gc.customer_id = ${customerId}
     ORDER BY c.child_full_name
   `) as unknown as GuardianChildRow[];
+}
+
+/** Gates every parent-facing child mutation (profile edits, document/photo uploads) — a customer
+ * must have a guardian_children row for the child they're trying to touch. */
+export async function guardianOwnsChild(customerId: number, childId: number): Promise<boolean> {
+  const rows = await sql`
+    SELECT 1 FROM guardian_children WHERE customer_id = ${customerId} AND child_id = ${childId}
+  `;
+  return rows.length > 0;
 }
 
 export async function getUpcomingLessonPlans(className: string | null, limit = 10): Promise<LessonPlanRow[]> {

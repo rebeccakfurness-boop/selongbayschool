@@ -14,8 +14,10 @@ export default function DocumentUploadField({
   pathPrefix: string;
   label: string;
   onUploaded: (url: string) => void;
-  /** Defaults to the shared admin+teacher LMS upload route; the immigration-documents section of
-   * the child card passes the admin-only /api/admin/children/upload route instead. */
+  /** Defaults to the shared admin+teacher LMS upload route; callers pass a different route for
+   * more restricted uploads — e.g. the Child Card's immigration-documents section passes the
+   * admin-only /api/admin/children/upload, and the parent portal passes its own
+   * /api/account/children/[id]/upload (ownership-checked, scoped to that one child). */
   uploadEndpoint?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);

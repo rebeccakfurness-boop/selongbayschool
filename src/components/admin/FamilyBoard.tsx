@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { DndContext, PointerSensor, useDraggable, useDroppable, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { STATUS_LEGEND, STATUS_ORDER, CLASS_BAND_LABELS, type ChildStatus } from '@/lib/family-data';
 import { formatDate } from '@/lib/admin-format';
+import ChildAvatar from '@/components/ChildAvatar';
 
 export interface BoardChild {
   id: number;
@@ -14,6 +15,7 @@ export interface BoardChild {
   class_band: string | null;
   child_full_name: string;
   child_nickname: string | null;
+  photo_url: string | null;
   parent1_name: string | null;
   parent2_name: string | null;
   allergies_medical_notes: string | null;
@@ -41,15 +43,18 @@ function ChildCard({ child, draggable }: { child: BoardChild; draggable: boolean
       className={`rounded-md border border-sand-line bg-paper p-3 shadow-soft ${draggable ? 'cursor-grab active:cursor-grabbing' : ''} ${isDragging ? 'opacity-50' : ''}`}
     >
       <div className="flex items-start justify-between gap-2">
-        <div>
-          <Link
-            href={`/admin/families/${child.id}`}
-            onPointerDown={(e) => e.stopPropagation()}
-            className="font-display text-base font-semibold text-ink underline-offset-2 hover:underline"
-          >
-            {child.child_nickname || child.child_full_name}
-          </Link>
-          {child.child_nickname && <div className="text-xs text-ink-soft">{child.child_full_name}</div>}
+        <div className="flex items-start gap-2">
+          <ChildAvatar photoUrl={child.photo_url} name={child.child_full_name} size="sm" />
+          <div>
+            <Link
+              href={`/admin/families/${child.id}`}
+              onPointerDown={(e) => e.stopPropagation()}
+              className="font-display text-base font-semibold text-ink underline-offset-2 hover:underline"
+            >
+              {child.child_nickname || child.child_full_name}
+            </Link>
+            {child.child_nickname && <div className="text-xs text-ink-soft">{child.child_full_name}</div>}
+          </div>
         </div>
         {!child.is_active && (
           <span className="rounded-full bg-ink/10 px-2 py-0.5 text-[10px] font-bold text-ink-soft">Inactive</span>

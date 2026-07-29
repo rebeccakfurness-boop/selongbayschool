@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Field, TextInput } from '@/components/forms/FormField';
-import DocumentUploadField from '@/components/admin/DocumentUploadField';
+import DocumentUploadField from '@/components/DocumentUploadField';
 import { formatDate } from '@/lib/admin-format';
 
 export interface PhotoFeedItem {
