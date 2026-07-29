@@ -664,6 +664,27 @@ export async function sendLetterOfOfferAcceptedConfirmation(toEmail: string, chi
   return send(toEmail, `Thanks for accepting — ${childFullName} — Selong Bay School`, html, { cc: NOTIFY_TO });
 }
 
+/** Sent to the school inbox the moment a child's card is dragged into an active status
+ * (Full-Time/Temporary/Worldschooler/Hybrid) with start date + programme already confirmed (the
+ * same guard rail that gates the drag itself — see checkActiveStatusGuardRail in
+ * src/lib/child-lifecycle.ts) and no tuition invoice exists yet. Same "prompt a human with a
+ * direct link" shape as sendLetterOfOfferAcceptedNotification's createInvoiceUrl, and for the same
+ * reason: total_amount can't be computed automatically (tuition_plan is free text, there's no fee
+ * schedule table), so this nudges rather than silently creating a $0 invoice. */
+export async function sendChildActivatedInvoicePrompt(input: {
+  childFullName: string;
+  statusLabel: string;
+  createInvoiceUrl: string;
+}): Promise<boolean> {
+  const html = wrapEmail(
+    'Ready for a tuition invoice',
+    `<p><strong>${input.childFullName}</strong> just moved to <strong>${input.statusLabel}</strong> with a start date and programme confirmed.</p>
+     <p style="margin-top: 16px; font-weight: 700;">Next step: generate the tuition invoice.</p>
+     <p style="margin-top: 12px;"><a href="${input.createInvoiceUrl}" style="color:#007c83; font-weight:700;">Open ${input.childFullName}'s card</a></p>`
+  );
+  return send(NOTIFY_TO, `Ready for a tuition invoice — ${input.childFullName}`, html);
+}
+
 export interface ChildProfileFieldChange {
   label: string;
   oldValue: string | null;

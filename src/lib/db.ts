@@ -399,6 +399,12 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS photo_url TEXT`;
       await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS photo_updated_by_label TEXT`;
       await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS photo_updated_at TIMESTAMPTZ`;
+      // Free-text landing spot for whatever an admissions_enquiries lead carried that doesn't map
+      // onto a real children column (child_age is a free-text guess, not a dob; plan_to_stay,
+      // follow_up_notes, source, and the lead's contact dates) — written once by the "Convert to
+      // Family" action (src/lib/child-lifecycle.ts) so none of it needs retyping, then it's just a
+      // normal admin-editable note from then on.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS admissions_notes TEXT`;
       await sql`CREATE INDEX IF NOT EXISTS idx_children_status ON children (status)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_children_class_name ON children (class_name)`;
 

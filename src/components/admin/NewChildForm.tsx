@@ -6,9 +6,35 @@ import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import { STATUS_LEGEND, STATUS_ORDER, CLASS_BAND_LABELS, CLASS_BAND_ORDER, type ChildStatus, type ClassBand } from '@/lib/family-data';
 
-export default function NewChildForm() {
+export interface NewChildFormPrefill {
+  childFullName?: string;
+  parent1Name?: string;
+  primaryContactEmail?: string;
+  primaryContactPhone?: string;
+  allergiesMedicalNotes?: string;
+}
+
+export default function NewChildForm({
+  prefill,
+  admissionsEnquiryId,
+  onCreated,
+  onCancel,
+}: {
+  /** Pre-fills the form from an admissions_enquiries lead — everything the admissions team
+   * already typed during the tour/interview stage, so converting a lead never means retyping it.
+   * Still a normal editable form after that: the admin can fix a messy name before submitting. */
+  prefill?: NewChildFormPrefill;
+  /** When set, submits to the "Convert to Family" endpoint (which also marks the lead converted)
+   * instead of the blank-form create endpoint. */
+  admissionsEnquiryId?: number;
+  /** Defaults to redirecting to the new Child Card; the conversion modal overrides this to close
+   * itself and refresh the Admissions Pipeline table instead. */
+  onCreated?: (childId: number) => void;
+  /** Defaults to a link back to the board; the conversion modal overrides this to just close. */
+  onCancel?: () => void;
+}) {
   const router = useRouter();
-  const [childFullName, setChildFullName] = useState('');
+  const [childFullName, setChildFullName] = useState(prefill?.childFullName ?? '');
   const [childNickname, setChildNickname] = useState('');
   const [status, setStatus] = useState<ChildStatus>('enquiry');
   const [classBand, setClassBand] = useState<ClassBand | ''>('');
@@ -16,11 +42,11 @@ export default function NewChildForm() {
   const [dob, setDob] = useState('');
   const [nationality, setNationality] = useState('');
   const [enrolmentDate, setEnrolmentDate] = useState('');
-  const [parent1Name, setParent1Name] = useState('');
+  const [parent1Name, setParent1Name] = useState(prefill?.parent1Name ?? '');
   const [parent2Name, setParent2Name] = useState('');
-  const [primaryContactEmail, setPrimaryContactEmail] = useState('');
-  const [primaryContactPhone, setPrimaryContactPhone] = useState('');
-  const [allergiesMedicalNotes, setAllergiesMedicalNotes] = useState('');
+  const [primaryContactEmail, setPrimaryContactEmail] = useState(prefill?.primaryContactEmail ?? '');
+  const [primaryContactPhone, setPrimaryContactPhone] = useState(prefill?.primaryContactPhone ?? '');
+  const [allergiesMedicalNotes, setAllergiesMedicalNotes] = useState(prefill?.allergiesMedicalNotes ?? '');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +54,10 @@ export default function NewChildForm() {
     setSaving(true);
     setError(null);
     try {
-      const res = await fetch('/api/admin/children', {
+      const endpoint = admissionsEnquiryId
+        ? `/api/admin/admissions-enquiries/${admissionsEnquiryId}/convert`
+        : '/api/admin/children';
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -49,8 +78,12 @@ export default function NewChildForm() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Failed to create child');
-      router.push(`/admin/families/${data.id}`);
-      router.refresh();
+      if (onCreated) {
+        onCreated(data.id);
+      } else {
+        router.push(`/admin/families/${data.id}`);
+        router.refresh();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create child');
     } finally {
@@ -67,18 +100,26 @@ export default function NewChildForm() {
         <Field label="Nickname" htmlFor="new-child-nickname">
           <TextInput id="new-child-nickname" value={childNickname} onChange={(e) => setChildNickname(e.target.value)} />
         </Field>
-        <Field label="Status" htmlFor="new-child-status">
-          <select
-            id="new-child-status"
-            value={status}
-            onChange={(e) => setStatus(e.target.value as ChildStatus)}
-            className="rounded-sm border border-sand-line bg-white px-4 py-2.5 text-[15px] text-ink"
-          >
-            {STATUS_ORDER.map((s) => (
-              <option key={s} value={s}>{STATUS_LEGEND[s].label}</option>
-            ))}
-          </select>
-        </Field>
+        {admissionsEnquiryId ? (
+          <Field label="Status" htmlFor="new-child-status">
+            <p className="rounded-sm border border-sand-line bg-sand/20 px-4 py-2.5 text-[15px] text-ink-soft">
+              Enquiry — drag to Booking once it&apos;s a confirmed booking
+            </p>
+          </Field>
+        ) : (
+          <Field label="Status" htmlFor="new-child-status">
+            <select
+              id="new-child-status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as ChildStatus)}
+              className="rounded-sm border border-sand-line bg-white px-4 py-2.5 text-[15px] text-ink"
+            >
+              {STATUS_ORDER.map((s) => (
+                <option key={s} value={s}>{STATUS_LEGEND[s].label}</option>
+              ))}
+            </select>
+          </Field>
+        )}
         <Field label="Class band" htmlFor="new-child-class-band">
           <select
             id="new-child-class-band"
@@ -129,11 +170,17 @@ export default function NewChildForm() {
       {error && <p role="alert" className="mt-4 font-semibold text-orange-deep">{error}</p>}
       <div className="mt-4 flex gap-3">
         <Button type="button" variant="primary" onClick={save} disabled={saving || !childFullName.trim()}>
-          {saving ? 'Creating…' : 'Create child card'}
+          {saving ? 'Creating…' : admissionsEnquiryId ? 'Convert to family' : 'Create child card'}
         </Button>
-        <Button href="/admin/families" variant="ghost">
-          Cancel
-        </Button>
+        {onCancel ? (
+          <Button type="button" variant="ghost" onClick={onCancel}>
+            Cancel
+          </Button>
+        ) : (
+          <Button href="/admin/families" variant="ghost">
+            Cancel
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
 import { STATUS_LEGEND, STATUS_ORDER } from '@/lib/family-data';
+import { COMPLIANCE_STALE_AFTER_DAYS } from '@/lib/child-lifecycle';
 import FamiliesTabs from '@/components/admin/FamiliesTabs';
 import FamilyBoard, { type BoardChild } from '@/components/admin/FamilyBoard';
 
@@ -21,14 +22,31 @@ export default async function FamiliesBoardPage() {
 
   const children = (await sql`
     SELECT
-      id, status, is_active, class_name, class_band, child_full_name, child_nickname, photo_url,
-      parent1_name, parent2_name, allergies_medical_notes, enrolment_date,
-      (liability_form_signed::int + photography_signed::int + pickup_authorization_signed::int +
-       behavioral_form_signed::int + financial_agreement_signed::int +
-       parent_protection_addendum_signed::int + data_consent_signed::int) AS compliance_signed_count
-    FROM children
-    WHERE ${staff.role === 'admin'} OR class_name = ANY(${assignedClasses})
-    ORDER BY child_full_name
+      c.id, c.status, c.is_active, c.class_name, c.class_band, c.child_full_name, c.child_nickname, c.photo_url,
+      c.parent1_name, c.parent2_name, c.allergies_medical_notes, c.enrolment_date, c.programme,
+      (c.liability_form_signed::int + c.photography_signed::int + c.pickup_authorization_signed::int +
+       c.behavioral_form_signed::int + c.financial_agreement_signed::int +
+       c.parent_protection_addendum_signed::int + c.data_consent_signed::int) AS compliance_signed_count,
+      (
+        (c.liability_form_signed AND c.liability_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
+        (c.photography_signed AND c.photography_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
+        (c.pickup_authorization_signed AND c.pickup_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
+        (c.behavioral_form_signed AND c.behavioral_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
+        (c.financial_agreement_signed AND c.financial_agreement_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS})
+      ) AS compliance_out_of_date,
+      latest_inv.status AS latest_invoice_status,
+      GREATEST(0, (CURRENT_DATE - latest_inv.due_date))::int AS latest_invoice_days_overdue
+    FROM children c
+    LEFT JOIN LATERAL (
+      SELECT i.status, i.due_date
+      FROM invoices i
+      JOIN invoice_children ic ON ic.invoice_id = i.id
+      WHERE ic.child_id = c.id AND i.invoice_type = 'tuition' AND i.status <> 'cancelled'
+      ORDER BY i.issue_date DESC, i.id DESC
+      LIMIT 1
+    ) latest_inv ON true
+    WHERE ${staff.role === 'admin'} OR c.class_name = ANY(${assignedClasses})
+    ORDER BY c.child_full_name
   `) as unknown as BoardChild[];
 
   return (
@@ -62,6 +80,10 @@ export default async function FamiliesBoardPage() {
             {STATUS_LEGEND[status].label}
           </span>
         ))}
+        <span className="inline-flex items-center gap-2 rounded-full bg-ink/10 px-3 py-1 text-xs font-bold text-ink-soft">
+          <span className="h-2 w-2 rounded-full bg-ink-soft" />
+          Inactive
+        </span>
       </div>
 
       <div className="mt-6">

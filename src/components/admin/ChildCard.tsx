@@ -18,7 +18,8 @@ import ComplianceFormModal from '@/components/admin/ComplianceFormModal';
 import type { InvoiceSummaryRow, ClassroomSubmissionRow } from '@/lib/lms-data';
 import type { LetterOfOfferSummaryRow } from '@/lib/letters-of-offer';
 import { formatDate } from '@/lib/admin-format';
-import { STATUS_LEGEND, STATUS_ORDER, CLASS_BAND_LABELS, CLASS_BAND_ORDER, COMPLIANCE_ITEMS, type ChildStatus, type ClassBand } from '@/lib/family-data';
+import { STATUS_LEGEND, CLASS_BAND_LABELS, CLASS_BAND_ORDER, COMPLIANCE_ITEMS, type ChildStatus, type ClassBand } from '@/lib/family-data';
+import { complianceBadge, invoiceBadge, type ComplianceBadge, type InvoiceBadge } from '@/lib/child-lifecycle-shared';
 
 export interface ChildDetail {
   id: number;
@@ -81,6 +82,9 @@ export interface ChildDetail {
   photo_updated_by_label: string | null;
   photo_updated_at: string | null;
   classroom_student_email: string | null;
+  /** Computed server-side (see the page's SQL) rather than client-side with Date.now() — a signed
+   * form more than COMPLIANCE_STALE_AFTER_DAYS old. */
+  compliance_out_of_date: boolean;
 }
 
 function InfoRow({ label, value }: { label: string; value: string | null | undefined }) {
@@ -96,8 +100,6 @@ function InfoRow({ label, value }: { label: string; value: string | null | undef
  * seeded from the snake_case ChildDetail the server sent down. */
 function toFormState(child: ChildDetail) {
   return {
-    status: child.status,
-    isActive: child.is_active,
     programme: child.programme ?? '',
     classBand: child.class_band ?? '',
     className: child.class_name ?? '',
@@ -245,6 +247,20 @@ export default function ChildCard({
   }
 
   const signedCount = COMPLIANCE_ITEMS.filter((item) => child[item.signedKey as keyof ChildDetail]).length;
+  const compBadge = complianceBadge(signedCount, COMPLIANCE_ITEMS.length, child.compliance_out_of_date);
+  const latestTuitionInvoice = invoices.find((inv) => inv.invoice_type === 'tuition') ?? null;
+  const invBadge = invoiceBadge(child.status, latestTuitionInvoice ? { status: latestTuitionInvoice.status, days_overdue: latestTuitionInvoice.days_overdue } : null);
+  const COMPLIANCE_BADGE_STYLE: Record<ComplianceBadge, { label: string; className: string }> = {
+    unsigned: { label: `Unsigned ${signedCount}/${COMPLIANCE_ITEMS.length}`, className: 'bg-orange/20 text-orange-deep' },
+    signed: { label: 'Compliance signed', className: 'bg-teal/15 text-teal-deep' },
+    out_of_date: { label: 'Compliance out of date', className: 'bg-orange-deep/20 text-orange-deep' },
+  };
+  function invoiceBadgeStyle(badge: InvoiceBadge): { label: string; className: string } {
+    if (badge === 'not_generated') return { label: 'Invoice not yet generated', className: 'bg-sand text-ink-soft' };
+    if (badge === 'outstanding') return { label: 'Invoice outstanding', className: 'bg-orange/20 text-orange-deep' };
+    if (badge === 'paid') return { label: 'Invoice paid', className: 'bg-teal/15 text-teal-deep' };
+    return { label: `Invoice ${badge.overdueDays}d overdue`, className: 'bg-orange-deep/25 text-orange-deep' };
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -276,6 +292,14 @@ export default function ChildCard({
                 <span className="rounded-full bg-teal/10 px-3 py-1 text-xs font-bold text-teal-deep">
                   {child.class_name}
                   {child.class_band && ` · ${CLASS_BAND_LABELS[child.class_band]}`}
+                </span>
+              )}
+              <span className={`rounded-full px-3 py-1 text-xs font-bold ${COMPLIANCE_BADGE_STYLE[compBadge].className}`}>
+                {COMPLIANCE_BADGE_STYLE[compBadge].label}
+              </span>
+              {invBadge && (
+                <span className={`rounded-full px-3 py-1 text-xs font-bold ${invoiceBadgeStyle(invBadge).className}`}>
+                  {invoiceBadgeStyle(invBadge).label}
                 </span>
               )}
             </div>
@@ -477,35 +501,17 @@ export default function ChildCard({
         </>
       ) : (
         <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
+          <p className="mb-4 rounded-sm border border-dashed border-sand-line bg-sand/20 px-3 py-2 text-xs text-ink-soft">
+            Status and active/inactive aren&apos;t editable here — drag the card between columns on the{' '}
+            <Link href="/admin/families" className="font-semibold text-teal-deep underline">Family Board</Link> instead.
+            Moving into Full Time/Temporary/Worldschooler/Hybrid needs a start date and programme type set below first.
+          </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Field label="Full name" htmlFor="edit-full-name" required>
               <TextInput id="edit-full-name" required value={form.childFullName} onChange={(e) => set('childFullName', e.target.value)} />
             </Field>
             <Field label="Nickname" htmlFor="edit-nickname">
               <TextInput id="edit-nickname" value={form.childNickname} onChange={(e) => set('childNickname', e.target.value)} />
-            </Field>
-            <Field label="Status" htmlFor="edit-status">
-              <select
-                id="edit-status"
-                value={form.status}
-                onChange={(e) => set('status', e.target.value as ChildStatus)}
-                className="rounded-sm border border-sand-line bg-white px-4 py-2.5 font-sans text-[15px] text-ink focus:border-teal focus:outline-none focus:ring-2 focus:ring-teal/30"
-              >
-                {STATUS_ORDER.map((s) => (
-                  <option key={s} value={s}>{STATUS_LEGEND[s].label}</option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Active" htmlFor="edit-active">
-              <select
-                id="edit-active"
-                value={form.isActive ? 'true' : 'false'}
-                onChange={(e) => set('isActive', e.target.value === 'true')}
-                className="rounded-sm border border-sand-line bg-white px-4 py-2.5 font-sans text-[15px] text-ink focus:border-teal focus:outline-none focus:ring-2 focus:ring-teal/30"
-              >
-                <option value="true">Active</option>
-                <option value="false">Inactive</option>
-              </select>
             </Field>
             <Field label="Class band" htmlFor="edit-class-band">
               <select

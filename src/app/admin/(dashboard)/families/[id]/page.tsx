@@ -3,6 +3,7 @@ import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
 import { getWorkSamplesForChild, getPhotoFeedForChild, getInvoicesForChild, getClassroomSubmissionsForChild } from '@/lib/lms-data';
 import { getLettersOfOfferForChild } from '@/lib/letters-of-offer';
+import { COMPLIANCE_STALE_AFTER_DAYS } from '@/lib/child-lifecycle-shared';
 import ChildCard, { type ChildDetail } from '@/components/admin/ChildCard';
 import type { GuardianLink } from '@/components/admin/GuardianLinksSection';
 
@@ -15,7 +16,17 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
   const id = Number(idParam);
   if (!Number.isInteger(id)) notFound();
 
-  const rows = (await sql`SELECT * FROM children WHERE id = ${id}`) as unknown as ChildDetail[];
+  const rows = (await sql`
+    SELECT c.*,
+      (
+        (c.liability_form_signed AND c.liability_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
+        (c.photography_signed AND c.photography_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
+        (c.pickup_authorization_signed AND c.pickup_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
+        (c.behavioral_form_signed AND c.behavioral_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
+        (c.financial_agreement_signed AND c.financial_agreement_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS})
+      ) AS compliance_out_of_date
+    FROM children c WHERE c.id = ${id}
+  `) as unknown as ChildDetail[];
   const child = rows[0];
   if (!child) notFound();
 

@@ -3,6 +3,10 @@ import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
 import { updateChildSchema } from '@/lib/validation';
 
+/** Every field the general Child Card edit form can save — status and is_active are NOT among
+ * them (updateChildSchema doesn't declare them, so they're dropped even if a client sends them).
+ * Those two only ever change via PATCH /api/admin/children/[id]/status, which is the only thing
+ * a board drag calls — see src/lib/child-lifecycle.ts for the guard rail that gates it. */
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const staff = await getCurrentStaff();
   if (staff.role !== 'admin') {
@@ -32,8 +36,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     await ensureSchema();
     const rows = await sql`
       UPDATE children SET
-        status = COALESCE(${d.status ?? null}, status),
-        is_active = COALESCE(${d.isActive ?? null}, is_active),
         programme = COALESCE(${d.programme ?? null}, programme),
         class_band = COALESCE(${d.classBand ?? null}, class_band),
         class_name = COALESCE(${d.className ?? null}, class_name),

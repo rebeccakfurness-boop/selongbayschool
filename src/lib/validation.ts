@@ -124,14 +124,20 @@ export type AdminResetPasswordInput = z.infer<typeof adminResetPasswordSchema>;
 const optionalDate = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional();
 const optionalStr = z.string().trim().max(2000).nullable().optional();
 
-export const updateChildStatusSchema = z.object({
-  status: z.enum(['enquiry', 'booking_waitlist', 'full_time', 'temporary', 'worldschooler', 'hybrid']),
-});
+/** The ONLY schema that can move a card between board columns — used exclusively by
+ * PATCH /api/admin/children/[id]/status (the drag-transition endpoint). status/isActive are
+ * deliberately absent from updateChildSchema below (the general edit-form save), so dragging is
+ * the only way either field changes on an existing child; see src/lib/child-lifecycle.ts for the
+ * guard-rail check this schema's caller applies before an active-status transition is allowed. */
+export const updateChildStatusSchema = z
+  .object({
+    status: z.enum(['enquiry', 'booking_waitlist', 'full_time', 'temporary', 'worldschooler', 'hybrid']).optional(),
+    isActive: z.boolean().optional(),
+  })
+  .refine((d) => d.status !== undefined || d.isActive !== undefined, { message: 'Nothing to update.' });
 export type UpdateChildStatusInput = z.infer<typeof updateChildStatusSchema>;
 
 export const updateChildSchema = z.object({
-  status: z.enum(['enquiry', 'booking_waitlist', 'full_time', 'temporary', 'worldschooler', 'hybrid']).optional(),
-  isActive: z.boolean().optional(),
   programme: optionalStr,
   classBand: z.enum(['early_years', 'kindergarten', 'primary', 'secondary']).nullable().optional(),
   className: optionalStr,
@@ -188,8 +194,14 @@ export const updateChildSchema = z.object({
 });
 export type UpdateChildInput = z.infer<typeof updateChildSchema>;
 
+/** status/isActive are here (creation) and in updateChildStatusSchema (drag) but nowhere in
+ * updateChildSchema (the general edit-form save) — a brand-new record needs a starting status,
+ * same as it needs a starting name, but once created the only way either field changes again is
+ * dragging the card. */
 export const createChildSchema = updateChildSchema.extend({
   childFullName: z.string().trim().min(1, "Child's full name is required").max(200),
+  status: z.enum(['enquiry', 'booking_waitlist', 'full_time', 'temporary', 'worldschooler', 'hybrid']).optional(),
+  isActive: z.boolean().optional(),
 });
 export type CreateChildInput = z.infer<typeof createChildSchema>;
 

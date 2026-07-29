@@ -222,6 +222,73 @@ not `admin_users`), and a different auth mechanism.
 
 Foundation for the admissions/enrolment/teaching ops system described separately.
 
+### Child card lifecycle: Enquiry → Booking → Active → Inactive
+
+Wires the Family Board's `status`/`is_active` fields into an actual lifecycle with one rule
+throughout: **dragging a card is the only way status or active/inactive change.** Everything else
+that used to touch either field directly — the Status and Active dropdowns in the Child Card's
+edit form — is gone; `updateChildSchema` (the general edit-form save) no longer declares either
+field, so even a malformed request can't sneak a status change through that route. The one other
+place either field is set is creation (`createChildSchema`, still has both, for a new record's
+starting status) and the new dedicated drag endpoint below.
+
+- **`PATCH /api/admin/children/[id]/status`** (`src/app/api/admin/children/[id]/status/route.ts`)
+  — the only thing `FamilyBoard.tsx`'s drag handler calls. Enforces the lifecycle's one guard rail:
+  entering an active status (Full-Time/Temporary/Worldschooler/Hybrid) is blocked with `422` +
+  "Set start date and programme type first" unless `enrolment_date` and `programme` are already on
+  file (`checkActiveStatusGuardRail` in `src/lib/child-lifecycle.ts`). The board also runs the same
+  check client-side before the optimistic move even starts, using data it already has, so the
+  admin sees the inline message immediately rather than watching the card bounce back — but the
+  route is the actual boundary, not the client check.
+- **A 7th "Inactive" column**, not a 7th `ChildStatus` value. Withdrawal reuses the `is_active`
+  flag that already existed and that the live calendar (`WHERE is_active = true`) and dashboard
+  roster counts already filter on — so dragging a card there removes it from both with no changes
+  to either subsystem. `status` itself is left untouched on withdrawal (not overwritten to
+  something like `'inactive'`), so re-activating by dragging back restores the same
+  Full-Time/Temporary/etc. status rather than losing it.
+- **System-computed badges, not columns.** Compliance (unsigned / signed / out of date) and invoice
+  status (not yet generated / outstanding / paid / N days overdue) render as colored pills on the
+  board tile and Child Card header — nothing about them looks draggable or clickable-to-change,
+  and there's no column for either. "Out of date" is a specific assumption worth flagging: a signed
+  form older than `COMPLIANCE_STALE_AFTER_DAYS` (365, one place to change in
+  `src/lib/child-lifecycle-shared.ts`) counts as stale. That threshold wasn't specified anywhere —
+  it's a reasonable default for annual consent forms, not a confirmed school policy.
+- **Invoice status is derived, not auto-created.** "Status + dates confirmed → auto-generate
+  invoice" ran into the same wall the Letter-of-Offer flow already hit: there's no fee-schedule
+  table, so `total_amount` can't be computed automatically (`tuition_plan` is free text, not a
+  price). Silently creating a real, parent-visible invoice with a guessed or zero amount seemed
+  worse than not creating one, so this **nudges instead of auto-generating** — the exact same
+  pattern already in place for Letter-of-Offer acceptance (`sendChildActivatedInvoicePrompt` in
+  `src/lib/email.ts`, sent once per child the first time it crosses into an active status with no
+  non-cancelled tuition invoice yet, linking straight to the existing "+ New Invoice" form). The
+  "not yet generated → outstanding → paid → N days overdue" badge itself is just read from
+  whatever invoice rows actually exist — daily overdue-day recalculation needed no cron: it was
+  already computed live at query time (`GREATEST(0, CURRENT_DATE - due_date)`), both here and
+  wherever invoices were already shown.
+- **"Enquiry → Family record"**: a new "Convert to Family" action on the Admissions Pipeline table
+  (`src/components/admin/ConvertEnquiryButton.tsx`) turns one `admissions_enquiries` lead into a
+  real `children` row, pre-filling the same form used for "+ New Family"
+  (`src/components/admin/NewChildForm.tsx`, now reused with a `prefill`/`admissionsEnquiryId` prop
+  rather than duplicated) so nothing the admissions team already typed needs retyping. The lead's
+  `converted_child_id` (which already existed on `admissions_enquiries`, just had no writer before
+  this) is set rather than the row being deleted, so the funnel source stays traceable. A new
+  record always starts at `status = 'enquiry'` regardless of what the modal's now-disabled Status
+  field would have shown — converting is "stop retyping what's on file," not "decide this is a
+  firm booking"; that's still a separate, explicit drag to Booking, same as any other card. Two
+  fields from the lead have nowhere to go on `children` (`child_age` is a free-text guess, not a
+  dob; `plan_to_stay`, `follow_up_notes`, `source`, and the contact-history dates have no column at
+  all) — all of it lands in one new free-text `children.admissions_notes` column
+  (`admissionsNotesFromEnquiry` in `src/lib/child-lifecycle.ts`) rather than being dropped.
+
+Deliberately untouched: compliance-signing internals (the checklist, the PDF/signature flow, the
+7-item list itself), invoicing internals (creation, sending, marking paid), and the Family Tracker
+CSV importer (`src/lib/family-import.ts` still inserts directly via raw SQL, unaffected by the
+validation-schema changes above). This phase only wired the transition/status logic connecting
+them — `src/lib/child-lifecycle.ts` (server-only) and `src/lib/child-lifecycle-shared.ts` (pure,
+split out so the client-side board component could import the badge/guard-rail helpers without
+pulling `@neondatabase/serverless` into the browser bundle) are the two new files that logic lives
+in.
+
 ### Parent-editable profiles, profile photo, and the parent student-card view
 
 Three policy questions were asked before this phase (direct-edit vs. approval-queue for parent
