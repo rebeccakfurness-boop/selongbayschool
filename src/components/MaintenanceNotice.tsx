@@ -12,7 +12,7 @@ export const MAINTENANCE_NOTICE_ENABLED = false;
 export const MAINTENANCE_NOTICE_TEXT =
   'Our booking and enquiry system is currently being updated for the new school year. To make a ' +
   'booking or enquiry in the meantime, please email hello@selongbayschool.com or message us at ' +
-  '+62 813-5974-095.';
+  '+62 821-3826-581.';
 
 function NoticeIcon({ className }: { className?: string }) {
   return (

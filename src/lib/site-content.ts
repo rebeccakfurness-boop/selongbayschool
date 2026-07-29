@@ -5,12 +5,12 @@ export const siteConfig = {
   url: 'https://www.selongbayschool.com',
   contact: {
     address: 'Dusun Serangan, Selong Belanak, Kec. Praya Bar., Kabupaten Lombok Tengah, Nusa Tenggara Bar. 83572',
-    phone: '+62 813-5974-095',
-    phoneHref: 'tel:+628135974095',
+    phone: '+62 821-3826-581',
+    phoneHref: 'tel:+628213826581',
     email: 'hello@selongbayschool.com',
     instagram: 'https://www.instagram.com/selongbay_school/',
     facebook: 'https://www.facebook.com/people/Selong-Bay-School/61584318951968/',
-    whatsappHref: 'tel:+628135974095',
+    whatsappHref: 'https://wa.me/628213826581',
     mapQuery: 'Dusun Serangan, Selong Belanak, Kec. Praya Bar., Kabupaten Lombok Tengah, Nusa Tenggara Bar. 83572',
   },
 };
