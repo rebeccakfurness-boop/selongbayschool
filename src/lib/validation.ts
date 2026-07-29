@@ -303,6 +303,27 @@ export const sendComplianceFormSchema = z.object({
   email: z.string().trim().toLowerCase().email('Enter a valid email address'),
 });
 
+export const letterOfOfferSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  startDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid start date'),
+  programme: z.string().trim().max(200).nullable().optional(),
+  className: z.string().trim().max(200).nullable().optional(),
+  tuitionPlan: z.string().trim().max(500).nullable().optional(),
+  feesNote: z.string().trim().max(2000).nullable().optional(),
+  additionalTerms: z.string().trim().max(4000).nullable().optional(),
+});
+export type LetterOfOfferInput = z.infer<typeof letterOfOfferSchema>;
+
+export const updateLetterOfOfferSchema = letterOfOfferSchema.omit({ childId: true });
+
+export const sendLetterOfOfferSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+});
+
+export const acceptLetterOfOfferSchema = z.object({
+  acceptedByName: z.string().trim().min(1, 'Enter your name').max(200),
+});
+
 export const updateSchoolSettingsSchema = z.object({
   payableTo: z.string().trim().min(1).max(300).optional(),
   bankName: z.string().trim().min(1).max(300).optional(),

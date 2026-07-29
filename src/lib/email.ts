@@ -607,3 +607,59 @@ export async function sendComplianceFormEmail(input: ComplianceFormEmailInput): 
     attachment: [{ name: `${input.formTitle.replace(/[^a-z0-9]+/gi, '-')}-${input.childFullName.replace(/[^a-z0-9]+/gi, '-')}.pdf`, content: input.pdfBuffer.toString('base64') }],
   });
 }
+
+export interface LetterOfOfferEmailInput {
+  toEmail: string;
+  childFullName: string;
+  acceptUrl: string;
+  pdfBuffer: Buffer;
+}
+
+/** Sent from the "Send to parent" action on a Letter of Offer (Child Card) — cc'd to the school
+ * inbox, same pattern as every other outbound document email in this app. The PDF is attached for
+ * their records, but acceptance itself happens via acceptUrl (a tokenized public page), not by
+ * replying to this email. */
+export async function sendLetterOfOfferEmail(input: LetterOfOfferEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    'Letter of Offer',
+    `<p>Dear parent/guardian of ${input.childFullName},</p>
+     <p>Please find attached the Letter of Offer confirming ${input.childFullName}'s place at Selong Bay School.</p>
+     <p style="margin-top: 16px;">Please review it and let us know if anything needs correcting. When you're ready,
+       accept the offer online here:</p>
+     <p style="margin-top: 12px;"><a href="${input.acceptUrl}" style="color:#007c83; font-weight:700;">Review &amp; accept the Letter of Offer</a></p>
+     <p style="margin-top: 16px;">Once you've accepted, we'll follow up with the tuition invoice.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `Letter of Offer — ${input.childFullName} — Selong Bay School`, html, {
+    cc: NOTIFY_TO,
+    attachment: [{ name: `letter-of-offer-${input.childFullName.replace(/[^a-z0-9]+/gi, '-')}.pdf`, content: input.pdfBuffer.toString('base64') }],
+  });
+}
+
+/** Sent to the school inbox the moment a parent accepts a Letter of Offer online — this is the
+ * "prompt admin staff to send the invoice" step: an actionable notification with a direct link to
+ * create the tuition invoice for this child, rather than acceptance silently updating a status
+ * flag that nobody notices. */
+export async function sendLetterOfOfferAcceptedNotification(input: {
+  childFullName: string;
+  acceptedByName: string;
+  createInvoiceUrl: string;
+}): Promise<boolean> {
+  const html = wrapEmail(
+    'Letter of Offer accepted',
+    `<p>${input.acceptedByName} has accepted the Letter of Offer for <strong>${input.childFullName}</strong>.</p>
+     <p style="margin-top: 16px; font-weight: 700;">Next step: send the tuition invoice.</p>
+     <p style="margin-top: 12px;"><a href="${input.createInvoiceUrl}" style="color:#007c83; font-weight:700;">Create the tuition invoice</a></p>`
+  );
+  return send(NOTIFY_TO, `Letter of Offer accepted — ${input.childFullName}`, html);
+}
+
+export async function sendLetterOfOfferAcceptedConfirmation(toEmail: string, childFullName: string): Promise<boolean> {
+  const html = wrapEmail(
+    'Thank you for accepting',
+    `<p>Thank you for accepting the Letter of Offer for ${childFullName}. We're delighted to welcome them to Selong Bay School.</p>
+     <p style="margin-top: 16px;">We'll be in touch shortly with the tuition invoice. If you have any questions in the meantime, just reply to this email.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(toEmail, `Thanks for accepting — ${childFullName} — Selong Bay School`, html, { cc: NOTIFY_TO });
+}

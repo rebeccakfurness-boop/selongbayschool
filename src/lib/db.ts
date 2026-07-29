@@ -760,6 +760,32 @@ export function ensureSchema(): Promise<void> {
         )
       `;
 
+      // accept_token is generated at creation time (not just once sent) so the row never has to
+      // branch on "does a token exist yet" — every letter, draft or not, has a stable accept URL.
+      // Acceptance is by token, not a customer login, since a family at Letter of Offer stage
+      // (enquiry/booking_waitlist) usually doesn't have a parent portal account yet.
+      await sql`
+        CREATE TABLE IF NOT EXISTS letters_of_offer (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'sent', 'accepted')),
+          start_date DATE NOT NULL,
+          programme TEXT,
+          class_name TEXT,
+          tuition_plan TEXT,
+          fees_note TEXT,
+          additional_terms TEXT,
+          accept_token TEXT NOT NULL UNIQUE,
+          sent_at TIMESTAMPTZ,
+          accepted_at TIMESTAMPTZ,
+          accepted_by_name TEXT,
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_letters_of_offer_child ON letters_of_offer (child_id)`;
+
       await sql`
         CREATE TABLE IF NOT EXISTS enrolment_submissions (
           id BIGSERIAL PRIMARY KEY,

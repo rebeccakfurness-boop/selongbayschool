@@ -222,6 +222,47 @@ not `admin_users`), and a different auth mechanism.
 
 Foundation for the admissions/enrolment/teaching ops system described separately.
 
+### Letter of Offer: editable PDF, send to parent, parent-facing acceptance
+
+A new "Letter of Offer" section on the Child Card, above Invoices, works like a lighter-weight
+sibling of the invoicing system:
+
+- **Create/edit** (`+ New letter of offer`, admin-only) — a simple form (start date, programme,
+  class, tuition plan, fees note, free-text additional terms) prefilled from the child's existing
+  record. Generates a PDF on the fly (`src/lib/pdf/LetterOfOfferDocument.tsx`, same
+  `@react-pdf/renderer` pattern as invoices). Editing is blocked once a letter is accepted — the
+  parent agreed to specific terms, so a real change should be a new letter, not a silent edit of
+  the one they saw.
+- **Send to parent** — emails the PDF plus a link to a public, unauthenticated acceptance page at
+  `/letter-of-offer/[token]`. The token (`letters_of_offer.accept_token`, a 32-byte random value
+  generated at creation) is the credential, the same trust model as this app's password-reset and
+  customer magic-link flows — deliberate, since a family at Letter-of-Offer stage
+  (enquiry/booking_waitlist) usually has no parent portal account yet, so gating acceptance behind
+  a login would block the exact people it's for.
+- **Parent acceptance** — the public page shows the offer's details and a "View/download PDF" link
+  (the token also authorizes the PDF route itself), then a name field + confirmation checkbox.
+  Accepting POSTs to `/api/letters-of-offer/accept/[token]` (no session required), which sets
+  `status = 'accepted'`, `accepted_at`, `accepted_by_name`.
+- **Prompting admin to send the invoice** — acceptance triggers two things: an email to the school
+  inbox with a direct link to `/admin/families/[id]/invoices/new?type=tuition`, and a persistent
+  orange banner on the Child Card ("Offer accepted by X — send the tuition invoice") that stays up
+  until the child actually has an invoice (`invoices.length > 0`, reusing the same query the
+  Invoices section already runs) — no separate "dismissed" flag needed, the banner's condition is
+  just "has this been acted on yet."
+
+The PDF-rendering routes (`/api/letters-of-offer/[id]/pdf`, `/api/admin/letters-of-offer/[id]/send`)
+live under the Pages Router, same reasoning as the invoice PDF/send routes below. The PDF route
+itself isn't under `/api/admin/` — same reasoning as `/api/invoices/[id]/pdf` allowing a guardian
+session through: a parent following the accept-page link needs to view the PDF too, authorized by
+the token query param rather than a staff session.
+
+One route-naming gotcha worth knowing: the PDF route's dynamic segment is `[id]` (numeric) and the
+accept route's is `[token]` (the random string) — Next.js requires the *same* slug name for a
+dynamic segment shared between the Pages and App routers at the same URL depth, so the accept route
+lives at `/api/letters-of-offer/accept/[token]` (token nested one level deeper under a static
+`accept` segment) rather than `/api/letters-of-offer/[token]/accept`, to keep the two `[id]`/`[token]`
+segments at different depths instead of colliding.
+
 ### Forms & Compliance: clickable documents, e-signature, send to parent
 
 Each of the 7 Child Card compliance items (Liability Form, Photography/Social Media, Pickup

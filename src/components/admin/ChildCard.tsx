@@ -10,9 +10,11 @@ import WorkSamplesSection, { type WorkSample } from '@/components/admin/WorkSamp
 import ChildPhotoFeedSection, { type PhotoFeedItem } from '@/components/admin/ChildPhotoFeedSection';
 import GuardianLinksSection, { type GuardianLink } from '@/components/admin/GuardianLinksSection';
 import InvoicesSection from '@/components/admin/InvoicesSection';
+import LetterOfOfferSection from '@/components/admin/LetterOfOfferSection';
 import ClassroomSection from '@/components/admin/ClassroomSection';
 import ComplianceFormModal from '@/components/admin/ComplianceFormModal';
 import type { InvoiceSummaryRow, ClassroomSubmissionRow } from '@/lib/lms-data';
+import type { LetterOfOfferSummaryRow } from '@/lib/letters-of-offer';
 import { formatDate } from '@/lib/admin-format';
 import { STATUS_LEGEND, STATUS_ORDER, CLASS_BAND_LABELS, CLASS_BAND_ORDER, COMPLIANCE_ITEMS, type ChildStatus, type ClassBand } from '@/lib/family-data';
 
@@ -160,6 +162,7 @@ export default function ChildCard({
   photos,
   guardians,
   invoices,
+  letters,
   classroomSubmissions,
 }: {
   child: ChildDetail;
@@ -169,6 +172,7 @@ export default function ChildCard({
   photos: PhotoFeedItem[];
   guardians: GuardianLink[];
   invoices: InvoiceSummaryRow[];
+  letters: LetterOfOfferSummaryRow[];
   classroomSubmissions: ClassroomSubmissionRow[];
 }) {
   const router = useRouter();
@@ -304,6 +308,14 @@ export default function ChildCard({
                 <InfoRow label="Payment status" value={child.payment_status} />
               </div>
             </div>
+
+            <LetterOfOfferSection
+              childId={child.id}
+              letters={letters}
+              canEdit={canEdit}
+              defaultEmail={child.primary_contact_email ?? ''}
+              hasInvoices={invoices.length > 0}
+            />
 
             <InvoicesSection childId={child.id} invoices={invoices} canEdit={canEdit} defaultEmail={child.primary_contact_email ?? ''} />
 
