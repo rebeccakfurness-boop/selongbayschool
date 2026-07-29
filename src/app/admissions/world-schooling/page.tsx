@@ -4,7 +4,7 @@ import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import Reveal from '@/components/Reveal';
 import Button from '@/components/Button';
-import { activitiesGallery } from '@/lib/site-content';
+import { activitiesGallery, temporaryPricingPdf } from '@/lib/site-content';
 
 export const metadata: Metadata = {
   title: 'World Schooling',
@@ -323,9 +323,12 @@ export default function WorldSchoolingPage() {
           <p className="text-[17px] leading-relaxed text-ink-soft">
             Have questions about world schooling at Selong Bay? Get in touch and we&apos;ll set up a time to chat.
           </p>
-          <div className="mt-6">
+          <div className="mt-6 flex flex-wrap justify-center gap-4">
             <Button href="/contact" variant="accent">
               Get in Touch
+            </Button>
+            <Button href={temporaryPricingPdf} variant="primary" external>
+              Download Pricing &amp; Activities (PDF)
             </Button>
           </div>
         </div>

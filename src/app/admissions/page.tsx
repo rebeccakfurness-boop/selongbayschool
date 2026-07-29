@@ -4,7 +4,7 @@ import PhotoBanner from '@/components/PhotoBanner';
 import Button from '@/components/Button';
 import Reveal from '@/components/Reveal';
 import EnrolmentForm from '@/components/forms/EnrolmentForm';
-import { admissionsGroups, temporaryEnrolments, feesSummary, formatIDR, longTermPricingPdf } from '@/lib/site-content';
+import { admissionsGroups, temporaryEnrolments, feesSummary, formatIDR, longTermPricingPdf, temporaryPricingPdf } from '@/lib/site-content';
 
 export const metadata: Metadata = {
   title: 'Admissions',
@@ -112,9 +112,12 @@ export default function AdmissionsPage() {
                 <p key={paragraph}>{paragraph}</p>
               ))}
             </div>
-            <div className="mt-8">
+            <div className="mt-8 flex flex-wrap gap-4">
               <Button href="/contact" variant="primary">
                 Contact Us to Discuss Your Child&apos;s Needs
+              </Button>
+              <Button href={temporaryPricingPdf} variant="accent" external>
+                Download Temporary Student Pricing &amp; Activities (PDF)
               </Button>
             </div>
           </div>

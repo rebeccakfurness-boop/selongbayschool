@@ -383,6 +383,8 @@ export const academicCalendarPdf = '/files/academic-calendar.pdf';
 
 export const longTermPricingPdf = '/files/long-term-enrolment-pricing-overview.pdf';
 
+export const temporaryPricingPdf = '/files/temporary-student-pricing-activities-overview.pdf';
+
 export const ourApproach = {
   heading: 'A curriculum built for both worlds',
   paragraphs: [
