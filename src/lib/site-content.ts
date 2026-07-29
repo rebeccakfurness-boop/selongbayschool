@@ -385,6 +385,9 @@ export const longTermPricingPdf = '/files/long-term-enrolment-pricing-overview.p
 
 export const temporaryPricingPdf = '/files/temporary-student-pricing-activities-overview.pdf';
 
+/** Condensed 2-page version of temporaryPricingPdf, linked from the homepage only. */
+export const temporaryQuickOverviewPdf = '/files/temporary-student-quick-overview.pdf';
+
 export const ourApproach = {
   heading: 'A curriculum built for both worlds',
   paragraphs: [
