@@ -73,7 +73,7 @@ export default function ContactPage() {
                       rel="noopener noreferrer"
                       className="text-ink-soft hover:text-teal-deep"
                     >
-                      @selongbayschool
+                      @selongbay_school
                     </a>
                   </dd>
                 </div>
