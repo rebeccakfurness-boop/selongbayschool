@@ -4,15 +4,16 @@ import { sendSessionCancellationEmail } from '@/lib/email';
 /**
  * Keeps the current/future sessions for the weekday activities and School Tour in sync with a
  * fixed 10-week term (27 July - 2 October 2026): 1:30pm-3:30pm for the weekday activities, and
- * midday for School Tour, Monday-Friday. Football is Monday's activity, starting 3 August (the
- * second Monday of the term), and Gymnastics for Kids & Free Swim is back to its normal recurring
- * Tuesday slot. Hip Hop Dance and Ninja Warrior is retired: deactivated (kept in the database for
- * historical bookings, just hidden from the public site) and every one of its current/future
- * sessions is removed the same way as any other stale session below. So is "Gymnastics Term 1", a
- * duplicate activity created directly in the admin dashboard (not by this script) that's being
- * retired rather than left live alongside Gymnastics for Kids & Free Swim. Every activity in
- * WEEKDAY_ACTIVITIES/School Tour is (re)activated on each run, so bringing one back just means
- * moving it back into that list.
+ * midday for School Tour, Monday-Friday. Football and Feeling Crafty (1 hour of football, 1 hour
+ * of arts and crafts) is Monday's activity, starting 3 August (the second Monday of the term),
+ * Gymnastics for Kids & Free Swim is back to its normal recurring Tuesday slot, and Gardening and
+ * Padel is Friday's activity. Hip Hop Dance and Ninja Warrior is
+ * retired: deactivated (kept in the database for historical bookings, just hidden from the public
+ * site) and every one of its current/future sessions is removed the same way as any other stale
+ * session below. So is "Gymnastics Term 1", a duplicate activity created directly in the admin
+ * dashboard (not by this script), and Scouts and Survival Challenge, replaced by Gardening and
+ * Padel above. Every activity in WEEKDAY_ACTIVITIES/School Tour is (re)activated on each run, so
+ * bringing one back just means moving it back into that list.
  *
  * Gymnastics Term 2 is a separate "coming soon" activity (its own row, distinct from both
  * Gymnastics for Kids & Free Swim and "Gymnastics Term 1" above): visible on the site with its day
@@ -65,8 +66,8 @@ const WEEKDAY_ACTIVITIES: WeekdayActivity[] = [
     start: SECOND_MONDAY,
     endExclusive: TERM_END_EXCLUSIVE,
     seed: {
-      name: 'Football',
-      description: 'Football skills, drills, and friendly matches that build teamwork, fitness, and confidence on the pitch.',
+      name: 'Football and Feeling Crafty',
+      description: '1 hour of football followed by 1 hour of arts and crafts with our specialist art teacher. Crafts use mixed media and change every week — think crochet, beading, sculpture, mosaics, tie-dying, recycled art, candle making, soap making, and cheese making, to name just a few of the crafts in store.',
       priceIDR: 300_000,
       duration: '2 hr',
       ageGroup: 'All ages',
@@ -75,7 +76,21 @@ const WEEKDAY_ACTIVITIES: WeekdayActivity[] = [
   { slug: 'gymnastics-free-swim', day: 'Tuesday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
   { slug: 'surfing-selong-belanak', day: 'Wednesday', time: '13:30', capacity: 8, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
   { slug: 'art-music-bahasa', day: 'Thursday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
-  { slug: 'scouts-survival-challenge', day: 'Friday', time: '13:30', capacity: 12, start: TERM_START, endExclusive: TERM_END_EXCLUSIVE },
+  {
+    slug: 'gardening-and-padel',
+    day: 'Friday',
+    time: '13:30',
+    capacity: 12,
+    start: TERM_START,
+    endExclusive: TERM_END_EXCLUSIVE,
+    seed: {
+      name: 'Gardening and Padel',
+      description: 'Hands-on gardening in our campus vegetable beds followed by matches on the padel court, a relaxed mix of nature and sport to close out the week.',
+      priceIDR: 300_000,
+      duration: '2 hr',
+      ageGroup: 'All ages',
+    },
+  },
 ];
 
 // No longer offered. Every one of its current/future sessions is treated as stale and removed
@@ -83,8 +98,9 @@ const WEEKDAY_ACTIVITIES: WeekdayActivity[] = [
 // it drops off the public site, but its row (and any past bookings) stay in the database.
 // 'gymnastics-term-1' is a duplicate activity created directly in the admin dashboard (guessed
 // slug from the exact admin-entered name "Gymnastics Term 1", via the same slugify() the admin
-// "Add Activity" form uses) — not something this script ever created itself.
-const DEACTIVATED_ACTIVITY_SLUGS = ['hip-hop-dance-ninja-warrior', 'gymnastics-term-1'];
+// "Add Activity" form uses) — not something this script ever created itself. Scouts and Survival
+// Challenge is retired because Gardening and Padel has taken over its Friday slot above.
+const DEACTIVATED_ACTIVITY_SLUGS = ['hip-hop-dance-ninja-warrior', 'gymnastics-term-1', 'scouts-survival-challenge'];
 
 interface ComingSoonActivity {
   slug: string;
@@ -196,6 +212,16 @@ async function buildTargetSessions(): Promise<{ targets: TargetSession[]; activi
     // "coming soon"-style label applied (e.g. Gymnastics for Kids & Free Swim's old "Coming in
     // September" text) — ensureActivityId only sets it on first creation, never afterwards.
     await sql`UPDATE activities SET day = ${activity.day} WHERE id = ${id} AND day IS DISTINCT FROM ${activity.day}`;
+    // Same self-heal for name/description/duration on an existing row (e.g. renaming Football to
+    // "Football and Feeling Crafty") — ensureActivityId only sets these on first creation too, and
+    // only activities with a seed have a canonical name/description we want enforced going forward.
+    if (activity.seed) {
+      await sql`
+        UPDATE activities
+        SET name = ${activity.seed.name}, description = ${activity.seed.description}, duration = ${activity.seed.duration}
+        WHERE id = ${id} AND (name IS DISTINCT FROM ${activity.seed.name} OR description IS DISTINCT FROM ${activity.seed.description})
+      `;
+    }
     activityIds.push(id);
     liveActivityIds.push(id);
     for (const date of datesForWeekdayInRange(WEEKDAY_INDEX[activity.day], activity.start, activity.endExclusive)) {

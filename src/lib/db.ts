@@ -2,11 +2,12 @@ import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
 
 /** Must stay in sync with the `activityImages` fallback map in src/app/activities/page.tsx. */
 const ACTIVITY_PHOTO_BACKFILL: Record<string, string> = {
-  'surfing-selong-belanak': '/images/home-beach-walk.jpg',
+  'surfing-selong-belanak': '/images/activity-surfing-selong-belanak.jpg',
   'gymnastics-free-swim': '/images/activity-gymnastics-v3.jpg',
   'hip-hop-dance-ninja-warrior': '/images/activity-ninja-hiphop.jpg',
   'art-music-bahasa': '/images/activity-art-music.jpg',
   'scouts-survival-challenge': '/images/activity-scouts.jpg',
+  'gardening-and-padel': '/images/activity-padel.jpg',
   'school-tour': '/images/activity-school-tour-v2.jpg',
   'adventure-camp-2026-per-day': '/images/activity-adventure-camp.jpg',
   'adventure-camp-2026-full-week': '/images/home-story-beach-tree.jpg',
@@ -93,6 +94,13 @@ export function ensureSchema(): Promise<void> {
       for (const [slug, photoUrl] of Object.entries(ACTIVITY_PHOTO_BACKFILL)) {
         await sql`UPDATE activities SET photo_url = ${photoUrl} WHERE slug = ${slug} AND photo_url IS NULL`;
       }
+      // One-time photo swap for Surfing Selong Belanak: only touches rows still holding the old
+      // fallback image (i.e. never manually re-uploaded via the dashboard), so a real custom photo
+      // set by an admin is left untouched.
+      await sql`
+        UPDATE activities SET photo_url = '/images/activity-surfing-selong-belanak.jpg'
+        WHERE slug = 'surfing-selong-belanak' AND photo_url = '/images/home-beach-walk.jpg'
+      `;
 
       await sql`
         CREATE TABLE IF NOT EXISTS sessions (
@@ -749,6 +757,40 @@ export function ensureSchema(): Promise<void> {
           signature_data_url TEXT NOT NULL,
           signed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
           UNIQUE (child_id, form_key)
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS enrolment_submissions (
+          id BIGSERIAL PRIMARY KEY,
+          student_name TEXT NOT NULL,
+          student_dob DATE NOT NULL,
+          previous_school TEXT,
+          previous_grade TEXT,
+          siblings_attending TEXT,
+          start_date DATE NOT NULL,
+          enrolment_length TEXT NOT NULL,
+          enrolment_length_other TEXT,
+          kitas_status TEXT NOT NULL,
+          kitas_notes TEXT,
+          passport_number TEXT,
+          passport_nationality TEXT,
+          passport_expiry DATE,
+          photography_consent BOOLEAN NOT NULL,
+          medical_conditions TEXT,
+          allergies TEXT,
+          lunch_option TEXT NOT NULL,
+          lunch_other_notes TEXT,
+          emergency_contact_name TEXT NOT NULL,
+          emergency_contact_phone TEXT NOT NULL,
+          authorized_pickup TEXT,
+          parent_name TEXT NOT NULL,
+          parent_email TEXT NOT NULL,
+          parent_whatsapp TEXT NOT NULL,
+          is_read BOOLEAN NOT NULL DEFAULT false,
+          notify_email_status TEXT NOT NULL DEFAULT 'pending',
+          reply_email_status TEXT NOT NULL DEFAULT 'pending',
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
     })();

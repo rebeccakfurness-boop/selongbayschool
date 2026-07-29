@@ -16,6 +16,7 @@ const SECTIONS: { href: string; label: string; adminOnly?: boolean }[] = [
   { href: '/admin/activities', label: 'Activities & Calendar', adminOnly: true },
   { href: '/admin/bookings', label: 'Bookings', adminOnly: true },
   { href: '/admin/customers', label: 'Parent Accounts', adminOnly: true },
+  { href: '/admin/enrolments', label: 'Enrolments', adminOnly: true },
   { href: '/admin/enquiries', label: 'Website Enquiries', adminOnly: true },
   { href: '/admin/website-updates', label: 'Website Updates', adminOnly: true },
   { href: '/admin/settings', label: 'Settings' },

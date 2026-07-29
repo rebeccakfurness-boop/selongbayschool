@@ -107,11 +107,6 @@ export default function HowItWorksPage() {
                   <p key={paragraph}>{paragraph}</p>
                 ))}
               </div>
-              <div className="mt-5">
-                <Button href="/online-library" variant="primary">
-                  Visit the Library
-                </Button>
-              </div>
 
               <div className="mt-10 border-t border-sand-line pt-8">
                 <h3 className="font-display text-xl font-semibold text-ink">{googleClassroom.heading}</h3>

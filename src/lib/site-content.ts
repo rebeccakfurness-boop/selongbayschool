@@ -38,7 +38,7 @@ export const navItems = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/how-it-works', label: 'Our Approach' },
-  { href: '/foundation-and-charity', label: 'Foundation & Charity' },
+  { href: '/foundation-and-charity', label: 'Yayasan Charity' },
   {
     href: '/admissions',
     label: 'Admissions',
@@ -47,6 +47,7 @@ export const navItems = [
       { href: '/admissions/primary', label: 'Primary' },
       { href: '/admissions/secondary-school', label: 'Secondary School' },
       { href: '/admissions/world-schooling', label: 'World Schooling' },
+      { href: '/admissions/online-homeschooling', label: 'Online Homeschooling' },
     ],
   },
   { href: '/activities', label: 'Activities' },
@@ -59,12 +60,9 @@ export const navItems = [
 // own order and labels without affecting the footer's Explore links.
 export const headerNavItems = [
   { href: '/', label: 'Home' },
-  {
-    href: '/about',
-    label: 'About',
-    children: [{ href: '/foundation-and-charity', label: 'Our Foundation' }],
-  },
+  { href: '/about', label: 'About' },
   { href: '/how-it-works', label: 'Our Approach' },
+  { href: '/foundation-and-charity', label: 'Yayasan Charity' },
   {
     href: '/admissions',
     label: 'Admissions',
@@ -73,6 +71,7 @@ export const headerNavItems = [
       { href: '/admissions/primary', label: 'Primary' },
       { href: '/admissions/secondary-school', label: 'Secondary School' },
       { href: '/admissions/world-schooling', label: 'World Schooling' },
+      { href: '/admissions/online-homeschooling', label: 'Online Homeschooling' },
     ],
   },
   { href: '/activities', label: 'Activities' },
@@ -262,6 +261,10 @@ export const activitiesGallery = [
     src: '/images/activities-gallery-craft-weaving-2.jpg',
     alt: 'Students and staff weaving colourful recycled materials together during a craft session',
   },
+  {
+    src: '/images/activities-gallery-gardening.jpg',
+    alt: 'Students tending a hydroponic vegetable garden with a teacher at Selong Bay School',
+  },
 ];
 
 export const communityPartners = [
@@ -337,9 +340,6 @@ export const hybridApproach = {
   paragraphs: [
     'At Selong Bay School, learning is designed to move with your family. Whether students are learning on campus in Lombok or joining lessons online from anywhere in the world, they remain connected to the same teachers, classmates, and learning journey.',
     'Our hybrid model gives families the flexibility to travel without compromising educational continuity. Students can transition seamlessly between on-site and online learning, ensuring they stay engaged academically, maintain meaningful friendships, and continue to feel part of one connected school community.',
-    'Through our partnership with HighScope Indonesia Group (HSPG), with campuses in Jakarta and Bali, students benefit from a broader network of experienced educators, collaborative learning opportunities, and internationally recognised teaching practices. This partnership strengthens the quality and consistency of learning across every stage of their education.',
-    'Learning extends beyond the classroom through our 24/7 digital library, powered by Libby. Every student has access to thousands of ebooks, audiobooks, and educational resources from any device, making it easy to read, research, and discover wherever they are in the world.',
-    'Whether studying on the shores of Selong Bay or from another country, every student receives the same personalised support, high-quality education, and strong sense of belonging that defines the Selong Bay School experience.',
   ],
 };
 

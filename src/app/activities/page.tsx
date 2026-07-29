@@ -91,8 +91,8 @@ const activityImages: Record<string, { src: string; alt: string }> = {
     alt: 'A football resting on the grass pitch line',
   },
   'surfing-selong-belanak': {
-    src: '/images/home-beach-walk.jpg',
-    alt: 'Two students walking the beach carrying a surfboard at Selong Belanak',
+    src: '/images/activity-surfing-selong-belanak.jpg',
+    alt: 'A student riding a wave on a surfboard at Selong Belanak, with the headland behind',
   },
   'gymnastics-free-swim': {
     src: '/images/activity-gymnastics-v3.jpg',
@@ -113,6 +113,10 @@ const activityImages: Record<string, { src: string; alt: string }> = {
   'scouts-survival-challenge': {
     src: '/images/activity-scouts.jpg',
     alt: 'Students exploring tide pools together at Selong Belanak',
+  },
+  'gardening-and-padel': {
+    src: '/images/activity-padel.jpg',
+    alt: 'A secondary student holding a padel racket on the padel court',
   },
   'school-tour': {
     src: '/images/activity-school-tour-v2.jpg',

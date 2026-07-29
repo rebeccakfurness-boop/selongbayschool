@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import PhotoBanner from '@/components/PhotoBanner';
 import ContactForm from '@/components/forms/ContactForm';
+import EnrolmentForm from '@/components/forms/EnrolmentForm';
 import Reveal from '@/components/Reveal';
 import MaintenanceNotice from '@/components/MaintenanceNotice';
 import { siteConfig } from '@/lib/site-content';
@@ -28,11 +29,11 @@ export default function ContactPage() {
           <div className="rounded-lg border border-sand-line bg-paper p-8 shadow-soft">
             <h2 className="font-display text-2xl font-semibold text-ink">Send us a message</h2>
             <p className="mt-2 text-[15px] text-ink-soft">
-              For enrolment enquiries, use our{' '}
-              <a href="/admissions" className="font-semibold text-teal-deep underline">
-                admissions form
+              For general questions, use this form. Ready to enrol your child? Use the full{' '}
+              <a href="#enrolment" className="font-semibold text-teal-deep underline">
+                student enrolment form
               </a>{' '}
-              instead, this one is for general questions.
+              below instead.
             </p>
             <div className="mt-6">
               <ContactForm />
@@ -88,6 +89,21 @@ export default function ContactPage() {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
+            </div>
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal>
+        <div id="enrolment" className="mx-auto max-w-4xl scroll-mt-24 px-6 md:px-8">
+          <div className="rounded-lg border border-sand-line bg-paper p-8 shadow-soft md:p-10">
+            <h2 className="font-display text-2xl font-semibold text-ink">Student Enrolment Form</h2>
+            <p className="mt-2 text-[15px] text-ink-soft">
+              Ready to enrol your child at Selong Bay School? Complete all fields below. This is not a confirmation of
+              enrolment, but all details must be received in order to apply.
+            </p>
+            <div className="mt-6">
+              <EnrolmentForm />
             </div>
           </div>
         </div>
