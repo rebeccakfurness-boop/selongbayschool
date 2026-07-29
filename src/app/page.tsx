@@ -44,21 +44,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Temporary Student Quick Overview download CTA */}
-      <Reveal>
-        <div className="mx-auto max-w-3xl px-6 md:px-8">
-          <div className="flex flex-col items-center gap-4 rounded-lg border border-sand-line bg-aqua/40 p-8 text-center">
-            <p className="text-[15px] text-ink-soft">
-              Visiting or worldschooling? Get to know Selong Bay &mdash; download our Temporary Student Quick Overview (PDF)
-              for short-term pricing and how our activities programme works.
-            </p>
-            <Button href={temporaryQuickOverviewPdf} variant="accent" external>
-              Download the Quick Overview (PDF)
-            </Button>
-          </div>
-        </div>
-      </Reveal>
-
       {/* Philosophy story section */}
       <Reveal>
         <div className="mx-auto max-w-6xl px-6 md:px-8">
@@ -155,6 +140,21 @@ export default function HomePage() {
           </div>
           <div className="mt-8">
             <Testimonials />
+          </div>
+        </div>
+      </Reveal>
+
+      {/* Temporary Student Quick Overview download CTA */}
+      <Reveal>
+        <div className="mx-auto max-w-3xl px-6 md:px-8">
+          <div className="flex flex-col items-center gap-4 rounded-lg border border-sand-line bg-aqua/40 p-8 text-center">
+            <p className="text-[15px] text-ink-soft">
+              Visiting or worldschooling? Get to know Selong Bay &mdash; download our Temporary Student Quick Overview (PDF)
+              for short-term pricing and how our activities programme works.
+            </p>
+            <Button href={temporaryQuickOverviewPdf} variant="accent" external>
+              Download the Quick Overview (PDF)
+            </Button>
           </div>
         </div>
       </Reveal>
