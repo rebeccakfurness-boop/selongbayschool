@@ -388,6 +388,8 @@ export const temporaryPricingPdf = '/files/temporary-student-pricing-activities-
 /** Condensed 2-page version of temporaryPricingPdf, linked from the homepage only. */
 export const temporaryQuickOverviewPdf = '/files/temporary-student-quick-overview.pdf';
 
+export const secondaryProgrammePdf = '/files/secondary-school-programme.pdf';
+
 export const ourApproach = {
   heading: 'A curriculum built for both worlds',
   paragraphs: [
