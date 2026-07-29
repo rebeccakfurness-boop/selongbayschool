@@ -3,6 +3,7 @@ import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import Button from '@/components/Button';
 import Reveal from '@/components/Reveal';
+import EnrolmentForm from '@/components/forms/EnrolmentForm';
 import { admissionsGroups, temporaryEnrolments, feesSummary, formatIDR } from '@/lib/site-content';
 
 export const metadata: Metadata = {
@@ -30,6 +31,10 @@ export default function AdmissionsPage() {
           . Want to know more about how the school runs day to day? See{' '}
           <a href="/how-it-works" className="font-semibold text-teal-deep underline">
             How It Works
+          </a>
+          . Ready to apply? Jump straight to the{' '}
+          <a href="#enrolment" className="font-semibold text-teal-deep underline">
+            student enrolment form
           </a>
           .
         </p>
@@ -106,6 +111,24 @@ export default function AdmissionsPage() {
               <Button href="/contact" variant="primary">
                 Contact Us to Discuss Your Child&apos;s Needs
               </Button>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      <section id="enrolment" className="scroll-mt-24">
+        <Reveal>
+          <div className="mx-auto max-w-4xl px-6 md:px-8">
+            <div className="rounded-lg border border-sand-line bg-paper p-8 shadow-soft md:p-10">
+              <p className="font-script text-3xl text-orange-deep md:text-4xl">Ready to join us?</p>
+              <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Student Enrolment Form</h2>
+              <p className="mt-3 text-[15px] text-ink-soft">
+                Ready to enrol your child at Selong Bay School? Complete all fields below. This is not a confirmation
+                of enrolment, but all details must be received in order to apply.
+              </p>
+              <div className="mt-6">
+                <EnrolmentForm />
+              </div>
             </div>
           </div>
         </Reveal>

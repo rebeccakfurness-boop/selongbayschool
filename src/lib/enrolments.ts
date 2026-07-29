@@ -18,7 +18,7 @@ export async function submitEnrolment(record: EnrolmentInput): Promise<SubmitEnr
       start_date, enrolment_length, enrolment_length_other,
       kitas_status, kitas_notes, passport_number, passport_nationality, passport_expiry,
       photography_consent, medical_conditions, allergies,
-      lunch_option, lunch_other_notes,
+      lunch_option, lunch_other_notes, shuttle_service,
       emergency_contact_name, emergency_contact_phone, authorized_pickup,
       parent_name, parent_email, parent_whatsapp
     )
@@ -27,7 +27,7 @@ export async function submitEnrolment(record: EnrolmentInput): Promise<SubmitEnr
       ${record.startDate}, ${record.enrolmentLength}, ${record.enrolmentLengthOther || null},
       ${record.kitasStatus}, ${record.kitasNotes || null}, ${record.passportNumber || null}, ${record.passportNationality || null}, ${record.passportExpiry || null},
       ${record.photographyConsent === 'yes'}, ${record.medicalConditions || null}, ${record.allergies || null},
-      ${record.lunchOption}, ${record.lunchOtherNotes || null},
+      ${record.lunchOption}, ${record.lunchOtherNotes || null}, ${record.shuttleService === 'yes'},
       ${record.emergencyContactName}, ${record.emergencyContactPhone}, ${record.authorizedPickup || null},
       ${record.parentName}, ${record.parentEmail}, ${record.parentWhatsapp}
     )
@@ -54,6 +54,7 @@ export async function submitEnrolment(record: EnrolmentInput): Promise<SubmitEnr
     allergies: record.allergies,
     lunchOption: record.lunchOption,
     lunchOtherNotes: record.lunchOtherNotes,
+    shuttleService: record.shuttleService,
     emergencyContactName: record.emergencyContactName,
     emergencyContactPhone: record.emergencyContactPhone,
     authorizedPickup: record.authorizedPickup,

@@ -79,6 +79,8 @@ export default function EnrolmentForm() {
   const [lunchOption, setLunchOption] = useState('');
   const [lunchOtherNotes, setLunchOtherNotes] = useState('');
 
+  const [shuttleService, setShuttleService] = useState('');
+
   const [emergencyContactName, setEmergencyContactName] = useState('');
   const [emergencyContactPhone, setEmergencyContactPhone] = useState('');
   const [authorizedPickup, setAuthorizedPickup] = useState('');
@@ -108,6 +110,7 @@ export default function EnrolmentForm() {
       allergies,
       lunchOption,
       lunchOtherNotes,
+      shuttleService,
       emergencyContactName,
       emergencyContactPhone,
       authorizedPickup,
@@ -134,6 +137,7 @@ export default function EnrolmentForm() {
       setAllergies('');
       setLunchOption('');
       setLunchOtherNotes('');
+      setShuttleService('');
       setEmergencyContactName('');
       setEmergencyContactPhone('');
       setAuthorizedPickup('');
@@ -154,6 +158,12 @@ export default function EnrolmentForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-10" noValidate>
+      <p className="rounded-md border border-teal/20 bg-aqua/40 px-5 py-4 text-[15px] text-ink-soft">
+        Submitting this form is not confirmation of a place at Selong Bay School. Enrolment follows an online or
+        in-person meeting, after which families receive a formal letter of acceptance. As we are a growing school, we
+        may not always be able to accommodate every family&apos;s exact preferred start date or age group.
+      </p>
+
       <div className="flex flex-col gap-5">
         <h3 className="font-display text-lg font-semibold text-ink">Student details</h3>
         <div className="grid gap-5 sm:grid-cols-2">
@@ -276,6 +286,16 @@ export default function EnrolmentForm() {
             <TextInput id="enr-lunch-other" value={lunchOtherNotes} onChange={(e) => setLunchOtherNotes(e.target.value)} />
           </Field>
         )}
+      </div>
+
+      <div className="flex flex-col gap-5 border-t border-sand-line pt-8">
+        <h3 className="font-display text-lg font-semibold text-ink">Shuttle service</h3>
+        <Field label="Do you require the shuttle service? Leaves from The Well in Kuta, to the school and back each school day." htmlFor="enr-shuttle-yes" required>
+          <div className="flex flex-col gap-2 sm:flex-row sm:gap-6">
+            <RadioOption name="shuttleService" value="yes" label="Yes" checked={shuttleService === 'yes'} onChange={setShuttleService} />
+            <RadioOption name="shuttleService" value="no" label="No" checked={shuttleService === 'no'} onChange={setShuttleService} />
+          </div>
+        </Field>
       </div>
 
       <div className="flex flex-col gap-5 border-t border-sand-line pt-8">

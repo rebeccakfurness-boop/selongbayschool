@@ -28,6 +28,7 @@ interface EnrolmentDetail {
   allergies: string | null;
   lunch_option: keyof typeof lunchOptionLabels;
   lunch_other_notes: string | null;
+  shuttle_service: boolean;
   emergency_contact_name: string;
   emergency_contact_phone: string;
   authorized_pickup: string | null;
@@ -70,7 +71,7 @@ export default async function AdminEnrolmentDetailPage({ params }: { params: Pro
            start_date::text AS start_date, enrolment_length, enrolment_length_other,
            kitas_status, kitas_notes, passport_number, passport_nationality, passport_expiry::text AS passport_expiry,
            photography_consent, medical_conditions, allergies,
-           lunch_option, lunch_other_notes,
+           lunch_option, lunch_other_notes, shuttle_service,
            emergency_contact_name, emergency_contact_phone, authorized_pickup,
            parent_name, parent_email, parent_whatsapp,
            is_read, notify_email_status, reply_email_status, created_at
@@ -139,6 +140,10 @@ export default async function AdminEnrolmentDetailPage({ params }: { params: Pro
               : lunchOptionLabels[enrolment.lunch_option]
           }
         />
+      </Section>
+
+      <Section heading="Shuttle service">
+        <Row label="Needs shuttle (The Well, Kuta to school and back)" value={enrolment.shuttle_service ? 'Yes' : 'No'} />
       </Section>
 
       <Section heading="Emergency contact &amp; authorised pickup">

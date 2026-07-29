@@ -181,6 +181,8 @@ export const enrolmentSchema = z.object({
   lunchOption: z.enum(['bring_own', 'godspeed', 'other'], { message: 'Please choose a lunch option' }),
   lunchOtherNotes: optionalText,
 
+  shuttleService: z.enum(['yes', 'no'], { message: 'Please choose whether you need the shuttle service' }),
+
   emergencyContactName: z.string().trim().min(1, 'Emergency contact name is required').max(200),
   emergencyContactPhone: z.string().trim().min(1, 'Emergency contact phone is required').max(50),
   authorizedPickup: optionalText,

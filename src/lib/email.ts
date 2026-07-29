@@ -208,6 +208,7 @@ export interface EnrolmentEmailInput {
   allergies?: string | null;
   lunchOption: LunchOption;
   lunchOtherNotes?: string | null;
+  shuttleService: 'yes' | 'no';
   emergencyContactName: string;
   emergencyContactPhone: string;
   authorizedPickup?: string | null;
@@ -247,6 +248,7 @@ export async function sendEnrolmentNotification(input: EnrolmentEmailInput): Pro
           ? [lunchOptionLabels.other, input.lunchOtherNotes].filter(Boolean).join(': ')
           : lunchOptionLabels[input.lunchOption],
       ],
+      ['Shuttle service (The Well, Kuta to school and back)', input.shuttleService === 'yes' ? 'Yes' : 'No'],
       ['Emergency contact name', input.emergencyContactName],
       ['Emergency contact phone', input.emergencyContactPhone],
       ['Other authorised pickup/drop-off', input.authorizedPickup],

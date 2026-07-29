@@ -322,6 +322,7 @@ export function ensureSchema(): Promise<void> {
           allergies TEXT,
           lunch_option TEXT NOT NULL,
           lunch_other_notes TEXT,
+          shuttle_service BOOLEAN NOT NULL DEFAULT false,
           emergency_contact_name TEXT NOT NULL,
           emergency_contact_phone TEXT NOT NULL,
           authorized_pickup TEXT,
@@ -334,6 +335,7 @@ export function ensureSchema(): Promise<void> {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
+      await sql`ALTER TABLE enrolment_submissions ADD COLUMN IF NOT EXISTS shuttle_service BOOLEAN NOT NULL DEFAULT false`;
     })();
   }
   return schemaReady;
