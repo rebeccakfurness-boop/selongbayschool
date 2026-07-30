@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: 'Selong Bay School',
   tagline: 'A different kind of school',
-  mission: 'A school in Lombok, built for families who want an exceptional education and time to explore.',
+  mission: 'A school in Lombok, built for families who want an advanced future-focused education and time to explore.',
   url: 'https://www.selongbayschool.com',
   contact: {
     address: 'Dusun Serangan, Selong Belanak, Kec. Praya Bar., Kabupaten Lombok Tengah, Nusa Tenggara Bar. 83572',

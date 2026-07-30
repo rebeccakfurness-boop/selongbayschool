@@ -28,7 +28,7 @@ export default function HomePage() {
                 <span className="font-display block text-4xl font-semibold md:text-6xl">different kind of school</span>
               </h1>
               <p className="mx-auto mt-4 max-w-xl text-balance text-lg text-white/90 md:text-xl">
-                A school in Lombok, built for families who want an exceptional education and time to explore.
+                A school in Lombok, built for families who want an advanced future-focused education and time to explore.
               </p>
             </div>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
