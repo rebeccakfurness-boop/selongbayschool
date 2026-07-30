@@ -15,11 +15,15 @@ export const siteConfig = {
   },
 };
 
+/** Canonical bank details, confirmed against the Term 1 tuition invoice template — this
+ * supersedes an older account (Elizabeth Berryman / Wise) that had been left here from an
+ * earlier invoice sample. */
 export const bankTransferDetails = {
-  bank: 'Mandiri',
-  accountNumber: '1610016965134',
-  accountName: 'Elizabeth Berryman',
-  wiseUrl: 'https://wise.com/pay/me/elizabethb3419',
+  payableTo: 'Yayasan Selong Bay Sekolah',
+  bank: 'PT Bank Mandiri (Persero)',
+  accountNumber: '1610017501474',
+  accountName: 'Yayasan Selong Bay Sekolah',
+  swiftCode: 'BMRIIDJA',
 };
 
 /** Fixed pack price/size — not admin-configurable, defined once so the client display and the

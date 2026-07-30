@@ -82,20 +82,16 @@ export default function BuyPackPage() {
               <div className="mt-4 rounded-md border border-teal/30 bg-aqua/30 p-4 text-sm text-ink">
                 <p className="font-semibold text-teal-deep">Bank transfer details</p>
                 <p className="mt-2 leading-relaxed">
+                  Payable To: {bankTransferDetails.payableTo}
+                  <br />
                   Bank: {bankTransferDetails.bank}
                   <br />
                   Account Number: {bankTransferDetails.accountNumber}
                   <br />
                   Name: {bankTransferDetails.accountName}
+                  <br />
+                  SWIFT Code: {bankTransferDetails.swiftCode}
                 </p>
-                <a
-                  href={bankTransferDetails.wiseUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 inline-block font-semibold text-teal-deep underline"
-                >
-                  Or pay via Wise →
-                </a>
                 <p className="mt-3 text-xs text-ink-soft">We&apos;ll also email you these details for your records.</p>
               </div>
             )}

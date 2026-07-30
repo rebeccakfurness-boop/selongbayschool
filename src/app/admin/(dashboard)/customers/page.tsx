@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ensureSchema, sql } from '@/lib/db';
 import { formatDateTime } from '@/lib/admin-format';
+import { requireAdmin } from '@/lib/current-staff';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +21,7 @@ export default async function AdminCustomersPage({
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
+  await requireAdmin();
   await ensureSchema();
   const { q } = await searchParams;
   const query = q?.trim() || null;

@@ -1,5 +1,6 @@
 import { ensureSchema, sql } from '@/lib/db';
 import { formatDateTime } from '@/lib/admin-format';
+import { requireAdmin } from '@/lib/current-staff';
 import StatusPill from '@/components/admin/StatusPill';
 import MarkReadButton from '@/components/admin/MarkReadButton';
 
@@ -22,6 +23,7 @@ interface EnquiryRow {
 }
 
 export default async function AdminEnquiriesPage() {
+  await requireAdmin();
   await ensureSchema();
   const enquiries = (await sql`
     SELECT id, type, name, email, phone, message, child_name, child_age, interest,

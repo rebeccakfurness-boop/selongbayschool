@@ -301,6 +301,516 @@ export function ensureSchema(): Promise<void> {
         )
       `;
 
+      // --- Operations dashboard (families, enquiries, forecast, roles) ---
+      // admin_users doubles as the staff table: 'admin' has full access, 'teacher' is scoped to
+      // their assigned classes (see teacher_assignments) at the application layer.
+      await sql`
+        ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'admin'
+        CHECK (role IN ('admin', 'teacher'))
+      `;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS display_name TEXT`;
+
+      // Mirrors the "Family Tracker" spreadsheet tab, which is the canonical schema (its own rows
+      // are mostly empty; real current students come from "Sheet1" instead, mapped onto these
+      // columns by scripts/import-family-tracker.ts). One row per child; siblings share a family_id.
+      await sql`
+        CREATE TABLE IF NOT EXISTS children (
+          id BIGSERIAL PRIMARY KEY,
+          family_id TEXT,
+          status TEXT NOT NULL DEFAULT 'full_time'
+            CHECK (status IN ('enquiry', 'booking_waitlist', 'full_time', 'temporary', 'worldschooler', 'hybrid')),
+          is_active BOOLEAN NOT NULL DEFAULT true,
+          programme TEXT,
+          class_band TEXT CHECK (class_band IN ('early_years', 'kindergarten', 'primary', 'secondary')),
+          class_name TEXT,
+          child_full_name TEXT NOT NULL,
+          child_nickname TEXT,
+          dob DATE,
+          gender TEXT,
+          nationality TEXT,
+          enrolment_date DATE,
+          exit_date DATE,
+          parent1_name TEXT,
+          parent1_relationship TEXT,
+          parent1_nationality TEXT,
+          parent2_name TEXT,
+          parent2_relationship TEXT,
+          parent2_nationality TEXT,
+          siblings_at_school TEXT,
+          sibling_discount_tier TEXT,
+          tuition_plan TEXT,
+          payment_status TEXT,
+          emergency_contact_name TEXT,
+          emergency_contact_phone TEXT,
+          allergies_medical_notes TEXT,
+          dietary_requirements TEXT,
+          religion TEXT,
+          home_language TEXT,
+          nisn_request_signed BOOLEAN NOT NULL DEFAULT false,
+          nisn_request_date DATE,
+          nisn_number TEXT,
+          liability_form_signed BOOLEAN NOT NULL DEFAULT false,
+          liability_form_date DATE,
+          photography_signed BOOLEAN NOT NULL DEFAULT false,
+          photography_consent TEXT,
+          photography_form_date DATE,
+          pickup_authorization_signed BOOLEAN NOT NULL DEFAULT false,
+          authorized_pickup_persons TEXT,
+          pickup_form_date DATE,
+          behavioral_form_signed BOOLEAN NOT NULL DEFAULT false,
+          behavioral_form_date DATE,
+          financial_agreement_signed BOOLEAN NOT NULL DEFAULT false,
+          financial_agreement_date DATE,
+          parent_protection_addendum_signed BOOLEAN NOT NULL DEFAULT false,
+          data_consent_signed BOOLEAN NOT NULL DEFAULT false,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      // Not part of the Family Tracker column set, but needed to actually reach a family (Family
+      // Tracker has no parent email/phone columns at all) and, later, to link a guardian's
+      // `customers` portal login to their child(ren) via guardian_children below.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS primary_contact_email TEXT`;
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS primary_contact_phone TEXT`;
+      // Free-text carried over from Sheet1's "Duration of Stay" column; not auto-classified into
+      // status (temporary/worldschooler) since that would be a guess — left for admin review.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS duration_of_stay_note TEXT`;
+      // Immigration documents — admin-only visibility (see ChildCard), not shown to teachers even
+      // though they can see the rest of the compliance/health fields above.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS passport_copy_url TEXT`;
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS visa_status TEXT`;
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS kitas_copy_url TEXT`;
+      // Same "similar ID document" class as passport/KITAS above — visible to admin and the
+      // child's own parent (via guardian_children), never to teachers. Not one of the 7 Forms &
+      // Compliance checklist items (COMPLIANCE_ITEMS): those are signed consent forms, a different
+      // concern from identity documents, so uploading one here never touches compliance state.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS birth_certificate_url TEXT`;
+      // Free-text, carried the same way duration_of_stay_note is: not on the original Family
+      // Tracker sheet, added so the parent-facing profile card (and admin) has somewhere to record
+      // it. previous_school parallels enrolment_submissions.previous_school (a different table, the
+      // public enrolment form's own submission record) but the two are never auto-synced.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS previous_school TEXT`;
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS lunch_option TEXT`;
+      // Profile photo shown as a circular avatar wherever a child's name appears (board tile, Child
+      // Card, teacher view, parent portal). photo_updated_by_label/photo_updated_at are set
+      // server-side whenever photo_url changes (never taken from client input) — an accountability
+      // trail given this is a children's-safety-adjacent feature, not a field either admin or
+      // parent edits directly.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS photo_url TEXT`;
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS photo_updated_by_label TEXT`;
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS photo_updated_at TIMESTAMPTZ`;
+      // Free-text landing spot for whatever an admissions_enquiries lead carried that doesn't map
+      // onto a real children column (child_age is a free-text guess, not a dob; plan_to_stay,
+      // follow_up_notes, source, and the lead's contact dates) — written once by the "Convert to
+      // Family" action (src/lib/child-lifecycle.ts) so none of it needs retyping, then it's just a
+      // normal admin-editable note from then on.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS admissions_notes TEXT`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_children_status ON children (status)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_children_class_name ON children (class_name)`;
+
+      // Unified admissions pipeline: the "School Tours" / "Inquiries from WA" / "Old Inquiries" /
+      // "Other islanders" / "Visitors only" spreadsheet tabs, tagged by source. Distinct from the
+      // existing `enquiries` table above, which is the public site's contact/admissions/high-school
+      // form submissions, not the admissions team's own lead tracker.
+      await sql`
+        CREATE TABLE IF NOT EXISTS admissions_enquiries (
+          id BIGSERIAL PRIMARY KEY,
+          source TEXT NOT NULL CHECK (source IN ('school_tour', 'visitor', 'whatsapp', 'old_inquiry', 'other_islander')),
+          parent_name TEXT,
+          child_name TEXT,
+          child_age TEXT,
+          contact_phone TEXT,
+          contact_email TEXT,
+          plan_to_stay TEXT,
+          first_message_date DATE,
+          visit_date DATE,
+          booking_date DATE,
+          booking_time TEXT,
+          follow_up_notes TEXT,
+          converted_child_id BIGINT REFERENCES children(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      // Mirrors the "Student Count" tab: named students per class band per forecast month.
+      // Entries are frequently forward-looking placeholders (not yet real enrolled children), so
+      // linked_child_id is nullable and only set once a name is matched to a real `children` row.
+      await sql`
+        CREATE TABLE IF NOT EXISTS class_forecast_entries (
+          id BIGSERIAL PRIMARY KEY,
+          forecast_month TEXT NOT NULL,
+          class_band TEXT NOT NULL CHECK (class_band IN ('early_years', 'kindergarten', 'primary', 'secondary')),
+          child_display_name TEXT NOT NULL,
+          age_or_grade_label TEXT,
+          status_tag TEXT,
+          linked_child_id BIGINT REFERENCES children(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`
+        CREATE INDEX IF NOT EXISTS idx_class_forecast_month_band
+        ON class_forecast_entries (forecast_month, class_band)
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS teacher_assignments (
+          id BIGSERIAL PRIMARY KEY,
+          admin_user_id BIGINT NOT NULL REFERENCES admin_users(id),
+          class_name TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (admin_user_id, class_name)
+        )
+      `;
+
+      // Links a parent's existing `customers` portal account (magic-link login, same as activity
+      // booking) to the child(ren) they're guardian of, so the parent LMS portal can scope to
+      // "my children" without a second, separate parent-auth system.
+      await sql`
+        CREATE TABLE IF NOT EXISTS guardian_children (
+          id BIGSERIAL PRIMARY KEY,
+          customer_id BIGINT NOT NULL REFERENCES customers(id),
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          relationship TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (customer_id, child_id)
+        )
+      `;
+
+      // Simple, separate login for the Student role (magic-link email isn't practical for young
+      // children) — one account per child, credentials set by an admin/teacher.
+      await sql`
+        CREATE TABLE IF NOT EXISTS student_accounts (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL UNIQUE REFERENCES children(id),
+          username TEXT NOT NULL UNIQUE,
+          password_hash TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          last_login_at TIMESTAMPTZ
+        )
+      `;
+
+      // --- Phase 3: Learning Profile + LMS (lesson plans, work samples, photo feed, resources) ---
+
+      // One row per child per term. Achievement/effort scales and the 6 social-development
+      // criteria match the real "Noah Term 1 Report" PDF sample; letter grades (A-E) shown on
+      // that PDF are a pure display mapping over `outstanding..limited`, not stored separately.
+      await sql`
+        CREATE TABLE IF NOT EXISTS learning_profiles (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          term_label TEXT NOT NULL,
+          grade_label TEXT,
+          general_comment TEXT,
+          whole_days_absent TEXT,
+          partial_days_absent TEXT,
+          extra_activities TEXT,
+          positive_attitude TEXT CHECK (positive_attitude IN ('C', 'U', 'S')),
+          respects_rights_of_others TEXT CHECK (respects_rights_of_others IN ('C', 'U', 'S')),
+          respects_class_school_rules TEXT CHECK (respects_class_school_rules IN ('C', 'U', 'S')),
+          works_well_independently TEXT CHECK (works_well_independently IN ('C', 'U', 'S')),
+          shows_initiative_enthusiasm TEXT CHECK (shows_initiative_enthusiasm IN ('C', 'U', 'S')),
+          helps_encourages_others TEXT CHECK (helps_encourages_others IN ('C', 'U', 'S')),
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (child_id, term_label)
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS learning_profile_subjects (
+          id BIGSERIAL PRIMARY KEY,
+          learning_profile_id BIGINT NOT NULL REFERENCES learning_profiles(id) ON DELETE CASCADE,
+          subject_area TEXT NOT NULL,
+          sub_subject TEXT,
+          achievement TEXT CHECK (achievement IN ('outstanding', 'high', 'expected', 'basic', 'limited')),
+          effort TEXT CHECK (effort IN ('high', 'satisfactory', 'low')),
+          teacher_comment TEXT,
+          sort_order INTEGER NOT NULL DEFAULT 0
+        )
+      `;
+      await sql`
+        CREATE INDEX IF NOT EXISTS idx_learning_profile_subjects_profile
+        ON learning_profile_subjects (learning_profile_id)
+      `;
+
+      // Tied to class_name (not class_band) since that's the actual teaching unit — a teacher's
+      // assignment in teacher_assignments is also by class_name.
+      await sql`
+        CREATE TABLE IF NOT EXISTS lesson_plans (
+          id BIGSERIAL PRIMARY KEY,
+          class_name TEXT NOT NULL,
+          week_label TEXT NOT NULL,
+          subject TEXT,
+          title TEXT NOT NULL,
+          description TEXT,
+          teacher_id BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_lesson_plans_class ON lesson_plans (class_name)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_units (
+          id BIGSERIAL PRIMARY KEY,
+          class_name TEXT NOT NULL,
+          term_label TEXT NOT NULL,
+          unit_title TEXT NOT NULL,
+          description TEXT,
+          is_current BOOLEAN NOT NULL DEFAULT true,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_curriculum_units_class ON curriculum_units (class_name)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS work_samples (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          teacher_id BIGINT REFERENCES admin_users(id),
+          title TEXT NOT NULL,
+          file_url TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_work_samples_child ON work_samples (child_id)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS photo_feed_items (
+          id BIGSERIAL PRIMARY KEY,
+          uploaded_by BIGINT REFERENCES admin_users(id),
+          file_url TEXT NOT NULL,
+          caption TEXT,
+          class_name TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`
+        CREATE TABLE IF NOT EXISTS photo_feed_tags (
+          id BIGSERIAL PRIMARY KEY,
+          photo_id BIGINT NOT NULL REFERENCES photo_feed_items(id) ON DELETE CASCADE,
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          UNIQUE (photo_id, child_id)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_photo_feed_tags_child ON photo_feed_tags (child_id)`;
+
+      // Downloadable resources — especially important for hybrid/worldschooling parents doing
+      // off-campus homeschooling days. class_band NULL means visible to every family.
+      await sql`
+        CREATE TABLE IF NOT EXISTS resources (
+          id BIGSERIAL PRIMARY KEY,
+          title TEXT NOT NULL,
+          description TEXT,
+          file_url TEXT NOT NULL,
+          class_band TEXT CHECK (class_band IN ('early_years', 'kindergarten', 'primary', 'secondary')),
+          uploaded_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      // Links a parent's customers/`/account` login to the child(ren) they're guardian of — no
+      // admin UI existed to populate this until Phase 3's child card update; without it the
+      // parent portal has no way to know which children belong to which logged-in parent.
+      await sql`CREATE INDEX IF NOT EXISTS idx_guardian_children_customer ON guardian_children (customer_id)`;
+
+      // --- Phase 4: invoicing ---
+
+      // Singleton (id always 1) so bank/payable-to details can be corrected in future without a
+      // code change — never hardcoded in the invoice PDF template itself. Seeded below with the
+      // canonical values confirmed against the real Term 1 invoice.
+      await sql`
+        CREATE TABLE IF NOT EXISTS school_settings (
+          id INTEGER PRIMARY KEY DEFAULT 1,
+          payable_to TEXT NOT NULL,
+          bank_name TEXT NOT NULL,
+          account_number TEXT NOT NULL,
+          account_name TEXT NOT NULL,
+          swift_code TEXT NOT NULL,
+          bank_address TEXT,
+          bank_code TEXT,
+          branch_code TEXT,
+          clearing_code TEXT,
+          currency TEXT NOT NULL DEFAULT 'IDR',
+          invoice_due_days INTEGER NOT NULL DEFAULT 5,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          CHECK (id = 1)
+        )
+      `;
+      await sql`
+        INSERT INTO school_settings (id, payable_to, bank_name, account_number, account_name, swift_code, bank_address, bank_code, branch_code, clearing_code)
+        VALUES (
+          1, 'Yayasan Selong Bay Sekolah', 'PT BANK MANDIRI (PERSERO)', '1610017501474', 'Yayasan Selong Bay Sekolah',
+          'BMRIIDJA', 'Dusun Serangan RT 000 RW 000, Praya Barat, Kode Pos 83571', '008', '16161', '0083894'
+        )
+        ON CONFLICT (id) DO NOTHING
+      `;
+
+      // Continues the school's existing manual invoice numbering (samples seen were #040/#050 in
+      // early July 2026); confirmed with the school to start the software's sequence at 51 so it
+      // can't collide with an invoice already issued outside this system.
+      await sql`CREATE SEQUENCE IF NOT EXISTS invoice_number_seq START 51`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS invoices (
+          id BIGSERIAL PRIMARY KEY,
+          invoice_number INTEGER NOT NULL UNIQUE,
+          invoice_type TEXT NOT NULL CHECK (invoice_type IN ('tuition', 'activity')),
+          billed_to_name TEXT NOT NULL,
+          issue_date DATE NOT NULL DEFAULT CURRENT_DATE,
+          due_date DATE NOT NULL,
+          currency TEXT NOT NULL DEFAULT 'IDR',
+          subtotal_amount BIGINT NOT NULL DEFAULT 0,
+          sibling_discount_amount BIGINT NOT NULL DEFAULT 0,
+          total_amount BIGINT NOT NULL DEFAULT 0,
+          status TEXT NOT NULL DEFAULT 'outstanding' CHECK (status IN ('outstanding', 'paid', 'cancelled')),
+          paid_at TIMESTAMPTZ,
+          notes TEXT,
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      // A child appears here whenever they're billed on an invoice, whether alone or with
+      // siblings — sort_order (the order they were added when the invoice was created) is what
+      // the 5%/10% sibling discount rule keys off (see /api/admin/invoices).
+      await sql`
+        CREATE TABLE IF NOT EXISTS invoice_children (
+          id BIGSERIAL PRIMARY KEY,
+          invoice_id BIGINT NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          discount_percent NUMERIC NOT NULL DEFAULT 0,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          UNIQUE (invoice_id, child_id)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_invoice_children_child ON invoice_children (child_id)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS invoice_line_items (
+          id BIGSERIAL PRIMARY KEY,
+          invoice_id BIGINT NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
+          child_id BIGINT REFERENCES children(id),
+          description TEXT NOT NULL,
+          quantity NUMERIC NOT NULL DEFAULT 1,
+          unit_price BIGINT NOT NULL,
+          line_total BIGINT NOT NULL,
+          sort_order INTEGER NOT NULL DEFAULT 0
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_invoice_line_items_invoice ON invoice_line_items (invoice_id)`;
+
+      // --- Phase 5: Google Classroom integration ---
+
+      // Used to match a Google Classroom roster entry to a local child — many young students use
+      // a parent's Google account for Classroom, so this is checked in addition to (not instead
+      // of) primary_contact_email when matching synced rosters (see sync-course.ts).
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS classroom_student_email TEXT`;
+
+      // Singleton (id always 1) — one Google account authorizes access for the whole school,
+      // same pattern as school_settings. No connection row means Classroom isn't connected yet
+      // and getClassroomProvider() returns the stub.
+      await sql`
+        CREATE TABLE IF NOT EXISTS classroom_connection (
+          id INTEGER PRIMARY KEY DEFAULT 1,
+          google_account_email TEXT NOT NULL,
+          access_token TEXT NOT NULL,
+          access_token_expires_at TIMESTAMPTZ NOT NULL,
+          refresh_token TEXT NOT NULL,
+          connected_by BIGINT REFERENCES admin_users(id),
+          connected_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          last_synced_at TIMESTAMPTZ,
+          CHECK (id = 1)
+        )
+      `;
+
+      // A Google Classroom "course" only starts feeding data into the app once an admin maps it
+      // to one of the school's own class_name values — courses aren't synced automatically on
+      // connect, since course names in Classroom won't reliably match class_name strings.
+      await sql`
+        CREATE TABLE IF NOT EXISTS classroom_course_mappings (
+          id BIGSERIAL PRIMARY KEY,
+          google_course_id TEXT NOT NULL UNIQUE,
+          google_course_name TEXT NOT NULL,
+          class_name TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS classroom_assignments (
+          id BIGSERIAL PRIMARY KEY,
+          google_coursework_id TEXT NOT NULL UNIQUE,
+          class_name TEXT NOT NULL,
+          title TEXT NOT NULL,
+          description TEXT,
+          due_date DATE,
+          alternate_link TEXT,
+          synced_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_classroom_assignments_class ON classroom_assignments (class_name)`;
+
+      // child_id is nullable: a submission only links to a local child once their Classroom
+      // roster email matches children.classroom_student_email or primary_contact_email — an
+      // unmatched submission is still stored (visible to admin as "unmatched") rather than
+      // silently dropped.
+      await sql`
+        CREATE TABLE IF NOT EXISTS classroom_submissions (
+          id BIGSERIAL PRIMARY KEY,
+          google_submission_id TEXT NOT NULL UNIQUE,
+          classroom_assignment_id BIGINT NOT NULL REFERENCES classroom_assignments(id) ON DELETE CASCADE,
+          child_id BIGINT REFERENCES children(id),
+          google_student_email TEXT,
+          state TEXT NOT NULL,
+          alternate_link TEXT,
+          synced_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_classroom_submissions_child ON classroom_submissions (child_id)`;
+
+      // One signature per (child, form) — signing again overwrites rather than accumulating a
+      // history, since these are point-in-time consent forms, not documents that get amended.
+      // signature_data_url is the raw data: URL a <canvas> produces (image/png;base64,...),
+      // embedded directly into the generated PDF — no separate file storage needed.
+      await sql`
+        CREATE TABLE IF NOT EXISTS compliance_signatures (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          form_key TEXT NOT NULL,
+          signed_by_name TEXT NOT NULL,
+          signature_data_url TEXT NOT NULL,
+          signed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (child_id, form_key)
+        )
+      `;
+
+      // accept_token is generated at creation time (not just once sent) so the row never has to
+      // branch on "does a token exist yet" — every letter, draft or not, has a stable accept URL.
+      // Acceptance is by token, not a customer login, since a family at Letter of Offer stage
+      // (enquiry/booking_waitlist) usually doesn't have a parent portal account yet.
+      await sql`
+        CREATE TABLE IF NOT EXISTS letters_of_offer (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'sent', 'accepted')),
+          start_date DATE NOT NULL,
+          programme TEXT,
+          class_name TEXT,
+          tuition_plan TEXT,
+          fees_note TEXT,
+          additional_terms TEXT,
+          accept_token TEXT NOT NULL UNIQUE,
+          sent_at TIMESTAMPTZ,
+          accepted_at TIMESTAMPTZ,
+          accepted_by_name TEXT,
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_letters_of_offer_child ON letters_of_offer (child_id)`;
+
       await sql`
         CREATE TABLE IF NOT EXISTS enrolment_submissions (
           id BIGSERIAL PRIMARY KEY,

@@ -53,7 +53,7 @@ async function send(
   to: string,
   subject: string,
   html: string,
-  options?: { replyTo?: string; cc?: string }
+  options?: { replyTo?: string; cc?: string; attachment?: { name: string; content: string }[] }
 ): Promise<boolean> {
   try {
     const email = new brevo.SendSmtpEmail();
@@ -63,6 +63,7 @@ async function send(
     email.htmlContent = html;
     if (options?.replyTo) email.replyTo = { email: options.replyTo };
     if (options?.cc) email.cc = [{ email: options.cc }];
+    if (options?.attachment) email.attachment = options.attachment;
 
     await getBrevoClient().sendTransacEmail(email);
     return true;
@@ -307,13 +308,12 @@ function bankDetailsHtml(): string {
     <div style="margin-top: 16px; padding: 16px; background: #f6f1e6; border-radius: 10px;">
       <p style="margin: 0 0 8px; font-weight: 700; color: #045157;">Bank transfer details</p>
       ${fieldRows([
+        ['Payable To', bankTransferDetails.payableTo],
         ['Bank', bankTransferDetails.bank],
         ['Account Number', bankTransferDetails.accountNumber],
         ['Name', bankTransferDetails.accountName],
+        ['SWIFT Code', bankTransferDetails.swiftCode],
       ])}
-      <p style="margin: 12px 0 0;">
-        <a href="${bankTransferDetails.wiseUrl}" style="color:#007c83; font-weight:700;">Or pay via Wise &rarr;</a>
-      </p>
     </div>`;
 }
 
@@ -544,4 +544,178 @@ export async function sendCustomerCancellationNotification(input: CustomerCancel
     ])
   );
   return send(NOTIFY_TO, `Booking cancelled by customer: ${input.activityName} for ${input.childName}`, html, { replyTo: input.parentEmail });
+}
+
+export interface InvoiceEmailInput {
+  toEmail: string;
+  billedToName: string;
+  invoiceNumber: number;
+  invoiceType: 'tuition' | 'activity';
+  totalAmount: number;
+  currency: string;
+  dueDate: string;
+  pdfBuffer: Buffer;
+}
+
+/** Sent from the "Send to parent" action on an invoice (Child Card, invoice edit page, or the
+ * master invoice list) — cc'd to the school inbox so there's always a record even if the parent's
+ * address is wrong, same pattern as every other outbound email in this app. */
+export async function sendInvoiceEmail(input: InvoiceEmailInput): Promise<boolean> {
+  const amount = input.currency === 'IDR' ? formatIDR(input.totalAmount) : `${input.totalAmount} ${input.currency}`;
+  const html = wrapEmail(
+    `Invoice #${String(input.invoiceNumber).padStart(3, '0')}`,
+    `<p>Dear ${input.billedToName},</p>
+     <p>Please find attached your ${input.invoiceType} invoice from Selong Bay School.</p>
+     ${fieldRows([
+       ['Invoice number', `#${String(input.invoiceNumber).padStart(3, '0')}`],
+       ['Amount due', amount],
+       ['Due date', input.dueDate],
+     ])}
+     <p style="margin-top: 16px;">Bank transfer details are included in the attached PDF. If you have any questions, just reply to this email.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `Invoice #${String(input.invoiceNumber).padStart(3, '0')} — Selong Bay School`, html, {
+    cc: NOTIFY_TO,
+    attachment: [{ name: `invoice-${input.invoiceNumber}.pdf`, content: input.pdfBuffer.toString('base64') }],
+  });
+}
+
+export interface ComplianceFormEmailInput {
+  toEmail: string;
+  childFullName: string;
+  formTitle: string;
+  alreadySigned: boolean;
+  pdfBuffer: Buffer;
+}
+
+/** Sent from the "Send to parent" action on a Forms & Compliance item (Child Card) — cc'd to the
+ * school inbox, same pattern as sendInvoiceEmail. Works whether the form has already been signed
+ * (parent gets a copy for their records) or not (parent gets it to review/sign and return). */
+export async function sendComplianceFormEmail(input: ComplianceFormEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    input.formTitle,
+    input.alreadySigned
+      ? `<p>Dear parent/guardian of ${input.childFullName},</p>
+         <p>Please find attached a copy of the signed <strong>${input.formTitle}</strong> on file for ${input.childFullName}.</p>
+         <p style="margin-top: 16px;">If you have any questions, just reply to this email.</p>
+         <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+      : `<p>Dear parent/guardian of ${input.childFullName},</p>
+         <p>Please find attached the <strong>${input.formTitle}</strong> for ${input.childFullName}. This form still needs to be signed and returned to the school office.</p>
+         <p style="margin-top: 16px;">If you have any questions, just reply to this email.</p>
+         <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `${input.formTitle} — ${input.childFullName} — Selong Bay School`, html, {
+    cc: NOTIFY_TO,
+    attachment: [{ name: `${input.formTitle.replace(/[^a-z0-9]+/gi, '-')}-${input.childFullName.replace(/[^a-z0-9]+/gi, '-')}.pdf`, content: input.pdfBuffer.toString('base64') }],
+  });
+}
+
+export interface LetterOfOfferEmailInput {
+  toEmail: string;
+  childFullName: string;
+  acceptUrl: string;
+  pdfBuffer: Buffer;
+}
+
+/** Sent from the "Send to parent" action on a Letter of Offer (Child Card) — cc'd to the school
+ * inbox, same pattern as every other outbound document email in this app. The PDF is attached for
+ * their records, but acceptance itself happens via acceptUrl (a tokenized public page), not by
+ * replying to this email. */
+export async function sendLetterOfOfferEmail(input: LetterOfOfferEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    'Letter of Offer',
+    `<p>Dear parent/guardian of ${input.childFullName},</p>
+     <p>Please find attached the Letter of Offer confirming ${input.childFullName}'s place at Selong Bay School.</p>
+     <p style="margin-top: 16px;">Please review it and let us know if anything needs correcting. When you're ready,
+       accept the offer online here:</p>
+     <p style="margin-top: 12px;"><a href="${input.acceptUrl}" style="color:#007c83; font-weight:700;">Review &amp; accept the Letter of Offer</a></p>
+     <p style="margin-top: 16px;">Once you've accepted, we'll follow up with the tuition invoice.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `Letter of Offer — ${input.childFullName} — Selong Bay School`, html, {
+    cc: NOTIFY_TO,
+    attachment: [{ name: `letter-of-offer-${input.childFullName.replace(/[^a-z0-9]+/gi, '-')}.pdf`, content: input.pdfBuffer.toString('base64') }],
+  });
+}
+
+/** Sent to the school inbox the moment a parent accepts a Letter of Offer online — this is the
+ * "prompt admin staff to send the invoice" step: an actionable notification with a direct link to
+ * create the tuition invoice for this child, rather than acceptance silently updating a status
+ * flag that nobody notices. */
+export async function sendLetterOfOfferAcceptedNotification(input: {
+  childFullName: string;
+  acceptedByName: string;
+  createInvoiceUrl: string;
+}): Promise<boolean> {
+  const html = wrapEmail(
+    'Letter of Offer accepted',
+    `<p>${input.acceptedByName} has accepted the Letter of Offer for <strong>${input.childFullName}</strong>.</p>
+     <p style="margin-top: 16px; font-weight: 700;">Next step: send the tuition invoice.</p>
+     <p style="margin-top: 12px;"><a href="${input.createInvoiceUrl}" style="color:#007c83; font-weight:700;">Create the tuition invoice</a></p>`
+  );
+  return send(NOTIFY_TO, `Letter of Offer accepted — ${input.childFullName}`, html);
+}
+
+export async function sendLetterOfOfferAcceptedConfirmation(toEmail: string, childFullName: string): Promise<boolean> {
+  const html = wrapEmail(
+    'Thank you for accepting',
+    `<p>Thank you for accepting the Letter of Offer for ${childFullName}. We're delighted to welcome them to Selong Bay School.</p>
+     <p style="margin-top: 16px;">We'll be in touch shortly with the tuition invoice. If you have any questions in the meantime, just reply to this email.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(toEmail, `Thanks for accepting — ${childFullName} — Selong Bay School`, html, { cc: NOTIFY_TO });
+}
+
+/** Sent to the school inbox the moment a child's card is dragged into an active status
+ * (Full-Time/Temporary/Worldschooler/Hybrid) with start date + programme already confirmed (the
+ * same guard rail that gates the drag itself — see checkActiveStatusGuardRail in
+ * src/lib/child-lifecycle.ts) and no tuition invoice exists yet. Same "prompt a human with a
+ * direct link" shape as sendLetterOfOfferAcceptedNotification's createInvoiceUrl, and for the same
+ * reason: total_amount can't be computed automatically (tuition_plan is free text, there's no fee
+ * schedule table), so this nudges rather than silently creating a $0 invoice. */
+export async function sendChildActivatedInvoicePrompt(input: {
+  childFullName: string;
+  statusLabel: string;
+  createInvoiceUrl: string;
+}): Promise<boolean> {
+  const html = wrapEmail(
+    'Ready for a tuition invoice',
+    `<p><strong>${input.childFullName}</strong> just moved to <strong>${input.statusLabel}</strong> with a start date and programme confirmed.</p>
+     <p style="margin-top: 16px; font-weight: 700;">Next step: generate the tuition invoice.</p>
+     <p style="margin-top: 12px;"><a href="${input.createInvoiceUrl}" style="color:#007c83; font-weight:700;">Open ${input.childFullName}'s card</a></p>`
+  );
+  return send(NOTIFY_TO, `Ready for a tuition invoice — ${input.childFullName}`, html);
+}
+
+export interface ChildProfileFieldChange {
+  label: string;
+  oldValue: string | null;
+  newValue: string | null;
+}
+
+/** Sent whenever a parent edits allergies_medical_notes, dietary_requirements, or lunch_option on
+ * their own child's profile — these are the fields where stale data going unnoticed is a safety
+ * risk, so the edit is pushed to people rather than only showing up next time someone opens the
+ * card. Goes to the school inbox and every teacher assigned to the child's class (the same people
+ * who can already see these fields on the admin Child Card today — this doesn't expose anything
+ * new, it just makes sure they actually see the change). send() only takes one "to" address at a
+ * time, so this loops rather than extending it for a one-off multi-recipient case. */
+export async function sendChildProfileEditNotification(input: {
+  childFullName: string;
+  editedByLabel: string;
+  changes: ChildProfileFieldChange[];
+  teacherEmails: string[];
+}): Promise<boolean> {
+  const html = wrapEmail(
+    'Child profile updated',
+    `<p>${input.editedByLabel} updated the following for <strong>${input.childFullName}</strong>:</p>
+     ${fieldRows(
+       input.changes.map((c) => [c.label, `${c.oldValue || '(none)'} → ${c.newValue || '(none)'}`])
+     )}
+     <p style="margin-top: 16px;">Please review this in the Child Card if anything looks like it needs follow-up.</p>`
+  );
+  const subject = `Profile updated — ${input.childFullName} — Selong Bay School`;
+  const recipients = [NOTIFY_TO, ...input.teacherEmails.filter((e) => e !== NOTIFY_TO)];
+  const results = await Promise.all(recipients.map((to) => send(to, subject, html)));
+  return results.every(Boolean);
 }

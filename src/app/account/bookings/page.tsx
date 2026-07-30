@@ -135,6 +135,9 @@ export default async function AccountBookingsPage() {
         <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
           <span className="font-display text-lg font-semibold text-white">My Account</span>
           <div className="flex items-center gap-4">
+            <Link href="/account/learning" className="text-sm font-semibold text-white/90 hover:underline">
+              My Children
+            </Link>
             <Link href="/account/settings" className="text-sm font-semibold text-white/90 hover:underline">
               Settings
             </Link>

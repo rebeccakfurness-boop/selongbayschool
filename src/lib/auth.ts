@@ -2,17 +2,28 @@ import type { SessionOptions } from 'iron-session';
 
 export const ADMIN_COOKIE_NAME = 'sbs_admin_session';
 export const CUSTOMER_COOKIE_NAME = 'sbs_customer_session';
+export const STUDENT_COOKIE_NAME = 'sbs_student_session';
 export const RESET_TOKEN_TTL_MS = 1000 * 60 * 60; // 1 hour
 export const MAGIC_LINK_TOKEN_TTL_MS = 1000 * 60 * 30; // 30 minutes
+
+export type StaffRole = 'admin' | 'teacher';
 
 export interface AdminSessionData {
   adminUserId?: number;
   email?: string;
+  role?: StaffRole;
 }
 
 export interface CustomerSessionData {
   customerId?: number;
   email?: string;
+}
+
+/** Student role session: one account per child (see student_accounts table), username/password
+ * rather than magic-link, since young children can't reliably check email. */
+export interface StudentSessionData {
+  studentAccountId?: number;
+  childId?: number;
 }
 
 function bufferToHex(buffer: ArrayBuffer): string {
@@ -66,6 +77,20 @@ export async function getCustomerSessionOptions(): Promise<SessionOptions> {
     cookieName: CUSTOMER_COOKIE_NAME,
     password: await derivedSessionPassword('customer'),
     ttl: 60 * 60 * 24 * 30, // 30 days: customers book occasionally, no reason to log them out often
+    cookieOptions: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    },
+  };
+}
+
+export async function getStudentSessionOptions(): Promise<SessionOptions> {
+  return {
+    cookieName: STUDENT_COOKIE_NAME,
+    password: await derivedSessionPassword('student'),
+    ttl: 60 * 60 * 24 * 30,
     cookieOptions: {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

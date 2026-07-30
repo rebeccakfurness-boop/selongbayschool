@@ -121,6 +121,268 @@ export const adminResetPasswordSchema = z.object({
 });
 export type AdminResetPasswordInput = z.infer<typeof adminResetPasswordSchema>;
 
+const optionalDate = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional();
+const optionalStr = z.string().trim().max(2000).nullable().optional();
+
+/** The ONLY schema that can move a card between board columns — used exclusively by
+ * PATCH /api/admin/children/[id]/status (the drag-transition endpoint). status/isActive are
+ * deliberately absent from updateChildSchema below (the general edit-form save), so dragging is
+ * the only way either field changes on an existing child; see src/lib/child-lifecycle.ts for the
+ * guard-rail check this schema's caller applies before an active-status transition is allowed. */
+export const updateChildStatusSchema = z
+  .object({
+    status: z.enum(['enquiry', 'booking_waitlist', 'full_time', 'temporary', 'worldschooler', 'hybrid']).optional(),
+    isActive: z.boolean().optional(),
+  })
+  .refine((d) => d.status !== undefined || d.isActive !== undefined, { message: 'Nothing to update.' });
+export type UpdateChildStatusInput = z.infer<typeof updateChildStatusSchema>;
+
+export const updateChildSchema = z.object({
+  programme: optionalStr,
+  classBand: z.enum(['early_years', 'kindergarten', 'primary', 'secondary']).nullable().optional(),
+  className: optionalStr,
+  childFullName: z.string().trim().min(1).max(200).optional(),
+  childNickname: optionalStr,
+  dob: optionalDate,
+  gender: optionalStr,
+  nationality: optionalStr,
+  enrolmentDate: optionalDate,
+  exitDate: optionalDate,
+  parent1Name: optionalStr,
+  parent1Relationship: optionalStr,
+  parent1Nationality: optionalStr,
+  parent2Name: optionalStr,
+  parent2Relationship: optionalStr,
+  parent2Nationality: optionalStr,
+  siblingsAtSchool: optionalStr,
+  siblingDiscountTier: optionalStr,
+  tuitionPlan: optionalStr,
+  paymentStatus: optionalStr,
+  emergencyContactName: optionalStr,
+  emergencyContactPhone: optionalStr,
+  allergiesMedicalNotes: optionalStr,
+  dietaryRequirements: optionalStr,
+  religion: optionalStr,
+  homeLanguage: optionalStr,
+  primaryContactEmail: optionalStr,
+  primaryContactPhone: optionalStr,
+  nisnRequestSigned: z.boolean().optional(),
+  nisnRequestDate: optionalDate,
+  nisnNumber: optionalStr,
+  liabilityFormSigned: z.boolean().optional(),
+  liabilityFormDate: optionalDate,
+  photographySigned: z.boolean().optional(),
+  photographyConsent: optionalStr,
+  photographyFormDate: optionalDate,
+  pickupAuthorizationSigned: z.boolean().optional(),
+  authorizedPickupPersons: optionalStr,
+  pickupFormDate: optionalDate,
+  behavioralFormSigned: z.boolean().optional(),
+  behavioralFormDate: optionalDate,
+  financialAgreementSigned: z.boolean().optional(),
+  financialAgreementDate: optionalDate,
+  parentProtectionAddendumSigned: z.boolean().optional(),
+  dataConsentSigned: z.boolean().optional(),
+  passportCopyUrl: optionalStr,
+  visaStatus: optionalStr,
+  kitasCopyUrl: optionalStr,
+  birthCertificateUrl: optionalStr,
+  previousSchool: optionalStr,
+  lunchOption: optionalStr,
+  photoUrl: optionalStr,
+  classroomStudentEmail: optionalStr,
+});
+export type UpdateChildInput = z.infer<typeof updateChildSchema>;
+
+/** status/isActive are here (creation) and in updateChildStatusSchema (drag) but nowhere in
+ * updateChildSchema (the general edit-form save) — a brand-new record needs a starting status,
+ * same as it needs a starting name, but once created the only way either field changes again is
+ * dragging the card. */
+export const createChildSchema = updateChildSchema.extend({
+  childFullName: z.string().trim().min(1, "Child's full name is required").max(200),
+  status: z.enum(['enquiry', 'booking_waitlist', 'full_time', 'temporary', 'worldschooler', 'hybrid']).optional(),
+  isActive: z.boolean().optional(),
+});
+export type CreateChildInput = z.infer<typeof createChildSchema>;
+
+/** What a parent/guardian may edit on their own linked child, via /api/account/children/[id] —
+ * deliberately a much smaller field set than updateChildSchema. Enrollment status, class,
+ * programme, and every financial field are absent on purpose (never parent-editable, regardless
+ * of what's shown read-only on the card); zod drops any other key a client sends rather than
+ * erroring, so this list is the actual security boundary, not just a UI nicety. */
+export const updateOwnChildSchema = z.object({
+  primaryContactEmail: optionalStr,
+  primaryContactPhone: optionalStr,
+  emergencyContactName: optionalStr,
+  emergencyContactPhone: optionalStr,
+  allergiesMedicalNotes: optionalStr,
+  dietaryRequirements: optionalStr,
+  lunchOption: optionalStr,
+  homeLanguage: optionalStr,
+  previousSchool: optionalStr,
+  photoUrl: optionalStr,
+  passportCopyUrl: optionalStr,
+  kitasCopyUrl: optionalStr,
+  birthCertificateUrl: optionalStr,
+});
+export type UpdateOwnChildInput = z.infer<typeof updateOwnChildSchema>;
+
+const socialRating = z.enum(['C', 'U', 'S']).nullable().optional();
+
+export const learningProfileSubjectSchema = z.object({
+  subjectArea: z.string().trim().min(1).max(200),
+  subSubject: z.string().trim().max(200).nullable().optional(),
+  achievement: z.enum(['outstanding', 'high', 'expected', 'basic', 'limited']).nullable().optional(),
+  effort: z.enum(['high', 'satisfactory', 'low']).nullable().optional(),
+  teacherComment: z.string().trim().max(4000).nullable().optional(),
+});
+
+export const upsertLearningProfileSchema = z.object({
+  termLabel: z.string().trim().min(1, 'Term is required').max(100),
+  gradeLabel: z.string().trim().max(100).nullable().optional(),
+  generalComment: z.string().trim().max(4000).nullable().optional(),
+  wholeDaysAbsent: z.string().trim().max(200).nullable().optional(),
+  partialDaysAbsent: z.string().trim().max(200).nullable().optional(),
+  extraActivities: z.string().trim().max(2000).nullable().optional(),
+  positiveAttitude: socialRating,
+  respectsRightsOfOthers: socialRating,
+  respectsClassSchoolRules: socialRating,
+  worksWellIndependently: socialRating,
+  showsInitiativeEnthusiasm: socialRating,
+  helpsEncouragesOthers: socialRating,
+  subjects: z.array(learningProfileSubjectSchema).max(50),
+});
+export type UpsertLearningProfileInput = z.infer<typeof upsertLearningProfileSchema>;
+
+export const upsertLessonPlanSchema = z.object({
+  className: z.string().trim().min(1, 'Class is required').max(100),
+  weekLabel: z.string().trim().min(1, 'Week is required').max(100),
+  subject: z.string().trim().max(200).nullable().optional(),
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  description: z.string().trim().max(4000).nullable().optional(),
+});
+export type UpsertLessonPlanInput = z.infer<typeof upsertLessonPlanSchema>;
+
+export const createWorkSampleSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  fileUrl: z.string().trim().url().max(2000),
+});
+export type CreateWorkSampleInput = z.infer<typeof createWorkSampleSchema>;
+
+export const createPhotoFeedItemSchema = z.object({
+  fileUrl: z.string().trim().url().max(2000),
+  caption: z.string().trim().max(1000).nullable().optional(),
+  className: z.string().trim().max(100).nullable().optional(),
+  childIds: z.array(z.coerce.number().int().positive()).max(20).default([]),
+});
+export type CreatePhotoFeedItemInput = z.infer<typeof createPhotoFeedItemSchema>;
+
+export const createResourceSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  description: z.string().trim().max(2000).nullable().optional(),
+  fileUrl: z.string().trim().url().max(2000),
+  classBand: z.enum(['early_years', 'kindergarten', 'primary', 'secondary']).nullable().optional(),
+});
+export type CreateResourceInput = z.infer<typeof createResourceSchema>;
+
+export const upsertCurriculumUnitSchema = z.object({
+  className: z.string().trim().min(1, 'Class is required').max(100),
+  termLabel: z.string().trim().min(1, 'Term is required').max(100),
+  unitTitle: z.string().trim().min(1, 'Unit title is required').max(300),
+  description: z.string().trim().max(4000).nullable().optional(),
+});
+export type UpsertCurriculumUnitInput = z.infer<typeof upsertCurriculumUnitSchema>;
+
+export const linkGuardianSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+  relationship: z.string().trim().max(100).nullable().optional(),
+});
+export type LinkGuardianInput = z.infer<typeof linkGuardianSchema>;
+
+export const invoiceLineItemSchema = z.object({
+  description: z.string().trim().min(1, 'Description is required').max(500),
+  // Zero quantity/price is a valid, deliberate "informational" line item (e.g. "Lunches -
+  // provided by parents") — matches how the real invoice template shows some rows with no
+  // qty/price/total at all, rather than needing a separate freeform notes field for that.
+  quantity: z.coerce.number().min(0).max(10000),
+  unitPrice: z.coerce.number().int('Price must be a whole number of IDR').nonnegative().max(1_000_000_000),
+});
+
+export const invoiceChildSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  lineItems: z.array(invoiceLineItemSchema).min(1, 'Each child needs at least one line item'),
+});
+
+export const createInvoiceSchema = z.object({
+  invoiceType: z.enum(['tuition', 'activity']),
+  billedToName: z.string().trim().min(1, 'Billed-to name is required').max(200),
+  issueDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid issue date'),
+  notes: z.string().trim().max(2000).nullable().optional(),
+  children: z.array(invoiceChildSchema).min(1, 'At least one child is required'),
+});
+export type CreateInvoiceInput = z.infer<typeof createInvoiceSchema>;
+
+export const updateInvoiceStatusSchema = z.object({
+  status: z.enum(['paid', 'outstanding', 'cancelled']),
+});
+export type UpdateInvoiceStatusInput = z.infer<typeof updateInvoiceStatusSchema>;
+
+export const signComplianceFormSchema = z.object({
+  signedByName: z.string().trim().min(1, 'Signed-by name is required').max(200),
+  signatureDataUrl: z
+    .string()
+    .trim()
+    .regex(/^data:image\/png;base64,[A-Za-z0-9+/]+=*$/, 'Invalid signature image'),
+});
+export type SignComplianceFormInput = z.infer<typeof signComplianceFormSchema>;
+
+export const sendComplianceFormSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+});
+
+export const letterOfOfferSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  startDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid start date'),
+  programme: z.string().trim().max(200).nullable().optional(),
+  className: z.string().trim().max(200).nullable().optional(),
+  tuitionPlan: z.string().trim().max(500).nullable().optional(),
+  feesNote: z.string().trim().max(2000).nullable().optional(),
+  additionalTerms: z.string().trim().max(4000).nullable().optional(),
+});
+export type LetterOfOfferInput = z.infer<typeof letterOfOfferSchema>;
+
+export const updateLetterOfOfferSchema = letterOfOfferSchema.omit({ childId: true });
+
+export const sendLetterOfOfferSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+});
+
+export const acceptLetterOfOfferSchema = z.object({
+  acceptedByName: z.string().trim().min(1, 'Enter your name').max(200),
+});
+
+export const updateSchoolSettingsSchema = z.object({
+  payableTo: z.string().trim().min(1).max(300).optional(),
+  bankName: z.string().trim().min(1).max(300).optional(),
+  accountNumber: z.string().trim().min(1).max(100).optional(),
+  accountName: z.string().trim().min(1).max(300).optional(),
+  swiftCode: z.string().trim().min(1).max(50).optional(),
+  bankAddress: z.string().trim().max(500).nullable().optional(),
+  bankCode: z.string().trim().max(50).nullable().optional(),
+  branchCode: z.string().trim().max(50).nullable().optional(),
+  clearingCode: z.string().trim().max(50).nullable().optional(),
+  currency: z.string().trim().min(1).max(10).optional(),
+  invoiceDueDays: z.coerce.number().int().min(0).max(365).optional(),
+});
+export type UpdateSchoolSettingsInput = z.infer<typeof updateSchoolSettingsSchema>;
+
+export const studentLoginSchema = z.object({
+  username: z.string().trim().min(1, 'Username is required').max(100),
+  password: z.string().min(1, 'Password is required'),
+});
+export type StudentLoginInput = z.infer<typeof studentLoginSchema>;
+
 export const adminChangePasswordSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required'),
   newPassword: z.string().min(8, 'Password must be at least 8 characters').max(200),

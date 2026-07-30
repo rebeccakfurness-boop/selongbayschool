@@ -1,6 +1,7 @@
 import { ensureSchema, sql } from '@/lib/db';
 import { formatDateTime } from '@/lib/admin-format';
 import { formatIDR } from '@/lib/site-content';
+import { requireAdmin } from '@/lib/current-staff';
 import StatusPill from '@/components/admin/StatusPill';
 import MarkPaidButton from '@/components/admin/MarkPaidButton';
 import BookingsTabs from '@/components/admin/BookingsTabs';
@@ -71,6 +72,7 @@ export default async function AdminBookingsPage({
 }: {
   searchParams: Promise<{ q?: string; activity?: string; status?: string }>;
 }) {
+  await requireAdmin();
   await ensureSchema();
   const { q, activity, status } = await searchParams;
   const query = q?.trim() || null;

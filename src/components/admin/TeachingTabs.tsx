@@ -1,0 +1,25 @@
+import Link from 'next/link';
+
+export default function TeachingTabs({ active }: { active: 'lessons' | 'curriculum' | 'resources' }) {
+  const tabs = [
+    { key: 'lessons', href: '/admin/teaching', label: 'Lesson Plans' },
+    { key: 'curriculum', href: '/admin/teaching/curriculum', label: 'Curriculum Units' },
+    { key: 'resources', href: '/admin/teaching/resources', label: 'Resources' },
+  ] as const;
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {tabs.map((tab) => (
+        <Link
+          key={tab.key}
+          href={tab.href}
+          className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+            active === tab.key ? 'bg-teal text-white' : 'border border-sand-line bg-paper text-ink hover:border-teal'
+          }`}
+        >
+          {tab.label}
+        </Link>
+      ))}
+    </div>
+  );
+}
