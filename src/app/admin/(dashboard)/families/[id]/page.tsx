@@ -19,11 +19,11 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
   const rows = (await sql`
     SELECT c.*,
       (
-        (c.liability_form_signed AND c.liability_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
-        (c.photography_signed AND c.photography_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
-        (c.pickup_authorization_signed AND c.pickup_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
-        (c.behavioral_form_signed AND c.behavioral_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
-        (c.financial_agreement_signed AND c.financial_agreement_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS})
+        (c.liability_form_signed AND c.liability_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}::int) OR
+        (c.photography_signed AND c.photography_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}::int) OR
+        (c.pickup_authorization_signed AND c.pickup_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}::int) OR
+        (c.behavioral_form_signed AND c.behavioral_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}::int) OR
+        (c.financial_agreement_signed AND c.financial_agreement_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}::int)
       ) AS compliance_out_of_date
     FROM children c WHERE c.id = ${id}
   `) as unknown as ChildDetail[];

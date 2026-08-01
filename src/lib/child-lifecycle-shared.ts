@@ -15,7 +15,11 @@ export function isActiveStatus(status: ChildStatus): boolean {
  * are annual consent forms, e.g. photography/liability for the current school year) — a specific,
  * reasonable default, not something asked for explicitly; easy to change in one place if the
  * school's actual re-signing cadence differs. Plain day-count (not a SQL INTERVAL literal) so the
- * board/card queries can just do `date_col < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}`. */
+ * board/card queries can just do `date_col < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}::int`.
+ * The `::int` cast is required: with an unbound/untyped parameter, Postgres can resolve
+ * `CURRENT_DATE - $1` via the `date - date -> integer` overload instead of `date - integer ->
+ * date`, making the outer `date_col < ...` comparison fail with "operator does not exist: date <
+ * integer" — this bit the Family Board and Child Card pages until fixed. */
 export const COMPLIANCE_STALE_AFTER_DAYS = 365;
 
 export type ComplianceBadge = 'unsigned' | 'signed' | 'out_of_date';

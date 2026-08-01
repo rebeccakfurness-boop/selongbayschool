@@ -50,11 +50,11 @@ export default async function FamiliesBoardPage() {
          c.behavioral_form_signed::int + c.financial_agreement_signed::int +
          c.parent_protection_addendum_signed::int + c.data_consent_signed::int) AS compliance_signed_count,
         (
-          (c.liability_form_signed AND c.liability_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
-          (c.photography_signed AND c.photography_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
-          (c.pickup_authorization_signed AND c.pickup_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
-          (c.behavioral_form_signed AND c.behavioral_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}) OR
-          (c.financial_agreement_signed AND c.financial_agreement_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS})
+          (c.liability_form_signed AND c.liability_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}::int) OR
+          (c.photography_signed AND c.photography_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}::int) OR
+          (c.pickup_authorization_signed AND c.pickup_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}::int) OR
+          (c.behavioral_form_signed AND c.behavioral_form_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}::int) OR
+          (c.financial_agreement_signed AND c.financial_agreement_date < CURRENT_DATE - ${COMPLIANCE_STALE_AFTER_DAYS}::int)
         ) AS compliance_out_of_date,
         latest_inv.status AS latest_invoice_status,
         GREATEST(0, (CURRENT_DATE - latest_inv.due_date))::int AS latest_invoice_days_overdue
