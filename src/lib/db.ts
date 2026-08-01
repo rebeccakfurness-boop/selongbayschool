@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 4;
+const SCHEMA_VERSION = 5;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -959,6 +959,69 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE meeting_invites ALTER COLUMN letter_of_offer_id DROP NOT NULL`;
       await sql`CREATE INDEX IF NOT EXISTS idx_meeting_invites_letter ON meeting_invites (letter_of_offer_id)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_meeting_invites_child ON meeting_invites (child_id)`;
+
+      // --- Lunch booking ---
+
+      // Same singleton shape as school_settings, but deliberately NOT seeded with real values —
+      // there's no actual lunch supplier bank/pricing info to seed it with. Starts at
+      // normal_price_idr/large_price_idr = 0 and empty bank fields; the parent-facing order route
+      // refuses to create an order until an admin fills these in at /admin/settings (see
+      // src/pages/api/account/lunch-orders/create.ts).
+      await sql`
+        CREATE TABLE IF NOT EXISTS lunch_settings (
+          id INTEGER PRIMARY KEY DEFAULT 1,
+          supplier_name TEXT NOT NULL DEFAULT '',
+          payable_to TEXT NOT NULL DEFAULT '',
+          bank_name TEXT NOT NULL DEFAULT '',
+          account_number TEXT NOT NULL DEFAULT '',
+          account_name TEXT NOT NULL DEFAULT '',
+          swift_code TEXT NOT NULL DEFAULT '',
+          bank_address TEXT,
+          bank_code TEXT,
+          branch_code TEXT,
+          clearing_code TEXT,
+          currency TEXT NOT NULL DEFAULT 'IDR',
+          invoice_due_days INTEGER NOT NULL DEFAULT 7,
+          normal_price_idr BIGINT NOT NULL DEFAULT 0,
+          large_price_idr BIGINT NOT NULL DEFAULT 0,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          CHECK (id = 1)
+        )
+      `;
+      await sql`INSERT INTO lunch_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`;
+
+      // Lunch invoices reuse the same invoices/invoice_children/invoice_line_items tables as
+      // tuition/activity — one more line-item-priced invoice type, not a parallel billing system.
+      await sql`ALTER TABLE invoices DROP CONSTRAINT IF EXISTS invoices_invoice_type_check`;
+      await sql`ALTER TABLE invoices ADD CONSTRAINT invoices_invoice_type_check CHECK (invoice_type IN ('tuition', 'activity', 'lunch'))`;
+
+      // One row per parent-facing lunch order action — either a real order (own_lunch = false,
+      // billed via the linked invoice) or a "bringing lunch from home" acknowledgement (own_lunch =
+      // true, no invoice, dates/weekdays/size unused). lunch_count is stored rather than
+      // recomputed on read so a later price change never silently reprices a past order.
+      await sql`
+        CREATE TABLE IF NOT EXISTS lunch_orders (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          customer_id BIGINT NOT NULL REFERENCES customers(id),
+          own_lunch BOOLEAN NOT NULL DEFAULT false,
+          start_date DATE,
+          end_date DATE,
+          monday BOOLEAN NOT NULL DEFAULT false,
+          tuesday BOOLEAN NOT NULL DEFAULT false,
+          wednesday BOOLEAN NOT NULL DEFAULT false,
+          thursday BOOLEAN NOT NULL DEFAULT false,
+          friday BOOLEAN NOT NULL DEFAULT false,
+          lunch_size TEXT CHECK (lunch_size IN ('normal', 'large')),
+          food_preference TEXT,
+          allergies_notes TEXT,
+          lunch_count INTEGER,
+          invoice_id BIGINT REFERENCES invoices(id) ON DELETE SET NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_lunch_orders_child ON lunch_orders (child_id)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_lunch_orders_customer ON lunch_orders (customer_id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

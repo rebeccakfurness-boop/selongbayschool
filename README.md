@@ -635,6 +635,42 @@ scoped role):
   Child Card as a "Meeting (from enrolment form)" line above the Letter of Offer list, separate
   from any letter-specific invite.
 
+### Phase 7: Lunch ordering
+
+- **Parent flow**: on `/account/learning`, each child's card has a "Lunches" section — a parent
+  either clicks **"I'll bring my own lunch"** (a one-click acknowledgement, no charge) or **"Order
+  lunches"**, which expands a form to pick a start/end date, which weekdays, Normal or Large size,
+  food preferences, and allergies/intolerances (pre-filled from the child's existing
+  `allergies_medical_notes`, editable). The total (lunch days in range × price for the chosen size)
+  updates live as they fill it in. **"Confirm & checkout"** creates a real invoice — same
+  `invoices`/`invoice_children`/`invoice_line_items` tables tuition and activity invoices already
+  use (`invoice_type = 'lunch'`), no separate billing system — and emails a confirmation with the
+  PDF attached (bank transfer details inside, same as every other invoice; there's no online
+  payment gateway anywhere in this app, by design).
+- **Not configured out of the box** — unlike `school_settings` (seeded with the school's real bank
+  details), the new `lunch_settings` singleton starts empty: no supplier name, no bank details, and
+  both `normal_price_idr`/`large_price_idr` at 0. There's no real lunch-supplier pricing or payment
+  info to seed it with. **An admin must fill these in at `/admin/settings` (new "Lunch Ordering"
+  section) before parents can place a real order** — the "Order lunches" button on the parent
+  portal stays disabled with an explanatory note until both prices are set, and the order route
+  itself refuses to create an invoice (409) if pricing or bank details are still missing, as a
+  second line of defense.
+- **`lunch_orders`** (`src/lib/lunch-orders.ts`) is a separate table from `invoices` — one row per
+  parent action (a priced order, linked to the invoice it generated via `invoice_id`, or a
+  `own_lunch = true` acknowledgement with no invoice at all). `lunch_count` is computed once at
+  order time and stored, not recomputed on read, so a later price change in Settings never
+  silently reprices an order already placed.
+- **No sibling discount** on lunch invoices — unlike tuition/activity invoices (which can bill
+  multiple children together), a lunch order is always placed one child at a time from that
+  child's own card, so there's no multi-child invoice to discount across.
+- **Admin visibility**: a new **Lunch Orders** page (sidebar, admin-only) lists every order and
+  "bring own lunch" acknowledgement school-wide — child, dates, days, size, food
+  preference/allergies, and a link to the invoice and its paid/outstanding status. This is what the
+  school would hand to (or read off for) the actual lunch supplier to know what to prepare.
+- The invoice PDF route (`src/pages/api/invoices/[id]/pdf.ts`) already checks admin-or-guardian
+  authorization regardless of invoice type, so lunch invoices are viewable by the ordering parent
+  automatically — no new auth code needed there.
+
 ### Phase 4: Invoicing
 
 - **`school_settings`** (singleton, `id = 1`): payable-to/bank details, currency, and invoice due

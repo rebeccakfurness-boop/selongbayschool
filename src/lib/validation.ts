@@ -372,6 +372,51 @@ export const bookMeetingSlotSchema = z.object({
   bookedByName: z.string().trim().min(1, 'Enter your name').max(200),
 });
 
+const lunchWeekdaysSchema = z
+  .object({
+    monday: z.boolean(),
+    tuesday: z.boolean(),
+    wednesday: z.boolean(),
+    thursday: z.boolean(),
+    friday: z.boolean(),
+  })
+  .refine((d) => d.monday || d.tuesday || d.wednesday || d.thursday || d.friday, { message: 'Select at least one day' });
+
+export const createLunchOrderSchema = z
+  .object({
+    childId: z.coerce.number().int().positive(),
+    startDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid start date'),
+    endDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid end date'),
+    weekdays: lunchWeekdaysSchema,
+    lunchSize: z.enum(['normal', 'large']),
+    foodPreference: z.string().trim().max(1000).nullable().optional(),
+    allergiesNotes: z.string().trim().max(1000).nullable().optional(),
+  })
+  .refine((d) => d.endDate >= d.startDate, { message: 'End date must be on or after the start date', path: ['endDate'] });
+export type CreateLunchOrderInput = z.infer<typeof createLunchOrderSchema>;
+
+export const bringOwnLunchSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+});
+
+export const updateLunchSettingsSchema = z.object({
+  supplierName: z.string().trim().max(300).optional(),
+  payableTo: z.string().trim().max(300).optional(),
+  bankName: z.string().trim().max(300).optional(),
+  accountNumber: z.string().trim().max(100).optional(),
+  accountName: z.string().trim().max(300).optional(),
+  swiftCode: z.string().trim().max(50).optional(),
+  bankAddress: z.string().trim().max(500).nullable().optional(),
+  bankCode: z.string().trim().max(50).nullable().optional(),
+  branchCode: z.string().trim().max(50).nullable().optional(),
+  clearingCode: z.string().trim().max(50).nullable().optional(),
+  currency: z.string().trim().min(1).max(10).optional(),
+  invoiceDueDays: z.coerce.number().int().min(0).max(365).optional(),
+  normalPriceIdr: z.coerce.number().int().min(0).optional(),
+  largePriceIdr: z.coerce.number().int().min(0).optional(),
+});
+export type UpdateLunchSettingsInput = z.infer<typeof updateLunchSettingsSchema>;
+
 export const updateSchoolSettingsSchema = z.object({
   payableTo: z.string().trim().min(1).max(300).optional(),
   bankName: z.string().trim().min(1).max(300).optional(),

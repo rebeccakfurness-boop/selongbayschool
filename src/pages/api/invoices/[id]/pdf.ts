@@ -80,7 +80,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     WHERE invoice_id = ${id} ORDER BY child_id, sort_order
   `) as unknown as InvoiceLineItemData[];
 
-  const [settings] = (await sql`SELECT * FROM school_settings WHERE id = 1`) as unknown as SchoolSettingsData[];
+  // Lunch invoices show the lunch supplier's own bank/payable-to details, not the school's —
+  // same column shape (see lunch_settings in db.ts), just a different settings row.
+  const [settings] = (
+    invoice.invoice_type === 'lunch'
+      ? ((await sql`SELECT * FROM lunch_settings WHERE id = 1`) as unknown as SchoolSettingsData[])
+      : ((await sql`SELECT * FROM school_settings WHERE id = 1`) as unknown as SchoolSettingsData[])
+  );
 
   try {
     const buffer = await renderToBuffer(InvoiceDocument({ invoice, lineItems, settings }));

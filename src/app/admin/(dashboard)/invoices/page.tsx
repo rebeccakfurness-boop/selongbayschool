@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 interface InvoiceRow {
   id: number;
   invoice_number: number;
-  invoice_type: 'tuition' | 'activity';
+  invoice_type: 'tuition' | 'activity' | 'lunch';
   billed_to_name: string;
   issue_date: string;
   due_date: string;

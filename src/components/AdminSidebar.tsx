@@ -12,6 +12,7 @@ const SECTIONS: { href: string; label: string; adminOnly?: boolean }[] = [
   { href: '/admin/staff', label: 'Staff', adminOnly: true },
   { href: '/admin/teaching', label: 'Teaching' },
   { href: '/admin/invoices', label: 'Invoices', adminOnly: true },
+  { href: '/admin/lunch-orders', label: 'Lunch Orders', adminOnly: true },
   { href: '/admin/classroom', label: 'Google Classroom', adminOnly: true },
   { href: '/admin/calendar', label: 'Meeting Calendar', adminOnly: true },
   { href: '/admin/activities', label: 'Activities & Calendar', adminOnly: true },

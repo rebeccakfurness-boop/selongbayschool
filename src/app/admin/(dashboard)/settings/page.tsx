@@ -2,6 +2,7 @@ import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
 import ChangePasswordForm from '@/components/admin/ChangePasswordForm';
 import SchoolSettingsForm, { type SchoolSettings } from '@/components/admin/SchoolSettingsForm';
+import LunchSettingsForm, { type LunchSettings } from '@/components/admin/LunchSettingsForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +11,7 @@ export default async function AdminSettingsPage() {
   const staff = await getCurrentStaff();
 
   const [settings] = staff.role === 'admin' ? ((await sql`SELECT * FROM school_settings WHERE id = 1`) as unknown as SchoolSettings[]) : [];
+  const [lunchSettings] = staff.role === 'admin' ? ((await sql`SELECT * FROM lunch_settings WHERE id = 1`) as unknown as LunchSettings[]) : [];
 
   return (
     <section className="max-w-2xl">
@@ -19,6 +21,7 @@ export default async function AdminSettingsPage() {
       <div className="mt-6 flex flex-col gap-6">
         <ChangePasswordForm />
         {staff.role === 'admin' && settings && <SchoolSettingsForm initial={settings} />}
+        {staff.role === 'admin' && lunchSettings && <LunchSettingsForm initial={lunchSettings} />}
       </div>
     </section>
   );

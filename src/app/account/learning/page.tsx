@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getIronSession } from 'iron-session';
 import { getCustomerSessionOptions, type CustomerSessionData } from '@/lib/auth';
-import { ensureSchema } from '@/lib/db';
+import { ensureSchema, sql } from '@/lib/db';
 import {
   getChildrenForGuardian,
   getUpcomingLessonPlans,
@@ -16,10 +16,13 @@ import {
   getClassroomAssignmentsForClass,
   getClassroomSubmissionsForChild,
 } from '@/lib/lms-data';
+import { getLunchOrdersForChild } from '@/lib/lunch-orders';
+import { weekdaysSummaryLabel } from '@/lib/lunch-calc';
 import { formatIDR } from '@/lib/site-content';
 import { formatDate } from '@/lib/admin-format';
 import LogoutButton from '@/components/account/LogoutButton';
 import ParentChildProfileCard from '@/components/account/ParentChildProfileCard';
+import LunchOrderForm from '@/components/account/LunchOrderForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,6 +32,11 @@ export default async function ParentLearningPage() {
 
   await ensureSchema();
   const children = customerId ? await getChildrenForGuardian(customerId) : [];
+  const [lunchSettings] = (await sql`SELECT normal_price_idr, large_price_idr FROM lunch_settings WHERE id = 1`) as unknown as {
+    normal_price_idr: number;
+    large_price_idr: number;
+  }[];
+  const lunchConfigured = Boolean(lunchSettings && lunchSettings.normal_price_idr > 0 && lunchSettings.large_price_idr > 0);
 
   return (
     <div className="min-h-screen bg-cream">
@@ -57,7 +65,7 @@ export default async function ParentLearningPage() {
         <div className="flex flex-col gap-12">
           {await Promise.all(
             children.map(async (child) => {
-              const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions] = await Promise.all([
+              const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders] = await Promise.all([
                 getCurrentCurriculumUnit(child.class_name),
                 getUpcomingLessonPlans(child.class_name, 5),
                 getWorkSamplesForChild(child.id),
@@ -67,6 +75,7 @@ export default async function ParentLearningPage() {
                 getInvoicesForChild(child.id),
                 getClassroomAssignmentsForClass(child.class_name, 5),
                 getClassroomSubmissionsForChild(child.id),
+                getLunchOrdersForChild(child.id),
               ]);
               const submissionByAssignment = new Map(classroomSubmissions.map((s) => [s.classroom_assignment_id, s]));
 
@@ -212,8 +221,47 @@ export default async function ParentLearningPage() {
                         <Link href="/activities" className="font-semibold text-teal-deep underline">
                           /activities
                         </Link>
-                        . Lunch selection is coming in a later phase.
+                        .
                       </p>
+                    </div>
+
+                    <div className="rounded-md border border-sand-line bg-paper p-5 shadow-soft md:col-span-2">
+                      <h3 className="font-display text-base font-semibold text-teal-deep">Lunches</h3>
+                      {lunchOrders.length > 0 && (
+                        <ul className="mt-2 flex flex-col gap-2">
+                          {lunchOrders.map((lo) => (
+                            <li key={lo.id} className="rounded-sm border border-sand-line px-3 py-2 text-sm">
+                              {lo.own_lunch ? (
+                                <span className="text-ink-soft">Bringing lunch from home (noted {formatDate(lo.created_at.slice(0, 10))}).</span>
+                              ) : (
+                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                  <span>
+                                    <span className="font-semibold text-ink capitalize">{lo.lunch_size}</span>
+                                    <span className="text-ink-soft">
+                                      {' '}· {weekdaysSummaryLabel({ monday: lo.monday, tuesday: lo.tuesday, wednesday: lo.wednesday, thursday: lo.thursday, friday: lo.friday })} ·{' '}
+                                      {lo.start_date && formatDate(lo.start_date)} – {lo.end_date && formatDate(lo.end_date)} · {lo.lunch_count} lunches
+                                    </span>
+                                  </span>
+                                  {lo.invoice_id && (
+                                    <a href={`/api/invoices/${lo.invoice_id}/pdf`} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap font-semibold text-teal-deep underline">
+                                      Invoice #{String(lo.invoice_number).padStart(3, '0')} — {lo.invoice_status === 'paid' ? 'Paid' : formatIDR(lo.invoice_total ?? 0)}
+                                    </a>
+                                  )}
+                                </div>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      <div className="mt-3">
+                        <LunchOrderForm
+                          childId={child.id}
+                          defaultAllergiesNotes={child.allergies_medical_notes}
+                          normalPriceIdr={lunchSettings?.normal_price_idr ?? 0}
+                          largePriceIdr={lunchSettings?.large_price_idr ?? 0}
+                          configured={lunchConfigured}
+                        />
+                      </div>
                     </div>
                   </div>
                 </section>
