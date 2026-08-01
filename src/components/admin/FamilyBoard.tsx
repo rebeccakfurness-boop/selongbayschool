@@ -131,7 +131,7 @@ function Column({ columnId, roster }: { columnId: ColumnId; roster: BoardChild[]
   return (
     <div
       ref={setNodeRef}
-      className={`flex min-w-[220px] flex-col gap-3 rounded-md border p-3 transition-colors ${
+      className={`flex w-[220px] shrink-0 flex-col gap-3 rounded-md border p-3 transition-colors ${
         isOver ? 'border-teal bg-teal/10' : 'border-sand-line bg-sand/20'
       }`}
     >
@@ -208,9 +208,9 @@ export default function FamilyBoard({ initialChildren, canEdit }: { initialChild
 
   if (!canEdit) {
     return (
-      <div className="grid gap-5 lg:grid-cols-4 xl:grid-cols-7">
+      <div className="flex gap-5 overflow-x-auto pb-2">
         {COLUMN_ORDER.map((columnId) => (
-          <div key={columnId} className="flex min-w-[220px] flex-col gap-3 rounded-md border border-sand-line bg-sand/20 p-3">
+          <div key={columnId} className="flex w-[220px] shrink-0 flex-col gap-3 rounded-md border border-sand-line bg-sand/20 p-3">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-wide text-ink-soft">
                 {columnId === 'inactive' ? 'Inactive' : STATUS_LEGEND[columnId].label}
@@ -230,7 +230,7 @@ export default function FamilyBoard({ initialChildren, canEdit }: { initialChild
     <div>
       {error && <p className="mb-3 text-sm font-semibold text-orange-deep">{error}</p>}
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <div className="grid gap-5 lg:grid-cols-4 xl:grid-cols-7">
+        <div className="flex gap-5 overflow-x-auto pb-2">
           {COLUMN_ORDER.map((columnId) => (
             <Column key={columnId} columnId={columnId} roster={byColumn.get(columnId) || []} />
           ))}
