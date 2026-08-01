@@ -1,5 +1,6 @@
 import { ensureSchema, sql } from './db';
 import { sendEnrolmentAutoReply, sendEnrolmentNotification, type EnrolmentEmailInput } from './email';
+import { findOrCreateFamilyForContact, logFamilyActivity } from './family-matching';
 import type { EnrolmentInput } from './validation';
 
 export interface SubmitEnrolmentResult {
@@ -34,6 +35,21 @@ export async function submitEnrolment(record: EnrolmentInput): Promise<SubmitEnr
     RETURNING id
   `;
   const id = rows[0].id as number;
+
+  // Unlike the enquiry forms, every enrolment submission names a specific child, so this always
+  // runs. Linking failure is logged and swallowed rather than thrown, so a Family Board hiccup
+  // never stops the enrolment itself from being saved and emailed.
+  try {
+    const childId = await findOrCreateFamilyForContact({
+      parentName: record.parentName,
+      parentEmail: record.parentEmail,
+      parentPhone: record.parentWhatsapp,
+      childName: record.studentName,
+    });
+    await logFamilyActivity(childId, 'new_student_enrolment_form', 'enrolment_submissions', id);
+  } catch (err) {
+    console.error('[enrolments] family linking failed (enrolment itself still saved)', { id, err });
+  }
 
   const emailInput: EnrolmentEmailInput = {
     studentName: record.studentName,

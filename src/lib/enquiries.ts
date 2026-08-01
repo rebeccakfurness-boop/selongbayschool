@@ -1,5 +1,6 @@
 import { ensureSchema, sql } from './db';
 import { sendEnquiryAutoReply, sendEnquiryNotification, type EnquiryEmailInput, type EnquiryType } from './email';
+import { findOrCreateFamilyForContact, logFamilyActivity } from './family-matching';
 
 export interface EnquiryRecord {
   type: EnquiryType;
@@ -38,6 +39,30 @@ export async function submitEnquiry(record: EnquiryRecord): Promise<SubmitResult
       INSERT INTO crm_enquiries (source, customer_name, customer_email, customer_phone, message)
       VALUES ('contact_form', ${record.name}, ${record.email}, ${record.phone ?? null}, ${record.message ?? null})
     `;
+  }
+
+  // Only enquiries naming a specific child feed the Family Board — a general "tell me more about
+  // the school" contact-form message with no child name isn't a family to track yet. Linking
+  // failure is logged and swallowed rather than thrown, so a Family Board hiccup never stops the
+  // enquiry itself from being saved and emailed.
+  if (record.childName) {
+    try {
+      const childId = await findOrCreateFamilyForContact({
+        parentName: record.name,
+        parentEmail: record.email,
+        parentPhone: record.phone,
+        childName: record.childName,
+      });
+      await logFamilyActivity(
+        childId,
+        'current_enrolment_enquiry',
+        'enquiries',
+        id,
+        `${record.interest || 'General'} enquiry via the ${record.type} form.`
+      );
+    } catch (err) {
+      console.error('[enquiries] family linking failed (enquiry itself still saved)', { id, err });
+    }
   }
 
   const emailInput: EnquiryEmailInput = {

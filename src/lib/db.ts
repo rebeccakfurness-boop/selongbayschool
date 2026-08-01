@@ -46,7 +46,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -880,6 +880,23 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`ALTER TABLE enrolment_submissions ADD COLUMN IF NOT EXISTS shuttle_service BOOLEAN NOT NULL DEFAULT false`;
+
+      // One family card (children row) can accumulate several of these over time — a March enquiry
+      // and a June enrolment form aren't the same event, so this is an append-only log rather than a
+      // status column on `children`; see findOrCreateFamilyForContact/logFamilyActivity in
+      // family-matching.ts, called from submitEnquiry()/submitEnrolment().
+      await sql`
+        CREATE TABLE IF NOT EXISTS family_activity_log (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          tag TEXT NOT NULL CHECK (tag IN ('current_enrolment_enquiry', 'new_student_enrolment_form')),
+          source_table TEXT NOT NULL CHECK (source_table IN ('enquiries', 'enrolment_submissions')),
+          source_id BIGINT NOT NULL,
+          summary TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_family_activity_log_child ON family_activity_log (child_id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();
