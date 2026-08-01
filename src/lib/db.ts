@@ -43,10 +43,44 @@ export const sql: NeonQueryFunction<false, false> = ((strings: TemplateStringsAr
 
 let schemaReady: Promise<void> | null = null;
 
-/** Idempotently creates tables if they don't exist. Safe to call on every request. */
+/** Bump this whenever a statement is added to (or changed in) the migration body below —
+ * otherwise an already-current database skips the version check and the new statement never
+ * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
+const SCHEMA_VERSION = 1;
+
+/** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
+ * on this database) or the read otherwise fails — either way, callers fall back to running the
+ * full migration, which is always safe since every statement in it is idempotent. */
+async function getSchemaVersion(): Promise<number | null> {
+  try {
+    const rows = (await sql`SELECT value FROM schema_meta WHERE key = 'schema_version'`) as unknown as { value: string }[];
+    return rows[0] ? Number(rows[0].value) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function setSchemaVersion(version: number): Promise<void> {
+  await sql`
+    INSERT INTO schema_meta (key, value) VALUES ('schema_version', ${String(version)})
+    ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value
+  `;
+}
+
+/** Idempotently creates tables if they don't exist. Safe to call on every request.
+ *
+ * Fast path: on a database already at SCHEMA_VERSION, this is a single round-trip (the version
+ * check) instead of the ~100 sequential CREATE/ALTER statements below — those only actually run
+ * once per schema change, not once per cold serverless start. See SCHEMA_VERSION above: this
+ * only works if it's bumped whenever the migration body changes. */
 export function ensureSchema(): Promise<void> {
   if (!schemaReady) {
     schemaReady = (async () => {
+      const currentVersion = await getSchemaVersion();
+      if (currentVersion === SCHEMA_VERSION) return;
+
+      await sql`CREATE TABLE IF NOT EXISTS schema_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)`;
+
       await sql`
         CREATE TABLE IF NOT EXISTS enquiries (
           id BIGSERIAL PRIMARY KEY,
@@ -846,6 +880,8 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`ALTER TABLE enrolment_submissions ADD COLUMN IF NOT EXISTS shuttle_service BOOLEAN NOT NULL DEFAULT false`;
+
+      await setSchemaVersion(SCHEMA_VERSION);
     })();
   }
   return schemaReady;
