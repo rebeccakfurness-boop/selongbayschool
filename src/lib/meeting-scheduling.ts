@@ -66,7 +66,7 @@ export function generateMeetingToken(): string {
 
 export interface MeetingInviteSummaryRow {
   id: number;
-  letter_of_offer_id: number;
+  letter_of_offer_id: number | null;
   status: 'sent' | 'booked' | 'cancelled';
   parent_email: string;
   meeting_format: 'in_person' | 'video' | null;
@@ -87,7 +87,7 @@ export async function getMeetingInvitesForChild(childId: number): Promise<Meetin
 
 export async function createMeetingInvite(input: {
   childId: number;
-  letterOfOfferId: number;
+  letterOfOfferId: number | null;
   parentEmail: string;
 }): Promise<{ id: number; token: string }> {
   const token = generateMeetingToken();
@@ -104,7 +104,7 @@ export interface MeetingInviteDetail {
   token: string;
   status: 'sent' | 'booked' | 'cancelled';
   child_id: number;
-  letter_of_offer_id: number;
+  letter_of_offer_id: number | null;
   parent_email: string;
   child_full_name: string;
   meeting_format: 'in_person' | 'video' | null;

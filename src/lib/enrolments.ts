@@ -1,6 +1,9 @@
 import { ensureSchema, sql } from './db';
-import { sendEnrolmentAutoReply, sendEnrolmentNotification, type EnrolmentEmailInput } from './email';
+import { sendEnrolmentAutoReply, sendEnrolmentNotification, sendMeetingScheduleEmail, type EnrolmentEmailInput } from './email';
 import { findOrCreateFamilyForContact, logFamilyActivity } from './family-matching';
+import { createMeetingInvite } from './meeting-scheduling';
+import { isCalendarConnected } from './google-calendar';
+import { siteConfig } from './site-content';
 import type { EnrolmentInput } from './validation';
 
 export interface SubmitEnrolmentResult {
@@ -39,16 +42,43 @@ export async function submitEnrolment(record: EnrolmentInput): Promise<SubmitEnr
   // Unlike the enquiry forms, every enrolment submission names a specific child, so this always
   // runs. Linking failure is logged and swallowed rather than thrown, so a Family Board hiccup
   // never stops the enrolment itself from being saved and emailed.
+  let linkedChildId: number | null = null;
   try {
-    const childId = await findOrCreateFamilyForContact({
+    linkedChildId = await findOrCreateFamilyForContact({
       parentName: record.parentName,
       parentEmail: record.parentEmail,
       parentPhone: record.parentWhatsapp,
       childName: record.studentName,
     });
-    await logFamilyActivity(childId, 'new_student_enrolment_form', 'enrolment_submissions', id);
+    await logFamilyActivity(linkedChildId, 'new_student_enrolment_form', 'enrolment_submissions', id);
   } catch (err) {
     console.error('[enrolments] family linking failed (enrolment itself still saved)', { id, err });
+  }
+
+  // Automatically invites the parent to book a meeting the moment the form lands — same
+  // meeting_invites/Google Calendar flow as the manual "Schedule a meeting" button on a Letter of
+  // Offer (see LetterOfOfferSection.tsx), just triggered earlier and with no letter attached yet
+  // (letterOfOfferId is nullable for exactly this case). Silently skipped if Google Calendar isn't
+  // connected yet, or if anything here fails — this is a nice-to-have on top of the enrolment
+  // submission, never a reason to block it.
+  if (linkedChildId) {
+    try {
+      if (await isCalendarConnected()) {
+        const { token } = await createMeetingInvite({
+          childId: linkedChildId,
+          letterOfOfferId: null,
+          parentEmail: record.parentEmail,
+        });
+        const scheduleUrl = new URL(`/schedule-meeting/${token}`, siteConfig.url).toString();
+        await sendMeetingScheduleEmail({
+          toEmail: record.parentEmail,
+          childFullName: record.studentName,
+          scheduleUrl,
+        });
+      }
+    } catch (err) {
+      console.error('[enrolments] automatic meeting invite failed (enrolment itself still saved)', { id, err });
+    }
   }
 
   const emailInput: EnrolmentEmailInput = {

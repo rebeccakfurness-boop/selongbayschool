@@ -623,10 +623,17 @@ scoped role):
   bookings get the school's address as the event location instead. The school's own branded
   confirmation email (not Google Calendar's own generic invite email, which is left off via not
   setting `sendUpdates`) goes to the parent, and a notification to the school inbox.
-- **One invite per "Schedule a meeting" click** (`meeting_invites` table, FK'd to both the child and
-  the specific letter of offer) — re-sending creates a new row rather than overwriting, so the
-  Child Card can show the current state (awaiting a pick vs. booked with full details) without
-  losing history.
+- **One invite per send** (`meeting_invites` table, FK'd to the child and — when there is one — the
+  specific letter of offer) — re-sending creates a new row rather than overwriting, so the Child
+  Card can show the current state (awaiting a pick vs. booked with full details) without losing
+  history.
+- **Automatic send on enrolment**: `submitEnrolment()` (`src/lib/enrolments.ts`) sends this same
+  invite automatically the moment a Student Enrolment Form comes in — no letter of offer exists
+  yet at that point, so `letter_of_offer_id` is nullable and left null for these. Silently skipped
+  (logged, not thrown) if Google Calendar isn't connected, same "never block the actual
+  submission" resilience as the family-linking step right above it in that file. Shown on the
+  Child Card as a "Meeting (from enrolment form)" line above the Letter of Offer list, separate
+  from any letter-specific invite.
 
 ### Phase 4: Invoicing
 

@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -927,15 +927,18 @@ export function ensureSchema(): Promise<void> {
         )
       `;
 
-      // One row per "send a meeting-scheduling email" action (see ScheduleMeetingButton on the
-      // Letter of Offer section). Availability is computed live from the connected calendar's
-      // free/busy data at booking time rather than stored here — this table only records the
-      // outcome (still awaiting a pick, or booked with what/when/how).
+      // One row per "send a meeting-scheduling email" action — either a manual click on
+      // ScheduleMeetingButton (Letter of Offer section, letter_of_offer_id set) or the automatic
+      // send from submitEnrolment() right after a new Student Enrolment Form comes in
+      // (letter_of_offer_id null, since there's no letter yet at that point). Availability is
+      // computed live from the connected calendar's free/busy data at booking time rather than
+      // stored here — this table only records the outcome (still awaiting a pick, or booked with
+      // what/when/how).
       await sql`
         CREATE TABLE IF NOT EXISTS meeting_invites (
           id BIGSERIAL PRIMARY KEY,
           child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
-          letter_of_offer_id BIGINT NOT NULL REFERENCES letters_of_offer(id) ON DELETE CASCADE,
+          letter_of_offer_id BIGINT REFERENCES letters_of_offer(id) ON DELETE CASCADE,
           token TEXT NOT NULL UNIQUE,
           parent_email TEXT NOT NULL,
           status TEXT NOT NULL DEFAULT 'sent' CHECK (status IN ('sent', 'booked', 'cancelled')),
@@ -950,6 +953,10 @@ export function ensureSchema(): Promise<void> {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
+      // Covers any database where meeting_invites already existed with the old NOT NULL
+      // constraint (CREATE TABLE IF NOT EXISTS above is then a no-op) — safe to run unconditionally,
+      // DROP NOT NULL on an already-nullable column is a no-op too.
+      await sql`ALTER TABLE meeting_invites ALTER COLUMN letter_of_offer_id DROP NOT NULL`;
       await sql`CREATE INDEX IF NOT EXISTS idx_meeting_invites_letter ON meeting_invites (letter_of_offer_id)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_meeting_invites_child ON meeting_invites (child_id)`;
 

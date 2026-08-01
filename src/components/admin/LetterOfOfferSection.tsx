@@ -62,6 +62,7 @@ export default function LetterOfOfferSection({
   meetingInvites: MeetingInviteSummaryRow[];
 }) {
   const acceptedLetter = letters.find((l) => l.status === 'accepted');
+  const generalMeetingInvite = meetingInvites.find((invite) => invite.letter_of_offer_id === null);
 
   return (
     <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
@@ -82,6 +83,16 @@ export default function LetterOfOfferSection({
           <Link href={`/admin/families/${childId}/invoices/new?type=tuition`} className="whitespace-nowrap text-xs font-bold text-teal-deep hover:underline">
             Create tuition invoice →
           </Link>
+        </div>
+      )}
+
+      {/* Not tied to any specific letter — sent automatically the moment the Student Enrolment
+          Form came in, before there's a letter to attach it to. Shown here regardless, since this
+          is still the natural place staff look for meeting status on this family. */}
+      {generalMeetingInvite && (
+        <div className="mt-3 rounded-sm border border-sand-line px-3 py-2 text-sm">
+          <span className="text-xs font-bold uppercase tracking-wide text-ink-soft">Meeting (from enrolment form)</span>
+          <MeetingStatus invite={generalMeetingInvite} />
         </div>
       )}
 
