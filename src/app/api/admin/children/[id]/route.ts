@@ -88,8 +88,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         previous_school = COALESCE(${d.previousSchool ?? null}, previous_school),
         lunch_option = COALESCE(${d.lunchOption ?? null}, lunch_option),
         photo_url = COALESCE(${d.photoUrl ?? null}, photo_url),
-        photo_updated_by_label = CASE WHEN ${d.photoUrl ?? null} IS NOT NULL THEN ${`Admin: ${staff.email}`} ELSE photo_updated_by_label END,
-        photo_updated_at = CASE WHEN ${d.photoUrl ?? null} IS NOT NULL THEN now() ELSE photo_updated_at END,
+        photo_updated_by_label = CASE WHEN ${d.photoUrl ?? null}::text IS NOT NULL THEN ${`Admin: ${staff.email}`} ELSE photo_updated_by_label END,
+        photo_updated_at = CASE WHEN ${d.photoUrl ?? null}::text IS NOT NULL THEN now() ELSE photo_updated_at END,
         classroom_student_email = COALESCE(${d.classroomStudentEmail ?? null}, classroom_student_email),
         updated_at = now()
       WHERE id = ${id}
