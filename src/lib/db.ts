@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -907,6 +907,51 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_family_activity_log_child ON family_activity_log (child_id)`;
+
+      // One Google account (the school's) authorizes meeting-scheduling for the whole school — same
+      // singleton pattern as classroom_connection, but a separate row/scope: the Classroom
+      // connection is read-only (courses/rosters/coursework) and this one needs calendar read
+      // (freebusy) + write (creating events with a Google Meet link), so they're kept as
+      // independent OAuth grants rather than trying to widen the Classroom one.
+      await sql`
+        CREATE TABLE IF NOT EXISTS calendar_connection (
+          id INTEGER PRIMARY KEY DEFAULT 1,
+          google_account_email TEXT NOT NULL,
+          calendar_id TEXT NOT NULL,
+          access_token TEXT NOT NULL,
+          access_token_expires_at TIMESTAMPTZ NOT NULL,
+          refresh_token TEXT NOT NULL,
+          connected_by BIGINT REFERENCES admin_users(id),
+          connected_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          CHECK (id = 1)
+        )
+      `;
+
+      // One row per "send a meeting-scheduling email" action (see ScheduleMeetingButton on the
+      // Letter of Offer section). Availability is computed live from the connected calendar's
+      // free/busy data at booking time rather than stored here — this table only records the
+      // outcome (still awaiting a pick, or booked with what/when/how).
+      await sql`
+        CREATE TABLE IF NOT EXISTS meeting_invites (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          letter_of_offer_id BIGINT NOT NULL REFERENCES letters_of_offer(id) ON DELETE CASCADE,
+          token TEXT NOT NULL UNIQUE,
+          parent_email TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'sent' CHECK (status IN ('sent', 'booked', 'cancelled')),
+          meeting_format TEXT CHECK (meeting_format IN ('in_person', 'video')),
+          booked_start TIMESTAMPTZ,
+          booked_end TIMESTAMPTZ,
+          booked_by_name TEXT,
+          google_event_id TEXT,
+          meet_link TEXT,
+          sent_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          booked_at TIMESTAMPTZ,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_meeting_invites_letter ON meeting_invites (letter_of_offer_id)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_meeting_invites_child ON meeting_invites (child_id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

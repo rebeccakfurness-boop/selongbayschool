@@ -666,6 +666,78 @@ export async function sendLetterOfOfferAcceptedConfirmation(toEmail: string, chi
   return send(toEmail, `Thanks for accepting — ${childFullName} — Selong Bay School`, html, { cc: NOTIFY_TO });
 }
 
+function formatMeetingTime(startIso: string): string {
+  const formatted = new Intl.DateTimeFormat('en-AU', {
+    weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit',
+    timeZone: 'Asia/Makassar',
+  }).format(new Date(startIso));
+  return `${formatted} (Lombok time)`;
+}
+
+/** Sent alongside (not instead of) the Letter of Offer — a separate action from
+ * ScheduleMeetingButton, since not every offer needs a follow-up meeting and a school may want to
+ * send this days after the letter itself. scheduleUrl is public/token-based, same shape as the
+ * Letter of Offer's acceptUrl. */
+export async function sendMeetingScheduleEmail(input: {
+  toEmail: string;
+  childFullName: string;
+  scheduleUrl: string;
+}): Promise<boolean> {
+  const html = wrapEmail(
+    'Schedule a meeting with us',
+    `<p>Dear parent/guardian of ${input.childFullName},</p>
+     <p>We'd like to arrange a short meeting to discuss ${input.childFullName}'s enrolment — in person on
+       campus, or over a video call, whichever suits you best.</p>
+     <p style="margin-top: 16px;">Please pick a time that works for you:</p>
+     <p style="margin-top: 12px;"><a href="${input.scheduleUrl}" style="color:#007c83; font-weight:700;">Choose a meeting time</a></p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `Schedule a meeting — ${input.childFullName} — Selong Bay School`, html, { cc: NOTIFY_TO });
+}
+
+export async function sendMeetingBookedConfirmation(input: {
+  toEmail: string;
+  childFullName: string;
+  startIso: string;
+  format: 'in_person' | 'video';
+  location: string | null;
+  meetLink: string | null;
+}): Promise<boolean> {
+  const whereLine =
+    input.format === 'video'
+      ? `<p style="margin-top: 12px;">This will be a video call. Join here at the scheduled time:
+           <a href="${input.meetLink}" style="color:#007c83; font-weight:700;">${input.meetLink}</a></p>`
+      : `<p style="margin-top: 12px;">This will be an in-person meeting at ${input.location}.</p>`;
+  const html = wrapEmail(
+    'Meeting confirmed',
+    `<p>Thanks — your meeting about ${input.childFullName} is confirmed for:</p>
+     <p style="margin-top: 8px; font-weight: 700;">${formatMeetingTime(input.startIso)}</p>
+     ${whereLine}
+     <p style="margin-top: 16px;">Need to change this? Just reply to this email and we'll sort out a new time.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `Meeting confirmed — ${input.childFullName} — Selong Bay School`, html, { cc: NOTIFY_TO });
+}
+
+/** Sent to the school inbox (not the individual staff member's own calendar — school-wide Google
+ * Calendar is the source of truth for that, since the event itself was created there) the moment a
+ * parent books, so a human notices without having to keep checking the calendar. */
+export async function sendMeetingBookedNotification(input: {
+  childFullName: string;
+  bookedByName: string;
+  startIso: string;
+  format: 'in_person' | 'video';
+}): Promise<boolean> {
+  const html = wrapEmail(
+    'Meeting booked',
+    `<p>${input.bookedByName} booked a ${input.format === 'video' ? 'video call' : 'in-person'} meeting about
+       <strong>${input.childFullName}</strong> for:</p>
+     <p style="margin-top: 8px; font-weight: 700;">${formatMeetingTime(input.startIso)}</p>
+     <p style="margin-top: 16px;">It's on the school calendar${input.format === 'video' ? ' with a Google Meet link attached' : ''}.</p>`
+  );
+  return send(NOTIFY_TO, `Meeting booked — ${input.childFullName}`, html);
+}
+
 /** Sent to the school inbox the moment a child's card is dragged into an active status
  * (Full-Time/Temporary/Worldschooler/Hybrid) with start date + programme already confirmed (the
  * same guard rail that gates the drag itself — see checkActiveStatusGuardRail in

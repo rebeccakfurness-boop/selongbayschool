@@ -579,6 +579,55 @@ scoped role):
   Classroom" block, not merged into the same list) on the parent portal, student portal, and — via
   matched submissions — the Child Card.
 
+### Phase 6: Meeting scheduling (Google Calendar + Meet)
+
+- **"Schedule a meeting"** on the Letter of Offer section of the Child Card sends the parent a link
+  to pick a time to discuss the offer — in person on campus or over a video call — from the
+  school's actual open times. This is a **separate Google connection from Google Classroom**: that
+  one is read-only (courses/rosters/coursework) and this one needs calendar read (free/busy) +
+  write (creating events with a Google Meet link), so they're independent OAuth grants against
+  independent scopes rather than trying to widen the Classroom one — connect them separately, and
+  they can even be different Google accounts if that ever makes sense.
+- **Required environment variables** (set in Vercel, and locally in `.env.local`):
+  | Variable | Description |
+  |---|---|
+  | `GOOGLE_CALENDAR_CLIENT_ID` | OAuth 2.0 Client ID from Google Cloud Console. Can be the *same* Client ID as `GOOGLE_CLASSROOM_CLIENT_ID` if you'd rather manage one OAuth client for both — just add this feature's redirect URI and the calendar scope to it in Cloud Console — or a separate client if you'd rather keep them fully independent. |
+  | `GOOGLE_CALENDAR_CLIENT_SECRET` | The matching client secret. **Treat as a real secret.** |
+  | `GOOGLE_CALENDAR_REDIRECT_URI` | Must exactly match an "Authorized redirect URI" on that OAuth client in Google Cloud Console, e.g. `https://www.selongbayschool.com/api/admin/calendar/callback`. |
+  - The Google Calendar API must be enabled on that Cloud project, and the OAuth consent screen
+    needs the `https://www.googleapis.com/auth/calendar` scope (used in
+    `src/app/api/admin/calendar/connect/route.ts`) added. While the consent screen is in "Testing"
+    mode, only Google accounts added as test users in Cloud Console can complete the connect flow —
+    add the school's Google account there first (same account whose calendar you want meetings
+    booked on).
+  - **This OAuth flow, and the actual live free/busy lookup + Meet-link creation, could not be
+    tested end-to-end from within this sandboxed build environment** (no real domain to receive
+    the callback, no real Google account to authorize). Please test "Connect Google Calendar" at
+    `/admin/calendar` once the env vars and Cloud Console config above are in place — then send a
+    test meeting invite from a Letter of Offer and actually book a slot — and report back anything
+    that errors so it can be fixed.
+- **Connect flow**: `/admin/calendar` → "Connect Google Calendar" → Google consent screen →
+  `/api/admin/calendar/callback` exchanges the code for tokens, stored in the `calendar_connection`
+  singleton table. The connected account's own primary calendar (its email address) is used
+  directly — there's no separate calendar picker, since "the school's Gmail calendar" is exactly
+  what was asked for. Same `prompt=consent` / refresh-token handling as the Classroom connection.
+- **Availability** is computed live at booking-page load time — no admin-managed slot list. Current
+  defaults (all in `src/lib/meeting-scheduling.ts`, easy to tune, not something the school
+  specifically requested): 30-minute slots, 08:00–15:00 weekdays only, next 14 calendar days, and a
+  24-hour minimum lead time before the earliest bookable slot. Anything already on the connected
+  calendar (via Google's `freeBusy` API) is excluded.
+- **Booking flow**: `/schedule-meeting/[token]` (public, token-based, same pattern as
+  `/letter-of-offer/[token]`) — parent picks in-person or video and a time, which re-checks the
+  slot is still free (in case of a near-simultaneous double-booking) before creating the calendar
+  event. Video bookings get `conferenceData` with a Google Meet link created inline; in-person
+  bookings get the school's address as the event location instead. The school's own branded
+  confirmation email (not Google Calendar's own generic invite email, which is left off via not
+  setting `sendUpdates`) goes to the parent, and a notification to the school inbox.
+- **One invite per "Schedule a meeting" click** (`meeting_invites` table, FK'd to both the child and
+  the specific letter of offer) — re-sending creates a new row rather than overwriting, so the
+  Child Card can show the current state (awaiting a pick vs. booked with full details) without
+  losing history.
+
 ### Phase 4: Invoicing
 
 - **`school_settings`** (singleton, `id = 1`): payable-to/bank details, currency, and invoice due

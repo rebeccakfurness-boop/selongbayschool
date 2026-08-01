@@ -17,6 +17,7 @@ import ClassroomSection from '@/components/admin/ClassroomSection';
 import ComplianceFormModal from '@/components/admin/ComplianceFormModal';
 import type { InvoiceSummaryRow, ClassroomSubmissionRow } from '@/lib/lms-data';
 import type { LetterOfOfferSummaryRow } from '@/lib/letters-of-offer';
+import type { MeetingInviteSummaryRow } from '@/lib/meeting-scheduling';
 import { formatDate } from '@/lib/admin-format';
 import { STATUS_LEGEND, CLASS_BAND_LABELS, CLASS_BAND_ORDER, COMPLIANCE_ITEMS, type ChildStatus, type ClassBand } from '@/lib/family-data';
 import { complianceBadge, invoiceBadge, type ComplianceBadge, type InvoiceBadge } from '@/lib/child-lifecycle-shared';
@@ -177,6 +178,7 @@ export default function ChildCard({
   guardians,
   invoices,
   letters,
+  meetingInvites,
   classroomSubmissions,
 }: {
   child: ChildDetail;
@@ -187,6 +189,7 @@ export default function ChildCard({
   guardians: GuardianLink[];
   invoices: InvoiceSummaryRow[];
   letters: LetterOfOfferSummaryRow[];
+  meetingInvites: MeetingInviteSummaryRow[];
   classroomSubmissions: ClassroomSubmissionRow[];
 }) {
   const router = useRouter();
@@ -365,6 +368,7 @@ export default function ChildCard({
               canEdit={canEdit}
               defaultEmail={child.primary_contact_email ?? ''}
               hasInvoices={invoices.length > 0}
+              meetingInvites={meetingInvites}
             />
 
             <InvoicesSection childId={child.id} invoices={invoices} canEdit={canEdit} defaultEmail={child.primary_contact_email ?? ''} />

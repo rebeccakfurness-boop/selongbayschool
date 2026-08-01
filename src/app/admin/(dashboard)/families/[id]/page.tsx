@@ -3,6 +3,7 @@ import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
 import { getWorkSamplesForChild, getPhotoFeedForChild, getInvoicesForChild, getClassroomSubmissionsForChild } from '@/lib/lms-data';
 import { getLettersOfOfferForChild } from '@/lib/letters-of-offer';
+import { getMeetingInvitesForChild } from '@/lib/meeting-scheduling';
 import { COMPLIANCE_STALE_AFTER_DAYS } from '@/lib/child-lifecycle-shared';
 import ChildCard, { type ChildDetail } from '@/components/admin/ChildCard';
 import type { GuardianLink } from '@/components/admin/GuardianLinksSection';
@@ -45,6 +46,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
   const photos = await getPhotoFeedForChild(id, child.class_name);
   const invoices = await getInvoicesForChild(id);
   const letters = await getLettersOfOfferForChild(id);
+  const meetingInvites = await getMeetingInvitesForChild(id);
   const classroomSubmissions = await getClassroomSubmissionsForChild(id);
   const guardians = (await sql`
     SELECT gc.customer_id, c.name, c.email, gc.relationship
@@ -63,6 +65,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
       guardians={guardians}
       invoices={invoices}
       letters={letters}
+      meetingInvites={meetingInvites}
       classroomSubmissions={classroomSubmissions}
     />
   );

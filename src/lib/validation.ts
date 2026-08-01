@@ -362,6 +362,16 @@ export const acceptLetterOfOfferSchema = z.object({
   acceptedByName: z.string().trim().min(1, 'Enter your name').max(200),
 });
 
+export const scheduleMeetingSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+});
+
+export const bookMeetingSlotSchema = z.object({
+  startIso: z.string().trim().datetime({ message: 'Choose a valid time slot' }),
+  format: z.enum(['in_person', 'video']),
+  bookedByName: z.string().trim().min(1, 'Enter your name').max(200),
+});
+
 export const updateSchoolSettingsSchema = z.object({
   payableTo: z.string().trim().min(1).max(300).optional(),
   bankName: z.string().trim().min(1).max(300).optional(),
