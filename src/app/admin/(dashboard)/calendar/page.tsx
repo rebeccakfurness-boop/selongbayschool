@@ -12,19 +12,54 @@ const ERROR_MESSAGES: Record<string, string> = {
   unexpected: 'Something went wrong connecting to Google Calendar. Please try again.',
 };
 
+/** Renders inline instead of throwing up to the site-wide error boundary (src/app/error.tsx),
+ * which strips the real message from what reaches the browser in production — same pattern as
+ * BoardLoadError on the Family Board list page. */
+function CalendarPageLoadError({ error }: { error: unknown }) {
+  const message = error instanceof Error ? error.message : String(error);
+  return (
+    <section>
+      <h1 className="font-display text-2xl font-semibold text-ink">Meeting Calendar</h1>
+      <div className="mt-6 rounded-md border border-orange-deep/40 bg-orange/10 p-5">
+        <p className="font-semibold text-orange-deep">This page couldn&apos;t load.</p>
+        <p className="mt-2 text-sm text-ink-soft">
+          This is usually a database schema mismatch rather than something wrong with your data. Please share this
+          message so it can be fixed:
+        </p>
+        <pre className="mt-3 overflow-x-auto rounded-sm bg-ink/5 p-3 text-xs text-ink">{message}</pre>
+      </div>
+    </section>
+  );
+}
+
 export default async function CalendarConnectionPage({
   searchParams,
 }: {
   searchParams: Promise<{ connected?: string; error?: string }>;
 }) {
-  await requireAdmin();
-  await ensureSchema();
-  const { connected, error } = await searchParams;
+  try {
+    await requireAdmin();
+    await ensureSchema();
+    const { connected, error } = await searchParams;
 
-  const [connection] = (await sql`
-    SELECT google_account_email FROM calendar_connection WHERE id = 1
-  `) as unknown as { google_account_email: string }[];
+    const [connection] = (await sql`
+      SELECT google_account_email FROM calendar_connection WHERE id = 1
+    `) as unknown as { google_account_email: string }[];
 
+    return renderCalendarPage(connected, error, connection);
+  } catch (error) {
+    // redirect() (used by requireAdmin() for non-admins) throws a special error identified by
+    // digest — must be rethrown, not swallowed as a normal failure, or navigation breaks silently.
+    const digest = (error as { digest?: string } | null)?.digest;
+    if (typeof digest === 'string' && digest.startsWith('NEXT_REDIRECT')) {
+      throw error;
+    }
+    console.error('[admin/calendar] Meeting Calendar page failed to load', error);
+    return <CalendarPageLoadError error={error} />;
+  }
+}
+
+function renderCalendarPage(connected: string | undefined, error: string | undefined, connection: { google_account_email: string } | undefined) {
   return (
     <section>
       <h1 className="font-display text-2xl font-semibold text-ink">Meeting Calendar</h1>
