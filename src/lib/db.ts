@@ -1,4 +1,14 @@
-import { neon, type NeonQueryFunction } from '@neondatabase/serverless';
+import { neon, types, type NeonQueryFunction } from '@neondatabase/serverless';
+
+// The driver's default DATE parser returns a JS Date object, not the "YYYY-MM-DD" string every
+// DATE column's TypeScript type (and every Zod schema validating a date field, e.g. updateChildSchema
+// in validation.ts) assumes. That mismatch is invisible on read (formatDate() etc. just re-wrap it in
+// `new Date(...)`, which accepts a Date fine) but breaks on write: a form seeded from such a value and
+// JSON.stringify'd back to an API route serializes as a full ISO timestamp, failing the date-only regex
+// with Zod's literal "Invalid" — this is what broke every Child Card edit once any date field was set.
+// Overriding the parser to pass the raw string through fixes it at the source for the whole app,
+// rather than special-casing each place a DATE column round-trips through a form.
+types.setTypeParser(types.builtins.DATE, (value: string) => value);
 
 /** Must stay in sync with the `activityImages` fallback map in src/app/activities/page.tsx. */
 const ACTIVITY_PHOTO_BACKFILL: Record<string, string> = {
