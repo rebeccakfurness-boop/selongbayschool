@@ -93,7 +93,7 @@ export default async function AccountOverviewPage() {
           JOIN invoice_children ic ON ic.invoice_id = i.id
           JOIN guardian_children gc ON gc.child_id = ic.child_id
           WHERE gc.customer_id = ${customerId} AND i.status = 'outstanding'
-          ORDER BY i.due_date ASC
+          ORDER BY i.due_date::text ASC
         `) as unknown as OutstandingInvoiceRow[])
       : [];
     const totalOutstanding = outstandingInvoices.reduce((sum, inv) => sum + inv.total_amount, 0);
