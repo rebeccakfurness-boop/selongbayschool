@@ -6,7 +6,7 @@ import { getCustomerSessionOptions, sanitizeNextPath, type CustomerSessionData }
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get('token');
-  const next = sanitizeNextPath(req.nextUrl.searchParams.get('next'), '/account/bookings');
+  const next = sanitizeNextPath(req.nextUrl.searchParams.get('next'), '/account');
 
   if (!token) {
     return NextResponse.redirect(new URL('/account/login?error=invalid', req.url));

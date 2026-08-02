@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     );
   }
   const { email, name, phone } = parsed.data;
-  const next = sanitizeNextPath((body as { next?: unknown }).next, '/account/bookings');
+  const next = sanitizeNextPath((body as { next?: unknown }).next, '/account');
 
   try {
     await ensureSchema();

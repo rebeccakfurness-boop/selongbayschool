@@ -30,7 +30,7 @@ import { getLunchOrdersForChild, type LunchOrderSummaryRow } from '@/lib/lunch-o
 import { weekdaysSummaryLabel } from '@/lib/lunch-calc';
 import { formatIDR } from '@/lib/site-content';
 import { formatDate } from '@/lib/admin-format';
-import LogoutButton from '@/components/account/LogoutButton';
+import AccountNav from '@/components/account/AccountNav';
 import ParentChildProfileCard from '@/components/account/ParentChildProfileCard';
 import LunchOrderForm from '@/components/account/LunchOrderForm';
 
@@ -114,17 +114,7 @@ function renderLearningPage(
 ) {
   return (
     <div className="min-h-screen bg-cream">
-      <div className="border-b border-black/10 bg-teal-deep">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-          <span className="font-display text-lg font-semibold text-white">My Children</span>
-          <div className="flex items-center gap-4">
-            <Link href="/account/bookings" className="text-sm font-semibold text-white/90 hover:underline">
-              My Bookings
-            </Link>
-            <LogoutButton />
-          </div>
-        </div>
-      </div>
+      <AccountNav active="/account/learning" />
 
       <div className="mx-auto max-w-4xl px-6 py-10">
         {childSections.length === 0 && (
@@ -141,7 +131,7 @@ function renderLearningPage(
             const submissionByAssignment = new Map(classroomSubmissions.map((s) => [s.classroom_assignment_id, s]));
 
             return (
-              <section key={child.id}>
+              <section key={child.id} id={`child-${child.id}`} className="scroll-mt-6">
                 <ParentChildProfileCard child={child} />
 
                 <h2 className="mt-8 font-display text-xl font-semibold text-ink">Learning</h2>

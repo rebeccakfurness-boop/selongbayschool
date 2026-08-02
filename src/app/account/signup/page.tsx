@@ -11,7 +11,7 @@ import { useFormSubmit } from '@/lib/useFormSubmit';
 
 function AccountSignupForm() {
   const searchParams = useSearchParams();
-  const next = searchParams?.get('next') || '/account/bookings';
+  const next = searchParams?.get('next') || '/account';
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');

@@ -1,10 +1,9 @@
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCustomerSessionOptions, type CustomerSessionData } from '@/lib/auth';
-import LogoutButton from '@/components/account/LogoutButton';
+import AccountNav from '@/components/account/AccountNav';
 import AccountSettingsForm from '@/components/account/AccountSettingsForm';
 
 export const dynamic = 'force-dynamic';
@@ -28,17 +27,7 @@ export default async function AccountSettingsPage() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <div className="border-b border-black/10 bg-teal-deep">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-          <span className="font-display text-lg font-semibold text-white">My Account</span>
-          <div className="flex items-center gap-4">
-            <Link href="/account/bookings" className="text-sm font-semibold text-white/90 hover:underline">
-              My Bookings
-            </Link>
-            <LogoutButton />
-          </div>
-        </div>
-      </div>
+      <AccountNav active="/account/settings" />
       <div className="mx-auto max-w-4xl px-6 py-10">
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">Account Settings</h1>

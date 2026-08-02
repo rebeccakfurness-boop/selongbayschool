@@ -18,7 +18,7 @@ const ERROR_MESSAGES: Record<string, string> = {
 
 function AccountLoginForm() {
   const searchParams = useSearchParams();
-  const next = searchParams?.get('next') || '/account/bookings';
+  const next = searchParams?.get('next') || '/account';
   const linkError = searchParams?.get('error');
   const [email, setEmail] = useState('');
   const { status, errorMessage, submit } = useFormSubmit<{ ok: true; message: string }>('/api/account/login');

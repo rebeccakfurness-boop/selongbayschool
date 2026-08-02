@@ -4,7 +4,7 @@ import { getIronSession } from 'iron-session';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCustomerSessionOptions, type CustomerSessionData } from '@/lib/auth';
 import { formatIDR } from '@/lib/site-content';
-import LogoutButton from '@/components/account/LogoutButton';
+import AccountNav from '@/components/account/AccountNav';
 import CancelBookingButton from '@/components/account/CancelBookingButton';
 
 export const dynamic = 'force-dynamic';
@@ -131,20 +131,7 @@ export default async function AccountBookingsPage() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <div className="border-b border-black/10 bg-teal-deep">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-          <span className="font-display text-lg font-semibold text-white">My Account</span>
-          <div className="flex items-center gap-4">
-            <Link href="/account/learning" className="text-sm font-semibold text-white/90 hover:underline">
-              My Children
-            </Link>
-            <Link href="/account/settings" className="text-sm font-semibold text-white/90 hover:underline">
-              Settings
-            </Link>
-            <LogoutButton />
-          </div>
-        </div>
-      </div>
+      <AccountNav active="/account/bookings" />
       <div className="mx-auto max-w-4xl px-6 py-10">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
