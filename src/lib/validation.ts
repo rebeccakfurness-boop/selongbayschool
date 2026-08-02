@@ -520,16 +520,6 @@ export type EnrolmentInput = z.infer<typeof enrolmentSchema>;
 
 // --- Attendance ---
 
-export const kioskUnlockSchema = z.object({
-  pin: z.string().trim().min(1, 'Enter the kiosk PIN'),
-});
-export type KioskUnlockInput = z.infer<typeof kioskUnlockSchema>;
-
-export const setKioskPinSchema = z.object({
-  pin: z.string().trim().min(4, 'PIN must be at least 4 characters').max(20),
-});
-export type SetKioskPinInput = z.infer<typeof setKioskPinSchema>;
-
 const attendanceCheckBase = z.object({
   // coerce, not number: children.id/activities.id are BIGINT columns, which the Postgres driver
   // returns as strings (to avoid precision loss past Number.MAX_SAFE_INTEGER) — every ID prop
@@ -564,6 +554,17 @@ export const attendanceCheckSchema = attendanceCheckBase
     path: ['activityId'],
   });
 export type AttendanceCheckInput = z.infer<typeof attendanceCheckSchema>;
+
+/** The kiosk's own admin-override check-in/out (/api/kiosk/admin-check) — same shape as
+ * attendanceCheckSchema minus the signature, since the whole point is skipping it. Distinct from
+ * adminAttendanceCorrectionSchema below: that one is for the Child Card's backdated corrections
+ * (childId from the URL, a chosen occurredAt); this one is "right now, from the gate", with
+ * childId in the body since the kiosk isn't scoped to one child's page. */
+export const kioskAdminCheckSchema = attendanceCheckBase.refine(
+  (d) => (d.sessionType === 'activity' ? d.activityId != null : d.activityId == null),
+  { message: 'Activity check-ins require an activity; daily check-ins must not include one.', path: ['activityId'] }
+);
+export type KioskAdminCheckInput = z.infer<typeof kioskAdminCheckSchema>;
 
 export const linkChildSearchSchema = z.object({
   childFullName: z.string().trim().min(1, "Enter your child's full name").max(200),

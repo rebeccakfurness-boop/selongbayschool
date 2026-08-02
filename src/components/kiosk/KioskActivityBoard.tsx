@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ChildAvatar from '@/components/ChildAvatar';
 import KioskSignStep from '@/components/kiosk/KioskSignStep';
@@ -8,7 +8,7 @@ import type { ActivityOption, AttendanceEventType, KioskRosterChildRow } from '@
 
 type RosterChild = Omit<KioskRosterChildRow, 'last_event_type' | 'last_event_time'>;
 type SigningState = AttendanceEventType | null;
-type ConfirmState = { childName: string; activityName: string; eventType: AttendanceEventType; time: string } | null;
+type ConfirmState = { childId: number; eventId: number; childName: string; activityName: string; eventType: AttendanceEventType; time: string; byAdmin: boolean } | null;
 
 function formatTime(iso: string): string {
   return new Date(iso).toLocaleTimeString('en-US', { timeZone: 'Asia/Makassar', hour: 'numeric', minute: '2-digit' });
@@ -17,7 +17,9 @@ function formatTime(iso: string): string {
 /** Kept distinct from the daily gate roster (/kiosk) — a separate three-step flow (pick activity,
  * pick student, pick check in/out) rather than folded into the same screen, since this is a much
  * less frequent action than the twice-daily gate rush and mixing the two rosters would slow both
- * down. Every child (regular or activities-only) can appear here — see getActivityKioskRoster. */
+ * down. Every child (regular or activities-only) can appear here — see getActivityKioskRoster.
+ * Same two paths as the daily board: parent signs, or staff check in/out directly (admin
+ * override, no signature) — /kiosk requires a staff login either way. */
 export default function KioskActivityBoard({ roster, activities }: { roster: RosterChild[]; activities: ActivityOption[] }) {
   const router = useRouter();
   const [activity, setActivity] = useState<ActivityOption | null>(null);
@@ -27,6 +29,17 @@ export default function KioskActivityBoard({ roster, activities }: { roster: Ros
   const [confirm, setConfirm] = useState<ConfirmState>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [undoing, setUndoing] = useState(false);
+
+  useEffect(() => {
+    if (!confirm) return;
+    const timer = setTimeout(() => {
+      setConfirm(null);
+      setQuery('');
+      router.refresh();
+    }, 6000);
+    return () => clearTimeout(timer);
+  }, [confirm, router]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -36,7 +49,13 @@ export default function KioskActivityBoard({ roster, activities }: { roster: Ros
     );
   }, [roster, query]);
 
-  async function submitCheck(eventType: AttendanceEventType, signedByName: string, signatureDataUrl: string) {
+  function resetToList() {
+    setConfirm(null);
+    setQuery('');
+    router.refresh();
+  }
+
+  async function submitSigned(eventType: AttendanceEventType, signedByName: string, signatureDataUrl: string) {
     if (!activity || !child) return;
     setSubmitting(true);
     setError(null);
@@ -50,16 +69,42 @@ export default function KioskActivityBoard({ roster, activities }: { roster: Ros
       if (!res.ok) throw new Error(data.error || 'Could not record check-in/out.');
       setChild(null);
       setSigning(null);
-      setConfirm({ childName: child.child_nickname || child.child_full_name, activityName: activity.name, eventType, time: formatTime(data.occurredAt) });
-      setTimeout(() => {
-        setConfirm(null);
-        setQuery('');
-        router.refresh();
-      }, 2500);
+      setConfirm({ childId: child.id, eventId: data.id, childName: child.child_nickname || child.child_full_name, activityName: activity.name, eventType, time: formatTime(data.occurredAt), byAdmin: false });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not record check-in/out.');
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function submitAdminCheck(eventType: AttendanceEventType) {
+    if (!activity || !child) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/kiosk/admin-check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ childId: child.id, eventType, sessionType: 'activity', activityId: activity.id }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not record check-in/out.');
+      setChild(null);
+      setConfirm({ childId: child.id, eventId: data.id, childName: child.child_nickname || child.child_full_name, activityName: activity.name, eventType, time: formatTime(data.occurredAt), byAdmin: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not record check-in/out.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function undoEvent(childId: number, eventId: number) {
+    setUndoing(true);
+    try {
+      await fetch(`/api/admin/children/${childId}/attendance/${eventId}`, { method: 'DELETE' });
+    } finally {
+      setUndoing(false);
+      resetToList();
     }
   }
 
@@ -70,7 +115,21 @@ export default function KioskActivityBoard({ roster, activities }: { roster: Ros
         <p className="mt-8 font-display text-4xl font-bold text-white">{confirm.childName}</p>
         <p className="mt-3 text-2xl font-semibold text-white">
           {confirm.eventType === 'check_in' ? 'Checked in to' : 'Checked out of'} {confirm.activityName} at {confirm.time}
+          {confirm.byAdmin && ' (admin)'}
         </p>
+        <div className="mt-8 flex flex-col items-center gap-3">
+          <button
+            type="button"
+            disabled={undoing}
+            onClick={() => undoEvent(confirm.childId, confirm.eventId)}
+            className="rounded-full border-2 border-white/70 px-6 py-2 text-sm font-bold text-white hover:bg-white/10 disabled:opacity-60"
+          >
+            {undoing ? 'Undoing…' : 'Undo — made a mistake'}
+          </button>
+          <button type="button" onClick={resetToList} className="text-sm font-semibold text-white/80 underline">
+            Done
+          </button>
+        </div>
       </div>
     );
   }
@@ -86,7 +145,7 @@ export default function KioskActivityBoard({ roster, activities }: { roster: Ros
           setSigning(null);
           setError(null);
         }}
-        onConfirm={(signedByName, signatureDataUrl) => submitCheck(signing, signedByName, signatureDataUrl)}
+        onConfirm={(signedByName, signatureDataUrl) => submitSigned(signing, signedByName, signatureDataUrl)}
       />
     );
   }
@@ -97,13 +156,45 @@ export default function KioskActivityBoard({ roster, activities }: { roster: Ros
         <ChildAvatar photoUrl={child.photo_url} name={child.child_full_name} size="lg" />
         <h1 className="mt-4 font-display text-3xl font-bold text-ink">{child.child_nickname || child.child_full_name}</h1>
         <p className="mt-1 text-lg text-ink-soft">{activity.name}</p>
+        {error && <p role="alert" className="mt-3 text-sm font-semibold text-orange-deep">{error}</p>}
 
-        <div className="mt-8 flex w-full max-w-md flex-col gap-4">
-          <button type="button" onClick={() => setSigning('check_in')} className="rounded-md bg-teal py-8 text-3xl font-bold text-white shadow-soft transition-transform active:scale-95">
+        <p className="mt-8 text-sm font-bold uppercase tracking-wide text-ink-soft">Parent signs</p>
+        <div className="mt-2 flex w-full max-w-md flex-col gap-4">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={() => setSigning('check_in')}
+            className="rounded-md bg-teal py-8 text-3xl font-bold text-white shadow-soft transition-transform active:scale-95 disabled:opacity-60"
+          >
             Check In
           </button>
-          <button type="button" onClick={() => setSigning('check_out')} className="rounded-md bg-orange-deep py-8 text-3xl font-bold text-white shadow-soft transition-transform active:scale-95">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={() => setSigning('check_out')}
+            className="rounded-md bg-orange-deep py-8 text-3xl font-bold text-white shadow-soft transition-transform active:scale-95 disabled:opacity-60"
+          >
             Check Out
+          </button>
+        </div>
+
+        <p className="mt-6 text-sm font-bold uppercase tracking-wide text-ink-soft">Or, staff check in without a signature</p>
+        <div className="mt-2 flex w-full max-w-md gap-3">
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={() => submitAdminCheck('check_in')}
+            className="flex-1 rounded-md border-2 border-teal py-3 text-base font-bold text-teal-deep transition-transform active:scale-95 disabled:opacity-60"
+          >
+            Admin Check In
+          </button>
+          <button
+            type="button"
+            disabled={submitting}
+            onClick={() => submitAdminCheck('check_out')}
+            className="flex-1 rounded-md border-2 border-orange-deep py-3 text-base font-bold text-orange-deep transition-transform active:scale-95 disabled:opacity-60"
+          >
+            Admin Check Out
           </button>
         </div>
 

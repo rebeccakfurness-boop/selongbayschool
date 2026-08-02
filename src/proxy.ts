@@ -4,19 +4,15 @@ import {
   getSessionOptions,
   getCustomerSessionOptions,
   getStudentSessionOptions,
-  getKioskSessionOptions,
   type AdminSessionData,
   type CustomerSessionData,
   type StudentSessionData,
-  type KioskSessionData,
 } from '@/lib/auth';
 
 const PUBLIC_ADMIN_PATHS = ['/admin/login', '/admin/forgot-password', '/admin/reset-password'];
 const PUBLIC_ADMIN_API_PATHS = ['/api/admin/login', '/api/admin/forgot-password', '/api/admin/reset-password'];
 const PUBLIC_ACCOUNT_PATHS = ['/account/login', '/account/signup'];
 const PUBLIC_STUDENT_PATHS = ['/student/login'];
-const PUBLIC_KIOSK_PATHS = ['/kiosk/unlock'];
-const PUBLIC_KIOSK_API_PATHS = ['/api/kiosk/unlock'];
 
 export const config = {
   matcher: ['/admin/:path*', '/api/admin/:path*', '/account/:path*', '/student/:path*', '/kiosk/:path*', '/api/kiosk/:path*'],
@@ -39,26 +35,6 @@ export async function proxy(req: NextRequest) {
     return res;
   }
 
-  // The gate tablet has no login of any kind — just a shared PIN (see /kiosk/unlock) that unlocks
-  // this specific browser. Deliberately not linked from anywhere else in the site: staff set the
-  // tablet's browser to this URL once and it stays unlocked, same idea as the admin/customer/
-  // student guards above but with a device-scoped session instead of a person-scoped one.
-  if (pathname === '/kiosk' || pathname.startsWith('/kiosk/') || pathname.startsWith('/api/kiosk/')) {
-    if (PUBLIC_KIOSK_PATHS.includes(pathname) || PUBLIC_KIOSK_API_PATHS.includes(pathname)) {
-      return NextResponse.next();
-    }
-    const res = NextResponse.next();
-    const session = await getIronSession<KioskSessionData>(req, res, await getKioskSessionOptions());
-    if (!session.unlocked) {
-      if (pathname.startsWith('/api/')) {
-        return NextResponse.json({ error: 'Kiosk locked.' }, { status: 401 });
-      }
-      const unlockUrl = new URL('/kiosk/unlock', req.url);
-      return NextResponse.redirect(unlockUrl);
-    }
-    return res;
-  }
-
   if (pathname === '/student' || pathname.startsWith('/student/')) {
     if (PUBLIC_STUDENT_PATHS.includes(pathname)) {
       return NextResponse.next();
@@ -77,6 +53,11 @@ export async function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // Everything else — including /kiosk and /api/kiosk/* — needs a staff session. The gate kiosk
+  // used to unlock with its own shared PIN (no way to know *which* staff member was present); now
+  // it just needs a staff member logged in via the normal /admin/login, same as any other admin
+  // page, so an admin-recorded check-in at the gate can be attributed to a real person. That also
+  // means an unauthenticated visit to /kiosk redirects to /admin/login like any other admin page.
   const res = NextResponse.next();
   const session = await getIronSession<AdminSessionData>(req, res, await getSessionOptions());
 

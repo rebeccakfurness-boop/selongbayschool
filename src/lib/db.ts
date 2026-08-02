@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 8;
+const SCHEMA_VERSION = 9;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1053,19 +1053,11 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE guardian_children ADD COLUMN IF NOT EXISTS reviewed_by BIGINT REFERENCES admin_users(id)`;
       await sql`ALTER TABLE guardian_children ADD COLUMN IF NOT EXISTS reviewed_at TIMESTAMPTZ`;
 
-      // Singleton PIN gate for /kiosk — the gate tablet has no parent or staff login at all, so
-      // this is the only thing standing between the public and the check-in roster. Not seeded
-      // with a real PIN; /kiosk/unlock refuses to unlock (and the admin settings form nudges
-      // whoever's setting the tablet up) until an admin sets one at /admin/attendance.
-      await sql`
-        CREATE TABLE IF NOT EXISTS kiosk_settings (
-          id INTEGER PRIMARY KEY DEFAULT 1,
-          pin_hash TEXT,
-          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-          CHECK (id = 1)
-        )
-      `;
-      await sql`INSERT INTO kiosk_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`;
+      // The gate kiosk used to unlock with its own shared PIN (kiosk_settings singleton, pin_hash).
+      // It's now gated by a normal staff login instead (see src/proxy.ts) so an admin-recorded
+      // check-in at the gate can be attributed to a real person — the PIN table is dropped rather
+      // than left behind unused.
+      await sql`DROP TABLE IF EXISTS kiosk_settings`;
 
       // One row per check-in or check-out action, from either entry point. `session_type` splits
       // the daily gate roster ('daily', activity_id always null) from activity-specific check-ins

@@ -690,18 +690,16 @@ self-service child-linking flow with approval.
   student appears on the daily gate roster at all — an activities-only student only ever shows up
   in the activity check-in flow, on both the kiosk and the portal. Set per-child from the Child
   Card edit form.
-- **Gate kiosk** (`/kiosk`, `/kiosk/activities`): a shared, no-login tablet screen. `/kiosk/unlock`
-  gates every other `/kiosk/*` and `/api/kiosk/*` route behind a single shared PIN (set at
-  `/admin/attendance`, hashed with bcrypt in the new `kiosk_settings` singleton) — once entered,
-  the browser stays unlocked for a year (it's a physically-secured device meant to stay logged in,
-  not a per-person login; a "Lock kiosk" link on the screen re-locks it on demand). Not linked
-  from anywhere in the site nav or the marketing header/footer (`SiteChrome.tsx` skips both on
-  `/kiosk/*` specifically, so a curious tap can't navigate off the check-in flow to the public
-  site). Flow: tap a student's name (searchable list, big touch targets) → tap Check In or Check
-  Out on a full-screen confirmation sheet (the time-appropriate action is visually emphasized,
-  defaulting to Check In before noon / Check Out after, school-local time) → a big checkmark
-  confirmation auto-reverts to the list after ~2.5s. `/kiosk/activities` is a separate three-step
-  flow (pick activity → pick student, from every active student regardless of
+- **Gate kiosk** (`/kiosk`, `/kiosk/activities`): a shared tablet screen at the gate — a staff
+  member logs in once (see "Gate kiosk behind a staff login" below for how that gate evolved from
+  a shared PIN to reusing the staff login). Not linked from anywhere in the site nav or the
+  marketing header/footer (`SiteChrome.tsx` skips both on `/kiosk/*` specifically, so a curious tap
+  can't navigate off the check-in flow to the public site). Flow: tap a student's name (searchable
+  list, big touch targets) → tap Check In or Check Out on a full-screen confirmation sheet (the
+  time-appropriate action is visually emphasized, defaulting to Check In before noon / Check Out
+  after, school-local time) → sign, or use the staff override → a big checkmark confirmation with
+  an Undo option, auto-reverting to the list after ~6s. `/kiosk/activities` is a separate
+  three-step flow (pick activity → pick student, from every active student regardless of
   `enrollment_type` → check in/out) since it's much less frequent than the twice-daily gate rush.
 - **Parent portal**: `/account/attendance` lists each linked (and approved — see below) child with
   a single one-tap Check In/Check Out button that toggles based on today's status, an activity
@@ -721,8 +719,9 @@ self-service child-linking flow with approval.
   from the Child Card (the pre-existing flow) still auto-approves immediately, same as before this
   feature existed.
 - **Admin** (`/admin/attendance`, sidebar): today's whole-school roster with checked-in/checked-out/
-  not-yet-arrived counts, the pending link-request queue (approve/reject), and the kiosk PIN form.
-  `/admin/attendance/report`: date-range + class filters over every attendance event
+  not-yet-arrived counts, an Undo action per student, the pending link-request queue
+  (approve/reject), and a link to open the gate kiosk. `/admin/attendance/report`: date-range +
+  class filters over every attendance event
   (kiosk/portal/admin, all session types) with a **CSV export** button
   (`/api/admin/attendance/export`). The Child Card gained an **Attendance** section (self-fetching,
   under `/api/admin/children/[id]/attendance`) showing a student's full history, the same anomaly
@@ -746,8 +745,8 @@ rows already written before this existed, so it's enforced at the validation lay
 
 - **Kiosk**: tapping Check In/Check Out now leads to a full-screen sign step
   (`KioskSignStep.tsx`, shared by `/kiosk` and `/kiosk/activities`) — a typed name plus a signature
-  — before the usual checkmark confirmation. There's no login at the kiosk, so this is the only
-  place identity is captured at all for a kiosk-sourced event.
+  — before the usual checkmark confirmation. This captures the *parent's* identity for a
+  kiosk-sourced event; see below for how the kiosk itself is now gated by a staff login.
 - **Parent portal**: the one-tap Check In/Check Out button now opens a small sign-to-confirm modal
   (`AttendanceSignModal.tsx`) first. The signer's name is never taken from the client here — the
   API route resolves it server-side from the logged-in customer's own `name`/`email`, the same
@@ -762,6 +761,32 @@ rows already written before this existed, so it's enforced at the validation lay
   plain image in a new tab — decoded server-side from the stored PNG data URL rather than a
   dedicated lightbox component. Kiosk rows also show who signed inline (`signed_by_name`) directly
   in the source label, since that's the only identity a kiosk event carries at all.
+
+#### Gate kiosk behind a staff login, admin check-in, and Undo
+
+The kiosk's own shared PIN (`kiosk_settings`, `/kiosk/unlock`) is gone. `/kiosk` and `/api/kiosk/*`
+now require the same staff session as `/admin/*` (an unauthenticated visit redirects to
+`/admin/login` like any other admin page, via `src/proxy.ts`) — so an admin/teacher logs into the
+gate tablet once at the start of the day (`/admin/login`, then navigate to `/kiosk`) and it stays
+signed in for that staff session (12 hours), no parent login involved at any point after that.
+
+- **Two ways to check a student in/out at the gate**, both on the same action sheet: **"Parent
+  signs"** (the existing tap-then-sign flow, still `source = 'kiosk'`) or **"staff check in without
+  a signature"** (new — `/api/kiosk/admin-check`, `source = 'admin'`, attributed to whichever staff
+  member is signed into the kiosk right now via `performedByAdminId`). The parent-signs flow also
+  now stamps `performed_by_admin_id` with the on-duty staff member (in addition to the parent's own
+  `signed_by_name`) purely for audit — "which shift was this during" — without changing what's
+  shown as the acting party.
+- **Undo**: every kiosk confirmation screen (daily and activity) offers an "Undo — made a mistake"
+  button for ~6 seconds before it auto-returns to the list (long enough to catch a mis-tap; it
+  doesn't just vanish immediately). The daily roster's tiles also carry a persistent "Undo" link
+  for a student's most recent event, and the admin dashboard's Today's Roster
+  (`TodayRosterTable.tsx`) gets the same action — so a mistake can be corrected right from wherever
+  it's noticed, not just from the Child Card. All three reuse the existing
+  `DELETE /api/admin/children/[id]/attendance/[eventId]` route.
+- **`kiosk_settings` table is dropped** (migration, `SCHEMA_VERSION` bumped) rather than left behind
+  unused, along with `/kiosk/unlock`, `/api/kiosk/unlock`, `/api/kiosk/lock`, and the admin PIN
+  settings form — all superseded by the staff-login gate above.
 
 ### Phase 4: Invoicing
 

@@ -77,21 +77,23 @@ export interface KioskRosterChildRow {
   photo_url: string | null;
   class_name: string | null;
   enrollment_type: EnrollmentType;
+  last_event_id: number | null;
   last_event_type: AttendanceEventType | null;
   last_event_time: string | null;
 }
 
 /** The kiosk's daily gate roster — regular students only (activities-only students never appear
  * on the AM/PM gate list, see /kiosk/activities for their flow instead), each annotated with
- * today's most recent daily check-in/out so the kiosk can show "already checked in" state. */
+ * today's most recent daily check-in/out so the kiosk can show "already checked in" state and let
+ * staff undo it (last_event_id) directly from the list. */
 export async function getDailyKioskRoster(): Promise<KioskRosterChildRow[]> {
   const today = schoolLocalToday();
   return (await sql`
     SELECT c.id, c.child_full_name, c.child_nickname, c.photo_url, c.class_name, c.enrollment_type,
-      latest.event_type AS last_event_type, latest.occurred_at::text AS last_event_time
+      latest.id AS last_event_id, latest.event_type AS last_event_type, latest.occurred_at::text AS last_event_time
     FROM children c
     LEFT JOIN LATERAL (
-      SELECT event_type, occurred_at
+      SELECT id, event_type, occurred_at
       FROM attendance_events
       WHERE child_id = c.id AND session_type = 'daily'
         AND (occurred_at AT TIME ZONE ${SCHOOL_TIMEZONE})::date = ${today}::date
@@ -301,6 +303,7 @@ export interface TodayRosterSummary {
   childFullName: string;
   className: string | null;
   status: 'not_arrived' | 'checked_in' | 'checked_out';
+  lastEventId: number | null;
   lastEventTime: string | null;
 }
 
@@ -312,6 +315,7 @@ export async function getTodayRosterSummary(): Promise<TodayRosterSummary[]> {
     childFullName: r.child_full_name,
     className: r.class_name,
     status: r.last_event_type === 'check_in' ? 'checked_in' : r.last_event_type === 'check_out' ? 'checked_out' : 'not_arrived',
+    lastEventId: r.last_event_id,
     lastEventTime: r.last_event_time,
   }));
 }

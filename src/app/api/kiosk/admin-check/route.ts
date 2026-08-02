@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
-import { attendanceCheckSchema } from '@/lib/validation';
+import { kioskAdminCheckSchema } from '@/lib/validation';
 import { recordAttendanceEvent } from '@/lib/attendance';
 
-/** The parent-signs flow at the kiosk — gated by proxy.ts's staff-login check like any other
- * /kiosk/* route, but the event itself still records source='kiosk', not 'admin': the parent is
- * the one signing (signatureDataUrl/signedByName), the staff member is just who's running the
- * device that day. performedByAdminId records that staff member too, purely for audit ("which
- * shift was this during") — it's never shown as the acting party the way it is for a real admin
- * override (see /api/kiosk/admin-check). */
+/** The kiosk's admin-override check-in/out — available right on the gate roster (not just the
+ * Child Card) now that /kiosk requires a staff login. No signature: this is the deliberate
+ * override for when staff are checking a child in/out themselves, not the parent. Always
+ * attributed to whichever staff member is signed into the kiosk right now. */
 export async function POST(req: NextRequest) {
   const staff = await getCurrentStaff();
 
@@ -20,17 +18,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid request.' }, { status: 400 });
   }
 
-  const parsed = attendanceCheckSchema.safeParse(body);
+  const parsed = kioskAdminCheckSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message || 'Invalid check-in.' }, { status: 400 });
   }
   const d = parsed.data;
-
-  // No login at the kiosk, so unlike the parent-portal route there's no account to pull a name
-  // from — signedByName has to come from whoever's standing there typing it in.
-  if (!d.signedByName?.trim()) {
-    return NextResponse.json({ error: 'Enter the name of the person signing.' }, { status: 400 });
-  }
 
   try {
     await ensureSchema();
@@ -46,10 +38,8 @@ export async function POST(req: NextRequest) {
       eventType: d.eventType,
       sessionType: d.sessionType,
       activityId: d.activityId ?? null,
-      source: 'kiosk',
+      source: 'admin',
       performedByAdminId: staff.adminUserId,
-      signatureDataUrl: d.signatureDataUrl,
-      signedByName: d.signedByName.trim(),
     });
 
     return NextResponse.json({
@@ -60,7 +50,7 @@ export async function POST(req: NextRequest) {
       eventType: event.event_type,
     });
   } catch (err) {
-    console.error('[api/kiosk/check] failed', err);
+    console.error('[api/kiosk/admin-check] failed', err);
     return NextResponse.json({ error: 'Could not record check-in/out.' }, { status: 500 });
   }
 }
