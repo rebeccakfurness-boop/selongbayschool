@@ -7,6 +7,7 @@ import { Field, TextInput } from '@/components/forms/FormField';
 
 export interface LunchSettings {
   supplier_name: string;
+  supplier_email: string | null;
   payable_to: string;
   bank_name: string;
   account_number: string;
@@ -26,6 +27,7 @@ export default function LunchSettingsForm({ initial }: { initial: LunchSettings 
   const router = useRouter();
   const [form, setForm] = useState({
     supplierName: initial.supplier_name,
+    supplierEmail: initial.supplier_email ?? '',
     payableTo: initial.payable_to,
     bankName: initial.bank_name,
     accountNumber: initial.account_number,
@@ -81,7 +83,8 @@ export default function LunchSettingsForm({ initial }: { initial: LunchSettings 
       <h2 className="font-display text-lg font-semibold text-ink">Lunch Ordering</h2>
       <p className="mt-1 text-xs text-ink-soft">
         Pricing and the lunch supplier&apos;s own bank details, used on every lunch invoice generated when a parent
-        orders lunches from their portal.
+        orders lunches from their portal. If a supplier email is set, they&apos;re automatically sent a copy of each
+        order&apos;s details (dates, days, size, food preference, allergies) so they know what to prepare.
       </p>
       {notConfigured && (
         <p className="mt-3 rounded-sm bg-orange/10 px-3 py-2 text-xs font-semibold text-orange-deep">
@@ -93,7 +96,9 @@ export default function LunchSettingsForm({ initial }: { initial: LunchSettings 
         <Field label="Supplier name" htmlFor="ls-supplier-name">
           <TextInput id="ls-supplier-name" value={form.supplierName} onChange={(e) => set('supplierName', e.target.value)} />
         </Field>
-        <div />
+        <Field label="Supplier email (order copies sent here)" htmlFor="ls-supplier-email">
+          <TextInput id="ls-supplier-email" type="email" value={form.supplierEmail} onChange={(e) => set('supplierEmail', e.target.value)} placeholder="kitchen@supplier.com" />
+        </Field>
         <Field label="Normal lunch price (IDR)" htmlFor="ls-normal-price">
           <TextInput id="ls-normal-price" type="number" min={0} value={form.normalPriceIdr} onChange={(e) => set('normalPriceIdr', e.target.value)} />
         </Field>

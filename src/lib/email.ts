@@ -580,6 +580,40 @@ export async function sendInvoiceEmail(input: InvoiceEmailInput): Promise<boolea
   });
 }
 
+export interface LunchOrderSupplierEmailInput {
+  toEmail: string;
+  childFullName: string;
+  startDate: string;
+  endDate: string;
+  weekdaysLabel: string;
+  lunchSize: 'normal' | 'large';
+  lunchCount: number;
+  foodPreference: string | null;
+  allergiesNotes: string | null;
+}
+
+/** Sent to the lunch supplier (lunch_settings.supplier_email, set at /admin/settings — optional,
+ * skipped entirely if unset) the moment a parent places a priced order. Deliberately just the
+ * prep-relevant fields (dates, days, size, food preference, allergies) rather than the invoice
+ * itself — the supplier needs to know what to cook, not what the school charges the parent for
+ * it. */
+export async function sendLunchOrderSupplierNotification(input: LunchOrderSupplierEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    'New Lunch Order',
+    `<p>A new lunch order was placed:</p>
+     ${fieldRows([
+       ['Child', input.childFullName],
+       ['Dates', `${input.startDate} – ${input.endDate}`],
+       ['Days', input.weekdaysLabel],
+       ['Size', input.lunchSize === 'large' ? 'Large' : 'Normal'],
+       ['Number of lunches', String(input.lunchCount)],
+       ['Food preference', input.foodPreference],
+       ['Allergies / intolerances', input.allergiesNotes],
+     ])}`
+  );
+  return send(input.toEmail, `New Lunch Order — ${input.childFullName}`, html, { cc: NOTIFY_TO });
+}
+
 export interface ComplianceFormEmailInput {
   toEmail: string;
   childFullName: string;

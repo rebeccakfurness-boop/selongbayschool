@@ -401,6 +401,13 @@ export const bringOwnLunchSchema = z.object({
 
 export const updateLunchSettingsSchema = z.object({
   supplierName: z.string().trim().max(300).optional(),
+  supplierEmail: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(320)
+    .optional()
+    .refine((v) => !v || z.string().email().safeParse(v).success, { message: 'Enter a valid email address' }),
   payableTo: z.string().trim().max(300).optional(),
   bankName: z.string().trim().max(300).optional(),
   accountNumber: z.string().trim().max(100).optional(),

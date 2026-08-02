@@ -6,11 +6,14 @@ import { getCustomerSessionOptions, type CustomerSessionData } from '@/lib/auth'
 import { guardianOwnsChild } from '@/lib/lms-data';
 import { createLunchOrderSchema } from '@/lib/validation';
 import { createLunchOrder } from '@/lib/lunch-orders';
-import { sendInvoiceEmail } from '@/lib/email';
+import { weekdaysSummaryLabel } from '@/lib/lunch-calc';
+import { formatDate } from '@/lib/admin-format';
+import { sendInvoiceEmail, sendLunchOrderSupplierNotification } from '@/lib/email';
 import { InvoiceDocument, type InvoiceData, type InvoiceLineItemData, type SchoolSettingsData } from '@/lib/pdf/InvoiceDocument';
 
 interface LunchSettingsRow {
   supplier_name: string;
+  supplier_email: string | null;
   payable_to: string;
   bank_name: string;
   account_number: string;
@@ -141,6 +144,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     if (!emailSent) {
       console.error('[api/account/lunch-orders/create] confirmation email failed to send', { invoiceId: result.invoiceId });
+    }
+
+    // Optional — only set once an admin fills in a supplier email at /admin/settings. Never blocks
+    // or fails the order itself; the parent's confirmation above is the part that must succeed.
+    if (settings.supplier_email) {
+      try {
+        await sendLunchOrderSupplierNotification({
+          toEmail: settings.supplier_email,
+          childFullName: child.child_full_name,
+          startDate: formatDate(d.startDate),
+          endDate: formatDate(d.endDate),
+          weekdaysLabel: weekdaysSummaryLabel(d.weekdays),
+          lunchSize: d.lunchSize,
+          lunchCount: result.lunchCount,
+          foodPreference: d.foodPreference ?? null,
+          allergiesNotes: d.allergiesNotes ?? null,
+        });
+      } catch (err) {
+        console.error('[api/account/lunch-orders/create] supplier notification failed to send', { invoiceId: result.invoiceId, err });
+      }
     }
 
     res.status(200).json({

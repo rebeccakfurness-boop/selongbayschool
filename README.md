@@ -670,6 +670,10 @@ scoped role):
 - The invoice PDF route (`src/pages/api/invoices/[id]/pdf.ts`) already checks admin-or-guardian
   authorization regardless of invoice type, so lunch invoices are viewable by the ordering parent
   automatically — no new auth code needed there.
+- **Supplier email copy** (optional, "Supplier email" field in the same Settings section): when
+  set, each priced order automatically emails the supplier the prep-relevant details (child, dates,
+  days, size, food preference, allergies) — not the invoice/pricing, which the kitchen doesn't need.
+  Skipped silently if unset, and never blocks or fails the order itself if the send errors.
 
 ### Phase 4: Invoicing
 

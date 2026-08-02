@@ -24,6 +24,7 @@ export async function PATCH(req: NextRequest) {
     await sql`
       UPDATE lunch_settings SET
         supplier_name = COALESCE(${d.supplierName ?? null}, supplier_name),
+        supplier_email = COALESCE(${d.supplierEmail ?? null}, supplier_email),
         payable_to = COALESCE(${d.payableTo ?? null}, payable_to),
         bank_name = COALESCE(${d.bankName ?? null}, bank_name),
         account_number = COALESCE(${d.accountNumber ?? null}, account_number),

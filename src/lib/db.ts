@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 5;
+const SCHEMA_VERSION = 6;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -971,6 +971,7 @@ export function ensureSchema(): Promise<void> {
         CREATE TABLE IF NOT EXISTS lunch_settings (
           id INTEGER PRIMARY KEY DEFAULT 1,
           supplier_name TEXT NOT NULL DEFAULT '',
+          supplier_email TEXT,
           payable_to TEXT NOT NULL DEFAULT '',
           bank_name TEXT NOT NULL DEFAULT '',
           account_number TEXT NOT NULL DEFAULT '',
@@ -988,6 +989,11 @@ export function ensureSchema(): Promise<void> {
           CHECK (id = 1)
         )
       `;
+      // Covers the already-deployed lunch_settings table (CREATE TABLE IF NOT EXISTS above is then
+      // a no-op) — when set, a copy of each priced order's details (dates, days, size, food
+      // preference, allergies — the prep-relevant fields, not the invoice/pricing) is emailed here
+      // automatically. Left null by default: no real supplier email to seed it with.
+      await sql`ALTER TABLE lunch_settings ADD COLUMN IF NOT EXISTS supplier_email TEXT`;
       await sql`INSERT INTO lunch_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`;
 
       // Lunch invoices reuse the same invoices/invoice_children/invoice_line_items tables as
