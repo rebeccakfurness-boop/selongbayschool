@@ -543,11 +543,26 @@ const attendanceCheckBase = z.object({
 
 /** Shared shape for both the kiosk (no session) and the parent portal (session-scoped) check
  * routes — an 'activity' session requires an activityId, a 'daily' one must not carry one, so the
- * roster and the request always agree on what's being recorded. */
-export const attendanceCheckSchema = attendanceCheckBase.refine(
-  (d) => (d.sessionType === 'activity' ? d.activityId != null : d.activityId == null),
-  { message: 'Activity check-ins require an activity; daily check-ins must not include one.', path: ['activityId'] }
-);
+ * roster and the request always agree on what's being recorded. A signature is always required
+ * here (that's the whole point of this schema vs. adminAttendanceCorrectionSchema below, which is
+ * the signature-free admin override) — drawn on a <canvas> and shipped as a PNG data URL, same
+ * format as the existing compliance-form signatures.
+ * `signedByName` is optional at the schema level: the kiosk route requires it explicitly (there's
+ * no login to fall back on), while the parent-portal route ignores whatever's sent and fills it in
+ * itself from the logged-in customer's own name — never trusting the client for that. */
+export const attendanceCheckSchema = attendanceCheckBase
+  .extend({
+    signatureDataUrl: z
+      .string()
+      .trim()
+      .min(1, 'A signature is required')
+      .refine((v) => v.startsWith('data:image/'), { message: 'Invalid signature.' }),
+    signedByName: z.string().trim().max(200).optional(),
+  })
+  .refine((d) => (d.sessionType === 'activity' ? d.activityId != null : d.activityId == null), {
+    message: 'Activity check-ins require an activity; daily check-ins must not include one.',
+    path: ['activityId'],
+  });
 export type AttendanceCheckInput = z.infer<typeof attendanceCheckSchema>;
 
 export const linkChildSearchSchema = z.object({

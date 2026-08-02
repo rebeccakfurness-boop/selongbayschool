@@ -39,9 +39,9 @@ function eventLabel(row: AttendanceHistoryRow): string {
 }
 
 function sourceLabel(row: AttendanceHistoryRow): string {
-  if (row.source === 'kiosk') return 'Gate kiosk';
+  if (row.source === 'kiosk') return row.signed_by_name ? `Gate kiosk — signed by ${row.signed_by_name}` : 'Gate kiosk';
   if (row.source === 'parent_portal') return row.performed_by_label ? `Portal — ${row.performed_by_label}` : 'Parent portal';
-  return row.performed_by_label ? `Admin — ${row.performed_by_label}` : 'Admin';
+  return row.performed_by_label ? `Admin override — ${row.performed_by_label}` : 'Admin override';
 }
 
 export default async function AccountAttendancePage() {
@@ -108,7 +108,12 @@ function renderAttendancePage({
                     </div>
                   </div>
                   {child.enrollment_type === 'regular' && (
-                    <AttendanceActionButton childId={child.id} sessionType="daily" currentEventType={status?.event_type ?? null} />
+                    <AttendanceActionButton
+                      childId={child.id}
+                      childName={child.child_nickname || child.child_full_name}
+                      sessionType="daily"
+                      currentEventType={status?.event_type ?? null}
+                    />
                   )}
                 </div>
 
@@ -118,7 +123,7 @@ function renderAttendancePage({
                   </p>
                 )}
 
-                <ActivityCheckIn childId={child.id} activities={activities} />
+                <ActivityCheckIn childId={child.id} childName={child.child_nickname || child.child_full_name} activities={activities} />
 
                 <div className="mt-4 border-t border-sand-line pt-4">
                   <h3 className="text-xs font-bold uppercase tracking-wide text-ink-soft">Recent attendance</h3>

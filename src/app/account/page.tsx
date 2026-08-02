@@ -206,6 +206,7 @@ function renderOverviewPage({
                     {child.enrollment_type === 'regular' && (
                       <AttendanceActionButton
                         childId={child.id}
+                        childName={child.child_nickname || child.child_full_name}
                         sessionType="daily"
                         currentEventType={attendanceStatusMap.get(child.id)?.event_type ?? null}
                       />

@@ -3,9 +3,11 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ChildAvatar from '@/components/ChildAvatar';
+import KioskSignStep from '@/components/kiosk/KioskSignStep';
 import type { KioskRosterChildRow, AttendanceEventType } from '@/lib/attendance';
 
 type ActionState = { child: KioskRosterChildRow } | null;
+type SigningState = { child: KioskRosterChildRow; eventType: AttendanceEventType } | null;
 type ConfirmState = { childName: string; eventType: AttendanceEventType; time: string } | null;
 
 function formatTime(iso: string): string {
@@ -21,6 +23,7 @@ export default function KioskDailyBoard({ roster, defaultCheckIn }: { roster: Ki
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [action, setAction] = useState<ActionState>(null);
+  const [signing, setSigning] = useState<SigningState>(null);
   const [confirm, setConfirm] = useState<ConfirmState>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,18 +36,19 @@ export default function KioskDailyBoard({ roster, defaultCheckIn }: { roster: Ki
     );
   }, [roster, query]);
 
-  async function submitCheck(child: KioskRosterChildRow, eventType: AttendanceEventType) {
+  async function submitCheck(child: KioskRosterChildRow, eventType: AttendanceEventType, signedByName: string, signatureDataUrl: string) {
     setSubmitting(true);
     setError(null);
     try {
       const res = await fetch('/api/kiosk/check', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ childId: child.id, eventType, sessionType: 'daily' }),
+        body: JSON.stringify({ childId: child.id, eventType, sessionType: 'daily', signedByName, signatureDataUrl }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not record check-in/out.');
       setAction(null);
+      setSigning(null);
       setConfirm({ childName: child.child_nickname || child.child_full_name, eventType, time: formatTime(data.occurredAt) });
       setTimeout(() => {
         setConfirm(null);
@@ -76,6 +80,22 @@ export default function KioskDailyBoard({ roster, defaultCheckIn }: { roster: Ki
     );
   }
 
+  if (signing) {
+    return (
+      <KioskSignStep
+        childName={signing.child.child_nickname || signing.child.child_full_name}
+        actionLabel={signing.eventType === 'check_in' ? 'Check In' : 'Check Out'}
+        submitting={submitting}
+        error={error}
+        onBack={() => {
+          setSigning(null);
+          setError(null);
+        }}
+        onConfirm={(signedByName, signatureDataUrl) => submitCheck(signing.child, signing.eventType, signedByName, signatureDataUrl)}
+      />
+    );
+  }
+
   if (action) {
     const child = action.child;
     const alreadyToday = child.last_event_type;
@@ -89,14 +109,12 @@ export default function KioskDailyBoard({ roster, defaultCheckIn }: { roster: Ki
             {child.last_event_time && formatTime(child.last_event_time)}.
           </p>
         )}
-        {error && <p role="alert" className="mt-3 text-sm font-semibold text-orange-deep">{error}</p>}
 
         <div className="mt-8 flex w-full max-w-md flex-col gap-4">
           <button
             type="button"
-            disabled={submitting}
-            onClick={() => submitCheck(child, 'check_in')}
-            className={`rounded-md py-8 text-3xl font-bold text-white shadow-soft transition-transform active:scale-95 disabled:opacity-60 ${
+            onClick={() => setSigning({ child, eventType: 'check_in' })}
+            className={`rounded-md py-8 text-3xl font-bold text-white shadow-soft transition-transform active:scale-95 ${
               defaultCheckIn ? 'bg-teal' : 'bg-teal/70'
             }`}
           >
@@ -104,9 +122,8 @@ export default function KioskDailyBoard({ roster, defaultCheckIn }: { roster: Ki
           </button>
           <button
             type="button"
-            disabled={submitting}
-            onClick={() => submitCheck(child, 'check_out')}
-            className={`rounded-md py-8 text-3xl font-bold text-white shadow-soft transition-transform active:scale-95 disabled:opacity-60 ${
+            onClick={() => setSigning({ child, eventType: 'check_out' })}
+            className={`rounded-md py-8 text-3xl font-bold text-white shadow-soft transition-transform active:scale-95 ${
               !defaultCheckIn ? 'bg-orange-deep' : 'bg-orange-deep/70'
             }`}
           >

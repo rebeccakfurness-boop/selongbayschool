@@ -7,7 +7,15 @@ import type { ActivityOption, AttendanceEventType } from '@/lib/attendance';
 /** Kept as its own small flow (pick activity, then check in/out) rather than folded into the
  * daily one-tap button — a child can be checked into more than one activity a day, so there's no
  * single "current status" to toggle the way there is for the once-a-day gate check-in. */
-export default function ActivityCheckIn({ childId, activities }: { childId: number; activities: ActivityOption[] }) {
+export default function ActivityCheckIn({
+  childId,
+  childName,
+  activities,
+}: {
+  childId: number;
+  childName: string;
+  activities: ActivityOption[];
+}) {
   const [activityId, setActivityId] = useState<number | ''>('');
   const [statusResult, setStatusResult] = useState<{ activityId: number; eventType: AttendanceEventType | null } | null>(null);
 
@@ -43,7 +51,13 @@ export default function ActivityCheckIn({ childId, activities }: { childId: numb
         ))}
       </select>
       {activityId !== '' && !loading && (
-        <AttendanceActionButton childId={childId} sessionType="activity" activityId={activityId} currentEventType={statusResult?.eventType ?? null} />
+        <AttendanceActionButton
+          childId={childId}
+          childName={childName}
+          sessionType="activity"
+          activityId={activityId}
+          currentEventType={statusResult?.eventType ?? null}
+        />
       )}
       {loading && <span className="text-xs text-ink-soft">Loading…</span>}
     </div>

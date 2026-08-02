@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
-import { ensureSchema } from '@/lib/db';
+import { ensureSchema, sql } from '@/lib/db';
 import { getCustomerSessionOptions, type CustomerSessionData } from '@/lib/auth';
 import { guardianOwnsChild } from '@/lib/lms-data';
 import { attendanceCheckSchema } from '@/lib/validation';
@@ -35,6 +35,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Not authorized for this child.' }, { status: 403 });
     }
 
+    // The signer's name is never taken from the client here — the portal already knows exactly
+    // who's signing (they're logged in), so it's looked up server-side rather than trusting
+    // whatever d.signedByName might say.
+    const [customer] = (await sql`SELECT name, email FROM customers WHERE id = ${session.customerId}`) as unknown as {
+      name: string | null;
+      email: string;
+    }[];
+
     const event = await recordAttendanceEvent({
       childId: d.childId,
       eventType: d.eventType,
@@ -42,6 +50,8 @@ export async function POST(req: NextRequest) {
       activityId: d.activityId ?? null,
       source: 'parent_portal',
       performedByCustomerId: session.customerId,
+      signatureDataUrl: d.signatureDataUrl,
+      signedByName: customer?.name || customer?.email || session.email || 'Parent',
     });
 
     return NextResponse.json({ ok: true, occurredAt: event.occurred_at, eventType: event.event_type });

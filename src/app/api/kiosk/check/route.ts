@@ -20,6 +20,12 @@ export async function POST(req: NextRequest) {
   }
   const d = parsed.data;
 
+  // No login at the kiosk, so unlike the parent-portal route there's no account to pull a name
+  // from — signedByName has to come from whoever's standing there typing it in.
+  if (!d.signedByName?.trim()) {
+    return NextResponse.json({ error: 'Enter the name of the person signing.' }, { status: 400 });
+  }
+
   try {
     await ensureSchema();
     const [child] = (await sql`SELECT child_full_name FROM children WHERE id = ${d.childId} AND is_active = true`) as unknown as {
@@ -35,6 +41,8 @@ export async function POST(req: NextRequest) {
       sessionType: d.sessionType,
       activityId: d.activityId ?? null,
       source: 'kiosk',
+      signatureDataUrl: d.signatureDataUrl,
+      signedByName: d.signedByName.trim(),
     });
 
     return NextResponse.json({ ok: true, childFullName: child.child_full_name, occurredAt: event.occurred_at, eventType: event.event_type });

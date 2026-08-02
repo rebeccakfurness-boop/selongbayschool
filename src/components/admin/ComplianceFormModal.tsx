@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { TextInput } from '@/components/forms/FormField';
 import Button from '@/components/Button';
-import SignaturePad, { type SignaturePadHandle } from '@/components/admin/SignaturePad';
+import SignaturePad, { type SignaturePadHandle } from '@/components/SignaturePad';
 import { formatDate } from '@/lib/admin-format';
 
 export default function ComplianceFormModal({

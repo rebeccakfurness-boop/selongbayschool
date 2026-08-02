@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 7;
+const SCHEMA_VERSION = 8;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1072,9 +1072,9 @@ export function ensureSchema(): Promise<void> {
       // ('activity', activity_id required) — the two are kept in the same table (rather than a
       // parallel one) since both need to show up together on a student's attendance history and in
       // school-wide reporting. `performed_by_customer_id`/`performed_by_admin_id` are both nullable
-      // and mutually exclusive in practice: a kiosk action has neither (it's anonymous by design —
-      // that's the whole point of a walk-up kiosk), a portal action has the acting parent, and an
-      // admin correction has the acting staff member.
+      // and mutually exclusive in practice: a kiosk action has neither (no login, just whoever's
+      // standing at the tablet), a portal action has the logged-in parent, and an admin correction
+      // has the acting staff member.
       await sql`
         CREATE TABLE IF NOT EXISTS attendance_events (
           id BIGSERIAL PRIMARY KEY,
@@ -1094,6 +1094,14 @@ export function ensureSchema(): Promise<void> {
       await sql`CREATE INDEX IF NOT EXISTS idx_attendance_events_child_time ON attendance_events (child_id, occurred_at DESC)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_attendance_events_occurred_at ON attendance_events (occurred_at)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_attendance_events_activity ON attendance_events (activity_id) WHERE activity_id IS NOT NULL`;
+
+      // A kiosk or parent-portal check-in/out must be signed for (drawn signature + the signer's
+      // name) — enforced by attendanceCheckSchema in src/lib/validation.ts, not a DB constraint
+      // here, since a hard CHECK would also have to account for the small number of rows already
+      // written before this column existed. An admin correction (source = 'admin') is the explicit
+      // override this requirement exists to have — it's never signed, by design.
+      await sql`ALTER TABLE attendance_events ADD COLUMN IF NOT EXISTS signature_data_url TEXT`;
+      await sql`ALTER TABLE attendance_events ADD COLUMN IF NOT EXISTS signed_by_name TEXT`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

@@ -35,6 +35,11 @@ export interface RecordAttendanceInput {
   /** Only ever set for admin corrections (backdating a missed check-in/out) — kiosk and portal
    * actions always use the insert's own `now()` default, never a client-supplied timestamp. */
   occurredAt?: string | null;
+  /** Required by attendanceCheckSchema for 'kiosk'/'parent_portal' sources (the parent signing
+   * for the check-in/out), always null for 'admin' — an admin correction is the explicit override
+   * of the signature requirement, not another way to collect one. */
+  signatureDataUrl?: string | null;
+  signedByName?: string | null;
 }
 
 export interface AttendanceEventRow {
@@ -52,11 +57,12 @@ export interface AttendanceEventRow {
 export async function recordAttendanceEvent(input: RecordAttendanceInput): Promise<AttendanceEventRow> {
   const rows = (await sql`
     INSERT INTO attendance_events (
-      child_id, event_type, session_type, activity_id, source, performed_by_customer_id, performed_by_admin_id, notes, occurred_at
+      child_id, event_type, session_type, activity_id, source, performed_by_customer_id, performed_by_admin_id, notes,
+      occurred_at, signature_data_url, signed_by_name
     ) VALUES (
       ${input.childId}, ${input.eventType}, ${input.sessionType}, ${input.activityId ?? null},
       ${input.source}, ${input.performedByCustomerId ?? null}, ${input.performedByAdminId ?? null}, ${input.notes ?? null},
-      COALESCE(${input.occurredAt ?? null}::timestamptz, now())
+      COALESCE(${input.occurredAt ?? null}::timestamptz, now()), ${input.signatureDataUrl ?? null}, ${input.signedByName ?? null}
     )
     RETURNING id, child_id, event_type, session_type, activity_id, occurred_at::text, source
   `) as unknown as (Omit<AttendanceEventRow, 'activity_name' | 'performed_by_label'>)[];
@@ -164,15 +170,19 @@ export interface AttendanceHistoryRow {
   occurred_at: string;
   source: AttendanceSource;
   performed_by_label: string | null;
+  signed_by_name: string | null;
+  has_signature: boolean;
 }
 
-/** Full history for one student's card — joins activity name and, for portal actions, the acting
- * parent's name/email (kiosk actions are anonymous by design, so performed_by_label is null for
- * those rows). */
+/** Full history for one student's card — joins activity name and, for portal/admin actions, the
+ * acting account's name/email. `signed_by_name` is the person who actually signed at the point of
+ * check-in/out (typed at the kiosk, or the logged-in parent's own name on the portal) — for a
+ * kiosk row that's the only identity captured at all, since there's no login there. */
 export async function getAttendanceHistoryForChild(childId: number, limit = 200): Promise<AttendanceHistoryRow[]> {
   return (await sql`
     SELECT ae.id, ae.event_type, ae.session_type, a.name AS activity_name, ae.occurred_at::text, ae.source,
-      COALESCE(cu.name, cu.email, au.email) AS performed_by_label
+      COALESCE(cu.name, cu.email, au.email) AS performed_by_label,
+      ae.signed_by_name, (ae.signature_data_url IS NOT NULL) AS has_signature
     FROM attendance_events ae
     LEFT JOIN activities a ON a.id = ae.activity_id
     LEFT JOIN customers cu ON cu.id = ae.performed_by_customer_id
@@ -216,6 +226,7 @@ export interface AttendanceReportRow {
   occurred_at: string;
   source: AttendanceSource;
   performed_by_label: string | null;
+  signed_by_name: string | null;
 }
 
 export interface AttendanceReportFilters {
@@ -229,7 +240,7 @@ export async function getAttendanceReport(filters: AttendanceReportFilters): Pro
   return (await sql`
     SELECT c.id AS child_id, c.child_full_name, c.class_name, ae.event_type, ae.session_type,
       a.name AS activity_name, ae.occurred_at::text, ae.source,
-      COALESCE(cu.name, cu.email, au.email) AS performed_by_label
+      COALESCE(cu.name, cu.email, au.email) AS performed_by_label, ae.signed_by_name
     FROM attendance_events ae
     JOIN children c ON c.id = ae.child_id
     LEFT JOIN activities a ON a.id = ae.activity_id
@@ -248,7 +259,7 @@ function csvEscape(value: string): string {
 }
 
 export function attendanceReportToCsv(rows: AttendanceReportRow[]): string {
-  const header = ['Student', 'Class', 'Date', 'Time', 'Type', 'Session', 'Activity', 'Source', 'Performed By'];
+  const header = ['Student', 'Class', 'Date', 'Time', 'Type', 'Session', 'Activity', 'Source', 'Performed By', 'Signed By'];
   const lines = [header.join(',')];
   for (const row of rows) {
     const occurred = new Date(row.occurred_at);
@@ -265,12 +276,24 @@ export function attendanceReportToCsv(rows: AttendanceReportRow[]): string {
         row.activity_name ?? '',
         row.source === 'kiosk' ? 'Kiosk' : row.source === 'parent_portal' ? 'Parent Portal' : 'Admin',
         row.performed_by_label ?? '',
+        row.signed_by_name ?? '',
       ]
         .map((v) => csvEscape(String(v)))
         .join(',')
     );
   }
   return lines.join('\n');
+}
+
+/** Looks up one event's signature image (data URL) for the admin Child Card's "view signature"
+ * link — kept out of getAttendanceHistoryForChild's normal result set since embedding a base64
+ * image in every row of a 200-row history load would be wasteful; only fetched on demand. */
+export async function getAttendanceEventSignature(eventId: number, childId: number): Promise<{ signatureDataUrl: string | null; signedByName: string | null } | null> {
+  const rows = (await sql`
+    SELECT signature_data_url, signed_by_name FROM attendance_events WHERE id = ${eventId} AND child_id = ${childId}
+  `) as unknown as { signature_data_url: string | null; signed_by_name: string | null }[];
+  if (rows.length === 0) return null;
+  return { signatureDataUrl: rows[0].signature_data_url, signedByName: rows[0].signed_by_name };
 }
 
 export interface TodayRosterSummary {

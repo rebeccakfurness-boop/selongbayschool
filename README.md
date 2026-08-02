@@ -734,6 +734,35 @@ self-service child-linking flow with approval.
   fake sample students or attendance history wasn't done. Test the flow end-to-end against a real
   (or a couple of test) child records already in `children` instead.
 
+#### Signed check-in/check-out, with an admin override
+
+Every kiosk or parent-portal check-in/out is signed for — a drawn signature plus the signer's
+name, the same `<canvas>`-based capture already used for compliance-form signatures (now shared as
+`src/components/SignaturePad.tsx` rather than living under `components/admin`). `attendance_events`
+gained `signature_data_url`/`signed_by_name` columns; `attendanceCheckSchema` (the schema shared by
+`/api/kiosk/check` and `/api/account/attendance/check`) makes the signature required — there's no
+DB-level `CHECK` constraint enforcing it, since that would also have to account for the handful of
+rows already written before this existed, so it's enforced at the validation layer only.
+
+- **Kiosk**: tapping Check In/Check Out now leads to a full-screen sign step
+  (`KioskSignStep.tsx`, shared by `/kiosk` and `/kiosk/activities`) — a typed name plus a signature
+  — before the usual checkmark confirmation. There's no login at the kiosk, so this is the only
+  place identity is captured at all for a kiosk-sourced event.
+- **Parent portal**: the one-tap Check In/Check Out button now opens a small sign-to-confirm modal
+  (`AttendanceSignModal.tsx`) first. The signer's name is never taken from the client here — the
+  API route resolves it server-side from the logged-in customer's own `name`/`email`, the same
+  "don't trust the client for identity" pattern used everywhere else in the app.
+- **Admin override**: the Child Card's Attendance section button is now labelled "+ Check in/out
+  (admin override)" — an explicit admin-recorded check-in/out (`source = 'admin'`) never requires a
+  signature, since it exists precisely for when a parent isn't the one doing it (they called the
+  office, or forgot to check out and staff are recording it after the fact). The panel says so in
+  plain text.
+- **Viewing a signature**: history rows with one show a "View signature" link
+  (`/api/admin/children/[id]/attendance/[eventId]/signature`) that opens the drawn signature as a
+  plain image in a new tab — decoded server-side from the stored PNG data URL rather than a
+  dedicated lightbox component. Kiosk rows also show who signed inline (`signed_by_name`) directly
+  in the source label, since that's the only identity a kiosk event carries at all.
+
 ### Phase 4: Invoicing
 
 - **`school_settings`** (singleton, `id = 1`): payable-to/bank details, currency, and invoice due
