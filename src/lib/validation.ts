@@ -531,10 +531,14 @@ export const setKioskPinSchema = z.object({
 export type SetKioskPinInput = z.infer<typeof setKioskPinSchema>;
 
 const attendanceCheckBase = z.object({
-  childId: z.number().int().positive(),
+  // coerce, not number: children.id/activities.id are BIGINT columns, which the Postgres driver
+  // returns as strings (to avoid precision loss past Number.MAX_SAFE_INTEGER) — every ID prop
+  // passed down from a server-fetched row is therefore a string at runtime despite its `number`
+  // TS type, same as every other childId schema in this file (see z.coerce.number() above).
+  childId: z.coerce.number().int().positive(),
   eventType: z.enum(['check_in', 'check_out']),
   sessionType: z.enum(['daily', 'activity']),
-  activityId: z.number().int().positive().nullable().optional(),
+  activityId: z.coerce.number().int().positive().nullable().optional(),
 });
 
 /** Shared shape for both the kiosk (no session) and the parent portal (session-scoped) check
@@ -553,7 +557,7 @@ export const linkChildSearchSchema = z.object({
 export type LinkChildSearchInput = z.infer<typeof linkChildSearchSchema>;
 
 export const linkChildRequestSchema = z.object({
-  childId: z.number().int().positive(),
+  childId: z.coerce.number().int().positive(),
   relationship: z.string().trim().max(100).optional(),
 });
 export type LinkChildRequestInput = z.infer<typeof linkChildRequestSchema>;
@@ -563,7 +567,9 @@ export const reviewGuardianRequestSchema = z.object({
 });
 export type ReviewGuardianRequestInput = z.infer<typeof reviewGuardianRequestSchema>;
 
-export const adminAttendanceCorrectionSchema = attendanceCheckBase.extend({
+// childId omitted: the correction route (/api/admin/children/[id]/attendance) always takes it
+// from the URL param, never the body.
+export const adminAttendanceCorrectionSchema = attendanceCheckBase.omit({ childId: true }).extend({
   occurredAt: z.string().trim().min(1, 'Enter a date and time'),
 });
 export type AdminAttendanceCorrectionInput = z.infer<typeof adminAttendanceCorrectionSchema>;
