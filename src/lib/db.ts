@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 6;
+const SCHEMA_VERSION = 7;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1028,6 +1028,72 @@ export function ensureSchema(): Promise<void> {
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_lunch_orders_child ON lunch_orders (child_id)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_lunch_orders_customer ON lunch_orders (customer_id)`;
+
+      // --- Attendance check-in/check-out ---
+
+      // Most students attend every school day and are checked in/out at the gate; a smaller group
+      // only ever attends specific after-school/weekend activities and is never part of the daily
+      // gate roster. The kiosk and parent portal both branch their roster/flow on this flag.
+      await sql`
+        ALTER TABLE children ADD COLUMN IF NOT EXISTS enrollment_type TEXT NOT NULL DEFAULT 'regular'
+        CHECK (enrollment_type IN ('regular', 'activities_only'))
+      `;
+
+      // A parent linked by admin (Family Board / Child Card) is trusted immediately — the admin is
+      // the one vouching for the relationship. A parent who links themselves via the self-service
+      // /account/link-child flow is 'pending' until an admin approves it, since an open self-link
+      // would otherwise let anyone claim someone else's child and check them in or out. Existing
+      // rows (all admin-created, pre-dating this column) default to 'approved' so nothing already
+      // linked is retroactively locked out.
+      await sql`
+        ALTER TABLE guardian_children ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'approved'
+        CHECK (status IN ('pending', 'approved', 'rejected'))
+      `;
+      await sql`ALTER TABLE guardian_children ADD COLUMN IF NOT EXISTS requested_at TIMESTAMPTZ NOT NULL DEFAULT now()`;
+      await sql`ALTER TABLE guardian_children ADD COLUMN IF NOT EXISTS reviewed_by BIGINT REFERENCES admin_users(id)`;
+      await sql`ALTER TABLE guardian_children ADD COLUMN IF NOT EXISTS reviewed_at TIMESTAMPTZ`;
+
+      // Singleton PIN gate for /kiosk — the gate tablet has no parent or staff login at all, so
+      // this is the only thing standing between the public and the check-in roster. Not seeded
+      // with a real PIN; /kiosk/unlock refuses to unlock (and the admin settings form nudges
+      // whoever's setting the tablet up) until an admin sets one at /admin/attendance.
+      await sql`
+        CREATE TABLE IF NOT EXISTS kiosk_settings (
+          id INTEGER PRIMARY KEY DEFAULT 1,
+          pin_hash TEXT,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          CHECK (id = 1)
+        )
+      `;
+      await sql`INSERT INTO kiosk_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`;
+
+      // One row per check-in or check-out action, from either entry point. `session_type` splits
+      // the daily gate roster ('daily', activity_id always null) from activity-specific check-ins
+      // ('activity', activity_id required) — the two are kept in the same table (rather than a
+      // parallel one) since both need to show up together on a student's attendance history and in
+      // school-wide reporting. `performed_by_customer_id`/`performed_by_admin_id` are both nullable
+      // and mutually exclusive in practice: a kiosk action has neither (it's anonymous by design —
+      // that's the whole point of a walk-up kiosk), a portal action has the acting parent, and an
+      // admin correction has the acting staff member.
+      await sql`
+        CREATE TABLE IF NOT EXISTS attendance_events (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          event_type TEXT NOT NULL CHECK (event_type IN ('check_in', 'check_out')),
+          session_type TEXT NOT NULL DEFAULT 'daily' CHECK (session_type IN ('daily', 'activity')),
+          activity_id BIGINT REFERENCES activities(id),
+          occurred_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          source TEXT NOT NULL CHECK (source IN ('kiosk', 'parent_portal', 'admin')),
+          performed_by_customer_id BIGINT REFERENCES customers(id),
+          performed_by_admin_id BIGINT REFERENCES admin_users(id),
+          notes TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          CHECK (session_type = 'activity' OR activity_id IS NULL)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_attendance_events_child_time ON attendance_events (child_id, occurred_at DESC)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_attendance_events_occurred_at ON attendance_events (occurred_at)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_attendance_events_activity ON attendance_events (activity_id) WHERE activity_id IS NOT NULL`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

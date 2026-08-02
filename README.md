@@ -675,6 +675,65 @@ scoped role):
   days, size, food preference, allergies) — not the invoice/pricing, which the kitchen doesn't need.
   Skipped silently if unset, and never blocks or fails the order itself if the send errors.
 
+### Phase 8: Attendance check-in/check-out
+
+A gate kiosk (no login) and the parent portal both write to one shared attendance log, covering
+the twice-daily gate roster and one-off activity sessions, with admin reporting/export and a
+self-service child-linking flow with approval.
+
+- **Data model**: `attendance_events` (`src/lib/attendance.ts`) is one row per check-in or
+  check-out — `session_type` is `'daily'` (the AM/PM gate roster, `activity_id` always null) or
+  `'activity'` (`activity_id` required, reusing the existing `activities` table rather than a
+  parallel list). `source` is `'kiosk'` (anonymous by design — no `performed_by_*`), `'parent_portal'`
+  (`performed_by_customer_id` set), or `'admin'` (`performed_by_admin_id` set, for corrections).
+  `children.enrollment_type` (`'regular'` default, or `'activities_only'`) decides whether a
+  student appears on the daily gate roster at all — an activities-only student only ever shows up
+  in the activity check-in flow, on both the kiosk and the portal. Set per-child from the Child
+  Card edit form.
+- **Gate kiosk** (`/kiosk`, `/kiosk/activities`): a shared, no-login tablet screen. `/kiosk/unlock`
+  gates every other `/kiosk/*` and `/api/kiosk/*` route behind a single shared PIN (set at
+  `/admin/attendance`, hashed with bcrypt in the new `kiosk_settings` singleton) — once entered,
+  the browser stays unlocked for a year (it's a physically-secured device meant to stay logged in,
+  not a per-person login; a "Lock kiosk" link on the screen re-locks it on demand). Not linked
+  from anywhere in the site nav or the marketing header/footer (`SiteChrome.tsx` skips both on
+  `/kiosk/*` specifically, so a curious tap can't navigate off the check-in flow to the public
+  site). Flow: tap a student's name (searchable list, big touch targets) → tap Check In or Check
+  Out on a full-screen confirmation sheet (the time-appropriate action is visually emphasized,
+  defaulting to Check In before noon / Check Out after, school-local time) → a big checkmark
+  confirmation auto-reverts to the list after ~2.5s. `/kiosk/activities` is a separate three-step
+  flow (pick activity → pick student, from every active student regardless of
+  `enrollment_type` → check in/out) since it's much less frequent than the twice-daily gate rush.
+- **Parent portal**: `/account/attendance` lists each linked (and approved — see below) child with
+  a single one-tap Check In/Check Out button that toggles based on today's status, an activity
+  check-in picker, and a recent-attendance list with an anomaly flag ("checked in with no
+  check-out" on a past day). The same one-tap button also appears directly on the `/account`
+  overview's child cards, so checking a child in/out never needs more than the one nav tap to get
+  there. `getTodayDailyStatusForChildren`/`getTodayEventStatus` compute "checked in" vs "checked
+  out" from the day's events — there's no separate stored status column to keep in sync.
+- **Self-service child linking + approval**: `/account/link-child` lets a parent search by their
+  child's exact full name *and* date of birth (both required — a name-only search would let anyone
+  browse the roster) and request a link. `guardian_children` gained a `status` column
+  (`'pending'`/`'approved'`/`'rejected'`, default `'approved'` so every pre-existing, admin-created
+  link keeps working unchanged) — a self-service request starts `'pending'` and is invisible
+  everywhere (learning page, bookings, invoices, attendance — `getChildrenForGuardian` and
+  `guardianOwnsChild` both filter to `status = 'approved'`) until an admin approves it from the
+  **Pending Child Link Requests** list on `/admin/attendance`. An admin linking a guardian directly
+  from the Child Card (the pre-existing flow) still auto-approves immediately, same as before this
+  feature existed.
+- **Admin** (`/admin/attendance`, sidebar): today's whole-school roster with checked-in/checked-out/
+  not-yet-arrived counts, the pending link-request queue (approve/reject), and the kiosk PIN form.
+  `/admin/attendance/report`: date-range + class filters over every attendance event
+  (kiosk/portal/admin, all session types) with a **CSV export** button
+  (`/api/admin/attendance/export`). The Child Card gained an **Attendance** section (self-fetching,
+  under `/api/admin/children/[id]/attendance`) showing a student's full history, the same anomaly
+  flag as the portal, and an "Add correction" mini-form (backdated check-in/out, `source = 'admin'`)
+  for e.g. a parent who called the office after forgetting to check a child out — entries can also
+  be deleted outright if they were a kiosk mis-tap or duplicate.
+- **No seed/demo data** was added for this feature — unlike earlier phases' `npm run db:seed-*`
+  scripts, this app's database now holds a real school's real student/family records, so inserting
+  fake sample students or attendance history wasn't done. Test the flow end-to-end against a real
+  (or a couple of test) child records already in `children` instead.
+
 ### Phase 4: Invoicing
 
 - **`school_settings`** (singleton, `id = 1`): payable-to/bank details, currency, and invoice due

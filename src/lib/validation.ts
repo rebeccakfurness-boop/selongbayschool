@@ -191,6 +191,7 @@ export const updateChildSchema = z.object({
   lunchOption: optionalStr,
   photoUrl: optionalStr,
   classroomStudentEmail: optionalStr,
+  enrollmentType: z.enum(['regular', 'activities_only']).optional(),
 });
 export type UpdateChildInput = z.infer<typeof updateChildSchema>;
 
@@ -516,3 +517,53 @@ export const enrolmentSchema = z.object({
   parentWhatsapp: phone,
 });
 export type EnrolmentInput = z.infer<typeof enrolmentSchema>;
+
+// --- Attendance ---
+
+export const kioskUnlockSchema = z.object({
+  pin: z.string().trim().min(1, 'Enter the kiosk PIN'),
+});
+export type KioskUnlockInput = z.infer<typeof kioskUnlockSchema>;
+
+export const setKioskPinSchema = z.object({
+  pin: z.string().trim().min(4, 'PIN must be at least 4 characters').max(20),
+});
+export type SetKioskPinInput = z.infer<typeof setKioskPinSchema>;
+
+const attendanceCheckBase = z.object({
+  childId: z.number().int().positive(),
+  eventType: z.enum(['check_in', 'check_out']),
+  sessionType: z.enum(['daily', 'activity']),
+  activityId: z.number().int().positive().nullable().optional(),
+});
+
+/** Shared shape for both the kiosk (no session) and the parent portal (session-scoped) check
+ * routes — an 'activity' session requires an activityId, a 'daily' one must not carry one, so the
+ * roster and the request always agree on what's being recorded. */
+export const attendanceCheckSchema = attendanceCheckBase.refine(
+  (d) => (d.sessionType === 'activity' ? d.activityId != null : d.activityId == null),
+  { message: 'Activity check-ins require an activity; daily check-ins must not include one.', path: ['activityId'] }
+);
+export type AttendanceCheckInput = z.infer<typeof attendanceCheckSchema>;
+
+export const linkChildSearchSchema = z.object({
+  childFullName: z.string().trim().min(1, "Enter your child's full name").max(200),
+  dob: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date of birth'),
+});
+export type LinkChildSearchInput = z.infer<typeof linkChildSearchSchema>;
+
+export const linkChildRequestSchema = z.object({
+  childId: z.number().int().positive(),
+  relationship: z.string().trim().max(100).optional(),
+});
+export type LinkChildRequestInput = z.infer<typeof linkChildRequestSchema>;
+
+export const reviewGuardianRequestSchema = z.object({
+  decision: z.enum(['approved', 'rejected']),
+});
+export type ReviewGuardianRequestInput = z.infer<typeof reviewGuardianRequestSchema>;
+
+export const adminAttendanceCorrectionSchema = attendanceCheckBase.extend({
+  occurredAt: z.string().trim().min(1, 'Enter a date and time'),
+});
+export type AdminAttendanceCorrectionInput = z.infer<typeof adminAttendanceCorrectionSchema>;

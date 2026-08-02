@@ -72,7 +72,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
     const guardians = (await sql`
       SELECT gc.customer_id, c.name, c.email, gc.relationship
       FROM guardian_children gc JOIN customers c ON c.id = gc.customer_id
-      WHERE gc.child_id = ${id}
+      WHERE gc.child_id = ${id} AND gc.status = 'approved'
       ORDER BY c.email
     `) as unknown as GuardianLink[];
 

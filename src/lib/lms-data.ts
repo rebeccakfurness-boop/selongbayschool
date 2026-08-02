@@ -84,8 +84,13 @@ export interface GuardianChildRow {
   passport_copy_url: string | null;
   kitas_copy_url: string | null;
   birth_certificate_url: string | null;
+  enrollment_type: 'regular' | 'activities_only';
 }
 
+/** Only returns 'approved' links — a self-service /account/link-child request sits at 'pending'
+ * (invisible everywhere: learning page, bookings, invoices, attendance) until an admin approves
+ * it. Admin-created links (via the Family Board) are inserted already 'approved', so this changes
+ * nothing for the existing flow, only gates the new self-service one. */
 export async function getChildrenForGuardian(customerId: number): Promise<GuardianChildRow[]> {
   return (await sql`
     SELECT c.id, c.status, c.class_name, c.class_band, c.programme, c.child_full_name, c.child_nickname,
@@ -93,19 +98,19 @@ export async function getChildrenForGuardian(customerId: number): Promise<Guardi
       c.primary_contact_email, c.primary_contact_phone, c.emergency_contact_name, c.emergency_contact_phone,
       c.allergies_medical_notes, c.dietary_requirements, c.religion, c.home_language, c.previous_school, c.lunch_option,
       c.photo_url, c.photo_updated_by_label, c.photo_updated_at::text,
-      c.passport_copy_url, c.kitas_copy_url, c.birth_certificate_url
+      c.passport_copy_url, c.kitas_copy_url, c.birth_certificate_url, c.enrollment_type
     FROM guardian_children gc
     JOIN children c ON c.id = gc.child_id
-    WHERE gc.customer_id = ${customerId}
+    WHERE gc.customer_id = ${customerId} AND gc.status = 'approved'
     ORDER BY c.child_full_name
   `) as unknown as GuardianChildRow[];
 }
 
-/** Gates every parent-facing child mutation (profile edits, document/photo uploads) — a customer
- * must have a guardian_children row for the child they're trying to touch. */
+/** Gates every parent-facing child mutation (profile edits, document/photo uploads, attendance
+ * check-in/out) — a customer must have an *approved* guardian_children row for the child. */
 export async function guardianOwnsChild(customerId: number, childId: number): Promise<boolean> {
   const rows = await sql`
-    SELECT 1 FROM guardian_children WHERE customer_id = ${customerId} AND child_id = ${childId}
+    SELECT 1 FROM guardian_children WHERE customer_id = ${customerId} AND child_id = ${childId} AND status = 'approved'
   `;
   return rows.length > 0;
 }

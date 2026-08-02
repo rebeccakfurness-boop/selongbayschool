@@ -14,6 +14,7 @@ import GuardianLinksSection, { type GuardianLink } from '@/components/admin/Guar
 import InvoicesSection from '@/components/admin/InvoicesSection';
 import LetterOfOfferSection from '@/components/admin/LetterOfOfferSection';
 import ClassroomSection from '@/components/admin/ClassroomSection';
+import AttendanceSection from '@/components/admin/AttendanceSection';
 import ComplianceFormModal from '@/components/admin/ComplianceFormModal';
 import type { InvoiceSummaryRow, ClassroomSubmissionRow } from '@/lib/lms-data';
 import type { LetterOfOfferSummaryRow } from '@/lib/letters-of-offer';
@@ -500,6 +501,8 @@ export default function ChildCard({
             <h3 className="font-display text-base font-semibold text-ink">Activities</h3>
             <p className="mt-2">Booked extracurricular activities are coming in a later phase.</p>
           </div>
+
+          <AttendanceSection childId={child.id} />
 
           {canEdit && <GuardianLinksSection childId={child.id} initial={guardians} />}
         </>

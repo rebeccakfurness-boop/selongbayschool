@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { telex, shadowsIntoLight, nunitoSans } from '@/fonts';
 import { siteConfig } from '@/lib/site-content';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import SiteChrome from '@/components/SiteChrome';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -24,9 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${telex.variable} ${shadowsIntoLight.variable} ${nunitoSans.variable}`}>
       <body className="flex min-h-screen flex-col bg-cream font-sans text-ink">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

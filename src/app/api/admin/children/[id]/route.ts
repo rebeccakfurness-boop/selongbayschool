@@ -91,6 +91,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         photo_updated_by_label = CASE WHEN ${d.photoUrl ?? null}::text IS NOT NULL THEN ${`Admin: ${staff.email}`} ELSE photo_updated_by_label END,
         photo_updated_at = CASE WHEN ${d.photoUrl ?? null}::text IS NOT NULL THEN now() ELSE photo_updated_at END,
         classroom_student_email = COALESCE(${d.classroomStudentEmail ?? null}, classroom_student_email),
+        enrollment_type = COALESCE(${d.enrollmentType ?? null}, enrollment_type),
         updated_at = now()
       WHERE id = ${id}
       RETURNING id

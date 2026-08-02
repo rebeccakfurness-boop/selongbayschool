@@ -3,6 +3,7 @@ import type { SessionOptions } from 'iron-session';
 export const ADMIN_COOKIE_NAME = 'sbs_admin_session';
 export const CUSTOMER_COOKIE_NAME = 'sbs_customer_session';
 export const STUDENT_COOKIE_NAME = 'sbs_student_session';
+export const KIOSK_COOKIE_NAME = 'sbs_kiosk_session';
 export const RESET_TOKEN_TTL_MS = 1000 * 60 * 60; // 1 hour
 export const MAGIC_LINK_TOKEN_TTL_MS = 1000 * 60 * 30; // 30 minutes
 
@@ -24,6 +25,13 @@ export interface CustomerSessionData {
 export interface StudentSessionData {
   studentAccountId?: number;
   childId?: number;
+}
+
+/** Device-level session for the gate kiosk (see /kiosk) — not tied to any person, just whether
+ * this browser has entered the shared PIN. Deliberately not an admin/customer/student session:
+ * the whole point of a walk-up kiosk is that nobody has to identify themselves to use it. */
+export interface KioskSessionData {
+  unlocked?: boolean;
 }
 
 function bufferToHex(buffer: ArrayBuffer): string {
@@ -91,6 +99,24 @@ export async function getStudentSessionOptions(): Promise<SessionOptions> {
     cookieName: STUDENT_COOKIE_NAME,
     password: await derivedSessionPassword('student'),
     ttl: 60 * 60 * 24 * 30,
+    cookieOptions: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    },
+  };
+}
+
+/** Long TTL on purpose — this is a shared, physically-secured tablet meant to stay unlocked for
+ * weeks/months at a time, not a per-person login. Re-entering the PIN after every browser restart
+ * would defeat the "walk up and tap" speed the kiosk exists for; staff can always relock it from
+ * the kiosk screen itself if the tablet is ever compromised. */
+export async function getKioskSessionOptions(): Promise<SessionOptions> {
+  return {
+    cookieName: KIOSK_COOKIE_NAME,
+    password: await derivedSessionPassword('kiosk'),
+    ttl: 60 * 60 * 24 * 365,
     cookieOptions: {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

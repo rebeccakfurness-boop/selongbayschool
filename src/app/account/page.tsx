@@ -4,12 +4,14 @@ import { getIronSession } from 'iron-session';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCustomerSessionOptions, type CustomerSessionData } from '@/lib/auth';
 import { getChildrenForGuardian } from '@/lib/lms-data';
+import { getTodayDailyStatusForChildren } from '@/lib/attendance';
 import { formatIDR } from '@/lib/site-content';
 import { formatDate } from '@/lib/admin-format';
 import { weekdaysSummaryLabel } from '@/lib/lunch-calc';
 import { STATUS_LEGEND, type ChildStatus } from '@/lib/family-data';
 import AccountNav from '@/components/account/AccountNav';
 import ChildAvatar from '@/components/ChildAvatar';
+import AttendanceActionButton from '@/components/account/AttendanceActionButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -81,6 +83,7 @@ export default async function AccountOverviewPage() {
 
     await ensureSchema();
     const kids = customerId ? await getChildrenForGuardian(customerId) : [];
+    const attendanceStatusMap = await getTodayDailyStatusForChildren(kids.map((k) => k.id));
 
     const outstandingInvoices = customerId
       ? ((await sql`
@@ -123,6 +126,7 @@ export default async function AccountOverviewPage() {
     return renderOverviewPage({
       email: session.email ?? '',
       kids,
+      attendanceStatusMap,
       outstandingInvoices,
       totalOutstanding,
       overdueCount,
@@ -138,6 +142,7 @@ export default async function AccountOverviewPage() {
 function renderOverviewPage({
   email,
   kids,
+  attendanceStatusMap,
   outstandingInvoices,
   totalOutstanding,
   overdueCount,
@@ -146,6 +151,7 @@ function renderOverviewPage({
 }: {
   email: string;
   kids: Awaited<ReturnType<typeof getChildrenForGuardian>>;
+  attendanceStatusMap: Awaited<ReturnType<typeof getTodayDailyStatusForChildren>>;
   outstandingInvoices: OutstandingInvoiceRow[];
   totalOutstanding: number;
   overdueCount: number;
@@ -166,31 +172,45 @@ function renderOverviewPage({
             <div className="mt-8 rounded-md border border-dashed border-sand-line bg-paper p-8 text-center">
               <p className="text-ink-soft">
                 No children are linked to your account yet. Ask the school office to link your email to your
-                child&apos;s record.
+                child&apos;s record, or{' '}
+                <Link href="/account/link-child" className="font-semibold text-teal-deep underline">
+                  request a link yourself
+                </Link>
+                .
               </p>
             </div>
           ) : (
             <section className="mt-8">
-              <h2 className="font-display text-xl font-semibold text-ink">Your Children</h2>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h2 className="font-display text-xl font-semibold text-ink">Your Children</h2>
+                <Link href="/account/link-child" className="text-sm font-semibold text-teal-deep underline">
+                  Link another child
+                </Link>
+              </div>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 {kids.map((child) => (
-                  <Link
-                    key={child.id}
-                    href={`/account/learning#child-${child.id}`}
-                    className="flex items-center gap-4 rounded-md border border-sand-line bg-paper p-4 shadow-soft hover:border-teal/40"
-                  >
-                    <ChildAvatar photoUrl={child.photo_url} name={child.child_full_name} size="lg" />
-                    <div>
-                      <p className="font-display text-lg font-semibold text-ink">{child.child_nickname || child.child_full_name}</p>
-                      <div className="mt-1 flex flex-wrap items-center gap-2">
-                        <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold ${STATUS_LEGEND[child.status as ChildStatus].badgeClass}`}>
-                          <span className={`h-1.5 w-1.5 rounded-full ${STATUS_LEGEND[child.status as ChildStatus].dotClass}`} />
-                          {STATUS_LEGEND[child.status as ChildStatus].label}
-                        </span>
-                        {child.class_name && <span className="text-xs text-ink-soft">{child.class_name}</span>}
+                  <div key={child.id} className="flex items-center gap-4 rounded-md border border-sand-line bg-paper p-4 shadow-soft">
+                    <Link href={`/account/learning#child-${child.id}`} className="flex flex-1 items-center gap-4 hover:opacity-80">
+                      <ChildAvatar photoUrl={child.photo_url} name={child.child_full_name} size="lg" />
+                      <div>
+                        <p className="font-display text-lg font-semibold text-ink">{child.child_nickname || child.child_full_name}</p>
+                        <div className="mt-1 flex flex-wrap items-center gap-2">
+                          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-bold ${STATUS_LEGEND[child.status as ChildStatus].badgeClass}`}>
+                            <span className={`h-1.5 w-1.5 rounded-full ${STATUS_LEGEND[child.status as ChildStatus].dotClass}`} />
+                            {STATUS_LEGEND[child.status as ChildStatus].label}
+                          </span>
+                          {child.class_name && <span className="text-xs text-ink-soft">{child.class_name}</span>}
+                        </div>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
+                    {child.enrollment_type === 'regular' && (
+                      <AttendanceActionButton
+                        childId={child.id}
+                        sessionType="daily"
+                        currentEventType={attendanceStatusMap.get(child.id)?.event_type ?? null}
+                      />
+                    )}
+                  </div>
                 ))}
               </div>
             </section>

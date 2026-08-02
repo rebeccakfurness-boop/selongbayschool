@@ -39,10 +39,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       customer = (await sql`INSERT INTO customers (email) VALUES (${email}) RETURNING id`)[0];
     }
 
+    // Always forces status back to 'approved', even over a stale 'pending'/'rejected' row from a
+    // self-service /account/link-child request — an admin linking directly here is a stronger,
+    // more explicit signal than that flow's own approve/reject queue, so it should never leave a
+    // child looking unlinked after an admin has just linked them.
     await sql`
-      INSERT INTO guardian_children (customer_id, child_id, relationship)
-      VALUES (${customer.id}, ${childId}, ${relationship ?? null})
-      ON CONFLICT (customer_id, child_id) DO UPDATE SET relationship = EXCLUDED.relationship
+      INSERT INTO guardian_children (customer_id, child_id, relationship, status)
+      VALUES (${customer.id}, ${childId}, ${relationship ?? null}, 'approved')
+      ON CONFLICT (customer_id, child_id) DO UPDATE SET relationship = EXCLUDED.relationship, status = 'approved'
     `;
     return NextResponse.json({ ok: true });
   } catch (err) {
