@@ -25,7 +25,7 @@ export const config = {
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (pathname.startsWith('/account/')) {
+  if (pathname === '/account' || pathname.startsWith('/account/')) {
     if (PUBLIC_ACCOUNT_PATHS.includes(pathname)) {
       return NextResponse.next();
     }
@@ -43,7 +43,7 @@ export async function proxy(req: NextRequest) {
   // this specific browser. Deliberately not linked from anywhere else in the site: staff set the
   // tablet's browser to this URL once and it stays unlocked, same idea as the admin/customer/
   // student guards above but with a device-scoped session instead of a person-scoped one.
-  if (pathname.startsWith('/kiosk/') || pathname.startsWith('/api/kiosk/')) {
+  if (pathname === '/kiosk' || pathname.startsWith('/kiosk/') || pathname.startsWith('/api/kiosk/')) {
     if (PUBLIC_KIOSK_PATHS.includes(pathname) || PUBLIC_KIOSK_API_PATHS.includes(pathname)) {
       return NextResponse.next();
     }
@@ -59,7 +59,7 @@ export async function proxy(req: NextRequest) {
     return res;
   }
 
-  if (pathname.startsWith('/student/')) {
+  if (pathname === '/student' || pathname.startsWith('/student/')) {
     if (PUBLIC_STUDENT_PATHS.includes(pathname)) {
       return NextResponse.next();
     }
