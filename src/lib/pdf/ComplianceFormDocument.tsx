@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
   scriptTitle: { fontFamily: 'Shadows Into Light', fontSize: 32, color: BRAND_COLORS.teal, maxWidth: 320, textAlign: 'right' },
   childMeta: { textAlign: 'right', marginTop: 6, fontSize: 10, color: BRAND_COLORS.ink },
   paragraph: { fontSize: 10, lineHeight: 1.6, color: BRAND_COLORS.ink, marginTop: 12 },
+  heading: { fontSize: 12, fontWeight: 700, lineHeight: 1.4, color: BRAND_COLORS.tealDeep, marginTop: 18 },
   signatureBox: {
     marginTop: 36,
     borderWidth: 1,
@@ -75,11 +76,18 @@ export function ComplianceFormDocument({
             </View>
           </View>
 
-          {filledParagraphs.map((paragraph, i) => (
-            <Text key={i} style={styles.paragraph}>
-              {paragraph}
-            </Text>
-          ))}
+          {filledParagraphs.map((paragraph, i) => {
+            // A "## " prefix marks a section heading rather than body text — a plain-text
+            // convention (not a separate content field) so COMPLIANCE_FORM_CONTENT can stay a
+            // simple string array while still giving the now much longer real policies real
+            // section structure.
+            const isHeading = paragraph.startsWith('## ');
+            return (
+              <Text key={i} style={isHeading ? styles.heading : styles.paragraph}>
+                {isHeading ? paragraph.slice(3) : paragraph}
+              </Text>
+            );
+          })}
 
           <View style={styles.signatureBox}>
             <View style={styles.signatureRow}>
