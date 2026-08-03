@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { DndContext, PointerSensor, useDraggable, useDroppable, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
-import { STATUS_LEGEND, STATUS_ORDER, CLASS_BAND_LABELS, type ChildStatus } from '@/lib/family-data';
+import { STATUS_LEGEND, STATUS_ORDER, CLASS_BAND_LABELS, CLASS_BAND_ORDER, type ChildStatus, type ClassBand } from '@/lib/family-data';
 import { isActiveStatus, complianceBadge, invoiceBadge, type ComplianceBadge, type InvoiceBadge } from '@/lib/child-lifecycle-shared';
 import { formatDate } from '@/lib/admin-format';
 import ChildAvatar from '@/components/ChildAvatar';
@@ -125,9 +125,36 @@ function ChildCard({ child, draggable }: { child: BoardChild; draggable: boolean
   );
 }
 
-function Column({ columnId, roster }: { columnId: ColumnId; roster: BoardChild[] }) {
+/** Groups a roster by class_band, in CLASS_BAND_ORDER, with any child missing a class_band
+ * (never assigned one yet) collected into a trailing "No class set" group — empty bands are
+ * dropped rather than shown as empty headers, so a school with no full-time Early Years student
+ * just shows Kindergarten/Primary/Secondary. */
+function groupByClassBand(roster: BoardChild[]): { key: string; label: string; children: BoardChild[] }[] {
+  const groups = new Map<string, BoardChild[]>();
+  for (const child of roster) {
+    const key = child.class_band ?? 'unassigned';
+    const list = groups.get(key) ?? [];
+    list.push(child);
+    groups.set(key, list);
+  }
+  const order = [...CLASS_BAND_ORDER, 'unassigned'];
+  return order
+    .filter((key) => groups.has(key))
+    .map((key) => ({
+      key,
+      label: key === 'unassigned' ? 'No class set' : CLASS_BAND_LABELS[key as ClassBand],
+      children: groups.get(key)!,
+    }));
+}
+
+function Column({ columnId, roster, draggable = true }: { columnId: ColumnId; roster: BoardChild[]; draggable?: boolean }) {
   const { setNodeRef, isOver } = useDroppable({ id: columnId });
   const label = columnId === 'inactive' ? 'Inactive' : STATUS_LEGEND[columnId].label;
+  // Full Time is the one column split into Kindergarten/Primary/Secondary sub-sections — every
+  // other column (enquiry, waitlist, temporary, worldschooler, hybrid, inactive) stays a flat
+  // list, since those are small/mixed enough that the grouping wouldn't earn its keep.
+  const bandGroups = columnId === 'full_time' ? groupByClassBand(roster) : null;
+
   return (
     <div
       ref={setNodeRef}
@@ -139,9 +166,19 @@ function Column({ columnId, roster }: { columnId: ColumnId; roster: BoardChild[]
         <span className="text-xs font-bold uppercase tracking-wide text-ink-soft">{label}</span>
         <span className="text-xs font-bold text-ink-soft">{roster.length}</span>
       </div>
-      {roster.map((child) => (
-        <ChildCard key={child.id} child={child} draggable />
-      ))}
+      {bandGroups
+        ? bandGroups.map((group) => (
+            <div key={group.key} className="flex flex-col gap-3">
+              <div className="-mb-1 flex items-center justify-between border-t border-sand-line pt-2 first:border-t-0 first:pt-0">
+                <span className="text-[10px] font-bold uppercase tracking-wide text-ink-soft/70">{group.label}</span>
+                <span className="text-[10px] font-bold text-ink-soft/70">{group.children.length}</span>
+              </div>
+              {group.children.map((child) => (
+                <ChildCard key={child.id} child={child} draggable={draggable} />
+              ))}
+            </div>
+          ))
+        : roster.map((child) => <ChildCard key={child.id} child={child} draggable={draggable} />)}
       {roster.length === 0 && (
         <div className="rounded-md border border-dashed border-sand-line p-3 text-center text-xs text-ink-soft">
           Drop here
@@ -210,17 +247,7 @@ export default function FamilyBoard({ initialChildren, canEdit }: { initialChild
     return (
       <div className="flex gap-5 overflow-x-auto pb-2">
         {COLUMN_ORDER.map((columnId) => (
-          <div key={columnId} className="flex w-[220px] shrink-0 flex-col gap-3 rounded-md border border-sand-line bg-sand/20 p-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wide text-ink-soft">
-                {columnId === 'inactive' ? 'Inactive' : STATUS_LEGEND[columnId].label}
-              </span>
-              <span className="text-xs font-bold text-ink-soft">{(byColumn.get(columnId) || []).length}</span>
-            </div>
-            {(byColumn.get(columnId) || []).map((child) => (
-              <ChildCard key={child.id} child={child} draggable={false} />
-            ))}
-          </div>
+          <Column key={columnId} columnId={columnId} roster={byColumn.get(columnId) || []} draggable={false} />
         ))}
       </div>
     );
