@@ -5,6 +5,8 @@ import { formatDate } from '@/lib/admin-format';
 import { formatIDR } from '@/lib/site-content';
 import MarkInvoicePaidButton from '@/components/admin/MarkInvoicePaidButton';
 import SendInvoiceButton from '@/components/admin/SendInvoiceButton';
+import VoidInvoiceButton from '@/components/admin/VoidInvoiceButton';
+import DeleteInvoiceButton from '@/components/admin/DeleteInvoiceButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -133,6 +135,8 @@ export default async function AdminInvoicesPage({
                         Edit
                       </Link>
                       {inv.status === 'outstanding' && <MarkInvoicePaidButton invoiceId={inv.id} />}
+                      {inv.status !== 'cancelled' && <VoidInvoiceButton invoiceId={inv.id} />}
+                      <DeleteInvoiceButton invoiceId={inv.id} invoiceNumber={inv.invoice_number} />
                     </div>
                   </td>
                 </tr>

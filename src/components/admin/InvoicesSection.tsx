@@ -2,6 +2,8 @@ import Link from 'next/link';
 import type { InvoiceSummaryRow } from '@/lib/lms-data';
 import MarkInvoicePaidButton from '@/components/admin/MarkInvoicePaidButton';
 import SendInvoiceButton from '@/components/admin/SendInvoiceButton';
+import VoidInvoiceButton from '@/components/admin/VoidInvoiceButton';
+import DeleteInvoiceButton from '@/components/admin/DeleteInvoiceButton';
 
 const STATUS_STYLES: Record<string, string> = {
   outstanding: 'bg-orange/20 text-orange-deep',
@@ -64,6 +66,8 @@ export default function InvoicesSection({
                 </Link>
               )}
               {canEdit && inv.status === 'outstanding' && <MarkInvoicePaidButton invoiceId={inv.id} />}
+              {canEdit && inv.status !== 'cancelled' && <VoidInvoiceButton invoiceId={inv.id} />}
+              {canEdit && <DeleteInvoiceButton invoiceId={inv.id} invoiceNumber={inv.invoice_number} />}
             </div>
           </li>
         ))}

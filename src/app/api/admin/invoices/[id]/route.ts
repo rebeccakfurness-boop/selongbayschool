@@ -154,3 +154,28 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: 'Could not save invoice.' }, { status: 500 });
   }
 }
+
+/** Hard delete — removes the invoice row entirely (invoice_children and invoice_line_items
+ * cascade via their FK; any lunch_orders pointing at it just have invoice_id set to NULL). This
+ * is distinct from voiding (PATCH status='cancelled'), which keeps the invoice on record but
+ * marked as not owed — use delete only for invoices that should never have existed. */
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
+  const { id: idParam } = await params;
+  const id = Number(idParam);
+  if (!Number.isInteger(id)) {
+    return NextResponse.json({ error: 'Invalid invoice id.' }, { status: 400 });
+  }
+
+  try {
+    await ensureSchema();
+    const rows = await sql`DELETE FROM invoices WHERE id = ${id} RETURNING id`;
+    if (rows.length === 0) {
+      return NextResponse.json({ error: 'Invoice not found.' }, { status: 404 });
+    }
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error('[api/admin/invoices/:id] failed to delete', err);
+    return NextResponse.json({ error: 'Could not delete invoice.' }, { status: 500 });
+  }
+}
