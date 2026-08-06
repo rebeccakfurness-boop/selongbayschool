@@ -367,6 +367,22 @@ export const scheduleMeetingSchema = z.object({
   email: z.string().trim().toLowerCase().email('Enter a valid email address'),
 });
 
+/** "Send off-boarding letter" — a single admin action (create + send), unlike Letter of Offer,
+ * since there's no per-family content to draft/edit first: the letter is fixed copy plus the exit
+ * survey link. */
+export const sendOffboardingLetterSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+});
+
+export const submitOffboardingSurveySchema = z.object({
+  completedByName: z.string().trim().min(1, 'Enter your name').max(200),
+  experienceRating: z.coerce.number().int().min(1, 'Choose a rating').max(5),
+  recommendScore: z.coerce.number().int().min(0, 'Choose a score').max(10),
+  marketingConsent: z.boolean(),
+  feedbackText: z.string().trim().max(4000).nullable().optional(),
+});
+
 export const bookMeetingSlotSchema = z.object({
   startIso: z.string().trim().datetime({ message: 'Choose a valid time slot' }),
   format: z.enum(['in_person', 'video']),

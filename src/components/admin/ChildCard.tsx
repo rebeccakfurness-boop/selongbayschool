@@ -13,11 +13,13 @@ import ChildPhotoFeedSection, { type PhotoFeedItem } from '@/components/admin/Ch
 import GuardianLinksSection, { type GuardianLink } from '@/components/admin/GuardianLinksSection';
 import InvoicesSection from '@/components/admin/InvoicesSection';
 import LetterOfOfferSection from '@/components/admin/LetterOfOfferSection';
+import OffboardingLetterSection from '@/components/admin/OffboardingLetterSection';
 import ClassroomSection from '@/components/admin/ClassroomSection';
 import AttendanceSection from '@/components/admin/AttendanceSection';
 import ComplianceFormModal from '@/components/admin/ComplianceFormModal';
 import type { InvoiceSummaryRow, ClassroomSubmissionRow } from '@/lib/lms-data';
 import type { LetterOfOfferSummaryRow } from '@/lib/letters-of-offer';
+import type { OffboardingLetterSummaryRow } from '@/lib/offboarding';
 import type { MeetingInviteSummaryRow } from '@/lib/meeting-scheduling';
 import { formatDate } from '@/lib/admin-format';
 import { STATUS_LEGEND, CLASS_BAND_LABELS, CLASS_BAND_ORDER, COMPLIANCE_ITEMS, type ChildStatus, type ClassBand } from '@/lib/family-data';
@@ -179,6 +181,7 @@ export default function ChildCard({
   guardians,
   invoices,
   letters,
+  offboardingLetters,
   meetingInvites,
   classroomSubmissions,
 }: {
@@ -190,6 +193,7 @@ export default function ChildCard({
   guardians: GuardianLink[];
   invoices: InvoiceSummaryRow[];
   letters: LetterOfOfferSummaryRow[];
+  offboardingLetters: OffboardingLetterSummaryRow[];
   meetingInvites: MeetingInviteSummaryRow[];
   classroomSubmissions: ClassroomSubmissionRow[];
 }) {
@@ -370,6 +374,13 @@ export default function ChildCard({
               defaultEmail={child.primary_contact_email ?? ''}
               hasInvoices={invoices.length > 0}
               meetingInvites={meetingInvites}
+            />
+
+            <OffboardingLetterSection
+              childId={child.id}
+              letters={offboardingLetters}
+              canEdit={canEdit}
+              defaultEmail={child.primary_contact_email ?? ''}
             />
 
             <InvoicesSection childId={child.id} invoices={invoices} canEdit={canEdit} defaultEmail={child.primary_contact_email ?? ''} />

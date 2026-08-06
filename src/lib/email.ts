@@ -700,6 +700,57 @@ export async function sendLetterOfOfferAcceptedConfirmation(toEmail: string, chi
   return send(toEmail, `Thanks for accepting — ${childFullName} — Selong Bay School`, html, { cc: NOTIFY_TO });
 }
 
+export interface OffboardingLetterEmailInput {
+  toEmail: string;
+  childFullName: string;
+  surveyUrl: string;
+}
+
+/** Sent from the "Send off-boarding letter" action on a Child Card once a family leaves — the
+ * thank-you note itself, not a PDF attachment: there's no formal/legal content here the way there
+ * is on a Letter of Offer or a compliance form, and the survey it links to has to be an interactive
+ * page anyway, so a static PDF twin of the same text wouldn't add anything. */
+export async function sendOffboardingLetterEmail(input: OffboardingLetterEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    'Thank you for being part of our community',
+    `<p>Dear parent/guardian of ${input.childFullName},</p>
+     <p>Thank you for being part of the Selong Bay School community. It has been a privilege to spend this time
+       with ${input.childFullName}, and we wish your family all the very best for whatever comes next.</p>
+     <p style="margin-top: 16px;">We'd love to stay in touch — follow us on Instagram
+       <a href="${siteConfig.contact.instagram}" style="color:#007c83; font-weight:700;">@selongbay_school</a>
+       for updates, photos, and news from the school, and we'll keep this email address on file so you hear from us
+       too. If your family's plans ever bring you back to Lombok, we'd love to welcome you again.</p>
+     <p style="margin-top: 16px;">Before you go, we'd really appreciate two minutes of your time for a short exit
+       survey — it helps us keep improving for the families who come after you:</p>
+     <p style="margin-top: 12px;"><a href="${input.surveyUrl}" style="color:#007c83; font-weight:700;">Share your feedback</a></p>
+     <p style="margin-top: 24px;">With thanks and best wishes,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `Thank you from Selong Bay School — ${input.childFullName}`, html, { cc: NOTIFY_TO });
+}
+
+/** Sent to the school inbox the moment a family submits the exit survey — so a low rating or score
+ * gets seen promptly rather than sitting unread in a list only visible from the Child Card. */
+export async function sendOffboardingSurveySubmittedNotification(input: {
+  childFullName: string;
+  completedByName: string;
+  experienceRating: number;
+  recommendScore: number;
+  marketingConsent: boolean;
+  feedbackText: string | null;
+}): Promise<boolean> {
+  const html = wrapEmail(
+    'Exit survey submitted',
+    `<p>${input.completedByName} submitted the exit survey for <strong>${input.childFullName}</strong>.</p>
+     ${fieldRows([
+       ['Experience rating', `${input.experienceRating} / 5`],
+       ['Likely to recommend', `${input.recommendScore} / 10`],
+       ['OK to use in marketing', input.marketingConsent ? 'Yes' : 'No'],
+       ['Feedback', input.feedbackText],
+     ])}`
+  );
+  return send(NOTIFY_TO, `Exit survey submitted — ${input.childFullName}`, html);
+}
+
 function formatMeetingTime(startIso: string): string {
   const formatted = new Intl.DateTimeFormat('en-AU', {
     weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit',

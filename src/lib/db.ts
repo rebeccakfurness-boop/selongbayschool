@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 9;
+const SCHEMA_VERSION = 10;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1094,6 +1094,30 @@ export function ensureSchema(): Promise<void> {
       // override this requirement exists to have — it's never signed, by design.
       await sql`ALTER TABLE attendance_events ADD COLUMN IF NOT EXISTS signature_data_url TEXT`;
       await sql`ALTER TABLE attendance_events ADD COLUMN IF NOT EXISTS signed_by_name TEXT`;
+
+      // One per child, sent from the "Off-boarding Letter" action on the Child Card once a family
+      // leaves — a thank-you note plus a short, tokenized exit survey (same public-token trust model
+      // as letters_of_offer.accept_token: the survey_token itself is the credential, emailed only to
+      // the parent). Survey answers live on the same row rather than a separate table since it's a
+      // strict one-to-one, always answered together in a single submission.
+      await sql`
+        CREATE TABLE IF NOT EXISTS offboarding_letters (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          status TEXT NOT NULL DEFAULT 'sent' CHECK (status IN ('sent', 'completed')),
+          survey_token TEXT NOT NULL UNIQUE,
+          sent_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          completed_at TIMESTAMPTZ,
+          experience_rating INTEGER CHECK (experience_rating BETWEEN 1 AND 5),
+          recommend_score INTEGER CHECK (recommend_score BETWEEN 0 AND 10),
+          marketing_consent BOOLEAN,
+          feedback_text TEXT,
+          completed_by_name TEXT,
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_offboarding_letters_child ON offboarding_letters (child_id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();
