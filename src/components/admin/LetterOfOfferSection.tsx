@@ -113,7 +113,11 @@ export default function LetterOfOfferSection({
                 </span>
                 {canEdit && letter.status !== 'accepted' && <SendLetterOfOfferButton letterId={letter.id} defaultEmail={defaultEmail} />}
                 {canEdit && invite?.status !== 'booked' && (
-                  <ScheduleMeetingButton letterId={letter.id} defaultEmail={defaultEmail} initiallySent={invite?.status === 'sent'} />
+                  <ScheduleMeetingButton
+                    endpoint={`/api/admin/letters-of-offer/${letter.id}/schedule-meeting`}
+                    defaultEmail={defaultEmail}
+                    initiallySent={invite?.status === 'sent'}
+                  />
                 )}
                 {canEdit && letter.status !== 'accepted' && (
                   <Link href={`/admin/letters-of-offer/${letter.id}/edit`} className="text-xs font-semibold text-teal-deep hover:underline">

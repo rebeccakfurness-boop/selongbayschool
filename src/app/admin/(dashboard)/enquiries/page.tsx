@@ -3,6 +3,7 @@ import { formatDateTime } from '@/lib/admin-format';
 import { requireAdmin } from '@/lib/current-staff';
 import StatusPill from '@/components/admin/StatusPill';
 import MarkReadButton from '@/components/admin/MarkReadButton';
+import ScheduleMeetingButton from '@/components/admin/ScheduleMeetingButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,6 +50,7 @@ export default async function AdminEnquiriesPage() {
               <th className="px-4 py-3 font-bold text-ink-soft">Message</th>
               <th className="px-4 py-3 font-bold text-ink-soft">Status</th>
               <th className="px-4 py-3 font-bold text-ink-soft">Read</th>
+              <th className="px-4 py-3 font-bold text-ink-soft">Meeting</th>
             </tr>
           </thead>
           <tbody>
@@ -72,11 +74,14 @@ export default async function AdminEnquiriesPage() {
                 <td className="whitespace-nowrap px-4 py-3">
                   <MarkReadButton id={row.id} isRead={row.is_read} />
                 </td>
+                <td className="whitespace-nowrap px-4 py-3">
+                  <ScheduleMeetingButton endpoint={`/api/admin/enquiries/${row.id}/schedule-meeting`} defaultEmail={row.email} />
+                </td>
               </tr>
             ))}
             {enquiries.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-ink-soft">No enquiries yet.</td>
+                <td colSpan={9} className="px-4 py-6 text-center text-ink-soft">No enquiries yet.</td>
               </tr>
             )}
           </tbody>

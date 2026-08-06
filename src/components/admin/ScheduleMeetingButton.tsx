@@ -5,13 +5,16 @@ import { useRouter } from 'next/navigation';
 import { TextInput } from '@/components/forms/FormField';
 
 export default function ScheduleMeetingButton({
-  letterId,
+  endpoint,
   defaultEmail,
-  initiallySent,
+  initiallySent = false,
 }: {
-  letterId: number;
+  /** Full POST endpoint, e.g. `/api/admin/letters-of-offer/${letterId}/schedule-meeting` or
+   * `/api/admin/enquiries/${id}/schedule-meeting` — both create a meeting_invites row for
+   * whichever child the endpoint resolves and email the parent the same booking link. */
+  endpoint: string;
   defaultEmail: string;
-  initiallySent: boolean;
+  initiallySent?: boolean;
 }) {
   const router = useRouter();
   const [expanded, setExpanded] = useState(false);
@@ -25,7 +28,7 @@ export default function ScheduleMeetingButton({
     setResult(null);
     setErrorMessage(null);
     try {
-      const res = await fetch(`/api/admin/letters-of-offer/${letterId}/schedule-meeting`, {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
