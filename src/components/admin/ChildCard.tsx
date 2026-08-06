@@ -201,6 +201,7 @@ export default function ChildCard({
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState<FormState>(() => toFormState(child));
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [openComplianceForm, setOpenComplianceForm] = useState<string | null>(null);
 
@@ -251,6 +252,29 @@ export default function ChildCard({
       setError(err instanceof Error ? err.message : 'Failed to save');
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function deleteChild() {
+    const label = child.child_nickname || child.child_full_name;
+    if (
+      !window.confirm(
+        `Permanently delete ${label}'s card? This removes the child record completely and cannot be undone. Only do this for a duplicate or a card created in error — a real (even former) student should be moved to Inactive on the Family Board instead.`
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/children/${child.id}`, { method: 'DELETE' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Failed to delete');
+      router.push('/admin/families');
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete');
+      setDeleting(false);
     }
   }
 
@@ -322,8 +346,20 @@ export default function ChildCard({
               Edit
             </Button>
           )}
+          {canEdit && (
+            <button
+              type="button"
+              onClick={deleteChild}
+              disabled={deleting}
+              className="text-sm font-semibold text-red-600 hover:underline disabled:opacity-50"
+            >
+              {deleting ? 'Deleting…' : 'Delete'}
+            </button>
+          )}
         </div>
       </div>
+
+      {error && !editing && <p role="alert" className="font-semibold text-orange-deep">{error}</p>}
 
       {!editing ? (
         <>
@@ -522,7 +558,7 @@ export default function ChildCard({
           <p className="mb-4 rounded-sm border border-dashed border-sand-line bg-sand/20 px-3 py-2 text-xs text-ink-soft">
             Status and active/inactive aren&apos;t editable here — drag the card between columns on the{' '}
             <Link href="/admin/families" className="font-semibold text-teal-deep underline">Family Board</Link> instead.
-            Moving into Full Time/Temporary/Worldschooler/Hybrid needs a start date and programme type set below first.
+            Moving into Full Time/Temporary/Worldschooler/Hybrid needs the Enrolment date and Programme fields below set first.
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Field label="Full name" htmlFor="edit-full-name" required>

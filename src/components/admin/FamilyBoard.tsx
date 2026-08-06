@@ -213,12 +213,12 @@ export default function FamilyBoard({ initialChildren, canEdit }: { initialChild
     const previousColumn = columnFor(current);
     if (previousColumn === newColumn) return;
 
-    // Client-side guard rail: block a drag into an active-status column when start date or
+    // Client-side guard rail: block a drag into an active-status column when enrolment date or
     // programme type aren't already on file, with an inline message and no optimistic move at
     // all. The API enforces the same rule (see checkActiveStatusGuardRail) — this is just so the
     // admin sees why immediately instead of watching the card bounce back.
     if (isActiveStatus(newColumn as ChildStatus) && (!current.enrolment_date || !current.programme)) {
-      setError(`${current.child_full_name}: set start date and programme type first.`);
+      setError(`${current.child_full_name}: set enrolment date and programme type first (Edit on the Child Card).`);
       return;
     }
 

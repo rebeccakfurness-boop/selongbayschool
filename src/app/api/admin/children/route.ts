@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema } from '@/lib/db';
 import { requireAdmin } from '@/lib/current-staff';
-import { createChildSchema } from '@/lib/validation';
+import { createChildSchema, firstIssueMessage } from '@/lib/validation';
 import { createChild } from '@/lib/child-lifecycle';
 
 /** Creates a child card directly (for a family who isn't in the imported spreadsheet, or wasn't
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
   const parsed = createChildSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.issues[0]?.message || 'Invalid child.' }, { status: 400 });
+    return NextResponse.json({ error: firstIssueMessage(parsed.error, 'Invalid child.') }, { status: 400 });
   }
   const d = parsed.data;
 

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
-import { updateChildSchema } from '@/lib/validation';
+import { updateChildSchema, firstIssueMessage } from '@/lib/validation';
 
 /** Every field the general Child Card edit form can save — status and is_active are NOT among
  * them (updateChildSchema doesn't declare them, so they're dropped even if a client sends them).
@@ -28,7 +28,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const parsed = updateChildSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.issues[0]?.message || 'Invalid update.' }, { status: 400 });
+    return NextResponse.json({ error: firstIssueMessage(parsed.error, 'Invalid update.') }, { status: 400 });
   }
   const d = parsed.data;
 
@@ -103,5 +103,69 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   } catch (err) {
     console.error('[api/admin/children/:id] failed to update child', err);
     return NextResponse.json({ error: 'Could not save changes.' }, { status: 500 });
+  }
+}
+
+/** Hard-deletes a child record — for a genuinely blank duplicate or a card created in error, never
+ * for a real (even former) student: drag the card to Inactive on the Family Board for that instead,
+ * which keeps their attendance/invoice/compliance history intact. Refuses to delete (409) if the
+ * child has any record that represents real activity — a linked parent-portal account, a term
+ * report, a work sample, a tagged photo, an invoice/line item, or a Google Classroom submission —
+ * rather than silently discarding academic or financial history. Everything else that references
+ * the child either already cascades at the schema level (compliance signatures, letters of offer,
+ * the activity log, meeting invites, lunch orders, attendance) or is just a bookkeeping link
+ * (admissions_enquiries.converted_child_id, class_forecast_entries.linked_child_id,
+ * guardian_children), cleared explicitly below so the final DELETE never hits a FK violation. */
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const staff = await getCurrentStaff();
+  if (staff.role !== 'admin') {
+    return NextResponse.json({ error: 'Only admins can delete family records.' }, { status: 403 });
+  }
+
+  const { id: idParam } = await params;
+  const id = Number(idParam);
+  if (!Number.isInteger(id)) {
+    return NextResponse.json({ error: 'Invalid child id.' }, { status: 400 });
+  }
+
+  try {
+    await ensureSchema();
+
+    const existing = await sql`SELECT id FROM children WHERE id = ${id}`;
+    if (existing.length === 0) {
+      return NextResponse.json({ error: 'Child not found.' }, { status: 404 });
+    }
+
+    const [{ real_record_count }] = (await sql`
+      SELECT (
+        (SELECT COUNT(*) FROM student_accounts WHERE child_id = ${id}) +
+        (SELECT COUNT(*) FROM learning_profiles WHERE child_id = ${id}) +
+        (SELECT COUNT(*) FROM work_samples WHERE child_id = ${id}) +
+        (SELECT COUNT(*) FROM photo_feed_tags WHERE child_id = ${id}) +
+        (SELECT COUNT(*) FROM invoice_children WHERE child_id = ${id}) +
+        (SELECT COUNT(*) FROM invoice_line_items WHERE child_id = ${id}) +
+        (SELECT COUNT(*) FROM classroom_submissions WHERE child_id = ${id})
+      )::int AS real_record_count
+    `) as unknown as { real_record_count: number }[];
+
+    if (real_record_count > 0) {
+      return NextResponse.json(
+        {
+          error:
+            'This child has real records on file (a portal account, reports, work samples, photos, an invoice, or a Classroom submission) and can’t be deleted. Drag their card to Inactive on the Family Board instead.',
+        },
+        { status: 409 }
+      );
+    }
+
+    await sql`UPDATE admissions_enquiries SET converted_child_id = NULL WHERE converted_child_id = ${id}`;
+    await sql`UPDATE class_forecast_entries SET linked_child_id = NULL WHERE linked_child_id = ${id}`;
+    await sql`DELETE FROM guardian_children WHERE child_id = ${id}`;
+    await sql`DELETE FROM children WHERE id = ${id}`;
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error('[api/admin/children/:id] failed to delete child', err);
+    return NextResponse.json({ error: 'Could not delete child.' }, { status: 500 });
   }
 }

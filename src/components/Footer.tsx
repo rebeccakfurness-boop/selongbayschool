@@ -107,7 +107,17 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10 py-5 text-center text-[13px] text-white/60">
-        &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+        <p>
+          &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+        </p>
+        <p className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+          <Link href="/privacy-policy" className="hover:text-orange hover:underline">
+            Privacy Policy
+          </Link>
+          <Link href="/terms-of-service" className="hover:text-orange hover:underline">
+            Terms of Service
+          </Link>
+        </p>
       </div>
     </footer>
   );
