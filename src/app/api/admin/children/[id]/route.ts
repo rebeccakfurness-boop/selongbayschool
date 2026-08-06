@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
-import { updateChildSchema } from '@/lib/validation';
+import { updateChildSchema, firstIssueMessage } from '@/lib/validation';
 
 /** Every field the general Child Card edit form can save — status and is_active are NOT among
  * them (updateChildSchema doesn't declare them, so they're dropped even if a client sends them).
@@ -28,7 +28,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const parsed = updateChildSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.issues[0]?.message || 'Invalid update.' }, { status: 400 });
+    return NextResponse.json({ error: firstIssueMessage(parsed.error, 'Invalid update.') }, { status: 400 });
   }
   const d = parsed.data;
 

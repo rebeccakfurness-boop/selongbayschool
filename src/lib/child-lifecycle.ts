@@ -91,7 +91,7 @@ export async function convertAdmissionsEnquiry(
 export type StatusTransitionResult = { ok: true } | { ok: false; error: string };
 
 /** The guard rail from the lifecycle spec: a card can't land in an active column (the live
- * calendar + roster) without a start date and programme type already on file. Reads the child's
+ * calendar + roster) without an enrolment date and programme type already on file. Reads the child's
  * current enrolment_date/programme rather than trusting the request body, since the drag payload
  * carries only the target status/isActive — this only matters when actually entering (not already
  * in) an active status, so moving between two active statuses, or dropping to Inactive, is never
@@ -103,7 +103,7 @@ export async function checkActiveStatusGuardRail(childId: number, targetStatus: 
   if (!child) return { ok: false, error: 'Child not found.' };
   if (child.status === targetStatus) return { ok: true };
   if (!child.enrolment_date || !child.programme) {
-    return { ok: false, error: 'Set start date and programme type first.' };
+    return { ok: false, error: 'Set enrolment date and programme type first (Edit on the Child Card).' };
   }
   return { ok: true };
 }

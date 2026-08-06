@@ -511,7 +511,7 @@ export default function ChildCard({
           <p className="mb-4 rounded-sm border border-dashed border-sand-line bg-sand/20 px-3 py-2 text-xs text-ink-soft">
             Status and active/inactive aren&apos;t editable here — drag the card between columns on the{' '}
             <Link href="/admin/families" className="font-semibold text-teal-deep underline">Family Board</Link> instead.
-            Moving into Full Time/Temporary/Worldschooler/Hybrid needs a start date and programme type set below first.
+            Moving into Full Time/Temporary/Worldschooler/Hybrid needs the Enrolment date and Programme fields below set first.
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Field label="Full name" htmlFor="edit-full-name" required>

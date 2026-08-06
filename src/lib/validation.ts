@@ -1,5 +1,15 @@
 import { z } from 'zod';
 
+/** Prefixes a Zod validation error with the field it came from (e.g. "dob: must be a valid date
+ * (YYYY-MM-DD)") instead of the bare message alone — on a form with dozens of fields bundled into
+ * one save, "Invalid" by itself doesn't say which of them broke the request. */
+export function firstIssueMessage(error: z.ZodError, fallback: string): string {
+  const issue = error.issues[0];
+  if (!issue) return fallback;
+  const path = issue.path.join('.');
+  return path ? `${path}: ${issue.message}` : issue.message;
+}
+
 const name = z.string().trim().min(1, 'Name is required').max(200);
 const email = z.string().trim().email('Enter a valid email address').max(320);
 const phone = z.string().trim().min(1, 'Phone number is required').max(50);
@@ -121,7 +131,30 @@ export const adminResetPasswordSchema = z.object({
 });
 export type AdminResetPasswordInput = z.infer<typeof adminResetPasswordSchema>;
 
-const optionalDate = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional();
+/** Accepts a plain "YYYY-MM-DD" (the normal case — every date `<input>` in the app produces this),
+ * but also self-heals a couple of shapes that have broken a whole Child Card save in the past: a
+ * full ISO timestamp like "2015-06-01T00:00:00.000Z" (the DATE-column-as-Date-object bug fixed in
+ * db.ts's type parser — kept here too as defense in depth, since any other write path that isn't
+ * covered by that parser would otherwise still hard-fail the entire form), and blank/whitespace
+ * (treated as "leave unset", matching every other optional field). Anything else fails with a
+ * message naming the field, instead of Zod's bare "Invalid", so a bad value is diagnosable instead
+ * of just blocking the save with no clue which field caused it. */
+const optionalDate = z
+  .string()
+  .nullable()
+  .optional()
+  .transform((val) => {
+    if (val === undefined) return undefined;
+    if (val === null) return null;
+    const trimmed = val.trim();
+    if (trimmed === '') return null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+    const isoMatch = trimmed.match(/^(\d{4}-\d{2}-\d{2})T/);
+    return isoMatch ? isoMatch[1] : trimmed;
+  })
+  .refine((val) => val === null || val === undefined || /^\d{4}-\d{2}-\d{2}$/.test(val), {
+    message: 'must be a valid date (YYYY-MM-DD)',
+  });
 const optionalStr = z.string().trim().max(2000).nullable().optional();
 
 /** The ONLY schema that can move a card between board columns — used exclusively by
