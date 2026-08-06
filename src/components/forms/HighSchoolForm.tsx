@@ -19,17 +19,19 @@ export default function HighSchoolForm({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [childName, setChildName] = useState('');
   const [message, setMessage] = useState(defaultMessage ?? '');
   const messageTooLong = countWords(message) > MAX_MESSAGE_WORDS;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (messageTooLong) return;
-    const result = await submit({ name, email, phone, message });
+    const result = await submit({ name, email, phone, childName, message });
     if (result) {
       setName('');
       setEmail('');
       setPhone('');
+      setChildName('');
       setMessage(defaultMessage ?? '');
     }
   }
@@ -54,9 +56,14 @@ export default function HighSchoolForm({
         </Field>
       </div>
       {!compact && (
-        <Field label="Phone (optional)" htmlFor="hs-phone">
-          <TextInput id="hs-phone" name="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-        </Field>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field label="Phone (optional)" htmlFor="hs-phone">
+            <TextInput id="hs-phone" name="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          </Field>
+          <Field label="Child's name (optional)" htmlFor="hs-child-name">
+            <TextInput id="hs-child-name" name="childName" value={childName} onChange={(e) => setChildName(e.target.value)} />
+          </Field>
+        </div>
       )}
       <Field label="Message" htmlFor="hs-message" required>
         <TextArea

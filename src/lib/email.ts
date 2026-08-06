@@ -700,6 +700,33 @@ export async function sendLetterOfOfferAcceptedConfirmation(toEmail: string, chi
   return send(toEmail, `Thanks for accepting — ${childFullName} — Selong Bay School`, html, { cc: NOTIFY_TO });
 }
 
+export interface WelcomeLetterEmailInput {
+  toEmail: string;
+  childFullName: string;
+  pdfBuffer: Buffer;
+}
+
+/** Sent automatically by the welcome-letters cron 3 days before a child's enrolment_date (or
+ * manually, from the "Welcome Letter" action on the Child Card) — cc'd to the school inbox, same
+ * pattern as every other outbound document email in this app. The PDF has the full details (what
+ * to bring, schedule, contacts); the email body itself is a short heads-up. */
+export async function sendWelcomeLetterEmail(input: WelcomeLetterEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    'Welcome to Selong Bay School',
+    `<p>Dear parent/guardian of ${input.childFullName},</p>
+     <p>${input.childFullName}'s first day at Selong Bay School is coming up soon! Please find attached a welcome
+       letter covering what to bring, the daily schedule, and who to contact if you need us.</p>
+     <p style="margin-top: 16px;">Before the first day, please also confirm ${input.childFullName}'s lunch
+       selection via the parent portal, and remember to log in each day to check them in and out at drop-off
+       and pick-up.</p>
+     <p style="margin-top: 24px;">We're looking forward to meeting you!<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `Welcome to Selong Bay School — ${input.childFullName}`, html, {
+    cc: NOTIFY_TO,
+    attachment: [{ name: `welcome-letter-${input.childFullName.replace(/[^a-z0-9]+/gi, '-')}.pdf`, content: input.pdfBuffer.toString('base64') }],
+  });
+}
+
 export interface OffboardingLetterEmailInput {
   toEmail: string;
   childFullName: string;

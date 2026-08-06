@@ -1,6 +1,9 @@
 import { ensureSchema, sql } from './db';
-import { sendEnquiryAutoReply, sendEnquiryNotification, type EnquiryEmailInput, type EnquiryType } from './email';
+import { sendEnquiryAutoReply, sendEnquiryNotification, sendMeetingScheduleEmail, type EnquiryEmailInput, type EnquiryType } from './email';
 import { findOrCreateFamilyForContact, logFamilyActivity } from './family-matching';
+import { createMeetingInvite } from './meeting-scheduling';
+import { isCalendarConnected } from './google-calendar';
+import { siteConfig } from './site-content';
 
 export interface EnquiryRecord {
   type: EnquiryType;
@@ -45,16 +48,17 @@ export async function submitEnquiry(record: EnquiryRecord): Promise<SubmitResult
   // the school" contact-form message with no child name isn't a family to track yet. Linking
   // failure is logged and swallowed rather than thrown, so a Family Board hiccup never stops the
   // enquiry itself from being saved and emailed.
+  let linkedChildId: number | null = null;
   if (record.childName) {
     try {
-      const childId = await findOrCreateFamilyForContact({
+      linkedChildId = await findOrCreateFamilyForContact({
         parentName: record.name,
         parentEmail: record.email,
         parentPhone: record.phone,
         childName: record.childName,
       });
       await logFamilyActivity(
-        childId,
+        linkedChildId,
         'current_enrolment_enquiry',
         'enquiries',
         id,
@@ -62,6 +66,34 @@ export async function submitEnquiry(record: EnquiryRecord): Promise<SubmitResult
       );
     } catch (err) {
       console.error('[enquiries] family linking failed (enquiry itself still saved)', { id, err });
+    }
+  }
+
+  // Automatically invites the enquirer to book a meeting the moment any enquiry naming a child
+  // lands — same meeting_invites/Google Calendar flow as the Student Enrolment Form's automatic
+  // invite (see submitEnrolment in enrolments.ts) and the manual "Schedule a meeting" button on a
+  // Letter of Offer. Only fires once there's a child card to attach the invite to (meeting_invites.
+  // child_id is required), so a general contact-form message naming no specific child doesn't get
+  // one — there's nothing yet to schedule a meeting about. Silently skipped if Google Calendar
+  // isn't connected, or if anything here fails — a nice-to-have on top of the enquiry, never a
+  // reason to block it.
+  if (linkedChildId) {
+    try {
+      if (await isCalendarConnected()) {
+        const { token } = await createMeetingInvite({
+          childId: linkedChildId,
+          letterOfOfferId: null,
+          parentEmail: record.email,
+        });
+        const scheduleUrl = new URL(`/schedule-meeting/${token}`, siteConfig.url).toString();
+        await sendMeetingScheduleEmail({
+          toEmail: record.email,
+          childFullName: record.childName!,
+          scheduleUrl,
+        });
+      }
+    } catch (err) {
+      console.error('[enquiries] automatic meeting invite failed (enquiry itself still saved)', { id, err });
     }
   }
 

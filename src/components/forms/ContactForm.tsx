@@ -13,17 +13,19 @@ export default function ContactForm() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [childName, setChildName] = useState('');
   const [message, setMessage] = useState('');
   const messageTooLong = countWords(message) > MAX_MESSAGE_WORDS;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (messageTooLong) return;
-    const result = await submit({ name, email, phone, message });
+    const result = await submit({ name, email, phone, childName, message });
     if (result) {
       setName('');
       setEmail('');
       setPhone('');
+      setChildName('');
       setMessage('');
     }
   }
@@ -42,9 +44,14 @@ export default function ContactForm() {
           <TextInput id="contact-email" name="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
         </Field>
       </div>
-      <Field label="Phone (optional)" htmlFor="contact-phone">
-        <TextInput id="contact-phone" name="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-      </Field>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Phone (optional)" htmlFor="contact-phone">
+          <TextInput id="contact-phone" name="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+        </Field>
+        <Field label="Child's name (optional)" htmlFor="contact-child-name">
+          <TextInput id="contact-child-name" name="childName" value={childName} onChange={(e) => setChildName(e.target.value)} placeholder="If your message is about a specific child" />
+        </Field>
+      </div>
       <Field label="Message" htmlFor="contact-message" required>
         <TextArea
           id="contact-message"

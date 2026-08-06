@@ -26,7 +26,7 @@ Set these in Vercel (Project Settings → Environment Variables) and in a local 
 | `ADMIN_SESSION_SECRET` | Yes | Secret used to encrypt the admin session cookie (via iron-session). Set a long random value; any length works, it's hashed internally to fit iron-session's minimum. |
 | `BLOB_READ_WRITE_TOKEN` | For activity photo uploads | Set automatically when you add the Vercel Blob integration to this project (Storage tab → Create Database → Blob). Without it, activity photo uploads in `/admin/activities` will fail; everything else still works. |
 | `NEXT_PUBLIC_SNAPWIDGET_ID` | No | Widget ID from [snapwidget.com](https://snapwidget.com) for the homepage's live Instagram grid. Until set, the site shows a "follow us" fallback card instead. |
-| `CRON_SECRET` | Yes (for the daily passes job) | Any long random string. Vercel automatically sends it as `Authorization: Bearer <value>` when it triggers `/api/cron/passes` (see `vercel.json`); the route rejects any request whose header doesn't match, so without this set the cron job can never run instead of running unauthenticated. |
+| `CRON_SECRET` | Yes (for the daily cron jobs) | Any long random string. Vercel automatically sends it as `Authorization: Bearer <value>` when it triggers `/api/cron/passes` and `/api/cron/welcome-letters` (see `vercel.json`); each route rejects any request whose header doesn't match, so without this set neither cron job can run instead of running unauthenticated. |
 
 ## Local development
 
@@ -400,6 +400,46 @@ dynamic segment shared between the Pages and App routers at the same URL depth, 
 lives at `/api/letters-of-offer/accept/[token]` (token nested one level deeper under a static
 `accept` segment) rather than `/api/letters-of-offer/[token]/accept`, to keep the two `[id]`/`[token]`
 segments at different depths instead of colliding.
+
+### Welcome Letter: auto-sent 3 days before a child's first day
+
+A "Welcome Letter" section on the Child Card, between Letter of Offer and Off-boarding Letter —
+one PDF per child (`welcome_letters` table, `child_id` UNIQUE) covering what to bring on the first
+day (hat, sunblock, drink bottle, own stationery, shoes, swimming clothes for water-based-activity
+days, morning/afternoon tea snacks), the daily schedule (drop-off 8:30am, lunch 12:00–1:30pm,
+pick-up 3:30pm), and key contacts (the school WhatsApp number for both Ms Indhira and Mariya) —
+plus reminders to confirm the lunch selection and to use the parent portal for daily check-in/out.
+Edit the times/contacts/what-to-bring list directly in `src/lib/pdf/WelcomeLetterDocument.tsx` if
+they ever change.
+
+- **Automatic send**: `/api/cron/welcome-letters` (Pages Router — renders a PDF, same reasoning as
+  the Letter of Offer PDF routes below — scheduled daily at 01:00 UTC in `vercel.json`, reuses
+  `CRON_SECRET`) finds every active child whose `enrolment_date` is exactly 3 days away
+  (`WELCOME_LETTER_DAYS_BEFORE` in `src/lib/welcome-letters.ts`) with no welcome letter sent yet,
+  emails the PDF, and records the send.
+- **Manual override**: "Send now" on the Child Card (`/api/admin/welcome-letters/send`,
+  admin-only) sends immediately regardless of the enrolment date — useful for a late enrolment
+  inside the 3-day window, or to re-send. `child_id` being UNIQUE means a manual send after the
+  cron already ran just updates the existing record rather than erroring.
+
+### Enquiries feed the same meeting-scheduling + Family Board pipeline as the Enrolment Form
+
+- **Contact and High School enquiry forms** now have an optional "Child's name" field (Admissions
+  already had a required one). Whenever an enquiry names a child, it's linked to a Family Board
+  card exactly like an admissions/enrolment submission (`findOrCreateFamilyForContact`) — a general
+  enquiry naming no child still isn't tracked as a family, unchanged from before.
+- **Automatic "Schedule a meeting" email**: any enquiry (not just enrolment) that ends up linked to
+  a child now also triggers the same automatic meeting invite the Enrolment Form has sent since
+  Phase 6 — same `meeting_invites`/Google Calendar flow, silently skipped if Google Calendar isn't
+  connected. In effect, the "book a meeting" link is now available from every enquiry channel that
+  names a specific child, not just the dedicated Enrolment Form.
+- **Enrolment Form fully populates the Child Card**: `populateChildFromEnrolment()`
+  (`src/lib/child-lifecycle.ts`) now writes every field the Student Enrolment Form collects that
+  has a home on the `children` record (DOB, start date, emergency contact, lunch option, KITAS/visa
+  status, allergies, parent contact details, etc.) onto the newly linked or matched card
+  immediately, so nobody has to re-type what a parent just submitted. Fields with no direct column
+  (passport number/expiry, shuttle service, planned length of enrolment) are rolled into
+  `admissions_notes` instead, the same pattern already used for admissions-pipeline leads.
 
 ### Forms & Compliance: clickable documents, e-signature, send to parent
 

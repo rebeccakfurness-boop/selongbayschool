@@ -26,6 +26,7 @@ export const contactSchema = z.object({
   name,
   email,
   phone: z.string().trim().max(50).optional().or(z.literal('')),
+  childName: z.string().trim().max(200).optional().or(z.literal('')),
   message: z
     .string()
     .trim()
@@ -50,6 +51,7 @@ export const highSchoolSchema = z.object({
   name,
   email,
   phone: z.string().trim().max(50).optional().or(z.literal('')),
+  childName: z.string().trim().max(200).optional().or(z.literal('')),
   message: optionalText.refine((value) => !value || wordCount(value) <= MAX_MESSAGE_WORDS, maxWords),
 });
 export type HighSchoolInput = z.infer<typeof highSchoolSchema>;
@@ -404,6 +406,14 @@ export const scheduleMeetingSchema = z.object({
  * since there's no per-family content to draft/edit first: the letter is fixed copy plus the exit
  * survey link. */
 export const sendOffboardingLetterSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+});
+
+/** Manual "Send now" override on the Child Card — same create-or-resend semantics as the cron job
+ * (see recordWelcomeLetterSent in welcome-letters.ts), just triggered by an admin instead of the
+ * schedule. */
+export const sendWelcomeLetterSchema = z.object({
   childId: z.coerce.number().int().positive(),
   email: z.string().trim().toLowerCase().email('Enter a valid email address'),
 });

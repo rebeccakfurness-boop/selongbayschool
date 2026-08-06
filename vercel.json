@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/passes",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/welcome-letters",
+      "schedule": "0 1 * * *"
     }
   ]
 }

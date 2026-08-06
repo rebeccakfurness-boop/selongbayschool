@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 10;
+const SCHEMA_VERSION = 11;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1118,6 +1118,22 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_offboarding_letters_child ON offboarding_letters (child_id)`;
+
+      // One per child, sent automatically by the welcome-letters cron 3 days before enrolment_date
+      // (or manually, from the "Welcome Letter" action on the Child Card next to Letter of Offer).
+      // UNIQUE on child_id makes the cron's "who's due" query naturally idempotent: a child already
+      // has a row here means it's already been sent, so a re-run of the cron on the same day (or a
+      // manual send afterwards) can't double-send. sent_by distinguishes an automatic cron send from
+      // an admin's manual override, for display on the Child Card only.
+      await sql`
+        CREATE TABLE IF NOT EXISTS welcome_letters (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL UNIQUE REFERENCES children(id) ON DELETE CASCADE,
+          sent_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          sent_by TEXT NOT NULL DEFAULT 'auto' CHECK (sent_by IN ('auto', 'admin')),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

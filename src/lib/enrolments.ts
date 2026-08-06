@@ -1,6 +1,7 @@
 import { ensureSchema, sql } from './db';
 import { sendEnrolmentAutoReply, sendEnrolmentNotification, sendMeetingScheduleEmail, type EnrolmentEmailInput } from './email';
 import { findOrCreateFamilyForContact, logFamilyActivity } from './family-matching';
+import { populateChildFromEnrolment } from './child-lifecycle';
 import { createMeetingInvite } from './meeting-scheduling';
 import { isCalendarConnected } from './google-calendar';
 import { siteConfig } from './site-content';
@@ -41,7 +42,10 @@ export async function submitEnrolment(record: EnrolmentInput): Promise<SubmitEnr
 
   // Unlike the enquiry forms, every enrolment submission names a specific child, so this always
   // runs. Linking failure is logged and swallowed rather than thrown, so a Family Board hiccup
-  // never stops the enrolment itself from being saved and emailed.
+  // never stops the enrolment itself from being saved and emailed. Once the card exists (new or
+  // matched to an existing enquiry), every field the form collects that has a home on the Child
+  // Card is populated onto it immediately — see populateChildFromEnrolment — so nobody has to
+  // retype what the parent just submitted.
   let linkedChildId: number | null = null;
   try {
     linkedChildId = await findOrCreateFamilyForContact({
@@ -51,6 +55,7 @@ export async function submitEnrolment(record: EnrolmentInput): Promise<SubmitEnr
       childName: record.studentName,
     });
     await logFamilyActivity(linkedChildId, 'new_student_enrolment_form', 'enrolment_submissions', id);
+    await populateChildFromEnrolment(linkedChildId, record, id);
   } catch (err) {
     console.error('[enrolments] family linking failed (enrolment itself still saved)', { id, err });
   }

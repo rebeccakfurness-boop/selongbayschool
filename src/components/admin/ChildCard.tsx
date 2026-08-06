@@ -13,12 +13,14 @@ import ChildPhotoFeedSection, { type PhotoFeedItem } from '@/components/admin/Ch
 import GuardianLinksSection, { type GuardianLink } from '@/components/admin/GuardianLinksSection';
 import InvoicesSection from '@/components/admin/InvoicesSection';
 import LetterOfOfferSection from '@/components/admin/LetterOfOfferSection';
+import WelcomeLetterSection from '@/components/admin/WelcomeLetterSection';
 import OffboardingLetterSection from '@/components/admin/OffboardingLetterSection';
 import ClassroomSection from '@/components/admin/ClassroomSection';
 import AttendanceSection from '@/components/admin/AttendanceSection';
 import ComplianceFormModal from '@/components/admin/ComplianceFormModal';
 import type { InvoiceSummaryRow, ClassroomSubmissionRow } from '@/lib/lms-data';
 import type { LetterOfOfferSummaryRow } from '@/lib/letters-of-offer';
+import type { WelcomeLetterSummaryRow } from '@/lib/welcome-letters';
 import type { OffboardingLetterSummaryRow } from '@/lib/offboarding';
 import type { MeetingInviteSummaryRow } from '@/lib/meeting-scheduling';
 import { formatDate } from '@/lib/admin-format';
@@ -181,6 +183,7 @@ export default function ChildCard({
   guardians,
   invoices,
   letters,
+  welcomeLetter,
   offboardingLetters,
   meetingInvites,
   classroomSubmissions,
@@ -193,6 +196,7 @@ export default function ChildCard({
   guardians: GuardianLink[];
   invoices: InvoiceSummaryRow[];
   letters: LetterOfOfferSummaryRow[];
+  welcomeLetter: WelcomeLetterSummaryRow | null;
   offboardingLetters: OffboardingLetterSummaryRow[];
   meetingInvites: MeetingInviteSummaryRow[];
   classroomSubmissions: ClassroomSubmissionRow[];
@@ -410,6 +414,13 @@ export default function ChildCard({
               defaultEmail={child.primary_contact_email ?? ''}
               hasInvoices={invoices.length > 0}
               meetingInvites={meetingInvites}
+            />
+
+            <WelcomeLetterSection
+              childId={child.id}
+              letter={welcomeLetter}
+              canEdit={canEdit}
+              defaultEmail={child.primary_contact_email ?? ''}
             />
 
             <OffboardingLetterSection
