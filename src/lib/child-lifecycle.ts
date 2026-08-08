@@ -106,7 +106,7 @@ const KITAS_STATUS_LABELS: Record<string, string> = {
 
 const LUNCH_OPTION_LABELS: Record<string, string> = {
   bring_own: 'Bringing own lunch',
-  godspeed: 'Godspeed order',
+  godspeed: 'Direct lunch order',
 };
 
 /** Rolls up everything from a Student Enrolment Form submission that has no direct `children`

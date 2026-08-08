@@ -130,7 +130,7 @@ export default function ParentChildProfileCard({ child }: { child: GuardianChild
             <TextInput id="loo-dietary" value={form.dietaryRequirements} onChange={(e) => set('dietaryRequirements', e.target.value)} />
           </Field>
           <Field label="Lunch choice" htmlFor="loo-lunch">
-            <TextInput id="loo-lunch" value={form.lunchOption} onChange={(e) => set('lunchOption', e.target.value)} placeholder="e.g. Bring own, Godspeed order" />
+            <TextInput id="loo-lunch" value={form.lunchOption} onChange={(e) => set('lunchOption', e.target.value)} placeholder="e.g. Bring own, Direct order" />
           </Field>
         </div>
         <div className="mt-4">

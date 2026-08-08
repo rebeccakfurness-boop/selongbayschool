@@ -186,7 +186,7 @@ export const kitasStatusLabels: Record<KitasStatus, string> = {
 
 export const lunchOptionLabels: Record<LunchOption, string> = {
   bring_own: 'Bringing their own lunch',
-  godspeed: 'Godspeed direct order',
+  godspeed: 'Direct lunch order',
   other: 'Other',
 };
 

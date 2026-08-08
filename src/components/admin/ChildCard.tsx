@@ -669,7 +669,7 @@ export default function ChildCard({
               <TextInput id="edit-dietary" value={form.dietaryRequirements} onChange={(e) => set('dietaryRequirements', e.target.value)} />
             </Field>
             <Field label="Lunch choice" htmlFor="edit-lunch-option">
-              <TextInput id="edit-lunch-option" value={form.lunchOption} onChange={(e) => set('lunchOption', e.target.value)} placeholder="e.g. Bring own, Godspeed order" />
+              <TextInput id="edit-lunch-option" value={form.lunchOption} onChange={(e) => set('lunchOption', e.target.value)} placeholder="e.g. Bring own, Direct order" />
             </Field>
             <div className="sm:col-span-2 lg:col-span-3">
               <Field label="Allergies / medical notes" htmlFor="edit-allergies">

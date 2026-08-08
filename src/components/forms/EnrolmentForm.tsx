@@ -277,7 +277,7 @@ export default function EnrolmentForm() {
         <Field label="Lunch option" htmlFor="enr-lunch-bring-own" required>
           <div className="flex flex-col gap-2 sm:flex-row sm:gap-6">
             <RadioOption name="lunchOption" value="bring_own" label="Bring own lunch" checked={lunchOption === 'bring_own'} onChange={setLunchOption} />
-            <RadioOption name="lunchOption" value="godspeed" label="Godspeed direct order" checked={lunchOption === 'godspeed'} onChange={setLunchOption} />
+            <RadioOption name="lunchOption" value="godspeed" label="Direct lunch order" checked={lunchOption === 'godspeed'} onChange={setLunchOption} />
             <RadioOption name="lunchOption" value="other" label="Other" checked={lunchOption === 'other'} onChange={setLunchOption} />
           </div>
         </Field>
