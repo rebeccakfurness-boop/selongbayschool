@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 12;
+const SCHEMA_VERSION = 13;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1155,6 +1155,103 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_class_schedule_class ON class_schedule (class_name)`;
+
+      // --- Budget Tracker (Principal + admin only, gated separately — see budgetUnlocked on the
+      // admin session in src/lib/auth.ts) ---
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS budget_categories (
+          id BIGSERIAL PRIMARY KEY,
+          name TEXT NOT NULL UNIQUE,
+          monthly_budget_idr BIGINT NOT NULL DEFAULT 0,
+          is_archived BOOLEAN NOT NULL DEFAULT false,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      // One row per manual budget change — old/new value and who/when — so an edited figure
+      // reads as a deliberate, attributed decision rather than a number that silently drifted.
+      await sql`
+        CREATE TABLE IF NOT EXISTS budget_category_history (
+          id BIGSERIAL PRIMARY KEY,
+          category_id BIGINT NOT NULL REFERENCES budget_categories(id) ON DELETE CASCADE,
+          changed_by BIGINT REFERENCES admin_users(id),
+          old_value_idr BIGINT NOT NULL,
+          new_value_idr BIGINT NOT NULL,
+          changed_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_budget_category_history_category ON budget_category_history (category_id)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS budget_revenue (
+          id BIGSERIAL PRIMARY KEY,
+          entry_date DATE NOT NULL,
+          amount_idr BIGINT NOT NULL,
+          payer_source TEXT NOT NULL,
+          description TEXT,
+          payment_method TEXT NOT NULL CHECK (payment_method IN ('bank_transfer', 'cash')),
+          receipt_url TEXT,
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_budget_revenue_date ON budget_revenue (entry_date)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS budget_expenses (
+          id BIGSERIAL PRIMARY KEY,
+          entry_date DATE NOT NULL,
+          amount_idr BIGINT NOT NULL,
+          category_id BIGINT NOT NULL REFERENCES budget_categories(id),
+          vendor_description TEXT NOT NULL,
+          authorized_by TEXT NOT NULL,
+          receipt_url TEXT,
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_budget_expenses_date ON budget_expenses (entry_date)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_budget_expenses_category ON budget_expenses (category_id)`;
+
+      // Starting categories/figures confirmed with the school (2026-08-08): pulled from the real
+      // "Monthly P&L" tab of the accounting workbook the school provided (recent-month actuals,
+      // Management Fee excluded per the school's own note that it was a one-off pre-Yayasan-account
+      // reimbursement, not a recurring category), plus Events and Teacher Hires as new categories
+      // with no history yet (start at 0). ON CONFLICT DO NOTHING so this never overwrites a figure
+      // the school has since edited themselves.
+      await sql`
+        INSERT INTO budget_categories (name, monthly_budget_idr, sort_order) VALUES
+          ('Staff Salaries & Wages', 69000000, 1),
+          ('School Supplies & Equipment', 5600000, 2),
+          ('Food, Catering & Staff Welfare', 6600000, 3),
+          ('Facilities, Fit-out & Term Setup Costs', 2700000, 4),
+          ('Marketing, Software & Subscriptions', 3300000, 5),
+          ('Transport', 600000, 6),
+          ('Bank Fees & Charges', 100000, 7),
+          ('Events', 0, 8),
+          ('Teacher Hires', 0, 9)
+        ON CONFLICT (name) DO NOTHING
+      `;
+
+      // Singleton (id always 1). term_start/end_date and opening_cash give the dashboard's "current
+      // term" and "cash on hand" figures something real to compute against rather than guessing at
+      // term boundaries — both editable from Budget Setup. Seeded from the accounting workbook's own
+      // "Cash Flow Forecast" tab (labelled "Aug to Dec 2026 (Next Term)") and "Cash Position" tab
+      // (total known school cash as of Jul-26: Rp 125,496,169.94, rounded down to the nearest rupiah).
+      await sql`
+        CREATE TABLE IF NOT EXISTS budget_settings (
+          id INTEGER PRIMARY KEY DEFAULT 1,
+          term_label TEXT NOT NULL DEFAULT 'Term 3, 2026',
+          term_start_date DATE NOT NULL DEFAULT '2026-08-01',
+          term_end_date DATE NOT NULL DEFAULT '2026-12-31',
+          opening_cash_idr BIGINT NOT NULL DEFAULT 125496169,
+          opening_cash_as_of DATE NOT NULL DEFAULT '2026-07-31',
+          CONSTRAINT budget_settings_singleton CHECK (id = 1)
+        )
+      `;
+      await sql`INSERT INTO budget_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

@@ -663,4 +663,46 @@ export type ReviewGuardianRequestInput = z.infer<typeof reviewGuardianRequestSch
 export const adminAttendanceCorrectionSchema = attendanceCheckBase.omit({ childId: true }).extend({
   occurredAt: z.string().trim().min(1, 'Enter a date and time'),
 });
+
+// --- Budget Tracker ---
+
+export const logRevenueSchema = z.object({
+  entryDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date'),
+  amountIdr: z.coerce.number().int('Whole rupiah only').positive('Enter an amount greater than 0'),
+  payerSource: z.string().trim().min(1, 'Enter who this is from').max(300),
+  description: optionalStr,
+  paymentMethod: z.enum(['bank_transfer', 'cash'], { message: 'Choose a payment method' }),
+  receiptUrl: z.string().trim().url().nullable().optional(),
+});
+export type LogRevenueInput = z.infer<typeof logRevenueSchema>;
+
+export const logExpenseSchema = z.object({
+  entryDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date'),
+  amountIdr: z.coerce.number().int('Whole rupiah only').positive('Enter an amount greater than 0'),
+  categoryId: z.coerce.number().int().positive('Choose a category'),
+  vendorDescription: z.string().trim().min(1, 'Enter a vendor or description').max(300),
+  authorizedBy: z.string().trim().min(1, 'Enter who authorized or made this purchase').max(200),
+  receiptUrl: z.string().trim().url().nullable().optional(),
+});
+export type LogExpenseInput = z.infer<typeof logExpenseSchema>;
+
+export const createBudgetCategorySchema = z.object({
+  name: z.string().trim().min(1, 'Enter a category name').max(200),
+  monthlyBudgetIdr: z.coerce.number().int().min(0, 'Enter 0 or more').default(0),
+});
+export type CreateBudgetCategoryInput = z.infer<typeof createBudgetCategorySchema>;
+
+export const updateBudgetCategorySchema = z.object({
+  monthlyBudgetIdr: z.coerce.number().int().min(0, 'Enter 0 or more'),
+});
+export type UpdateBudgetCategoryInput = z.infer<typeof updateBudgetCategorySchema>;
+
+export const updateBudgetSettingsSchema = z.object({
+  termLabel: z.string().trim().min(1, 'Enter a term label').max(100),
+  termStartDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date'),
+  termEndDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date'),
+  openingCashIdr: z.coerce.number().int().min(0, 'Enter 0 or more'),
+  openingCashAsOf: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date'),
+});
+export type UpdateBudgetSettingsInput = z.infer<typeof updateBudgetSettingsSchema>;
 export type AdminAttendanceCorrectionInput = z.infer<typeof adminAttendanceCorrectionSchema>;

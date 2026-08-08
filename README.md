@@ -24,9 +24,10 @@ Set these in Vercel (Project Settings → Environment Variables) and in a local 
 | `DATABASE_URL` | Yes | Postgres connection string. When you add the Vercel Postgres (Neon) integration, Vercel sets `POSTGRES_URL` automatically; either name works, `DATABASE_URL` is checked first. |
 | `BREVO_API_KEY` | Yes | API key from [Brevo](https://app.brevo.com/settings/keys/api). Without it, forms still save to the database but emails will fail (and the UI tells the user so). The sending address (`hello@selongbayschool.com`) is hardcoded in `src/lib/email.ts`, not an env var; verify that address as a sender in Brevo's dashboard before going live. |
 | `ADMIN_SESSION_SECRET` | Yes | Secret used to encrypt the admin session cookie (via iron-session). Set a long random value; any length works, it's hashed internally to fit iron-session's minimum. |
-| `BLOB_READ_WRITE_TOKEN` | For activity photo uploads | Set automatically when you add the Vercel Blob integration to this project (Storage tab → Create Database → Blob). Without it, activity photo uploads in `/admin/activities` will fail; everything else still works. |
+| `BLOB_READ_WRITE_TOKEN` | For photo uploads | Set automatically when you add the Vercel Blob integration to this project (Storage tab → Create Database → Blob). Without it, activity photo uploads in `/admin/activities` and receipt photo uploads in the Budget Tracker will fail; everything else still works. |
 | `NEXT_PUBLIC_SNAPWIDGET_ID` | No | Widget ID from [snapwidget.com](https://snapwidget.com) for the homepage's live Instagram grid. Until set, the site shows a "follow us" fallback card instead. |
 | `CRON_SECRET` | Yes (for the daily cron jobs) | Any long random string. Vercel automatically sends it as `Authorization: Bearer <value>` when it triggers `/api/cron/passes` and `/api/cron/welcome-letters` (see `vercel.json`); each route rejects any request whose header doesn't match, so without this set neither cron job can run instead of running unauthenticated. |
+| `BUDGET_TRACKER_PASSWORD` | Yes (for the Budget Tracker) | A separate shared password gating `/admin/budget` on top of the normal admin login — meant for the Principal specifically, not every admin account. Without it set, `/admin/budget` shows "not configured yet" instead of a working unlock screen. |
 
 ## Local development
 
@@ -400,6 +401,47 @@ dynamic segment shared between the Pages and App routers at the same URL depth, 
 lives at `/api/letters-of-offer/accept/[token]` (token nested one level deeper under a static
 `accept` segment) rather than `/api/letters-of-offer/[token]/accept`, to keep the two `[id]`/`[token]`
 segments at different depths instead of colliding.
+
+### Budget Tracker: real-time revenue/expense tracking against category budgets
+
+`/admin/budget` (Principal only — see the password gate below) — logs revenue and expenses in
+real time and shows exactly how much is left to spend per category, replacing the school's manual
+accounting spreadsheet rather than just mirroring it (every figure is editable).
+
+- **Categories & starting budgets** were confirmed with the school (2026-08-08) from the real
+  "Monthly P&L" tab of the accounting workbook they provided — recent-month actuals, rounded to
+  sensible monthly figures. "Management Fee (Owner Payment)" from the workbook was deliberately
+  left out per the school's own note that it was a one-off pre-Yayasan-account reimbursement, not
+  a recurring category. Events and Teacher Hires are new categories with no history, seeded at
+  Rp 0 — nothing here is invented. See the `budget_categories` seed insert in `src/lib/db.ts` for
+  the exact sourced figures and reasoning per category.
+- **Password gate** (`BUDGET_TRACKER_PASSWORD`, see Environment variables above): a second,
+  separate password on top of the normal admin login, gating every `/admin/budget/*` page
+  (`src/app/admin/(dashboard)/budget/layout.tsx`) *and* every budget API route
+  (`requireBudgetUnlocked()` in `src/lib/current-staff.ts`) — the school asked for this to be
+  Principal-only, not visible to every admin account, and enforcing it only at the page layout
+  would leave the underlying API routes reachable by any admin who knew the URLs. Sets
+  `budgetUnlocked` on the normal admin session (same 12-hour TTL); a "Lock" button clears just
+  that flag without ending the whole admin session.
+- **Dashboard**: one card per category (budgeted / spent this month / remaining, with a progress
+  bar — teal under 80%, amber 80–100%, red over budget), plus top-line revenue/expenses/net for
+  the current calendar month and the current term, and a cash-on-hand figure. "Current term" and
+  "cash on hand" both come from `budget_settings` (a singleton row, editable in Budget Setup) —
+  seeded from the workbook's own "Aug to Dec 2026 (Next Term)" framing and its real Jul-26 closing
+  cash balance, rather than a guessed date range. Cash on hand = that opening balance plus every
+  revenue/expense logged in the tracker since.
+- **Log Revenue / Log Expense**: date, amount, payer or category+vendor, payment method (revenue
+  only — bank transfer vs. cash) or who authorized it (expenses only), and a receipt/proof-of-payment
+  photo via `ReceiptUploadField` (shows a local thumbnail immediately from the picked file, before
+  the upload even finishes) uploaded to Vercel Blob — a failed photo upload never blocks saving the
+  entry itself, it just saves without one.
+- **Budget Setup**: inline-editable category budgets — every change is logged to
+  `budget_category_history` (old value, new value, who, when) before applying, so an adjusted
+  figure always reads as a deliberate, attributed decision rather than silent drift. Also where
+  new categories are added and old ones archived (soft-deleted, so historical expense entries keep
+  their category name intact).
+- **Transaction Log**: combined revenue + expenses, live search and type filter, receipt photos in
+  a lightbox — for reconciling against bank statements.
 
 ### Welcome Letter: auto-sent 3 days before a child's first day
 

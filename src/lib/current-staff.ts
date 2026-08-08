@@ -35,6 +35,19 @@ export async function requireAdmin(): Promise<CurrentStaff> {
   return staff;
 }
 
+/** Enforces both gates on the Budget Tracker's API routes (the page layout only stops the UI
+ * from rendering — an admin who knows the URL could otherwise still hit the API directly). Throws
+ * a plain Error('BUDGET_LOCKED') rather than redirecting, since a route handler returning JSON
+ * should give the client a real 403 to show, not a redirect fetch() would just follow silently. */
+export async function requireBudgetUnlocked(): Promise<CurrentStaff> {
+  const staff = await requireAdmin();
+  const session = await getIronSession<AdminSessionData>(await cookies(), await getSessionOptions());
+  if (!session.budgetUnlocked) {
+    throw new Error('BUDGET_LOCKED');
+  }
+  return staff;
+}
+
 export async function getAssignedClasses(adminUserId: number): Promise<string[]> {
   const rows = (await sql`
     SELECT class_name FROM teacher_assignments WHERE admin_user_id = ${adminUserId}

@@ -12,6 +12,10 @@ export interface AdminSessionData {
   adminUserId?: number;
   email?: string;
   role?: StaffRole;
+  /** Separate from role — the Budget Tracker is meant for the Principal only, not every admin
+   * account, so it's gated by its own shared password (BUDGET_TRACKER_PASSWORD) on top of the
+   * normal admin login rather than a new staff role. See /admin/budget's layout. */
+  budgetUnlocked?: boolean;
 }
 
 export interface CustomerSessionData {
