@@ -129,7 +129,7 @@ export const foundingFamilies = [
 
 export const charitableWork = {
   heading: 'Charitable Work',
-  body: 'As part of our not-for-profit, charitable commitment to the community of South Lombok, Selong Bay School runs the Serangan English School, a free programme where our team teaches English to the local Serangan village every Sunday morning. This is one of the ways we reinvest in the community that welcomes us.',
+  body: 'As part of our charitable commitment to the community of South Lombok, Selong Bay School runs the Serangan English School, a free programme where our team teaches English to the local Serangan village every Sunday morning. This is one of the ways we reinvest in the community that welcomes us.',
 };
 
 export const values = [
@@ -397,7 +397,7 @@ export const secondaryProgrammePdf = '/files/secondary-school-programme.pdf';
 export const ourApproach = {
   heading: 'A curriculum built for both worlds',
   paragraphs: [
-    "Selong Bay School operates under Yayasan Selong Bay Sekolah, a registered foundation. We are not for profit. We are for the children and the community of South Lombok. All funds are reinvested into the school's development, including scholarships, community programmes such as the Serangan English School, and training opportunities for local teachers and staff.",
+    "Selong Bay School operates under Yayasan Selong Bay Sekolah, a registered foundation, with all funds reinvested into the school's development, including scholarships, community programmes such as the Serangan English School, and training opportunities for local teachers and staff.",
     'Our curriculum blends Cambridge International Education with the Australian National Curriculum and our own Selong Bay approach: play-based in the Early Years, inquiry-based through Primary.',
   ],
 };

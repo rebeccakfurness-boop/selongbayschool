@@ -5,7 +5,12 @@ type CardAlign = 'left' | 'right' | 'center';
 export interface PhotoBannerImage {
   src: string;
   alt: string;
-  focalPosition?: 'center' | 'top' | 'bottom';
+  /** 'top'/'bottom' cover the common case. These banners run very wide and short (as little as
+   * 220px tall at 100vw), so for a tall portrait source where the subject sits well below the
+   * very top edge, plain 'top' can still crop into foreheads or show mostly background above
+   * them — pass an explicit vertical percentage (e.g. '18%') instead to target exactly where the
+   * subject is. */
+  focalPosition?: 'center' | 'top' | 'bottom' | `${number}%`;
 }
 
 export interface PhotoBannerCard {

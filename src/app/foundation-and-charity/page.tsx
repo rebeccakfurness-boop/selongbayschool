@@ -16,7 +16,11 @@ export default function FoundationAndCharityPage() {
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
       <PhotoBanner
         height="sm"
-        image={{ src: '/images/foundation-community-teaching.jpg', alt: 'Selong Bay School staff spending time with students and the local Serangan community' }}
+        image={{
+          src: '/images/foundation-community-teaching.jpg',
+          alt: 'Selong Bay School staff spending time with students and the local Serangan community',
+          focalPosition: '18%',
+        }}
         card={{ script: 'Not for profit', heading: 'Foundation & Charity', align: 'left' }}
       />
 
@@ -32,10 +36,10 @@ export default function FoundationAndCharityPage() {
               school&apos;s governance, finances, and long-term direction.
             </p>
             <p>
-              The foundation exists for one reason: to serve the children and the community of South Lombok. Selong Bay
-              School is not for profit. Every fee paid by families is reinvested directly into the school&apos;s development,
-              funding scholarships for local students, community programmes such as the Serangan English School, and ongoing
-              training for our local teachers and staff.
+              The foundation exists for one reason: to serve the children and the community of South Lombok. Every fee
+              paid by families is reinvested directly into the school&apos;s development, funding scholarships for local
+              students, community programmes such as the Serangan English School, and ongoing training for our local
+              teachers and staff.
             </p>
             <p>
               Yayasan Selong Bay Sekolah is guided by a dedicated foundation board who oversee its work, ensuring the school

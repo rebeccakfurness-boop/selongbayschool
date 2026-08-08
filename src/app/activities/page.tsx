@@ -140,7 +140,11 @@ export default async function ActivitiesPage() {
       <MaintenanceNotice />
       <PhotoBanner
         height="sm"
-        image={{ src: '/images/activities-surfboards.jpg', alt: 'Two students with surfboards giving shaka signs on the beach' }}
+        image={{
+          src: '/images/activities-surfboards.jpg',
+          alt: 'Two students with surfboards giving shaka signs on the beach',
+          focalPosition: '20%',
+        }}
         card={{ script: 'Open to everyone', heading: 'Activities', align: 'left' }}
       />
 

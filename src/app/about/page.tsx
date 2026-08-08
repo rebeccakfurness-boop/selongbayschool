@@ -35,8 +35,7 @@ export default function AboutPage() {
           >
             <p>
               Selong Bay School began with families who came to South Lombok for a season and stayed for the community.
-              Today it operates under Yayasan Selong Bay Intercultural Sekolah, a registered non-profit foundation. We are
-              not for profit, we are for the children and the community of South Lombok.
+              Today it operates under Yayasan Selong Bay Intercultural Sekolah, a registered non-profit foundation.
             </p>
             <p>
               Every fee is reinvested into the school&apos;s development: scholarships, community programmes, and training
