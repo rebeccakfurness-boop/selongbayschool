@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 13;
+const SCHEMA_VERSION = 14;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -244,6 +244,9 @@ export function ensureSchema(): Promise<void> {
       // re-enter it. Nullable: a brand new account has neither until then.
       await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS emergency_contact_name TEXT`;
       await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS emergency_contact_phone TEXT`;
+      // If email-change (for customers) or account suspension (for either table) is ever added,
+      // call revokeAllDeviceTokensForAccount() from src/lib/device-trust.ts at that point — a
+      // "remember this device" token should never outlive the identity it was issued for.
 
       await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS customer_id BIGINT REFERENCES customers(id)`;
       // Existing rows all predate customer accounts, so they default to true (guest bookings).
@@ -1252,6 +1255,47 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`INSERT INTO budget_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`;
+
+      // --- "Remember this device" (see src/lib/device-trust.ts) ---
+
+      // Polymorphic across the two passwordless-adjacent login types (parent magic-link,
+      // student username/password) rather than two near-identical tables — account_id means
+      // customers.id when account_type='customer', student_accounts.id when 'student'. No FK
+      // constraint is possible across two target tables, so device-trust.ts is the only code
+      // path allowed to write here; it always re-verifies the referenced account still exists
+      // on every read, which is also what makes a suspended/deleted account immediately stop
+      // a device token from working, not just a future flag we don't have yet.
+      // token_hash stores SHA-256(raw token) only — the raw token lives solely in the user's
+      // httpOnly cookie, never at rest here, so a database leak can't be replayed as a login.
+      await sql`
+        CREATE TABLE IF NOT EXISTS device_tokens (
+          id BIGSERIAL PRIMARY KEY,
+          account_type TEXT NOT NULL CHECK (account_type IN ('customer', 'student')),
+          account_id BIGINT NOT NULL,
+          token_hash TEXT NOT NULL UNIQUE,
+          device_label TEXT,
+          ip_address TEXT,
+          first_seen_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          last_used_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          expires_at TIMESTAMPTZ NOT NULL,
+          revoked_at TIMESTAMPTZ
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_device_tokens_account ON device_tokens (account_type, account_id)`;
+
+      // Generic sliding-window counter reused across every auth endpoint that needs throttling
+      // (device-token verification, magic-link requests, student password login — see
+      // checkRateLimit in device-trust.ts). One row per (scope, identifier); identifier is
+      // usually an IP address, sometimes IP+email for endpoints where enumeration matters too.
+      await sql`
+        CREATE TABLE IF NOT EXISTS auth_rate_limits (
+          scope TEXT NOT NULL,
+          identifier TEXT NOT NULL,
+          attempt_count INTEGER NOT NULL DEFAULT 1,
+          window_start TIMESTAMPTZ NOT NULL DEFAULT now(),
+          PRIMARY KEY (scope, identifier)
+        )
+      `;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

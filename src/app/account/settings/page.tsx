@@ -2,9 +2,11 @@ import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
 import { ensureSchema, sql } from '@/lib/db';
-import { getCustomerSessionOptions, type CustomerSessionData } from '@/lib/auth';
+import { getCustomerSessionOptions, CUSTOMER_DEVICE_COOKIE_NAME, type CustomerSessionData } from '@/lib/auth';
+import { listDeviceTokens, hashDeviceToken } from '@/lib/device-trust';
 import AccountNav from '@/components/account/AccountNav';
 import AccountSettingsForm from '@/components/account/AccountSettingsForm';
+import TrustedDevicesManager from '@/components/account/TrustedDevicesManager';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,6 +27,9 @@ export default async function AccountSettingsPage() {
   `) as unknown as CustomerRow[];
   const customer = rows[0];
 
+  const currentDeviceToken = (await cookies()).get(CUSTOMER_DEVICE_COOKIE_NAME)?.value;
+  const devices = await listDeviceTokens('customer', session.customerId, currentDeviceToken ? hashDeviceToken(currentDeviceToken) : null);
+
   return (
     <div className="min-h-screen bg-cream">
       <AccountNav active="/account/settings" />
@@ -43,6 +48,11 @@ export default async function AccountSettingsPage() {
             emergencyContactName={customer?.emergency_contact_name || ''}
             emergencyContactPhone={customer?.emergency_contact_phone || ''}
           />
+        </section>
+
+        <section className="mt-10">
+          <h2 className="font-display text-xl font-semibold text-ink">Trusted Devices</h2>
+          <TrustedDevicesManager devices={devices} />
         </section>
       </div>
     </div>

@@ -443,6 +443,57 @@ accounting spreadsheet rather than just mirroring it (every figure is editable).
 - **Transaction Log**: combined revenue + expenses, live search and type filter, receipt photos in
   a lightbox — for reconciling against bank statements.
 
+### "Remember this device" — parent and student login without the email/password round-trip
+
+Applies to both parent login (`/account/login`, magic-link — no password) and student login
+(`/student/login`, username/password — no email involved at all, since young children can't
+reliably check email). Automatic, not opt-in: every successful login trusts the browser it
+happened in, so the next visit can skip straight past the email link or password re-entry.
+
+- **How it works**: on login, a random 32-byte token is issued, its SHA-256 hash stored in
+  `device_tokens` (never the raw token), and the raw token set as a long-lived httpOnly + Secure +
+  SameSite=Lax cookie (`sbs_customer_device` / `sbs_student_device`) — 45 days, **rotated on every
+  use**, so an actively-used device effectively never expires while an abandoned one lapses 45
+  days after its last login. All of this logic lives in `src/lib/device-trust.ts`.
+- **Return visit**: `/account/login` and `/student/login` are Server Components that check for the
+  device cookie before rendering anything. If it's valid, instead of the normal form they show a
+  "Continue as [name]?" card (`src/components/account/ContinueAsCard.tsx`) — deliberately a
+  one-click confirmation, not a fully silent redirect. That's not a shortcut I took lightly: a
+  Server Component can't set cookies (only Route Handlers can), so the actual rotate-token/create-
+  session work always had to happen in a route the page links to either way — and showing *whose*
+  login it would continue as is what stops a shared family or classroom computer from silently
+  signing in as whoever last used it, when a different child or parent sits down next. "Not you?"
+  revokes the token outright and shows the normal form. Missing, expired, or revoked tokens fall
+  back to the normal form the same way, with no error shown — indistinguishable from a first-time
+  visit.
+- **Logging out forgets the device**: `/api/account/logout` and `/api/student/logout` both revoke
+  the device token and clear its cookie, not just end the session — so a shared or school computer
+  isn't left silently trusted after someone logs out.
+- **Managing trusted devices**: parents can see every remembered device (label, IP, first-seen,
+  last-used) and revoke individually, or "log out everywhere" (revokes all of them and ends the
+  current session too) from **Account Settings → Trusted Devices**
+  (`src/components/account/TrustedDevicesManager.tsx`). There's no equivalent student-facing page
+  today — if a parent reports a shared/school device they want forgotten for their child, the
+  fastest path right now is `UPDATE device_tokens SET revoked_at = now() WHERE account_type =
+  'student' AND account_id = <student_accounts.id> AND revoked_at IS NULL;`. The underlying
+  functions (`listDeviceTokens`, `revokeAllDeviceTokensForAccount`) already support a proper admin
+  UI for this — it just isn't wired up yet, since there's no existing admin surface for student
+  accounts at all to attach it to.
+- **What immediately invalidates a device token**: the referenced `customers` / `student_accounts`
+  row no longer existing (checked on every use — the closest thing this app has to "suspended,"
+  since neither table has a status flag today), explicit logout, "log out everywhere," or revoking
+  it individually. If email-change or account suspension are ever added, call
+  `revokeAllDeviceTokensForAccount()` at that point too — flagged with a comment next to the
+  `customers` table in `db.ts`.
+- **Rate limiting**: this also added the first rate limiting anywhere in the app — none existed
+  before, on any auth endpoint. `checkRateLimit()` in `device-trust.ts` is a generic sliding-window
+  counter (`auth_rate_limits` table) now applied to device-token redemption, the magic-link request
+  endpoint, and student password login. Every other admin/customer auth endpoint remains
+  unthrottled; expanding that is a separate follow-up if wanted.
+- **Audit trail**: `console.log('[device-trust] ...')` lines for `new_device_trusted`,
+  `device_login`, and `device_forgotten`, greppable in Vercel's logs if a parent reports
+  unexpected access.
+
 ### Welcome Letter: auto-sent 3 days before a child's first day
 
 A "Welcome Letter" section on the Child Card, between Letter of Offer and Off-boarding Letter —

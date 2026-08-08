@@ -5,6 +5,7 @@ import { customerLoginSchema } from '@/lib/validation';
 import { sendCustomerMagicLinkEmail } from '@/lib/email';
 import { sanitizeNextPath, MAGIC_LINK_TOKEN_TTL_MS } from '@/lib/auth';
 import { siteConfig } from '@/lib/site-content';
+import { checkRateLimit } from '@/lib/device-trust';
 
 const GENERIC_MESSAGE = "If that email has an account, we've sent a login link.";
 
@@ -28,7 +29,16 @@ export async function POST(req: NextRequest) {
 
   try {
     await ensureSchema();
-    const rows = await sql`SELECT id, name FROM customers WHERE email = ${email}`;
+
+    // This route had no throttling at all until now — nothing stopped either an email-bombing
+    // nuisance (repeatedly requesting a link for someone else's address) or a script hammering
+    // it to probe which addresses have accounts. Keyed on IP+email together, and rate-limited
+    // requests still return the same generic message below rather than a distinct error, so
+    // this can't be used to enumerate accounts either.
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || req.headers.get('x-real-ip') || 'unknown';
+    const rateLimit = await checkRateLimit('customer-magic-link', `${ip}:${email.toLowerCase()}`, { maxAttempts: 5, windowSeconds: 600 });
+
+    const rows = rateLimit.allowed ? await sql`SELECT id, name FROM customers WHERE email = ${email}` : [];
     const customer = rows[0];
 
     if (customer) {

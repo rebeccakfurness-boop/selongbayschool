@@ -1,89 +1,56 @@
-'use client';
-
-import Image from 'next/image';
-import Link from 'next/link';
-import { Suspense, useState, type FormEvent } from 'react';
-import { useSearchParams } from 'next/navigation';
-import Button from '@/components/Button';
-import { Field, TextInput } from '@/components/forms/FormField';
-import FormStatusBanner from '@/components/forms/FormStatusBanner';
+import { cookies } from 'next/headers';
+import { ensureSchema, sql } from '@/lib/db';
+import { CUSTOMER_DEVICE_COOKIE_NAME, sanitizeNextPath } from '@/lib/auth';
+import { peekDeviceToken } from '@/lib/device-trust';
 import MaintenanceNotice from '@/components/MaintenanceNotice';
-import { useFormSubmit } from '@/lib/useFormSubmit';
+import AccountLoginForm from '@/components/account/AccountLoginForm';
+import ContinueAsCard from '@/components/account/ContinueAsCard';
 
-const ERROR_MESSAGES: Record<string, string> = {
-  invalid: 'That login link is missing its token. Please request a new one below.',
-  expired: 'That login link has expired or was already used. Please request a new one below.',
-  server: 'Something went wrong verifying that link. Please request a new one below.',
-};
+export const dynamic = 'force-dynamic';
 
-function AccountLoginForm() {
-  const searchParams = useSearchParams();
-  const next = searchParams?.get('next') || '/account';
-  const linkError = searchParams?.get('error');
-  const [email, setEmail] = useState('');
-  const { status, errorMessage, submit } = useFormSubmit<{ ok: true; message: string }>('/api/account/login');
+/** Server Component: checks the device-trust cookie and, if it's valid, shows "Continue as
+ * [name]?" instead of the magic-link form. Deliberately a confirmation rather than a silent
+ * redirect — see peekDeviceToken's comment. Not a plain redirect for another reason too: a
+ * Server Component can only read cookies, not set them, so the actual login (which rotates the
+ * token and needs to set both a new device cookie and a session cookie) happens in the Route
+ * Handler the "Continue" button links to, not here. */
+export default async function AccountLoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string; error?: string }>;
+}) {
+  const { next: nextParam } = await searchParams;
+  const next = sanitizeNextPath(nextParam, '/account');
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    await submit({ email, next });
+  const deviceToken = (await cookies()).get(CUSTOMER_DEVICE_COOKIE_NAME)?.value;
+  let continueAsLabel: string | null = null;
+
+  if (deviceToken) {
+    await ensureSchema();
+    const peeked = await peekDeviceToken('customer', deviceToken);
+    if (peeked) {
+      const rows = await sql`SELECT name, email FROM customers WHERE id = ${peeked.accountId}`;
+      const customer = rows[0];
+      if (customer) {
+        continueAsLabel = (customer.name as string | null) || (customer.email as string);
+      }
+    }
   }
 
-  return (
-    <div className="w-full max-w-sm rounded-md border border-sand-line bg-paper p-8 shadow-soft">
-      <div className="mb-5 flex justify-center rounded-md bg-teal py-5">
-        <Image src="/images/logo-full.png" alt="Selong Bay School" width={378} height={299} className="h-20 w-auto" />
-      </div>
-      <h1 className="font-display text-2xl font-semibold text-ink">Log in</h1>
-      <p className="mt-1 text-sm text-ink-soft">We&apos;ll email you a link. No password needed.</p>
-
-      {linkError && status !== 'success' && (
-        <p className="mt-4 rounded-md border border-orange/30 bg-orange/10 px-4 py-3 text-sm font-semibold text-orange-deep">
-          {ERROR_MESSAGES[linkError] || ERROR_MESSAGES.server}
-        </p>
-      )}
-
-      {status === 'success' ? (
-        <div className="mt-6">
-          <FormStatusBanner status={status} successMessage="If that email has an account, we've sent a login link. It's valid for 30 minutes." />
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4" noValidate>
-          <Field label="Email" htmlFor="account-login-email" required>
-            <TextInput
-              id="account-login-email"
-              type="email"
-              required
-              autoFocus
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </Field>
-          {status === 'error' && <FormStatusBanner status={status} errorMessage={errorMessage} successMessage="" />}
-          <Button type="submit" variant="primary" disabled={status === 'submitting'} fullWidth>
-            {status === 'submitting' ? 'Sending…' : 'Email me a login link'}
-          </Button>
-        </form>
-      )}
-
-      <p className="mt-4 text-center text-sm">
-        Don&apos;t have an account?{' '}
-        <Link href={`/account/signup?next=${encodeURIComponent(next)}`} className="font-semibold text-teal-deep underline">
-          Sign up
-        </Link>
-      </p>
-    </div>
-  );
-}
-
-export default function AccountLoginPage() {
   return (
     <div className="flex min-h-screen flex-col bg-cream">
       <MaintenanceNotice />
       <div className="flex flex-1 items-center justify-center px-6 py-12">
-        <Suspense fallback={null}>
+        {continueAsLabel ? (
+          <ContinueAsCard
+            title="Welcome back"
+            label={continueAsLabel}
+            continueHref={`/api/account/device-login?next=${encodeURIComponent(next)}`}
+            forgetHref={`/api/account/device-login/forget?next=${encodeURIComponent(next)}`}
+          />
+        ) : (
           <AccountLoginForm />
-        </Suspense>
+        )}
       </div>
     </div>
   );

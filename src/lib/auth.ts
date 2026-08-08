@@ -1,10 +1,28 @@
 import type { SessionOptions } from 'iron-session';
+import { DEVICE_TOKEN_TTL_MS } from '@/lib/device-trust';
 
 export const ADMIN_COOKIE_NAME = 'sbs_admin_session';
 export const CUSTOMER_COOKIE_NAME = 'sbs_customer_session';
 export const STUDENT_COOKIE_NAME = 'sbs_student_session';
 export const RESET_TOKEN_TTL_MS = 1000 * 60 * 60; // 1 hour
 export const MAGIC_LINK_TOKEN_TTL_MS = 1000 * 60 * 30; // 30 minutes
+
+/** "Remember this device" cookies — deliberately plain (not iron-session). The value is a
+ * single high-entropy bearer token verified server-side against a hashed copy in device_tokens
+ * (see lib/device-trust.ts), so it needs secure transport, not encryption-at-rest-in-cookie: the
+ * token itself proves nothing on its own without the matching DB row. */
+export const CUSTOMER_DEVICE_COOKIE_NAME = 'sbs_customer_device';
+export const STUDENT_DEVICE_COOKIE_NAME = 'sbs_student_device';
+
+export function deviceCookieOptions() {
+  return {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax' as const,
+    path: '/',
+    maxAge: Math.floor(DEVICE_TOKEN_TTL_MS / 1000),
+  };
+}
 
 export type StaffRole = 'admin' | 'teacher';
 
