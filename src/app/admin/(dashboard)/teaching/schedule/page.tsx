@@ -3,6 +3,7 @@ import { getCurrentStaff, getAssignedClasses } from '@/lib/current-staff';
 import { getWeeklyScheduleForClasses, getWeeklyScheduleForClass, type ClassScheduleRow } from '@/lib/class-schedule';
 import TeachingTabs from '@/components/admin/TeachingTabs';
 import ScheduleManager, { type TeacherOption } from '@/components/admin/ScheduleManager';
+import ImportTimetableButton from '@/components/admin/ImportTimetableButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,6 +40,11 @@ export default async function ClassSchedulePage() {
         </div>
         <TeachingTabs active="schedule" />
       </div>
+      {staff.role === 'admin' && (
+        <div className="mt-6">
+          <ImportTimetableButton />
+        </div>
+      )}
       <div className="mt-6">
         <ScheduleManager initial={entries} classOptions={classOptions} teacherOptions={teacherOptions} />
       </div>

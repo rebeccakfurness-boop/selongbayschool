@@ -15,6 +15,15 @@ export const DAY_LABELS: Record<DayOfWeek, string> = {
   sunday: 'Sunday',
 };
 
+/** One row of a seed timetable (see class-schedule-seed.ts) — no id/class_name, since those are
+ * supplied by whatever is importing it (class_name is the seed data's object key). */
+export interface ClassScheduleSeedEntry {
+  dayOfWeek: DayOfWeek;
+  startTime: string;
+  endTime: string;
+  subject: string;
+}
+
 export interface ClassScheduleRow {
   id: number;
   class_name: string;
