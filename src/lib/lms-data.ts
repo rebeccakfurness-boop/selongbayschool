@@ -206,6 +206,7 @@ export interface ClassroomSubmissionRow {
   assignment_title: string;
   state: string;
   alternate_link: string | null;
+  google_student_email: string | null;
 }
 
 export async function getClassroomAssignmentsForClass(className: string | null, limit = 10): Promise<ClassroomAssignmentRow[]> {
@@ -221,7 +222,7 @@ export async function getClassroomAssignmentsForClass(className: string | null, 
 
 export async function getClassroomSubmissionsForChild(childId: number): Promise<ClassroomSubmissionRow[]> {
   return (await sql`
-    SELECT s.id, s.classroom_assignment_id, a.title AS assignment_title, s.state, s.alternate_link
+    SELECT s.id, s.classroom_assignment_id, a.title AS assignment_title, s.state, s.alternate_link, s.google_student_email
     FROM classroom_submissions s
     JOIN classroom_assignments a ON a.id = s.classroom_assignment_id
     WHERE s.child_id = ${childId}
