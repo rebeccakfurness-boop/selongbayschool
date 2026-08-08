@@ -36,6 +36,8 @@ export default function ClassroomManager({
   const [syncing, setSyncing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [syncResult, setSyncResult] = useState<string | null>(null);
+  const [savingCourseId, setSavingCourseId] = useState<string | null>(null);
+  const [mappingError, setMappingError] = useState<string | null>(null);
 
   async function loadCourses() {
     setLoadingCourses(true);
@@ -55,12 +57,22 @@ export default function ClassroomManager({
   async function saveMapping(course: Course) {
     const className = mappings[course.id];
     if (!className) return;
-    await fetch('/api/admin/classroom/mappings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ googleCourseId: course.id, googleCourseName: course.name, className }),
-    });
-    router.refresh();
+    setSavingCourseId(course.id);
+    setMappingError(null);
+    try {
+      const res = await fetch('/api/admin/classroom/mappings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ googleCourseId: course.id, googleCourseName: course.name, className }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Failed to save mapping');
+      router.refresh();
+    } catch (err) {
+      setMappingError(err instanceof Error ? err.message : 'Failed to save mapping');
+    } finally {
+      setSavingCourseId(null);
+    }
   }
 
   async function sync() {
@@ -126,6 +138,13 @@ export default function ClassroomManager({
           A course only syncs once it&apos;s mapped to one of the school&apos;s class names — course names in Google
           Classroom won&apos;t reliably match automatically.
         </p>
+        {classOptions.length === 0 && (
+          <p className="mt-2 text-xs font-semibold text-orange-deep">
+            No class names found yet — set a Class on at least one Child Card first, so there&apos;s something to map
+            a course to.
+          </p>
+        )}
+        {mappingError && <p className="mt-2 text-xs font-semibold text-orange-deep">{mappingError}</p>}
 
         {courses && (
           <div className="mt-4 flex flex-col gap-3">
@@ -149,10 +168,10 @@ export default function ClassroomManager({
                   <button
                     type="button"
                     onClick={() => saveMapping(course)}
-                    disabled={!mappings[course.id]}
+                    disabled={!mappings[course.id] || savingCourseId === course.id}
                     className="text-xs font-semibold text-teal-deep hover:underline disabled:opacity-40"
                   >
-                    Save
+                    {savingCourseId === course.id ? 'Saving…' : 'Save'}
                   </button>
                 </div>
               </div>
