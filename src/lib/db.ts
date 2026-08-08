@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 11;
+const SCHEMA_VERSION = 12;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1134,6 +1134,27 @@ export function ensureSchema(): Promise<void> {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
+
+      // The weekly timetable feeding the parent/student portal's "This week" schedule — separate
+      // from lesson_plans (which is per-week content, not a recurring time slot) and from
+      // classroom_assignments (Google Classroom coursework, no time-of-day). One row per recurring
+      // weekly slot; day_of_week as TEXT (not an int) so raw rows read clearly without a lookup
+      // table, ordered in queries via a CASE expression — see getWeeklyScheduleForClass.
+      await sql`
+        CREATE TABLE IF NOT EXISTS class_schedule (
+          id BIGSERIAL PRIMARY KEY,
+          class_name TEXT NOT NULL,
+          subject TEXT NOT NULL,
+          teacher_id BIGINT REFERENCES admin_users(id),
+          day_of_week TEXT NOT NULL CHECK (day_of_week IN ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')),
+          start_time TIME NOT NULL,
+          end_time TIME NOT NULL,
+          format TEXT NOT NULL DEFAULT 'in_person' CHECK (format IN ('online', 'in_person')),
+          location_or_link TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_class_schedule_class ON class_schedule (class_name)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

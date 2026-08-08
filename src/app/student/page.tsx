@@ -9,8 +9,10 @@ import {
   getClassroomAssignmentsForClass,
   getClassroomSubmissionsForChild,
 } from '@/lib/lms-data';
+import { getWeeklyScheduleForClass } from '@/lib/class-schedule';
 import { formatDate } from '@/lib/admin-format';
 import LogoutButton from '@/components/student/LogoutButton';
+import WeeklyScheduleBoard from '@/components/WeeklyScheduleBoard';
 import type { ClassBand } from '@/lib/family-data';
 
 export const dynamic = 'force-dynamic';
@@ -23,12 +25,13 @@ export default async function StudentHomePage() {
     SELECT child_full_name, child_nickname, class_name, class_band FROM children WHERE id = ${session.childId}
   `) as unknown as { child_full_name: string; child_nickname: string | null; class_name: string | null; class_band: ClassBand | null }[];
 
-  const [lessons, workSamples, resources, classroomAssignments, classroomSubmissions] = await Promise.all([
+  const [lessons, workSamples, resources, classroomAssignments, classroomSubmissions, schedule] = await Promise.all([
     getUpcomingLessonPlans(child?.class_name ?? null, 5),
     session.childId ? getWorkSamplesForChild(session.childId) : Promise.resolve([]),
     getResourcesForClassBand(child?.class_band ?? null),
     getClassroomAssignmentsForClass(child?.class_name ?? null, 5),
     session.childId ? getClassroomSubmissionsForChild(session.childId) : Promise.resolve([]),
+    getWeeklyScheduleForClass(child?.class_name ?? null),
   ]);
   const submissionByAssignment = new Map(classroomSubmissions.map((s) => [s.classroom_assignment_id, s]));
 
@@ -46,6 +49,8 @@ export default async function StudentHomePage() {
         </div>
 
         <div className="mt-8 flex flex-col gap-6">
+          <WeeklyScheduleBoard entries={schedule} />
+
           {classroomAssignments.length > 0 && (
             <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
               <h2 className="font-display text-lg font-semibold text-teal-deep">Google Classroom</h2>

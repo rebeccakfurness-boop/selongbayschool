@@ -299,6 +299,22 @@ export const upsertLessonPlanSchema = z.object({
 });
 export type UpsertLessonPlanInput = z.infer<typeof upsertLessonPlanSchema>;
 
+const TIME_HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+export const classScheduleSchema = z
+  .object({
+    className: z.string().trim().min(1, 'Class is required').max(100),
+    subject: z.string().trim().min(1, 'Subject is required').max(200),
+    teacherId: z.coerce.number().int().positive().nullable().optional(),
+    dayOfWeek: z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']),
+    startTime: z.string().trim().regex(TIME_HHMM, 'Use HH:MM'),
+    endTime: z.string().trim().regex(TIME_HHMM, 'Use HH:MM'),
+    format: z.enum(['online', 'in_person']),
+    locationOrLink: z.string().trim().max(500).nullable().optional(),
+  })
+  .refine((v) => v.endTime > v.startTime, { message: 'End time must be after start time', path: ['endTime'] });
+export type ClassScheduleInput = z.infer<typeof classScheduleSchema>;
+
 export const createWorkSampleSchema = z.object({
   childId: z.coerce.number().int().positive(),
   title: z.string().trim().min(1, 'Title is required').max(300),

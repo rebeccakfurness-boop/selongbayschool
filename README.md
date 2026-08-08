@@ -895,6 +895,36 @@ signed in for that staff session (12 hours), no parent login involved at any poi
 - Invoice/payment status and lunch/activity booking are still stubbed on both the Child Card and
   the parent portal — those are Phase 4 data models.
 
+### LMS redesign: Oak Academy-style parent/student dashboard (in progress)
+
+Working toward an Oak National Academy-style LMS on top of the parent/student portals — easy
+lesson browsing, Cambridge curriculum links, quizzes/flashcards/teacher videos, downloadable
+resources, teacher-set assignments synced to Google Classroom, and "class starting soon"
+notifications — built in phases, shipping each piece before starting the next:
+
+1. **Weekly Schedule (shipped)** — a new `class_schedule` table (one row per recurring weekly
+   slot: class, subject, teacher, day, start/end time, online vs in-person, room or video link).
+   Managed at `/admin/teaching/schedule` (same class-permission model as lesson plans — teachers
+   edit only their assigned classes, admins edit any). Rendered by `WeeklyScheduleBoard`
+   (`src/components/WeeklyScheduleBoard.tsx`) as the first thing shown on both the parent portal
+   (`/account/learning`, one board per linked child) and the student portal (`/student`) — the
+   "main screen" view of what's on this week, at a glance.
+2. **Lesson/curriculum browser redesign** — not yet built. Will extend `lesson_plans` /
+   `curriculum_units` with structure closer to Oak Academy's unit → lesson → resources model
+   (video link, worksheet, quiz, flashcards per lesson). Per the "build the shell first" decision:
+   no placeholder/fake curriculum content — these stay empty until a teacher/admin adds real
+   Cambridge unit references, videos, quiz questions, etc. through the admin UI.
+3. **Notifications** — not yet built. Planned as browser push notifications (Web Push API) plus an
+   in-app banner, rather than depending on Google Classroom's own push notifications, which require
+   a verified Google Workspace domain that doesn't apply to the personal/testing-mode Google
+   account already connected for Classroom sync.
+4. **Deeper Google Classroom sync** — not yet built. Planned as one-way: a teacher creating an
+   assignment in this dashboard also creates it in Google Classroom via the Classroom API
+   (`courseWork.create`), extending the existing one-way pull (Classroom → this app, see Phase 5
+   below). Full bidirectional sync (edits/grades in both directions) was deliberately ruled out —
+   more complex, more prone to conflicts, and not needed for the "set it here, it shows up there"
+   workflow that was actually asked for.
+
 ### Phase 2: drag-and-drop board, calendar, child card
 
 - **Family Board** (`/admin/families`) is now a real drag-and-drop board (`@dnd-kit/core`) —

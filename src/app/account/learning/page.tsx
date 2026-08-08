@@ -28,11 +28,13 @@ import {
 } from '@/lib/lms-data';
 import { getLunchOrdersForChild, type LunchOrderSummaryRow } from '@/lib/lunch-orders';
 import { weekdaysSummaryLabel } from '@/lib/lunch-calc';
+import { getWeeklyScheduleForClass, type ClassScheduleRow } from '@/lib/class-schedule';
 import { formatIDR } from '@/lib/site-content';
 import { formatDate } from '@/lib/admin-format';
 import AccountNav from '@/components/account/AccountNav';
 import ParentChildProfileCard from '@/components/account/ParentChildProfileCard';
 import LunchOrderForm from '@/components/account/LunchOrderForm';
+import WeeklyScheduleBoard from '@/components/WeeklyScheduleBoard';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,6 +69,7 @@ interface ChildSectionData {
   classroomAssignments: ClassroomAssignmentRow[];
   classroomSubmissions: ClassroomSubmissionRow[];
   lunchOrders: LunchOrderSummaryRow[];
+  schedule: ClassScheduleRow[];
 }
 
 export default async function ParentLearningPage() {
@@ -84,7 +87,7 @@ export default async function ParentLearningPage() {
 
     const childSections: ChildSectionData[] = await Promise.all(
       children.map(async (child) => {
-        const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders] = await Promise.all([
+        const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, schedule] = await Promise.all([
           getCurrentCurriculumUnit(child.class_name),
           getUpcomingLessonPlans(child.class_name, 5),
           getWorkSamplesForChild(child.id),
@@ -95,8 +98,9 @@ export default async function ParentLearningPage() {
           getClassroomAssignmentsForClass(child.class_name, 5),
           getClassroomSubmissionsForChild(child.id),
           getLunchOrdersForChild(child.id),
+          getWeeklyScheduleForClass(child.class_name),
         ]);
-        return { child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders };
+        return { child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, schedule };
       })
     );
 
@@ -127,12 +131,16 @@ function renderLearningPage(
         )}
 
         <div className="flex flex-col gap-12">
-          {childSections.map(({ child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders }) => {
+          {childSections.map(({ child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, schedule }) => {
             const submissionByAssignment = new Map(classroomSubmissions.map((s) => [s.classroom_assignment_id, s]));
 
             return (
               <section key={child.id} id={`child-${child.id}`} className="scroll-mt-6">
                 <ParentChildProfileCard child={child} />
+
+                <div className="mt-6">
+                  <WeeklyScheduleBoard entries={schedule} title={`This Week — ${child.class_name ?? 'No class set'}`} />
+                </div>
 
                 <h2 className="mt-8 font-display text-xl font-semibold text-ink">Learning</h2>
 
