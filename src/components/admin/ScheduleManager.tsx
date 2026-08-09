@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 import { Field, TextInput } from '@/components/forms/FormField';
 import { DAY_LABELS, DAY_ORDER, type DayOfWeek, type ClassFormat } from '@/lib/class-schedule';
+import type { StaffRole } from '@/lib/auth';
 
 export interface ScheduleEntry {
   id: number;
@@ -17,11 +18,20 @@ export interface ScheduleEntry {
   end_time: string;
   format: ClassFormat;
   location_or_link: string | null;
+  meet_link: string | null;
+  lesson_plan_id: number | null;
+  lesson_plan_title: string | null;
 }
 
 export interface TeacherOption {
   id: number;
   label: string;
+}
+
+export interface LessonPlanOption {
+  id: number;
+  class_name: string;
+  title: string;
 }
 
 function formatTime(t: string): string {
@@ -32,13 +42,20 @@ export default function ScheduleManager({
   initial,
   classOptions,
   teacherOptions,
+  lessonPlanOptions,
+  role,
+  currentAdminUserId,
 }: {
   initial: ScheduleEntry[];
   classOptions: string[];
   teacherOptions: TeacherOption[];
+  lessonPlanOptions: LessonPlanOption[];
+  role: StaffRole;
+  currentAdminUserId: number;
 }) {
   const router = useRouter();
   const [entries, setEntries] = useState(initial);
+  const isAdmin = role === 'admin';
   const [className, setClassName] = useState(classOptions[0] ?? '');
   const [subject, setSubject] = useState('');
   const [teacherId, setTeacherId] = useState('');
@@ -84,6 +101,9 @@ export default function ScheduleManager({
           end_time: endTime,
           format,
           location_or_link: locationOrLink || null,
+          meet_link: null,
+          lesson_plan_id: null,
+          lesson_plan_title: null,
         },
       ]);
       setSubject('');
@@ -102,8 +122,47 @@ export default function ScheduleManager({
     router.refresh();
   }
 
+  /** Teachers use this for their own sessions' Meet link and lesson plan (the only fields the API
+   * lets them touch); admins can use it for the same two fields inline, without opening the full
+   * reschedule form. */
+  async function updateContent(id: number, patch: { meetLink?: string | null; lessonPlanId?: number | null }) {
+    const res = await fetch(`/api/admin/class-schedule/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setError(data.error || 'Failed to save');
+      return;
+    }
+    setEntries((prev) =>
+      prev.map((e) => {
+        if (e.id !== id) return e;
+        const lessonPlanTitle =
+          patch.lessonPlanId !== undefined
+            ? lessonPlanOptions.find((lp) => lp.id === patch.lessonPlanId)?.title ?? null
+            : e.lesson_plan_title;
+        return {
+          ...e,
+          meet_link: patch.meetLink !== undefined ? patch.meetLink : e.meet_link,
+          lesson_plan_id: patch.lessonPlanId !== undefined ? patch.lessonPlanId : e.lesson_plan_id,
+          lesson_plan_title: lessonPlanTitle,
+        };
+      })
+    );
+    router.refresh();
+  }
+
   return (
     <div className="flex flex-col gap-6">
+      {!isAdmin && (
+        <p className="rounded-md border border-sand-line bg-sand/20 px-4 py-3 text-sm text-ink-soft">
+          You can add a lesson plan or Meet link to your own sessions below. Only admins can change a session&apos;s
+          time, room, or teacher.
+        </p>
+      )}
+      {isAdmin && (
       <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
         <h2 className="font-display text-lg font-semibold text-ink">New weekly slot</h2>
         <p className="mt-1 text-xs text-ink-soft">
@@ -180,6 +239,7 @@ export default function ScheduleManager({
           </Button>
         </div>
       </div>
+      )}
 
       <div className="flex flex-col gap-3">
         {DAY_ORDER.filter((day) => entries.some((e) => e.day_of_week === day)).map((day) => (
@@ -189,22 +249,62 @@ export default function ScheduleManager({
               {entries
                 .filter((e) => e.day_of_week === day)
                 .sort((a, b) => a.start_time.localeCompare(b.start_time))
-                .map((e) => (
-                  <div key={e.id} className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-sand-line px-3 py-2 text-sm">
-                    <div>
-                      <span className="font-semibold text-ink">{e.subject}</span>
-                      <span className="ml-2 text-ink-soft">{e.class_name}</span>
-                      <span className="ml-2 text-xs text-ink-soft">
-                        {formatTime(e.start_time)}–{formatTime(e.end_time)} · {e.teacher_label || 'No teacher set'} ·{' '}
-                        {e.format === 'online' ? 'Online' : 'In person'}
-                        {e.location_or_link && ` (${e.location_or_link})`}
-                      </span>
+                .map((e) => {
+                  const canEditContent = isAdmin || e.teacher_id === currentAdminUserId;
+                  const classLessonPlans = lessonPlanOptions.filter((lp) => lp.class_name === e.class_name);
+                  return (
+                    <div key={e.id} className="flex flex-col gap-2 rounded-sm border border-sand-line px-3 py-2 text-sm">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                          <span className="font-semibold text-ink">{e.subject}</span>
+                          <span className="ml-2 text-ink-soft">{e.class_name}</span>
+                          <span className="ml-2 text-xs text-ink-soft">
+                            {formatTime(e.start_time)}–{formatTime(e.end_time)} · {e.teacher_label || 'No teacher set'} ·{' '}
+                            {e.format === 'online' ? 'Online' : 'In person'}
+                            {e.location_or_link && ` (${e.location_or_link})`}
+                          </span>
+                        </div>
+                        {isAdmin && (
+                          <button type="button" onClick={() => remove(e.id)} className="text-xs font-semibold text-orange-deep hover:underline">
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                      {canEditContent ? (
+                        <div className="flex flex-wrap items-center gap-3 border-t border-sand-line/60 pt-2">
+                          <label className="flex items-center gap-1.5 text-xs text-ink-soft">
+                            Lesson plan
+                            <select
+                              value={e.lesson_plan_id ?? ''}
+                              onChange={(ev) => updateContent(e.id, { lessonPlanId: ev.target.value ? Number(ev.target.value) : null })}
+                              className="rounded-sm border border-sand-line bg-white px-2 py-1 text-xs"
+                            >
+                              <option value="">None linked</option>
+                              {classLessonPlans.map((lp) => (
+                                <option key={lp.id} value={lp.id}>{lp.title}</option>
+                              ))}
+                            </select>
+                          </label>
+                          <label className="flex flex-1 items-center gap-1.5 text-xs text-ink-soft" style={{ minWidth: 200 }}>
+                            Meet link
+                            <input
+                              type="text"
+                              defaultValue={e.meet_link ?? ''}
+                              onBlur={(ev) => {
+                                const value = ev.target.value.trim();
+                                if (value !== (e.meet_link ?? '')) updateContent(e.id, { meetLink: value || null });
+                              }}
+                              placeholder="https://meet.google.com/..."
+                              className="min-w-0 flex-1 rounded-sm border border-sand-line px-2 py-1 text-xs"
+                            />
+                          </label>
+                        </div>
+                      ) : (
+                        e.lesson_plan_title && <p className="text-xs text-ink-soft">Lesson plan: {e.lesson_plan_title}</p>
+                      )}
                     </div>
-                    <button type="button" onClick={() => remove(e.id)} className="text-xs font-semibold text-orange-deep hover:underline">
-                      Remove
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
             </div>
           </div>
         ))}

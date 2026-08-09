@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema, sql } from '@/lib/db';
-import { getCurrentStaff, canAccessClass } from '@/lib/current-staff';
+import { requireAdmin } from '@/lib/current-staff';
 import { classScheduleSchema } from '@/lib/validation';
+import { regenerateScheduleOccurrences } from '@/lib/academic-calendar';
 
+/** Creating a new weekly slot — time, room, and teacher assignment — is admin-only per the spec
+ * (teachers can plan their own sessions' content but not reschedule or reassign). */
 export async function POST(req: NextRequest) {
-  const staff = await getCurrentStaff();
+  const staff = await requireAdmin();
 
   let body: unknown;
   try {
@@ -19,10 +22,6 @@ export async function POST(req: NextRequest) {
   }
   const d = parsed.data;
 
-  if (!(await canAccessClass(staff, d.className))) {
-    return NextResponse.json({ error: 'You are not assigned to that class.' }, { status: 403 });
-  }
-
   try {
     await ensureSchema();
     const rows = await sql`
@@ -30,7 +29,13 @@ export async function POST(req: NextRequest) {
       VALUES (${d.className}, ${d.subject}, ${d.teacherId ?? null}, ${d.dayOfWeek}, ${d.startTime}::time, ${d.endTime}::time, ${d.format}, ${d.locationOrLink || null})
       RETURNING id
     `;
-    return NextResponse.json({ id: rows[0].id });
+    const id = rows[0].id as number;
+    await sql`
+      INSERT INTO schedule_session_history (class_schedule_id, changed_by, change_type, old_value, new_value)
+      VALUES (${id}, ${staff.adminUserId}, 'created', NULL, ${JSON.stringify(d)}::jsonb)
+    `;
+    await regenerateScheduleOccurrences({ classScheduleId: id });
+    return NextResponse.json({ id });
   } catch (err) {
     console.error('[api/admin/class-schedule] failed to create', err);
     return NextResponse.json({ error: 'Could not create schedule entry.' }, { status: 500 });

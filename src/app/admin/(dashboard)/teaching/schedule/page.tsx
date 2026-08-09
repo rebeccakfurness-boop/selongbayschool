@@ -2,7 +2,7 @@ import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff, getAssignedClasses } from '@/lib/current-staff';
 import { getWeeklyScheduleForClasses, getWeeklyScheduleForClass, type ClassScheduleRow } from '@/lib/class-schedule';
 import TeachingTabs from '@/components/admin/TeachingTabs';
-import ScheduleManager, { type TeacherOption } from '@/components/admin/ScheduleManager';
+import ScheduleManager, { type TeacherOption, type LessonPlanOption } from '@/components/admin/ScheduleManager';
 import ImportTimetableButton from '@/components/admin/ImportTimetableButton';
 
 export const dynamic = 'force-dynamic';
@@ -28,6 +28,13 @@ export default async function ClassSchedulePage() {
     (await sql`SELECT id, COALESCE(display_name, email) AS label FROM admin_users ORDER BY label`) as unknown as TeacherOption[]
   );
 
+  const lessonPlanOptions =
+    classOptions.length === 0
+      ? []
+      : ((await sql`
+          SELECT id, class_name, title FROM lesson_plans WHERE class_name = ANY(${classOptions}) ORDER BY created_at DESC
+        `) as unknown as LessonPlanOption[]);
+
   return (
     <section>
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -46,7 +53,14 @@ export default async function ClassSchedulePage() {
         </div>
       )}
       <div className="mt-6">
-        <ScheduleManager initial={entries} classOptions={classOptions} teacherOptions={teacherOptions} />
+        <ScheduleManager
+          initial={entries}
+          classOptions={classOptions}
+          teacherOptions={teacherOptions}
+          lessonPlanOptions={lessonPlanOptions}
+          role={staff.role}
+          currentAdminUserId={staff.adminUserId}
+        />
       </div>
     </section>
   );

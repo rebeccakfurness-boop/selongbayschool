@@ -315,6 +315,22 @@ export const classScheduleSchema = z
   .refine((v) => v.endTime > v.startTime, { message: 'End time must be after start time', path: ['endTime'] });
 export type ClassScheduleInput = z.infer<typeof classScheduleSchema>;
 
+/** Every field optional (a PATCH merges onto the existing row) -- which fields a given caller is
+ * actually allowed to touch is a role check in the route handler, not this schema: admins can send
+ * any of these, teachers only meetLink/lessonPlanId (see /api/admin/class-schedule/[id] PATCH). */
+export const updateClassScheduleSchema = z.object({
+  subject: z.string().trim().min(1, 'Subject is required').max(200).optional(),
+  teacherId: z.coerce.number().int().positive().nullable().optional(),
+  dayOfWeek: z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']).optional(),
+  startTime: z.string().trim().regex(TIME_HHMM, 'Use HH:MM').optional(),
+  endTime: z.string().trim().regex(TIME_HHMM, 'Use HH:MM').optional(),
+  format: z.enum(['online', 'in_person']).optional(),
+  locationOrLink: z.string().trim().max(500).nullable().optional(),
+  meetLink: z.string().trim().max(2000).nullable().optional(),
+  lessonPlanId: z.coerce.number().int().positive().nullable().optional(),
+});
+export type UpdateClassScheduleInput = z.infer<typeof updateClassScheduleSchema>;
+
 export const createWorkSampleSchema = z.object({
   childId: z.coerce.number().int().positive(),
   title: z.string().trim().min(1, 'Title is required').max(300),
