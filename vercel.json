@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/welcome-letters",
       "schedule": "0 1 * * *"
+    },
+    {
+      "path": "/api/cron/schedule-reminders",
+      "schedule": "0 2 * * *"
     }
   ]
 }

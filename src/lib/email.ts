@@ -452,6 +452,49 @@ export async function sendPassExpiryReminderEmail(input: PassExpiryReminderEmail
   return send(input.customerEmail, `${input.childName}'s activity pack expires in a week`, html);
 }
 
+export interface ScheduleSessionReminderEmailInput {
+  customerName: string;
+  customerEmail: string;
+  childName: string;
+  subject: string;
+  /** Already formatted in school time (WITA), e.g. "Monday 10 August, 9:00 AM". */
+  whenLabel: string;
+  teacherLabel: string | null;
+  format: 'online' | 'in_person';
+  meetLink: string | null;
+  locationOrLink: string | null;
+}
+
+/** Sent by the daily reminder cron (src/app/api/cron/schedule-reminders/route.ts) to a parent who
+ * has opted in via the schedule notification toggle -- opt-in and off by default, so this only
+ * ever fires for a family that asked for it. */
+export async function sendScheduleSessionReminderEmail(input: ScheduleSessionReminderEmailInput): Promise<boolean> {
+  const whereLine =
+    input.format === 'online'
+      ? input.meetLink
+        ? `<p><a href="${input.meetLink}" style="color:#007c83; font-weight:700;">Join Google Meet &rarr;</a></p>`
+        : ''
+      : input.locationOrLink
+        ? `<p>Location: ${input.locationOrLink}</p>`
+        : '';
+  const html = wrapEmail(
+    `Upcoming session: ${input.subject}`,
+    `<p>Hi ${input.customerName.split(' ')[0]}, a reminder that ${input.childName} has a session coming up:</p>
+     ${fieldRows([
+       ['Subject', input.subject],
+       ['When', input.whenLabel],
+       ['Teacher', input.teacherLabel],
+       ['Format', input.format === 'online' ? 'Online' : 'In person'],
+     ])}
+     ${whereLine}
+     <p style="margin-top: 24px; font-size: 13px; color: #666;">
+       You're receiving this because reminders are turned on for ${input.childName}'s schedule. You can turn
+       them off any time from the Schedule section of your account.
+     </p>`
+  );
+  return send(input.customerEmail, `Reminder: ${input.childName} has ${input.subject} coming up`, html);
+}
+
 export interface SessionCancellationEmailInput {
   activityName: string;
   date: string;
