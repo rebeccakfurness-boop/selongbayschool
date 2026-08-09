@@ -56,6 +56,7 @@ export default function ScheduleManager({
   const router = useRouter();
   const [entries, setEntries] = useState(initial);
   const isAdmin = role === 'admin';
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [className, setClassName] = useState(classOptions[0] ?? '');
   const [subject, setSubject] = useState('');
   const [teacherId, setTeacherId] = useState('');
@@ -152,6 +153,53 @@ export default function ScheduleManager({
       })
     );
     router.refresh();
+  }
+
+  /** Admin-only full reschedule (time/day/room/teacher/format) — a proper in-place edit rather
+   * than delete-and-recreate, so the row keeps its id (and with it, any lesson plan link, Meet
+   * link, and generated occurrences don't get orphaned by a cascade delete). */
+  async function reschedule(
+    id: number,
+    patch: {
+      subject: string;
+      teacherId: number | null;
+      dayOfWeek: DayOfWeek;
+      startTime: string;
+      endTime: string;
+      format: ClassFormat;
+      locationOrLink: string | null;
+    }
+  ): Promise<boolean> {
+    const res = await fetch(`/api/admin/class-schedule/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setError(data.error || 'Failed to save');
+      return false;
+    }
+    const teacherLabel = teacherOptions.find((t) => t.id === patch.teacherId)?.label ?? null;
+    setEntries((prev) =>
+      prev.map((e) =>
+        e.id === id
+          ? {
+              ...e,
+              subject: patch.subject,
+              teacher_id: patch.teacherId,
+              teacher_label: teacherLabel,
+              day_of_week: patch.dayOfWeek,
+              start_time: patch.startTime,
+              end_time: patch.endTime,
+              format: patch.format,
+              location_or_link: patch.locationOrLink,
+            }
+          : e
+      )
+    );
+    router.refresh();
+    return true;
   }
 
   return (
@@ -265,11 +313,31 @@ export default function ScheduleManager({
                           </span>
                         </div>
                         {isAdmin && (
-                          <button type="button" onClick={() => remove(e.id)} className="text-xs font-semibold text-orange-deep hover:underline">
-                            Remove
-                          </button>
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => setEditingId(editingId === e.id ? null : e.id)}
+                              className="text-xs font-semibold text-teal-deep hover:underline"
+                            >
+                              {editingId === e.id ? 'Cancel' : 'Edit'}
+                            </button>
+                            <button type="button" onClick={() => remove(e.id)} className="text-xs font-semibold text-orange-deep hover:underline">
+                              Remove
+                            </button>
+                          </div>
                         )}
                       </div>
+                      {isAdmin && editingId === e.id && (
+                        <EditEntryForm
+                          entry={e}
+                          teacherOptions={teacherOptions}
+                          onCancel={() => setEditingId(null)}
+                          onSave={async (patch) => {
+                            const ok = await reschedule(e.id, patch);
+                            if (ok) setEditingId(null);
+                          }}
+                        />
+                      )}
                       {canEditContent ? (
                         <div className="flex flex-wrap items-center gap-3 border-t border-sand-line/60 pt-2">
                           <label className="flex items-center gap-1.5 text-xs text-ink-soft">
@@ -313,6 +381,118 @@ export default function ScheduleManager({
             No weekly schedule set yet.
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function EditEntryForm({
+  entry,
+  teacherOptions,
+  onCancel,
+  onSave,
+}: {
+  entry: ScheduleEntry;
+  teacherOptions: TeacherOption[];
+  onCancel: () => void;
+  onSave: (patch: {
+    subject: string;
+    teacherId: number | null;
+    dayOfWeek: DayOfWeek;
+    startTime: string;
+    endTime: string;
+    format: ClassFormat;
+    locationOrLink: string | null;
+  }) => Promise<void>;
+}) {
+  const [subject, setSubject] = useState(entry.subject);
+  const [teacherId, setTeacherId] = useState(entry.teacher_id ? String(entry.teacher_id) : '');
+  const [dayOfWeek, setDayOfWeek] = useState<DayOfWeek>(entry.day_of_week);
+  const [startTime, setStartTime] = useState(formatTime(entry.start_time));
+  const [endTime, setEndTime] = useState(formatTime(entry.end_time));
+  const [format, setFormat] = useState<ClassFormat>(entry.format);
+  const [locationOrLink, setLocationOrLink] = useState(entry.location_or_link ?? '');
+  const [saving, setSaving] = useState(false);
+
+  async function save() {
+    setSaving(true);
+    try {
+      await onSave({
+        subject,
+        teacherId: teacherId ? Number(teacherId) : null,
+        dayOfWeek,
+        startTime,
+        endTime,
+        format,
+        locationOrLink: locationOrLink || null,
+      });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="grid gap-3 border-t border-sand-line/60 pt-3 sm:grid-cols-2 lg:grid-cols-4">
+      <Field label="Subject" htmlFor={`edit-subject-${entry.id}`} required>
+        <TextInput id={`edit-subject-${entry.id}`} value={subject} onChange={(e) => setSubject(e.target.value)} />
+      </Field>
+      <Field label="Teacher" htmlFor={`edit-teacher-${entry.id}`}>
+        <select
+          id={`edit-teacher-${entry.id}`}
+          value={teacherId}
+          onChange={(e) => setTeacherId(e.target.value)}
+          className="w-full rounded-sm border border-sand-line bg-white px-3 py-2 text-sm"
+        >
+          <option value="">Not set</option>
+          {teacherOptions.map((t) => (
+            <option key={t.id} value={t.id}>{t.label}</option>
+          ))}
+        </select>
+      </Field>
+      <Field label="Day" htmlFor={`edit-day-${entry.id}`} required>
+        <select
+          id={`edit-day-${entry.id}`}
+          value={dayOfWeek}
+          onChange={(e) => setDayOfWeek(e.target.value as DayOfWeek)}
+          className="w-full rounded-sm border border-sand-line bg-white px-3 py-2 text-sm"
+        >
+          {DAY_ORDER.map((d) => (
+            <option key={d} value={d}>{DAY_LABELS[d]}</option>
+          ))}
+        </select>
+      </Field>
+      <Field label="Format" htmlFor={`edit-format-${entry.id}`} required>
+        <select
+          id={`edit-format-${entry.id}`}
+          value={format}
+          onChange={(e) => setFormat(e.target.value as ClassFormat)}
+          className="w-full rounded-sm border border-sand-line bg-white px-3 py-2 text-sm"
+        >
+          <option value="in_person">In person</option>
+          <option value="online">Online</option>
+        </select>
+      </Field>
+      <Field label="Start time" htmlFor={`edit-start-${entry.id}`} required>
+        <TextInput id={`edit-start-${entry.id}`} type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} />
+      </Field>
+      <Field label="End time" htmlFor={`edit-end-${entry.id}`} required>
+        <TextInput id={`edit-end-${entry.id}`} type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} />
+      </Field>
+      <Field label={format === 'online' ? 'Video call link' : 'Room / location'} htmlFor={`edit-location-${entry.id}`}>
+        <TextInput
+          id={`edit-location-${entry.id}`}
+          value={locationOrLink}
+          onChange={(e) => setLocationOrLink(e.target.value)}
+          placeholder={format === 'online' ? 'https://meet.google.com/...' : 'e.g. Room 4'}
+        />
+      </Field>
+      <div className="flex items-end gap-2">
+        <Button type="button" variant="primary" onClick={save} disabled={saving || !subject.trim() || !startTime || !endTime}>
+          {saving ? 'Saving…' : 'Save changes'}
+        </Button>
+        <button type="button" onClick={onCancel} className="text-sm font-semibold text-ink-soft hover:underline">
+          Cancel
+        </button>
       </div>
     </div>
   );

@@ -176,6 +176,7 @@ export const updateChildSchema = z.object({
   programme: optionalStr,
   classBand: z.enum(['early_years', 'kindergarten', 'primary', 'secondary']).nullable().optional(),
   className: optionalStr,
+  scheduleType: z.enum(['on_site', 'hybrid', 'home_schooling']).nullable().optional(),
   childFullName: z.string().trim().min(1).max(200).optional(),
   childNickname: optionalStr,
   dob: optionalDate,
@@ -329,6 +330,27 @@ export const updateClassScheduleSchema = z.object({
   meetLink: z.string().trim().max(2000).nullable().optional(),
   lessonPlanId: z.coerce.number().int().positive().nullable().optional(),
 });
+
+const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+
+export const academicTermSchema = z
+  .object({
+    label: z.string().trim().min(1, 'Label is required').max(200),
+    startDate: z.string().trim().regex(DATE_ONLY, 'Enter a valid start date'),
+    endDate: z.string().trim().regex(DATE_ONLY, 'Enter a valid end date'),
+  })
+  .refine((v) => v.endDate >= v.startDate, { message: 'End date must be on or after the start date', path: ['endDate'] });
+export type AcademicTermInput = z.infer<typeof academicTermSchema>;
+
+export const academicCalendarExceptionSchema = z
+  .object({
+    label: z.string().trim().min(1, 'Label is required').max(200),
+    startDate: z.string().trim().regex(DATE_ONLY, 'Enter a valid start date'),
+    endDate: z.string().trim().regex(DATE_ONLY, 'Enter a valid end date'),
+    exceptionType: z.enum(['public_holiday', 'school_holiday']),
+  })
+  .refine((v) => v.endDate >= v.startDate, { message: 'End date must be on or after the start date', path: ['endDate'] });
+export type AcademicCalendarExceptionInput = z.infer<typeof academicCalendarExceptionSchema>;
 export type UpdateClassScheduleInput = z.infer<typeof updateClassScheduleSchema>;
 
 export const createWorkSampleSchema = z.object({

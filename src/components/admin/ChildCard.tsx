@@ -27,6 +27,12 @@ import { formatDate } from '@/lib/admin-format';
 import { STATUS_LEGEND, CLASS_BAND_LABELS, CLASS_BAND_ORDER, COMPLIANCE_ITEMS, type ChildStatus, type ClassBand } from '@/lib/family-data';
 import { complianceBadge, invoiceBadge, type ComplianceBadge, type InvoiceBadge } from '@/lib/child-lifecycle-shared';
 
+const SCHEDULE_TYPE_LABELS: Record<'on_site' | 'hybrid' | 'home_schooling', string> = {
+  on_site: 'On-Site',
+  hybrid: 'Hybrid',
+  home_schooling: 'Home Schooling',
+};
+
 export interface ChildDetail {
   id: number;
   family_id: string | null;
@@ -35,6 +41,7 @@ export interface ChildDetail {
   programme: string | null;
   class_band: ClassBand | null;
   class_name: string | null;
+  schedule_type: 'on_site' | 'hybrid' | 'home_schooling' | null;
   child_full_name: string;
   child_nickname: string | null;
   dob: string | null;
@@ -109,6 +116,7 @@ function toFormState(child: ChildDetail) {
     programme: child.programme ?? '',
     classBand: child.class_band ?? '',
     className: child.class_name ?? '',
+    scheduleType: child.schedule_type ?? '',
     childFullName: child.child_full_name,
     childNickname: child.child_nickname ?? '',
     dob: child.dob ?? '',
@@ -237,6 +245,7 @@ export default function ChildCard({
         body: JSON.stringify({
           ...form,
           classBand: form.classBand || null,
+          scheduleType: form.scheduleType || null,
           dob: form.dob || null,
           enrolmentDate: form.enrolmentDate || null,
           exitDate: form.exitDate || null,
@@ -375,6 +384,7 @@ export default function ChildCard({
                 <InfoRow label="Gender" value={child.gender} />
                 <InfoRow label="Nationality" value={child.nationality} />
                 <InfoRow label="Programme" value={child.programme} />
+                <InfoRow label="Schedule type" value={child.schedule_type ? SCHEDULE_TYPE_LABELS[child.schedule_type] : null} />
                 <InfoRow label="Enrolment date" value={child.enrolment_date ? formatDate(child.enrolment_date) : null} />
                 <InfoRow label="Exit / withdrawal date" value={child.exit_date ? formatDate(child.exit_date) : null} />
                 <InfoRow label="Home language" value={child.home_language} />
@@ -593,6 +603,19 @@ export default function ChildCard({
             </Field>
             <Field label="Class name" htmlFor="edit-class-name">
               <TextInput id="edit-class-name" value={form.className} onChange={(e) => set('className', e.target.value)} placeholder="e.g. Stars, Grade 6" />
+            </Field>
+            <Field label="Schedule type" htmlFor="edit-schedule-type">
+              <select
+                id="edit-schedule-type"
+                value={form.scheduleType}
+                onChange={(e) => set('scheduleType', e.target.value as typeof form.scheduleType)}
+                className="rounded-sm border border-sand-line bg-white px-4 py-2.5 font-sans text-[15px] text-ink focus:border-teal focus:outline-none focus:ring-2 focus:ring-teal/30"
+              >
+                <option value="">Not set</option>
+                <option value="on_site">On-Site</option>
+                <option value="hybrid">Hybrid</option>
+                <option value="home_schooling">Home Schooling</option>
+              </select>
             </Field>
             <Field label="Programme" htmlFor="edit-programme">
               <TextInput id="edit-programme" value={form.programme} onChange={(e) => set('programme', e.target.value)} />

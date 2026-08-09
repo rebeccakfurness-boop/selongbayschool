@@ -119,8 +119,12 @@ export async function regenerateScheduleOccurrences(opts?: { classScheduleId?: n
         SELECT id, day_of_week, start_time::text, end_time::text FROM class_schedule
       `) as unknown as { id: number; day_of_week: DayOfWeek; start_time: string; end_time: string }[];
 
-  const termMin = terms[0].start_date;
-  const termMax = terms[terms.length - 1].end_date;
+  // Not bounded to the current terms' min/max: if an admin deletes or shrinks a term, occurrences
+  // generated under the old range must still be reachable for cleanup here, or they'd be silently
+  // orphaned (stuck outside every current term's range forever, since the old bound would exclude
+  // them from ever being reconsidered). Bounded to today-forward instead, so a change made now can
+  // never rewrite what already happened.
+  const today = new Date().toISOString().slice(0, 10);
 
   for (const pattern of patterns) {
     const validDates = new Set<string>();
@@ -137,7 +141,7 @@ export async function regenerateScheduleOccurrences(opts?: { classScheduleId?: n
     const staleRows = (await sql`
       SELECT id, occurrence_date::text FROM schedule_session_occurrences
       WHERE class_schedule_id = ${pattern.id} AND manually_edited = false
-        AND occurrence_date BETWEEN ${termMin} AND ${termMax}
+        AND occurrence_date >= ${today}
     `) as unknown as { id: number; occurrence_date: string }[];
 
     for (const row of staleRows) {
