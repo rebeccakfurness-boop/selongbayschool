@@ -475,6 +475,11 @@ export const bringOwnLunchSchema = z.object({
   childId: z.coerce.number().int().positive(),
 });
 
+export const setScheduleNotificationPrefSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  enabled: z.boolean(),
+});
+
 export const updateLunchSettingsSchema = z.object({
   supplierName: z.string().trim().max(300).optional(),
   supplierEmail: z

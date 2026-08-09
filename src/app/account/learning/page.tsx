@@ -28,13 +28,23 @@ import {
 } from '@/lib/lms-data';
 import { getLunchOrdersForChild, type LunchOrderSummaryRow } from '@/lib/lunch-orders';
 import { weekdaysSummaryLabel } from '@/lib/lunch-calc';
-import { getWeeklyScheduleForClass, type ClassScheduleRow } from '@/lib/class-schedule';
+import { getUpcomingOccurrencesForClass, getNotificationPref, type SessionOccurrenceRow } from '@/lib/schedule';
 import { formatIDR } from '@/lib/site-content';
 import { formatDate } from '@/lib/admin-format';
 import AccountNav from '@/components/account/AccountNav';
 import ParentChildProfileCard from '@/components/account/ParentChildProfileCard';
 import LunchOrderForm from '@/components/account/LunchOrderForm';
-import WeeklyScheduleBoard from '@/components/WeeklyScheduleBoard';
+import ParentScheduleSection from '@/components/account/ParentScheduleSection';
+
+function todayStr(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function addDaysStr(dateStr: string, days: number): string {
+  const d = new Date(`${dateStr}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
 
 export const dynamic = 'force-dynamic';
 
@@ -69,7 +79,8 @@ interface ChildSectionData {
   classroomAssignments: ClassroomAssignmentRow[];
   classroomSubmissions: ClassroomSubmissionRow[];
   lunchOrders: LunchOrderSummaryRow[];
-  schedule: ClassScheduleRow[];
+  occurrences: SessionOccurrenceRow[];
+  notificationsEnabled: boolean;
 }
 
 export default async function ParentLearningPage() {
@@ -85,9 +96,12 @@ export default async function ParentLearningPage() {
     }[];
     const lunchConfigured = Boolean(lunchSettings && lunchSettings.normal_price_idr > 0 && lunchSettings.large_price_idr > 0);
 
+    const from = todayStr();
+    const to = addDaysStr(from, 14);
+
     const childSections: ChildSectionData[] = await Promise.all(
       children.map(async (child) => {
-        const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, schedule] = await Promise.all([
+        const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, notificationsEnabled] = await Promise.all([
           getCurrentCurriculumUnit(child.class_name),
           getUpcomingLessonPlans(child.class_name, 5),
           getWorkSamplesForChild(child.id),
@@ -98,9 +112,10 @@ export default async function ParentLearningPage() {
           getClassroomAssignmentsForClass(child.class_name, 5),
           getClassroomSubmissionsForChild(child.id),
           getLunchOrdersForChild(child.id),
-          getWeeklyScheduleForClass(child.class_name),
+          getUpcomingOccurrencesForClass(child.class_name, child.schedule_type, from, to),
+          customerId ? getNotificationPref(customerId, child.id) : Promise.resolve(false),
         ]);
-        return { child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, schedule };
+        return { child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, notificationsEnabled };
       })
     );
 
@@ -131,7 +146,7 @@ function renderLearningPage(
         )}
 
         <div className="flex flex-col gap-12">
-          {childSections.map(({ child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, schedule }) => {
+          {childSections.map(({ child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, notificationsEnabled }) => {
             const submissionByAssignment = new Map(classroomSubmissions.map((s) => [s.classroom_assignment_id, s]));
 
             return (
@@ -139,7 +154,12 @@ function renderLearningPage(
                 <ParentChildProfileCard child={child} />
 
                 <div className="mt-6">
-                  <WeeklyScheduleBoard entries={schedule} title={`This Week — ${child.class_name ?? 'No class set'}`} />
+                  <ParentScheduleSection
+                    childId={child.id}
+                    title={`Schedule — ${child.class_name ?? 'No class set'}`}
+                    occurrences={occurrences}
+                    initialNotificationsEnabled={notificationsEnabled}
+                  />
                 </div>
 
                 <h2 className="mt-8 font-display text-xl font-semibold text-ink">Learning</h2>
