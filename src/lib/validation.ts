@@ -176,6 +176,7 @@ export const updateChildSchema = z.object({
   programme: optionalStr,
   classBand: z.enum(['early_years', 'kindergarten', 'primary', 'secondary']).nullable().optional(),
   className: optionalStr,
+  scheduleType: z.enum(['on_site', 'hybrid', 'home_schooling']).nullable().optional(),
   childFullName: z.string().trim().min(1).max(200).optional(),
   childNickname: optionalStr,
   dob: optionalDate,
@@ -314,6 +315,43 @@ export const classScheduleSchema = z
   })
   .refine((v) => v.endTime > v.startTime, { message: 'End time must be after start time', path: ['endTime'] });
 export type ClassScheduleInput = z.infer<typeof classScheduleSchema>;
+
+/** Every field optional (a PATCH merges onto the existing row) -- which fields a given caller is
+ * actually allowed to touch is a role check in the route handler, not this schema: admins can send
+ * any of these, teachers only meetLink/lessonPlanId (see /api/admin/class-schedule/[id] PATCH). */
+export const updateClassScheduleSchema = z.object({
+  subject: z.string().trim().min(1, 'Subject is required').max(200).optional(),
+  teacherId: z.coerce.number().int().positive().nullable().optional(),
+  dayOfWeek: z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']).optional(),
+  startTime: z.string().trim().regex(TIME_HHMM, 'Use HH:MM').optional(),
+  endTime: z.string().trim().regex(TIME_HHMM, 'Use HH:MM').optional(),
+  format: z.enum(['online', 'in_person']).optional(),
+  locationOrLink: z.string().trim().max(500).nullable().optional(),
+  meetLink: z.string().trim().max(2000).nullable().optional(),
+  lessonPlanId: z.coerce.number().int().positive().nullable().optional(),
+});
+
+const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+
+export const academicTermSchema = z
+  .object({
+    label: z.string().trim().min(1, 'Label is required').max(200),
+    startDate: z.string().trim().regex(DATE_ONLY, 'Enter a valid start date'),
+    endDate: z.string().trim().regex(DATE_ONLY, 'Enter a valid end date'),
+  })
+  .refine((v) => v.endDate >= v.startDate, { message: 'End date must be on or after the start date', path: ['endDate'] });
+export type AcademicTermInput = z.infer<typeof academicTermSchema>;
+
+export const academicCalendarExceptionSchema = z
+  .object({
+    label: z.string().trim().min(1, 'Label is required').max(200),
+    startDate: z.string().trim().regex(DATE_ONLY, 'Enter a valid start date'),
+    endDate: z.string().trim().regex(DATE_ONLY, 'Enter a valid end date'),
+    exceptionType: z.enum(['public_holiday', 'school_holiday']),
+  })
+  .refine((v) => v.endDate >= v.startDate, { message: 'End date must be on or after the start date', path: ['endDate'] });
+export type AcademicCalendarExceptionInput = z.infer<typeof academicCalendarExceptionSchema>;
+export type UpdateClassScheduleInput = z.infer<typeof updateClassScheduleSchema>;
 
 export const createWorkSampleSchema = z.object({
   childId: z.coerce.number().int().positive(),
@@ -473,6 +511,11 @@ export type CreateLunchOrderInput = z.infer<typeof createLunchOrderSchema>;
 
 export const bringOwnLunchSchema = z.object({
   childId: z.coerce.number().int().positive(),
+});
+
+export const setScheduleNotificationPrefSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  enabled: z.boolean(),
 });
 
 export const updateLunchSettingsSchema = z.object({

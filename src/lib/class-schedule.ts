@@ -35,6 +35,9 @@ export interface ClassScheduleRow {
   end_time: string;
   format: ClassFormat;
   location_or_link: string | null;
+  meet_link: string | null;
+  lesson_plan_id: number | null;
+  lesson_plan_title: string | null;
 }
 
 /** Sorted in JS rather than SQL (day_of_week is TEXT, so a plain ORDER BY would put Friday before
@@ -53,9 +56,11 @@ export async function getWeeklyScheduleForClass(className: string | null): Promi
   const rows = (await sql`
     SELECT cs.id, cs.class_name, cs.subject, cs.teacher_id,
       COALESCE(au.display_name, au.email) AS teacher_label,
-      cs.day_of_week, cs.start_time::text, cs.end_time::text, cs.format, cs.location_or_link
+      cs.day_of_week, cs.start_time::text, cs.end_time::text, cs.format, cs.location_or_link,
+      cs.meet_link, cs.lesson_plan_id, lp.title AS lesson_plan_title
     FROM class_schedule cs
     LEFT JOIN admin_users au ON au.id = cs.teacher_id
+    LEFT JOIN lesson_plans lp ON lp.id = cs.lesson_plan_id
     WHERE cs.class_name = ${className}
   `) as unknown as ClassScheduleRow[];
   return sortSchedule(rows);
@@ -66,9 +71,11 @@ export async function getWeeklyScheduleForClasses(classNames: string[]): Promise
   const rows = (await sql`
     SELECT cs.id, cs.class_name, cs.subject, cs.teacher_id,
       COALESCE(au.display_name, au.email) AS teacher_label,
-      cs.day_of_week, cs.start_time::text, cs.end_time::text, cs.format, cs.location_or_link
+      cs.day_of_week, cs.start_time::text, cs.end_time::text, cs.format, cs.location_or_link,
+      cs.meet_link, cs.lesson_plan_id, lp.title AS lesson_plan_title
     FROM class_schedule cs
     LEFT JOIN admin_users au ON au.id = cs.teacher_id
+    LEFT JOIN lesson_plans lp ON lp.id = cs.lesson_plan_id
     WHERE cs.class_name = ANY(${classNames})
   `) as unknown as ClassScheduleRow[];
   return sortSchedule(rows);

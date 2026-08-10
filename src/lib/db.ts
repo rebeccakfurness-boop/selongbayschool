@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 14;
+const SCHEMA_VERSION = 15;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1296,6 +1296,173 @@ export function ensureSchema(): Promise<void> {
           PRIMARY KEY (scope, identifier)
         )
       `;
+
+      // --- Per-student Weekly Schedule (calendar-aware) — extends the class_schedule feature
+      // above (Teaching → Weekly Schedule) rather than replacing it. class_schedule stays the
+      // recurring weekly *pattern* per class; the tables below add calendar-real occurrence
+      // dates, per-schedule-type applicability, and everything parents/students/teachers/admins
+      // need on top of it. See src/lib/academic-calendar.ts and src/lib/schedule.ts.
+
+      // Which schedule type a student is on (separate from `status`, which tracks their
+      // enrolment lifecycle — a full_time student can still be on_site, hybrid, or
+      // home_schooling; those answer different questions). Nullable: existing children have none
+      // set yet and the UI treats that as "needs setup," same pattern as unset lunch pricing.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS schedule_type TEXT CHECK (schedule_type IN ('on_site', 'hybrid', 'home_schooling'))`;
+
+      // Admin-managed, kept current by hand — there is no reliable machine-readable source for
+      // this (the school's own Academic Calendar PDF is a color-coded grid with no per-date
+      // holiday names in its text layer). Terms are seeded empty on purpose: reconstructing exact
+      // term boundaries from a compressed calendar image risked encoding wrong dates with false
+      // confidence. Add them from /admin/teaching/schedule once confirmed.
+      await sql`
+        CREATE TABLE IF NOT EXISTS academic_terms (
+          id BIGSERIAL PRIMARY KEY,
+          label TEXT NOT NULL,
+          start_date DATE NOT NULL,
+          end_date DATE NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS academic_calendar_exceptions (
+          id BIGSERIAL PRIMARY KEY,
+          start_date DATE NOT NULL,
+          end_date DATE NOT NULL,
+          label TEXT NOT NULL,
+          exception_type TEXT NOT NULL CHECK (exception_type IN ('public_holiday', 'school_holiday')),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_academic_calendar_exceptions_dates ON academic_calendar_exceptions (start_date, end_date)`;
+
+      // Provisional first pass at the 2026/27 calendar's colour-coded exceptions, read directly
+      // off the school's PDF — explicitly NOT confirmed. The 17 August public holiday is
+      // Indonesian Independence Day (confirmed by the calendar's own highlighting, correcting
+      // the 14 August originally mentioned when this was scoped); the rest are unlabelled
+      // coloured cells given a best-guess reason. Review and correct every row before relying on
+      // this for real scheduling — ON CONFLICT DO NOTHING so re-running this migration never
+      // overwrites corrections already made.
+      await sql`
+        INSERT INTO academic_calendar_exceptions (start_date, end_date, label, exception_type) VALUES
+          ('2026-07-01', '2026-07-05', 'Start-of-year break (unconfirmed)', 'school_holiday'),
+          ('2026-08-17', '2026-08-17', 'Indonesian Independence Day', 'public_holiday'),
+          ('2026-08-24', '2026-08-31', 'Term break (unconfirmed)', 'school_holiday'),
+          ('2026-08-25', '2026-08-25', 'Public holiday (unconfirmed — verify date/name)', 'public_holiday'),
+          ('2026-10-05', '2026-10-11', 'Public holiday period (unconfirmed — verify dates/name)', 'public_holiday'),
+          ('2026-11-14', '2026-11-30', 'Term break (unconfirmed)', 'school_holiday'),
+          ('2026-12-14', '2027-01-10', 'End-of-year break (unconfirmed)', 'school_holiday'),
+          ('2027-03-08', '2027-03-21', 'Term break (unconfirmed)', 'school_holiday'),
+          ('2027-03-26', '2027-03-26', 'Public holiday (unconfirmed — verify date/name)', 'public_holiday'),
+          ('2027-05-01', '2027-05-01', 'Public holiday (unconfirmed — verify date/name)', 'public_holiday'),
+          ('2027-05-06', '2027-05-06', 'Public holiday (unconfirmed — verify date/name)', 'public_holiday'),
+          ('2027-06-01', '2027-06-01', 'Public holiday (unconfirmed — verify date/name)', 'public_holiday'),
+          ('2027-06-06', '2027-06-06', 'Public holiday (unconfirmed — verify date/name)', 'public_holiday'),
+          ('2027-06-21', '2027-06-30', 'End-of-year break (unconfirmed)', 'school_holiday')
+        ON CONFLICT DO NOTHING
+      `;
+
+      // Per-session per-schedule-type applicability — absence of a row here means "applies,
+      // using the session's own base format" for that schedule type, so a normal session with no
+      // special handling needs zero rows. Only sessions that differ per schedule type (a Hybrid
+      // student joins online what an On-Site student attends in person; a Home Schooling student
+      // skips it entirely) need an explicit override row.
+      await sql`
+        CREATE TABLE IF NOT EXISTS class_schedule_type_overrides (
+          id BIGSERIAL PRIMARY KEY,
+          class_schedule_id BIGINT NOT NULL REFERENCES class_schedule(id) ON DELETE CASCADE,
+          schedule_type TEXT NOT NULL CHECK (schedule_type IN ('on_site', 'hybrid', 'home_schooling')),
+          applies BOOLEAN NOT NULL DEFAULT true,
+          format_override TEXT CHECK (format_override IN ('online', 'in_person')),
+          UNIQUE (class_schedule_id, schedule_type)
+        )
+      `;
+
+      // meet_link is separate from the pre-existing location_or_link (which already covers room
+      // names for in-person sessions) — pre-fillable from the mapped Google Classroom course,
+      // but always editable per session since not every class has one mapped yet. lesson_plan_id
+      // links a session straight to its canonical platform-authored lesson plan, so a parent or
+      // student clicking a session never has to guess which lesson_plans row matches.
+      await sql`ALTER TABLE class_schedule ADD COLUMN IF NOT EXISTS meet_link TEXT`;
+      await sql`ALTER TABLE class_schedule ADD COLUMN IF NOT EXISTS lesson_plan_id BIGINT REFERENCES lesson_plans(id) ON DELETE SET NULL`;
+
+      // The calendar-real occurrences a class_schedule row's weekly pattern expands into —
+      // generated by src/lib/academic-calendar.ts against academic_terms/academic_calendar_exceptions,
+      // never blindly "every Monday forever." starts_at/ends_at are real TIMESTAMPTZ (the pattern's
+      // start_time/end_time interpreted in the school's Asia/Makassar timezone), which is what
+      // makes correct timezone display for a travelling parent or student possible at all — a
+      // plain TIME column has no timezone to convert from. manually_edited marks an occurrence an
+      // admin has hand-adjusted (moved, retimed, cancelled), so regenerating the term never
+      // silently overwrites it.
+      await sql`
+        CREATE TABLE IF NOT EXISTS schedule_session_occurrences (
+          id BIGSERIAL PRIMARY KEY,
+          class_schedule_id BIGINT NOT NULL REFERENCES class_schedule(id) ON DELETE CASCADE,
+          occurrence_date DATE NOT NULL,
+          starts_at TIMESTAMPTZ NOT NULL,
+          ends_at TIMESTAMPTZ NOT NULL,
+          is_cancelled BOOLEAN NOT NULL DEFAULT false,
+          cancellation_reason TEXT,
+          manually_edited BOOLEAN NOT NULL DEFAULT false,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (class_schedule_id, occurrence_date)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_schedule_occurrences_class ON schedule_session_occurrences (class_schedule_id, occurrence_date)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_schedule_occurrences_starts ON schedule_session_occurrences (starts_at)`;
+
+      // Reminder opt-in — defaults to nobody getting reminders until a parent explicitly turns
+      // them on for a child, rather than opt-out (spec: "respect this preference exactly, no
+      // re-enabling silently" is easiest to guarantee when off is the one true default).
+      // class_schedule_id NULL = this child's global default; a specific id overrides it for just
+      // that session.
+      await sql`
+        CREATE TABLE IF NOT EXISTS schedule_notification_prefs (
+          id BIGSERIAL PRIMARY KEY,
+          customer_id BIGINT NOT NULL REFERENCES customers(id),
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          class_schedule_id BIGINT REFERENCES class_schedule(id) ON DELETE CASCADE,
+          enabled BOOLEAN NOT NULL DEFAULT true,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_notification_prefs_global
+        ON schedule_notification_prefs (customer_id, child_id) WHERE class_schedule_id IS NULL
+      `;
+      await sql`
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_notification_prefs_per_session
+        ON schedule_notification_prefs (customer_id, child_id, class_schedule_id) WHERE class_schedule_id IS NOT NULL
+      `;
+
+      // Stops the reminder cron emailing the same session twice — one row per (occurrence,
+      // customer) once a reminder for it has actually been sent.
+      await sql`
+        CREATE TABLE IF NOT EXISTS schedule_reminders_sent (
+          occurrence_id BIGINT NOT NULL REFERENCES schedule_session_occurrences(id) ON DELETE CASCADE,
+          customer_id BIGINT NOT NULL REFERENCES customers(id),
+          sent_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          PRIMARY KEY (occurrence_id, customer_id)
+        )
+      `;
+
+      // Audit trail for schedule edits — same shape as budget_category_history (old/new value,
+      // who, when), the one existing precedent for this in the app. JSONB rather than many
+      // nullable columns since "what changed" varies a lot by change_type (reschedule vs teacher
+      // change vs cancellation vs a brand-new session).
+      await sql`
+        CREATE TABLE IF NOT EXISTS schedule_session_history (
+          id BIGSERIAL PRIMARY KEY,
+          class_schedule_id BIGINT REFERENCES class_schedule(id) ON DELETE SET NULL,
+          occurrence_id BIGINT REFERENCES schedule_session_occurrences(id) ON DELETE SET NULL,
+          changed_by BIGINT REFERENCES admin_users(id),
+          change_type TEXT NOT NULL,
+          old_value JSONB,
+          new_value JSONB,
+          changed_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_schedule_history_class ON schedule_session_history (class_schedule_id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

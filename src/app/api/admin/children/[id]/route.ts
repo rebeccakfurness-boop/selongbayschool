@@ -39,6 +39,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         programme = COALESCE(${d.programme ?? null}, programme),
         class_band = COALESCE(${d.classBand ?? null}, class_band),
         class_name = COALESCE(${d.className ?? null}, class_name),
+        schedule_type = COALESCE(${d.scheduleType ?? null}, schedule_type),
         child_full_name = COALESCE(${d.childFullName ?? null}, child_full_name),
         child_nickname = COALESCE(${d.childNickname ?? null}, child_nickname),
         dob = COALESCE(${d.dob ?? null}::date, dob),
