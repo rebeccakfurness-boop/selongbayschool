@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 16;
+const SCHEMA_VERSION = 17;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1468,6 +1468,81 @@ export function ensureSchema(): Promise<void> {
       // and drops them from teacher-assignment pickers, but their name stays intact on every
       // session, lesson plan, and audit history row they're linked to.
       await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT true`;
+
+      // --- Curriculum Plans (Oak National Academy-style term browser) — a separate, richer
+      // hierarchy from the existing curriculum_units "current unit" flag and the flat lesson_plans
+      // table above: a term/programme (class + subject + term) holds an ordered list of units,
+      // each holding an ordered list of lessons, each with its own worksheet and extra resources.
+      // Kept additive rather than reshaping curriculum_units/lesson_plans, so the existing "Current
+      // Curriculum Unit" and "Upcoming Lessons" widgets on the parent/student dashboards keep
+      // working unchanged.
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_terms (
+          id BIGSERIAL PRIMARY KEY,
+          class_name TEXT NOT NULL,
+          subject TEXT NOT NULL,
+          term_label TEXT NOT NULL,
+          framework_label TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (class_name, subject, term_label)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_curriculum_terms_class ON curriculum_terms (class_name)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_term_units (
+          id BIGSERIAL PRIMARY KEY,
+          term_id BIGINT NOT NULL REFERENCES curriculum_terms(id) ON DELETE CASCADE,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          title TEXT NOT NULL,
+          description TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_curriculum_term_units_term ON curriculum_term_units (term_id, sort_order)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_unit_lessons (
+          id BIGSERIAL PRIMARY KEY,
+          unit_id BIGINT NOT NULL REFERENCES curriculum_term_units(id) ON DELETE CASCADE,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          title TEXT NOT NULL,
+          objectives TEXT,
+          worksheet_url TEXT,
+          worksheet_title TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_curriculum_unit_lessons_unit ON curriculum_unit_lessons (unit_id, sort_order)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_lesson_resources (
+          id BIGSERIAL PRIMARY KEY,
+          lesson_id BIGINT NOT NULL REFERENCES curriculum_unit_lessons(id) ON DELETE CASCADE,
+          title TEXT NOT NULL,
+          url TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_curriculum_lesson_resources_lesson ON curriculum_lesson_resources (lesson_id)`;
+
+      // Two nullable "updated by" columns rather than one polymorphic pair — a parent or a staff
+      // member can each mark their own child's progress (per the spec: both roles can update this,
+      // unlike the rest of the parent-facing app which is read-only), and a plain FK can't point at
+      // two different tables.
+      await sql`
+        CREATE TABLE IF NOT EXISTS child_lesson_progress (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          lesson_id BIGINT NOT NULL REFERENCES curriculum_unit_lessons(id) ON DELETE CASCADE,
+          status TEXT NOT NULL DEFAULT 'not_started' CHECK (status IN ('not_started', 'in_progress', 'completed')),
+          updated_by_admin_user_id BIGINT REFERENCES admin_users(id),
+          updated_by_customer_id BIGINT REFERENCES customers(id),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (child_id, lesson_id)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_child_lesson_progress_child ON child_lesson_progress (child_id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();
