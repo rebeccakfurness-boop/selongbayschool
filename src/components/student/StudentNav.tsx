@@ -3,6 +3,7 @@ import StudentLogoutButton from '@/components/student/LogoutButton';
 
 const LINKS = [
   { href: '/student', label: 'Schedule' },
+  { href: '/student/curriculum', label: 'Curriculum' },
   { href: '/student/learning', label: 'Work & Resources' },
 ];
 

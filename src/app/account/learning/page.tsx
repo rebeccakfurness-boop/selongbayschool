@@ -29,12 +29,21 @@ import {
 import { getLunchOrdersForChild, type LunchOrderSummaryRow } from '@/lib/lunch-orders';
 import { weekdaysSummaryLabel } from '@/lib/lunch-calc';
 import { getUpcomingOccurrencesForClass, getNotificationPref, type SessionOccurrenceRow } from '@/lib/schedule';
+import {
+  getCurriculumTermsForClass,
+  getCurriculumTermTree,
+  getProgressMapForChild,
+  type CurriculumTerm,
+  type CurriculumTermTree,
+  type LessonProgressStatus,
+} from '@/lib/curriculum';
 import { formatIDR } from '@/lib/site-content';
 import { formatDate } from '@/lib/admin-format';
 import AccountNav from '@/components/account/AccountNav';
 import ParentChildProfileCard from '@/components/account/ParentChildProfileCard';
 import LunchOrderForm from '@/components/account/LunchOrderForm';
 import ParentScheduleSection from '@/components/account/ParentScheduleSection';
+import ParentCurriculumSection from '@/components/account/ParentCurriculumSection';
 
 function todayStr(): string {
   return new Date().toISOString().slice(0, 10);
@@ -81,6 +90,9 @@ interface ChildSectionData {
   lunchOrders: LunchOrderSummaryRow[];
   occurrences: SessionOccurrenceRow[];
   notificationsEnabled: boolean;
+  curriculumTerms: CurriculumTerm[];
+  initialCurriculumTerm: CurriculumTermTree | null;
+  initialCurriculumProgress: [number, LessonProgressStatus][];
 }
 
 export default async function ParentLearningPage() {
@@ -103,7 +115,7 @@ export default async function ParentLearningPage() {
 
     const childSections: ChildSectionData[] = await Promise.all(
       children.map(async (child) => {
-        const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, notificationsEnabled] = await Promise.all([
+        const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, notificationsEnabled, curriculumTerms] = await Promise.all([
           getCurrentCurriculumUnit(child.class_name),
           getUpcomingLessonPlans(child.class_name, 5),
           getWorkSamplesForChild(child.id),
@@ -116,8 +128,16 @@ export default async function ParentLearningPage() {
           getLunchOrdersForChild(child.id),
           getUpcomingOccurrencesForClass(child.class_name, child.schedule_type, from, to),
           customerId ? getNotificationPref(customerId, child.id) : Promise.resolve(false),
+          getCurriculumTermsForClass(child.class_name),
         ]);
-        return { child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, notificationsEnabled };
+        const [initialCurriculumTerm, progressMap] = curriculumTerms.length > 0
+          ? await Promise.all([getCurriculumTermTree(curriculumTerms[0].id), getProgressMapForChild(child.id)])
+          : [null, new Map<number, LessonProgressStatus>()];
+        return {
+          child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments,
+          classroomSubmissions, lunchOrders, occurrences, notificationsEnabled, curriculumTerms,
+          initialCurriculumTerm, initialCurriculumProgress: [...progressMap.entries()],
+        };
       })
     );
 
@@ -148,7 +168,7 @@ function renderLearningPage(
         )}
 
         <div className="flex flex-col gap-12">
-          {childSections.map(({ child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, notificationsEnabled }) => {
+          {childSections.map(({ child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, notificationsEnabled, curriculumTerms, initialCurriculumTerm, initialCurriculumProgress }) => {
             const submissionByAssignment = new Map(classroomSubmissions.map((s) => [s.classroom_assignment_id, s]));
 
             return (
@@ -163,6 +183,17 @@ function renderLearningPage(
                     initialNotificationsEnabled={notificationsEnabled}
                   />
                 </div>
+
+                {curriculumTerms.length > 0 && (
+                  <div className="mt-6">
+                    <ParentCurriculumSection
+                      childId={child.id}
+                      terms={curriculumTerms}
+                      initialTerm={initialCurriculumTerm}
+                      initialProgress={initialCurriculumProgress}
+                    />
+                  </div>
+                )}
 
                 <h2 className="mt-8 font-display text-xl font-semibold text-ink">Learning</h2>
 
