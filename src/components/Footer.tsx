@@ -117,9 +117,6 @@ export default function Footer() {
           <Link href="/terms-of-service" className="hover:text-orange hover:underline">
             Terms of Service
           </Link>
-          <Link href="/teacher/login" className="hover:text-orange hover:underline">
-            Teacher Login
-          </Link>
         </p>
       </div>
     </footer>

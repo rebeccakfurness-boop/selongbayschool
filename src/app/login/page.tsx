@@ -23,6 +23,9 @@ export default function LoginPage() {
         <Button href="/student/login" variant="ghost" fullWidth>
           Student Login
         </Button>
+        <Button href="/teacher/login" variant="ghost" fullWidth>
+          Teacher Login
+        </Button>
       </div>
     </div>
   );
