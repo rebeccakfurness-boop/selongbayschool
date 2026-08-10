@@ -3,10 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-/** Imports the draft Primary 1 Mathematics term from curriculum-seed.ts -- a worked example of
- * the Curriculum Plans feature, explicitly labelled "(draft)" throughout so nobody mistakes it
- * for the school's actual confirmed term plan. Safe to click more than once: the import route
- * checks first and reports back rather than duplicating. */
+/** Imports the draft sample terms from curriculum-seed.ts -- worked examples of the Curriculum
+ * Plans feature spanning Primary 1 through Primary 6 in Mathematics, English and Science (18
+ * programmes total), explicitly labelled "(draft)" throughout so nobody mistakes them for the
+ * school's actual confirmed term plans. Safe to click more than once: the import route checks
+ * first and skips any programme that already exists rather than duplicating. */
 export default function ImportSampleCurriculumButton() {
   const router = useRouter();
   const [importing, setImporting] = useState(false);
@@ -22,9 +23,11 @@ export default function ImportSampleCurriculumButton() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Import failed');
       setResult(
-        data.alreadyImported
-          ? 'Already imported — open Primary 1 · Mathematics · Term 1 (draft) above to review it.'
-          : `Imported ${data.unitsCreated} units and ${data.lessonsCreated} lessons. Every objective and worksheet still needs a teacher's review before use.`
+        data.imported === 0
+          ? 'Already imported — open a programme above to review it.'
+          : `Imported ${data.imported} programme${data.imported === 1 ? '' : 's'} (${data.unitsCreated} units, ${data.lessonsCreated} lessons)${
+              data.skipped ? `, skipped ${data.skipped} already imported` : ''
+            }. Every objective and worksheet still needs a teacher's review before use.`
       );
       router.refresh();
     } catch (err) {
@@ -38,11 +41,11 @@ export default function ImportSampleCurriculumButton() {
     <div className="rounded-md border border-dashed border-teal/40 bg-teal/5 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-ink">Import a draft sample term (Primary 1 · Mathematics)</p>
+          <p className="text-sm font-semibold text-ink">Import draft sample terms (Primary 1–6 · Maths, English, Science)</p>
           <p className="text-xs text-ink-soft">
-            A worked example — 7 units, ~22 lessons, drafted around the Cambridge Primary Mathematics Stage 1
-            framework strands. Explicitly a draft: review every objective before teaching from it, and each
-            lesson still needs its own worksheet attached.
+            Worked examples across all six primary grades and three subjects — 18 programmes, each drafted
+            around the Cambridge Primary framework&apos;s stage-by-stage strands. Explicitly a draft: review
+            every objective before teaching from it, and each lesson still needs its own worksheet attached.
           </p>
         </div>
         <button
@@ -51,7 +54,7 @@ export default function ImportSampleCurriculumButton() {
           disabled={importing}
           className="whitespace-nowrap rounded-full bg-teal px-4 py-2 text-sm font-bold text-white hover:bg-teal-deep disabled:opacity-50"
         >
-          {importing ? 'Importing…' : 'Import sample term'}
+          {importing ? 'Importing…' : 'Import sample terms'}
         </button>
       </div>
       {result && <p className="mt-2 text-xs font-semibold text-teal-deep">{result}</p>}
