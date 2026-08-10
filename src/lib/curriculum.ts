@@ -59,6 +59,18 @@ export async function getCurriculumTermsForClasses(classNames: string[]): Promis
   `) as unknown as CurriculumTerm[];
 }
 
+/** Unlike getCurriculumTermsForClasses, not scoped to any class list — admins need to be able to
+ * find and fix a programme even if its class_name was typed (or imported) with a value that
+ * doesn't exactly match any current child's class, since class_name is free text rather than a
+ * foreign key and a mismatch would otherwise make the programme invisible to everyone. */
+export async function getAllCurriculumTerms(): Promise<CurriculumTerm[]> {
+  return (await sql`
+    SELECT id, class_name, subject, term_label, framework_label
+    FROM curriculum_terms
+    ORDER BY class_name, subject, term_label
+  `) as unknown as CurriculumTerm[];
+}
+
 /** The full term -> units -> lessons -> resources tree in four queries total (not one per unit/
  * lesson), assembled in memory — a term's whole content is small (a handful of units, a few dozen
  * lessons at most), so this is simpler and just as fast as a single deeply-joined query. */

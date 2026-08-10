@@ -29,10 +29,12 @@ export default function CurriculumPlanManager({
   initialTerms,
   classOptions,
   childrenByClass,
+  isAdmin,
 }: {
   initialTerms: CurriculumTerm[];
   classOptions: string[];
   childrenByClass: Record<string, ClassRoster>;
+  isAdmin: boolean;
 }) {
   const router = useRouter();
   const [terms, setTerms] = useState(initialTerms);
@@ -104,6 +106,28 @@ export default function CurriculumPlanManager({
     if (selectedTermId) selectTerm(selectedTermId);
   }
 
+  async function updateTermMeta(
+    termId: number,
+    meta: { className: string; subject: string; termLabel: string; frameworkLabel: string | null }
+  ): Promise<string | null> {
+    const { ok, data } = await apiCall(`/api/admin/curriculum/terms/${termId}`, 'PATCH', meta);
+    if (!ok) return (data.error as string) || 'Failed to update programme';
+    setTerms((prev) =>
+      prev.map((t) =>
+        t.id === termId
+          ? { ...t, class_name: meta.className, subject: meta.subject, term_label: meta.termLabel, framework_label: meta.frameworkLabel }
+          : t
+      )
+    );
+    setTermTree((prev) =>
+      prev && prev.id === termId
+        ? { ...prev, class_name: meta.className, subject: meta.subject, term_label: meta.termLabel, framework_label: meta.frameworkLabel }
+        : prev
+    );
+    router.refresh();
+    return null;
+  }
+
   return (
     <div className="flex flex-col gap-6">
       {error && <p className="font-semibold text-orange-deep">{error}</p>}
@@ -145,18 +169,23 @@ export default function CurriculumPlanManager({
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {terms.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            onClick={() => selectTerm(t.id)}
-            className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
-              selectedTermId === t.id ? 'bg-teal text-white' : 'border border-sand-line bg-paper text-ink hover:border-teal'
-            }`}
-          >
-            {t.class_name} · {t.subject} · {t.term_label}
-          </button>
-        ))}
+        {terms.map((t) => {
+          const unmatched = isAdmin && !classOptions.includes(t.class_name);
+          return (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => selectTerm(t.id)}
+              title={unmatched ? "This class doesn't match any class name in use on a Child Card yet" : undefined}
+              className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+                selectedTermId === t.id ? 'bg-teal text-white' : 'border border-sand-line bg-paper text-ink hover:border-teal'
+              } ${unmatched ? 'border-orange text-orange-deep' : ''}`}
+            >
+              {unmatched && '⚠ '}
+              {t.class_name} · {t.subject} · {t.term_label}
+            </button>
+          );
+        })}
         {terms.length === 0 && <p className="text-sm text-ink-soft">No programmes yet — create one above.</p>}
       </div>
 
@@ -167,8 +196,11 @@ export default function CurriculumPlanManager({
           term={termTree}
           roster={childrenByClass[termTree.class_name] ?? []}
           progressByChild={progressByChild}
+          isAdmin={isAdmin}
+          classOptions={classOptions}
           onDeleteTerm={() => deleteTerm(termTree.id)}
           onRefresh={refreshTermTree}
+          onUpdateMeta={(meta) => updateTermMeta(termTree.id, meta)}
         />
       )}
     </div>
@@ -179,19 +211,60 @@ function TermEditor({
   term,
   roster,
   progressByChild,
+  isAdmin,
+  classOptions,
   onDeleteTerm,
   onRefresh,
+  onUpdateMeta,
 }: {
   term: CurriculumTermTree;
   roster: ClassRoster;
   progressByChild: Map<number, Map<number, LessonProgressStatus>>;
+  isAdmin: boolean;
+  classOptions: string[];
   onDeleteTerm: () => void;
   onRefresh: () => void;
+  onUpdateMeta: (meta: { className: string; subject: string; termLabel: string; frameworkLabel: string | null }) => Promise<string | null>;
 }) {
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [newUnitTitle, setNewUnitTitle] = useState('');
   const [newUnitDescription, setNewUnitDescription] = useState('');
   const [addingUnit, setAddingUnit] = useState(false);
+
+  const [editingMeta, setEditingMeta] = useState(false);
+  const [metaClassName, setMetaClassName] = useState(term.class_name);
+  const [metaSubject, setMetaSubject] = useState(term.subject);
+  const [metaTermLabel, setMetaTermLabel] = useState(term.term_label);
+  const [metaFrameworkLabel, setMetaFrameworkLabel] = useState(term.framework_label ?? '');
+  const [savingMeta, setSavingMeta] = useState(false);
+  const [metaError, setMetaError] = useState<string | null>(null);
+  const unmatchedClass = isAdmin && !classOptions.includes(term.class_name);
+
+  function startEditingMeta() {
+    setMetaClassName(term.class_name);
+    setMetaSubject(term.subject);
+    setMetaTermLabel(term.term_label);
+    setMetaFrameworkLabel(term.framework_label ?? '');
+    setMetaError(null);
+    setEditingMeta(true);
+  }
+
+  async function saveMeta() {
+    setSavingMeta(true);
+    setMetaError(null);
+    const err = await onUpdateMeta({
+      className: metaClassName,
+      subject: metaSubject,
+      termLabel: metaTermLabel,
+      frameworkLabel: metaFrameworkLabel || null,
+    });
+    setSavingMeta(false);
+    if (err) {
+      setMetaError(err);
+    } else {
+      setEditingMeta(false);
+    }
+  }
 
   async function addUnit() {
     setAddingUnit(true);
@@ -210,19 +283,67 @@ function TermEditor({
             {term.class_name} · {term.subject} · {term.term_label}
           </h2>
           {term.framework_label && <p className="text-xs text-ink-soft">{term.framework_label}</p>}
+          {unmatchedClass && !editingMeta && (
+            <p className="mt-1 text-xs font-semibold text-orange-deep">
+              ⚠ &quot;{term.class_name}&quot; doesn&apos;t match any class name in use on a Child Card, so no teacher
+              is scoped to see this yet — edit the class below to fix it.
+            </p>
+          )}
         </div>
-        {confirmingDelete ? (
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-orange-deep">Delete this whole programme?</span>
-            <Button type="button" variant="primary" onClick={onDeleteTerm}>Yes, delete</Button>
-            <button type="button" onClick={() => setConfirmingDelete(false)} className="text-xs font-semibold text-ink-soft hover:underline">Cancel</button>
-          </div>
-        ) : (
-          <button type="button" onClick={() => setConfirmingDelete(true)} className="text-xs font-semibold text-orange-deep hover:underline">
-            Delete programme
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {isAdmin && (
+            <button type="button" onClick={() => (editingMeta ? setEditingMeta(false) : startEditingMeta())} className="text-xs font-semibold text-teal-deep hover:underline">
+              {editingMeta ? 'Cancel' : 'Edit class/subject/term'}
+            </button>
+          )}
+          {confirmingDelete ? (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-orange-deep">Delete this whole programme?</span>
+              <Button type="button" variant="primary" onClick={onDeleteTerm}>Yes, delete</Button>
+              <button type="button" onClick={() => setConfirmingDelete(false)} className="text-xs font-semibold text-ink-soft hover:underline">Cancel</button>
+            </div>
+          ) : (
+            <button type="button" onClick={() => setConfirmingDelete(true)} className="text-xs font-semibold text-orange-deep hover:underline">
+              Delete programme
+            </button>
+          )}
+        </div>
       </div>
+
+      {editingMeta && (
+        <div className="mt-4 rounded-md border border-dashed border-teal/40 bg-teal/5 p-4">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <Field label="Class" htmlFor="meta-class" required>
+              <TextInput id="meta-class" list="meta-class-options" required value={metaClassName} onChange={(e) => setMetaClassName(e.target.value)} />
+              <datalist id="meta-class-options">
+                {classOptions.map((c) => (
+                  <option key={c} value={c} />
+                ))}
+              </datalist>
+            </Field>
+            <Field label="Subject" htmlFor="meta-subject" required>
+              <TextInput id="meta-subject" required value={metaSubject} onChange={(e) => setMetaSubject(e.target.value)} />
+            </Field>
+            <Field label="Term" htmlFor="meta-term" required>
+              <TextInput id="meta-term" required value={metaTermLabel} onChange={(e) => setMetaTermLabel(e.target.value)} />
+            </Field>
+            <Field label="Curriculum framework" htmlFor="meta-framework">
+              <TextInput id="meta-framework" value={metaFrameworkLabel} onChange={(e) => setMetaFrameworkLabel(e.target.value)} />
+            </Field>
+          </div>
+          {metaError && <p className="mt-2 text-xs font-semibold text-orange-deep">{metaError}</p>}
+          <div className="mt-3">
+            <Button
+              type="button"
+              variant="primary"
+              onClick={saveMeta}
+              disabled={savingMeta || !metaClassName.trim() || !metaSubject.trim() || !metaTermLabel.trim()}
+            >
+              {savingMeta ? 'Saving…' : 'Save changes'}
+            </Button>
+          </div>
+        </div>
+      )}
 
       <div className="mt-4 flex flex-col gap-3">
         {term.units.map((unit, i) => (
