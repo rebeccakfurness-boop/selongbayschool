@@ -23,6 +23,12 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json(jsonResponse);
   } catch (err) {
     console.error('[api/admin/lms/upload] failed to authorize upload', err);
-    return NextResponse.json({ error: 'Could not authorize upload.' }, { status: 400 });
+    // The @vercel/blob client SDK collapses any non-2xx response here into its own generic
+    // "Failed to retrieve the client token" -- surfacing the real reason (a BlobError's message
+    // is safe to show; it's never a stack trace or a secret) so whoever hits this next doesn't
+    // have to go spelunking in Vercel's function logs to find out it was e.g. a missing
+    // BLOB_READ_WRITE_TOKEN or an unsupported file type.
+    const message = err instanceof Error ? err.message : 'Could not authorize upload.';
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }
