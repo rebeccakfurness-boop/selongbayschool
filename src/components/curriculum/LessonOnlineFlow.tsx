@@ -126,10 +126,11 @@ export default function LessonOnlineFlow({
       hasExit={hasExit}
       backHref={backHref}
       justCompleted={justCompleted}
+      allStepsDone={stepOrder.every(isStepDone)}
       onOpenStep={(s) => setView(s)}
       onContinue={() => {
         const next = stepOrder.find((s) => !isStepDone(s));
-        setView(next ?? stepOrder[stepOrder.length - 1]);
+        if (next) setView(next);
       }}
     />
   );
@@ -175,6 +176,7 @@ function HubView({
   hasExit,
   backHref,
   justCompleted,
+  allStepsDone,
   onOpenStep,
   onContinue,
 }: {
@@ -186,6 +188,7 @@ function HubView({
   hasExit: boolean;
   backHref: string;
   justCompleted: boolean;
+  allStepsDone: boolean;
   onOpenStep: (s: StepId) => void;
   onContinue: () => void;
 }) {
@@ -261,13 +264,22 @@ function HubView({
       </div>
 
       <div className="mt-8 flex justify-end border-t border-sand-line pt-5">
-        <button
-          type="button"
-          onClick={onContinue}
-          className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-bold text-white hover:bg-ink/85"
-        >
-          Continue lesson →
-        </button>
+        {allStepsDone ? (
+          <Link
+            href={backHref}
+            className="inline-flex items-center gap-2 rounded-full bg-teal px-6 py-3 text-sm font-bold text-white hover:bg-teal-deep"
+          >
+            ✓ Lesson complete — back to all lessons
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={onContinue}
+            className="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-bold text-white hover:bg-ink/85"
+          >
+            Continue lesson →
+          </button>
+        )}
       </div>
     </div>
   );
