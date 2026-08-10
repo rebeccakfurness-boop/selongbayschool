@@ -113,6 +113,22 @@ export async function getProgressMapForChild(childId: number): Promise<Map<numbe
   return new Map(rows.map((r) => [r.lesson_id, r.status]));
 }
 
+/** Same shape as getProgressMapForChild, for every child in one class at once — backs the
+ * authoring page's per-lesson "class progress" list, so a teacher can see and set every one of
+ * their students' progress without a round trip per child. */
+export async function getProgressMapForChildren(childIds: number[]): Promise<Map<number, Map<number, LessonProgressStatus>>> {
+  if (childIds.length === 0) return new Map();
+  const rows = (await sql`
+    SELECT child_id, lesson_id, status FROM child_lesson_progress WHERE child_id = ANY(${childIds})
+  `) as unknown as { child_id: number; lesson_id: number; status: LessonProgressStatus }[];
+  const map = new Map<number, Map<number, LessonProgressStatus>>();
+  for (const r of rows) {
+    if (!map.has(r.child_id)) map.set(r.child_id, new Map());
+    map.get(r.child_id)!.set(r.lesson_id, r.status);
+  }
+  return map;
+}
+
 /** Both a parent and a teacher/admin can call this (agreed scope), so the caller passes exactly
  * one of adminUserId/customerId identifying who made the change — never both, never neither. */
 export async function setChildLessonProgress(
