@@ -421,4 +421,347 @@ export const MATHEMATICS_TERMS: SampleTermSeed[] = [
       },
     ],
   },
+
+  // Secondary 6–10: continues the same Stage-by-stage logic into Cambridge Lower Secondary (Stages
+  // 7–9, roughly ages 11–14) and then Cambridge IGCSE's two-year syllabus (which isn't stage-
+  // numbered the same way) for Secondary 9–10. If the school's own Secondary numbering doesn't line
+  // up with this age mapping, the framework label and content density are the things to adjust —
+  // the class_name is what actually has to match a real Child Card class either way.
+  {
+    className: 'Secondary 6',
+    subject: 'Mathematics',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge Lower Secondary Mathematics, Stage 7 (draft)',
+    units: [
+      {
+        title: 'Integers and Place Value',
+        description: 'Extending number work to negative numbers, powers, and prime factorisation.',
+        lessons: [
+          { title: 'Directed numbers', objectives: 'Add, subtract, multiply, and divide positive and negative integers, and order them on a number line.' },
+          { title: 'Powers, roots and primes', objectives: 'Use index notation for positive integer powers, find square and cube roots, and identify prime numbers.' },
+          { title: 'Factors and multiples', objectives: 'Find the highest common factor and lowest common multiple of two numbers using prime factorisation.' },
+        ],
+      },
+      {
+        title: 'Expressions and Formulae',
+        description: 'Moving from arithmetic to algebraic notation.',
+        lessons: [
+          { title: 'Algebraic notation', objectives: 'Use letters to represent numbers and write simple algebraic expressions from word descriptions.' },
+          { title: 'Simplifying expressions', objectives: 'Collect like terms to simplify an algebraic expression.' },
+          { title: 'Substitution into formulae', objectives: 'Substitute positive and negative numbers into simple formulae and evaluate them.' },
+        ],
+      },
+      {
+        title: 'Fractions, Decimals and Percentages',
+        description: 'Fluency across all three representations and conversions between them.',
+        lessons: [
+          { title: 'Equivalence and ordering', objectives: 'Convert between fractions, decimals, and percentages, and order a mixed set of values.' },
+          { title: 'Calculating with fractions', objectives: 'Add, subtract, multiply, and divide fractions, including mixed numbers.' },
+          { title: 'Percentages of amounts', objectives: 'Calculate a percentage of a given amount, including without a calculator using known equivalences.' },
+        ],
+      },
+      {
+        title: 'Equations and Inequalities',
+        description: 'Solving for an unknown, and a first look at inequalities.',
+        lessons: [
+          { title: 'Solving one- and two-step equations', objectives: 'Solve simple linear equations with the unknown on one side.' },
+          { title: 'Solving equations with brackets', objectives: 'Solve linear equations that require expanding a bracket first.' },
+          { title: 'Simple inequalities', objectives: 'Represent a simple inequality on a number line and find integer solutions.' },
+        ],
+      },
+      {
+        title: 'Angles and Shapes',
+        description: 'Angle facts and the properties of 2D shapes.',
+        lessons: [
+          { title: 'Angle facts', objectives: 'Use angles on a straight line, angles at a point, and vertically opposite angles to find missing angles.' },
+          { title: 'Angles in polygons', objectives: 'Calculate the sum of interior angles in a polygon and find missing angles in regular polygons.' },
+          { title: 'Area and perimeter', objectives: 'Calculate the area and perimeter of triangles, parallelograms, and trapezia.' },
+        ],
+      },
+      {
+        title: 'Sequences and Graphs',
+        description: 'Describing patterns and plotting straight lines.',
+        lessons: [
+          { title: 'Linear sequences', objectives: 'Generate a linear sequence from a term-to-term rule and describe the rule for a given sequence.' },
+          { title: 'Plotting straight-line graphs', objectives: 'Plot points from a table of values and draw the straight-line graph of a simple linear function.' },
+        ],
+      },
+      {
+        title: 'Statistics and Probability',
+        description: 'Collecting data and a first formal look at probability.',
+        lessons: [
+          { title: 'Averages and range', objectives: 'Calculate the mean, median, mode, and range of a data set and choose which is most appropriate.' },
+          { title: 'The probability scale', objectives: 'Use the 0–1 probability scale and calculate simple probabilities for equally likely outcomes.' },
+        ],
+      },
+    ],
+  },
+  {
+    className: 'Secondary 7',
+    subject: 'Mathematics',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge Lower Secondary Mathematics, Stage 8 (draft)',
+    units: [
+      {
+        title: 'Number and Powers',
+        description: 'Index laws, standard form, and deeper work with factors.',
+        lessons: [
+          { title: 'Index laws', objectives: 'Use the laws of indices for multiplying and dividing terms with the same base.' },
+          { title: 'Introducing standard form', objectives: 'Write large and small numbers in standard form and convert between standard and ordinary form.' },
+          { title: 'HCF and LCM problem-solving', objectives: 'Use highest common factor and lowest common multiple to solve real-life problems.' },
+        ],
+      },
+      {
+        title: 'Expressions, Equations and Formulae',
+        description: 'Expanding brackets and solving less straightforward equations.',
+        lessons: [
+          { title: 'Expanding a single bracket', objectives: 'Expand an expression with a single bracket and simplify the result.' },
+          { title: 'Solving two-step equations', objectives: 'Solve linear equations with the unknown on both sides of the equation.' },
+          { title: 'Rearranging simple formulae', objectives: 'Change the subject of a simple formula involving one operation.' },
+        ],
+      },
+      {
+        title: 'Fractions, Decimals, Percentages and Ratio',
+        description: 'Compound percentages and proportional reasoning.',
+        lessons: [
+          { title: 'Percentage increase and decrease', objectives: 'Calculate a percentage increase or decrease using a multiplier.' },
+          { title: 'Direct proportion', objectives: 'Solve problems involving direct proportion using the unitary method.' },
+          { title: 'Sharing in a ratio', objectives: 'Divide a quantity into two or more parts in a given ratio.' },
+        ],
+      },
+      {
+        title: 'Sequences, Functions and Graphs',
+        description: 'Finding rules for sequences and graphing functions.',
+        lessons: [
+          { title: 'Finding the nth term', objectives: 'Find the nth term of a linear sequence and use it to generate terms.' },
+          { title: 'Graphs of linear functions', objectives: 'Plot and interpret the graph of a linear function, identifying gradient and intercept.' },
+        ],
+      },
+      {
+        title: 'Angles, Shapes and Measures',
+        description: 'Circle facts and an introduction to congruence and similarity.',
+        lessons: [
+          { title: 'Circle vocabulary and facts', objectives: 'Name the parts of a circle and calculate its circumference and area.' },
+          { title: 'Congruent shapes', objectives: 'Identify congruent shapes and state the conditions for congruence.' },
+          { title: 'Introducing similarity', objectives: 'Identify similar shapes and use a scale factor to find missing lengths.' },
+        ],
+      },
+      {
+        title: 'Transformations and Constructions',
+        description: 'The four transformations, plus basic constructions with a ruler and compass.',
+        lessons: [
+          { title: 'Reflection and rotation', objectives: 'Reflect and rotate a shape on a coordinate grid, describing the transformation fully.' },
+          { title: 'Translation and enlargement', objectives: 'Translate a shape by a given vector and enlarge a shape by a given scale factor.' },
+          { title: 'Basic constructions', objectives: 'Construct a perpendicular bisector and an angle bisector using a ruler and compass.' },
+        ],
+      },
+      {
+        title: 'Statistics and Probability',
+        description: 'Grouped data, scatter graphs, and combining probabilities.',
+        lessons: [
+          { title: 'Grouped frequency tables', objectives: 'Organise continuous data into a grouped frequency table and draw a frequency diagram.' },
+          { title: 'Scatter graphs and correlation', objectives: 'Draw a scatter graph, describe the correlation shown, and draw a line of best fit.' },
+          { title: 'Combined events', objectives: 'List all outcomes of two combined events systematically and calculate simple combined probabilities.' },
+        ],
+      },
+    ],
+  },
+  {
+    className: 'Secondary 8',
+    subject: 'Mathematics',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge Lower Secondary Mathematics, Stage 9 (draft)',
+    units: [
+      {
+        title: 'Number',
+        description: 'Index laws, standard form fluency, and a first look at surds.',
+        lessons: [
+          { title: 'Laws of indices, including negative and zero powers', objectives: 'Apply the laws of indices to expressions with negative, zero, and fractional powers.' },
+          { title: 'Calculating with standard form', objectives: 'Add, subtract, multiply, and divide numbers given in standard form.' },
+          { title: 'Introducing surds', objectives: 'Simplify a surd and recognise when a calculation gives an exact irrational answer.' },
+        ],
+      },
+      {
+        title: 'Algebraic Manipulation',
+        description: 'Expanding double brackets and factorising.',
+        lessons: [
+          { title: 'Expanding double brackets', objectives: 'Expand the product of two linear brackets and simplify the result.' },
+          { title: 'Factorising into a single bracket', objectives: 'Factorise an expression by taking out the highest common factor.' },
+          { title: 'Factorising quadratics', objectives: 'Factorise a simple quadratic expression of the form x squared plus bx plus c.' },
+        ],
+      },
+      {
+        title: 'Equations, Inequalities and Formulae',
+        description: 'Harder equations and rearranging formulae with more than one operation.',
+        lessons: [
+          { title: 'Equations with fractions', objectives: 'Solve a linear equation that includes a fraction, by clearing the denominator first.' },
+          { title: 'Solving and graphing inequalities', objectives: 'Solve a linear inequality and represent the solution set on a number line.' },
+          { title: 'Rearranging formulae', objectives: 'Change the subject of a formula involving two or more operations.' },
+        ],
+      },
+      {
+        title: 'Ratio, Proportion and Rates of Change',
+        description: 'Direct and inverse proportion, and compound measures.',
+        lessons: [
+          { title: 'Direct and inverse proportion', objectives: 'Distinguish direct from inverse proportion and solve problems involving each.' },
+          { title: 'Compound measures', objectives: 'Calculate speed, density, and pressure, and convert between related units.' },
+        ],
+      },
+      {
+        title: 'Geometry and Measures',
+        description: "Pythagoras' theorem and a first introduction to trigonometry.",
+        lessons: [
+          { title: "Pythagoras' theorem", objectives: "Use Pythagoras' theorem to find a missing side in a right-angled triangle." },
+          { title: 'Introducing trigonometry', objectives: 'Use sine, cosine, and tangent to find a missing side or angle in a right-angled triangle.' },
+          { title: 'Circle theorems: an introduction', objectives: 'State and apply the angle in a semicircle and angle at the centre circle theorems.' },
+        ],
+      },
+      {
+        title: 'Graphs',
+        description: 'A first look at curved graphs alongside familiar real-life graphs.',
+        lessons: [
+          { title: 'Plotting quadratic graphs', objectives: 'Complete a table of values and plot the graph of a simple quadratic function.' },
+          { title: 'Real-life graphs', objectives: 'Interpret distance-time and other real-life graphs, including the meaning of gradient.' },
+        ],
+      },
+      {
+        title: 'Probability and Statistics',
+        description: 'Tree diagrams and an introduction to cumulative frequency.',
+        lessons: [
+          { title: 'Tree diagrams', objectives: 'Draw and use a probability tree diagram for two independent events.' },
+          { title: 'Cumulative frequency: an introduction', objectives: 'Construct a cumulative frequency table and estimate the median from it.' },
+        ],
+      },
+    ],
+  },
+  {
+    className: 'Secondary 9',
+    subject: 'Mathematics',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge IGCSE Mathematics, Year 1 (draft)',
+    units: [
+      {
+        title: 'Number',
+        description: 'Standard form, surds, and bounds — precision groundwork for IGCSE.',
+        lessons: [
+          { title: 'Standard form fluency', objectives: 'Solve problems requiring calculation with numbers in standard form, with and without a calculator.' },
+          { title: 'Simplifying and calculating with surds', objectives: 'Simplify surd expressions and rationalise a denominator involving a single surd.' },
+          { title: 'Upper and lower bounds', objectives: 'Find the upper and lower bounds of a rounded measurement and use them in a calculation.' },
+        ],
+      },
+      {
+        title: 'Algebra I',
+        description: 'Manipulating expressions, including algebraic fractions.',
+        lessons: [
+          { title: 'Factorising, including difference of two squares', objectives: 'Factorise quadratic expressions, including recognising the difference of two squares.' },
+          { title: 'Algebraic fractions', objectives: 'Simplify an algebraic fraction and add or subtract two algebraic fractions.' },
+        ],
+      },
+      {
+        title: 'Equations and Inequalities',
+        description: 'Quadratics and pairs of simultaneous equations.',
+        lessons: [
+          { title: 'Solving quadratic equations by factorising', objectives: 'Solve a quadratic equation by factorising it.' },
+          { title: 'Solving simultaneous linear equations', objectives: 'Solve a pair of simultaneous linear equations by substitution or elimination.' },
+        ],
+      },
+      {
+        title: 'Coordinate Geometry and Graphs',
+        description: 'Lines, gradients, and the graphs of common function families.',
+        lessons: [
+          { title: 'Equation of a straight line', objectives: 'Find the equation of a straight line given its gradient and a point, or two points.' },
+          { title: 'Graphs of quadratic and cubic functions', objectives: 'Sketch and interpret the graphs of quadratic and cubic functions, identifying key features.' },
+        ],
+      },
+      {
+        title: 'Geometry',
+        description: 'Full trigonometry and the circle theorems.',
+        lessons: [
+          { title: 'Trigonometry in right-angled triangles', objectives: 'Use trigonometric ratios to solve problems involving right-angled triangles, including angles of elevation and depression.' },
+          { title: 'Circle theorems', objectives: 'Apply the standard circle theorems to find missing angles, with reasons.' },
+        ],
+      },
+      {
+        title: 'Mensuration',
+        description: 'Area and volume of more complex shapes, and similarity in 2D and 3D.',
+        lessons: [
+          { title: 'Volume and surface area of prisms and cylinders', objectives: 'Calculate the volume and surface area of prisms and cylinders.' },
+          { title: 'Similarity: length, area and volume scale factors', objectives: 'Use linear scale factor to find corresponding area and volume scale factors for similar shapes.' },
+        ],
+      },
+      {
+        title: 'Statistics and Probability',
+        description: 'Histograms and conditional probability with tree diagrams.',
+        lessons: [
+          { title: 'Histograms with unequal class widths', objectives: 'Construct and interpret a histogram for grouped data with unequal class widths, using frequency density.' },
+          { title: 'Conditional probability', objectives: 'Use a tree diagram to calculate conditional probabilities for dependent events.' },
+        ],
+      },
+    ],
+  },
+  {
+    className: 'Secondary 10',
+    subject: 'Mathematics',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge IGCSE Mathematics, Year 2 (draft)',
+    units: [
+      {
+        title: 'Number and Algebra Review and Extension',
+        description: 'Consolidating and extending Year 1 number and algebra skills.',
+        lessons: [
+          { title: 'Indices and surds review', objectives: 'Apply the laws of indices and surd manipulation fluently to more demanding problems.' },
+          { title: 'Algebraic fractions and equations', objectives: 'Solve an equation that involves algebraic fractions.' },
+        ],
+      },
+      {
+        title: 'Functions',
+        description: 'Function notation and combining functions.',
+        lessons: [
+          { title: 'Function notation', objectives: 'Use function notation to evaluate a function for a given input.' },
+          { title: 'Composite and inverse functions', objectives: 'Find a composite function and the inverse of a given function.' },
+        ],
+      },
+      {
+        title: 'Further Equations',
+        description: 'The quadratic formula and mixed simultaneous equations.',
+        lessons: [
+          { title: 'The quadratic formula', objectives: 'Solve a quadratic equation using the quadratic formula, including cases with no factorable solution.' },
+          { title: 'Completing the square', objectives: 'Solve a quadratic equation by completing the square.' },
+          { title: 'Simultaneous equations: one linear, one quadratic', objectives: 'Solve a pair of simultaneous equations where one is linear and the other quadratic, by substitution.' },
+        ],
+      },
+      {
+        title: 'Trigonometry',
+        description: 'The sine and cosine rules, and 3D applications.',
+        lessons: [
+          { title: 'The sine rule and cosine rule', objectives: 'Use the sine rule and cosine rule to find missing sides and angles in non-right-angled triangles.' },
+          { title: 'Trigonometry in three dimensions', objectives: 'Solve a three-dimensional problem involving right-angled trigonometry.' },
+        ],
+      },
+      {
+        title: 'Vectors and Transformations',
+        description: 'Vector notation and geometric proof using vectors.',
+        lessons: [
+          { title: 'Vector notation and arithmetic', objectives: 'Add, subtract, and scale vectors, and find the magnitude of a vector.' },
+          { title: 'Vector geometry', objectives: 'Use vectors to prove simple geometric facts, such as that two lines are parallel.' },
+        ],
+      },
+      {
+        title: 'Further Statistics',
+        description: 'Cumulative frequency graphs, box plots, and a first look at spread.',
+        lessons: [
+          { title: 'Cumulative frequency graphs and box plots', objectives: 'Draw a cumulative frequency graph, construct a box plot from it, and compare two distributions.' },
+          { title: 'Measures of spread', objectives: 'Calculate the interquartile range and use it alongside the range to compare distributions.' },
+        ],
+      },
+      {
+        title: 'Exam Preparation and Problem-Solving',
+        description: 'Bringing the whole syllabus together under exam conditions.',
+        lessons: [
+          { title: 'Mixed problem-solving practice', objectives: 'Apply number, algebra, and geometry skills together to solve multi-step, exam-style problems.' },
+          { title: 'Exam technique', objectives: 'Practise timing, command words, and showing method clearly on past-paper-style questions.' },
+        ],
+      },
+    ],
+  },
 ];

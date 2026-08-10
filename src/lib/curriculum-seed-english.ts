@@ -388,4 +388,327 @@ export const ENGLISH_TERMS: SampleTermSeed[] = [
       },
     ],
   },
+
+  // Secondary 6–10: see the equivalent note in curriculum-seed-mathematics.ts for the assumed
+  // Secondary-number-to-Cambridge-stage mapping this continues.
+  {
+    className: 'Secondary 6',
+    subject: 'English',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge Lower Secondary English, Stage 7 (draft)',
+    units: [
+      {
+        title: 'Reading Fiction',
+        description: 'Inference and characterisation in a longer, more demanding text.',
+        lessons: [
+          { title: 'Making inferences', objectives: 'Infer a character’s feelings or motives from their actions and dialogue, supporting inferences with evidence from the text.' },
+          { title: 'How writers build character', objectives: 'Identify the methods a writer uses to build a character, such as description, dialogue, and action.' },
+        ],
+      },
+      {
+        title: 'Reading Non-Fiction',
+        description: 'Distinguishing fact from opinion and reading with purpose in mind.',
+        lessons: [
+          { title: 'Fact versus opinion', objectives: 'Distinguish statements of fact from statements of opinion in a non-fiction text.' },
+          { title: 'Purpose and audience', objectives: 'Identify the purpose and intended audience of a non-fiction text and how this shapes its language.' },
+        ],
+      },
+      {
+        title: 'Narrative Writing',
+        description: 'Building a complete short story with a clear structure.',
+        lessons: [
+          { title: 'Setting the scene', objectives: 'Use descriptive language to establish a vivid setting at the start of a story.' },
+          { title: 'Structuring a short story', objectives: 'Plan and write a short story with a clear opening, build-up, climax, and resolution.' },
+        ],
+      },
+      {
+        title: 'Grammar and Punctuation',
+        description: 'A structured review of word classes, sentence types, and punctuation.',
+        lessons: [
+          { title: 'Word classes review', objectives: 'Identify nouns, verbs, adjectives, and adverbs in a sentence and explain the effect of word choice.' },
+          { title: 'Simple, compound and complex sentences', objectives: 'Write and identify simple, compound, and complex sentences, and vary sentence type for effect.' },
+        ],
+      },
+      {
+        title: 'Poetry',
+        description: 'Exploring form and imagery, and reading poems aloud.',
+        lessons: [
+          { title: 'Poetic form and structure', objectives: 'Identify features of a poem’s form, such as stanza, rhyme, and rhythm, and comment on their effect.' },
+          { title: 'Reading poetry aloud', objectives: 'Read a poem aloud with attention to pace, pause, and emphasis to convey meaning.' },
+        ],
+      },
+      {
+        title: 'Speaking and Listening',
+        description: 'Structured talk and active listening in a group.',
+        lessons: [
+          { title: 'Giving a short presentation', objectives: 'Plan and deliver a short, structured presentation to the class on a chosen topic.' },
+          { title: 'Listening and responding in discussion', objectives: 'Listen actively in a group discussion and build on others’ points with relevant contributions.' },
+        ],
+      },
+      {
+        title: 'Non-Fiction Writing',
+        description: 'Writing for real-world purposes: letters, articles, and instructions.',
+        lessons: [
+          { title: 'Writing a formal letter', objectives: 'Write a formal letter using appropriate layout, tone, and conventions.' },
+          { title: 'Writing clear instructions', objectives: 'Write a set of instructions in a logical order using imperative verbs and sequencing language.' },
+        ],
+      },
+    ],
+  },
+  {
+    className: 'Secondary 7',
+    subject: 'English',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge Lower Secondary English, Stage 8 (draft)',
+    units: [
+      {
+        title: 'Reading Fiction',
+        description: 'Viewpoint and theme in extended fiction.',
+        lessons: [
+          { title: 'Narrative viewpoint', objectives: 'Identify first- and third-person narrative viewpoint and discuss the effect of the writer’s choice.' },
+          { title: 'Identifying theme', objectives: 'Identify a central theme in a text and support this with evidence from different parts of the text.' },
+        ],
+      },
+      {
+        title: 'Reading Non-Fiction and Media',
+        description: 'Spotting bias and the techniques writers use to persuade.',
+        lessons: [
+          { title: 'Recognising bias', objectives: 'Identify bias in a non-fiction or media text and explain how language choices reveal it.' },
+          { title: 'Rhetorical devices', objectives: 'Identify rhetorical devices such as rhetorical questions, repetition, and emotive language, and their intended effect.' },
+        ],
+      },
+      {
+        title: 'Narrative and Descriptive Writing',
+        description: 'Building tension and writing convincing dialogue.',
+        lessons: [
+          { title: 'Building tension', objectives: 'Use sentence length, pacing, and description to build tension in a piece of narrative writing.' },
+          { title: 'Writing convincing dialogue', objectives: 'Write dialogue that reveals character and moves the story forward, punctuated correctly.' },
+        ],
+      },
+      {
+        title: 'Grammar and Punctuation',
+        description: 'Complex sentences and the active and passive voice.',
+        lessons: [
+          { title: 'Complex sentences and subordination', objectives: 'Use subordinate clauses to add detail and vary sentence structure.' },
+          { title: 'Active and passive voice', objectives: 'Identify active and passive voice and choose deliberately between them for effect.' },
+        ],
+      },
+      {
+        title: 'Poetry',
+        description: 'Comparing two poems on a similar theme.',
+        lessons: [
+          { title: 'Comparing poems', objectives: 'Compare how two poems treat a similar theme, referring to language, form, and structure.' },
+          { title: 'Poetic techniques', objectives: 'Identify simile, metaphor, and personification in a poem and explain their effect.' },
+        ],
+      },
+      {
+        title: 'Speaking and Listening',
+        description: 'Formal debate and structured argument.',
+        lessons: [
+          { title: 'Taking part in a debate', objectives: 'Argue a given position in a structured debate, responding respectfully to counter-arguments.' },
+          { title: 'A formal presentation with questions', objectives: 'Deliver a formal presentation and respond to questions from the audience.' },
+        ],
+      },
+      {
+        title: 'Persuasive and Discursive Writing',
+        description: 'Building an argument and weighing up both sides.',
+        lessons: [
+          { title: 'Writing to persuade', objectives: 'Write a persuasive piece using rhetorical devices and a clear line of argument.' },
+          { title: 'Writing a balanced discussion', objectives: 'Write a discursive piece that presents both sides of an argument before reaching a reasoned conclusion.' },
+        ],
+      },
+    ],
+  },
+  {
+    className: 'Secondary 8',
+    subject: 'English',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge Lower Secondary English, Stage 9 (draft)',
+    units: [
+      {
+        title: 'Reading Fiction',
+        description: 'Reading a longer text with attention to context.',
+        lessons: [
+          { title: 'Reading in context', objectives: 'Explain how the historical or cultural context of a text shapes its meaning.' },
+          { title: 'Tracking character development', objectives: 'Track how a character changes across a longer text and explain what causes the change.' },
+        ],
+      },
+      {
+        title: 'Reading Non-Fiction and Media',
+        description: 'Analysing rhetoric closely and comparing two texts.',
+        lessons: [
+          { title: 'Analysing rhetoric', objectives: 'Analyse how a writer combines rhetorical devices to build a persuasive argument.' },
+          { title: 'Comparing two non-fiction texts', objectives: 'Compare the viewpoint and techniques of two non-fiction texts on a related topic.' },
+        ],
+      },
+      {
+        title: 'Creative Writing',
+        description: 'Extended narrative writing with a distinctive voice.',
+        lessons: [
+          { title: 'Developing a distinctive voice', objectives: 'Write in a distinctive narrative voice appropriate to a chosen character or narrator.' },
+          { title: 'Planning an extended narrative', objectives: 'Plan a longer narrative with a clear structure across several stages.' },
+        ],
+      },
+      {
+        title: 'Grammar and Style',
+        description: 'Deliberately varying sentence structure for effect.',
+        lessons: [
+          { title: 'Varying sentence structure for effect', objectives: 'Deliberately vary sentence length and structure to control pace and emphasis in writing.' },
+          { title: 'Precise word choice', objectives: 'Select precise vocabulary to convey a specific tone or connotation.' },
+        ],
+      },
+      {
+        title: 'Poetry',
+        description: 'Analysing an unseen poem independently.',
+        lessons: [
+          { title: 'Approaching an unseen poem', objectives: 'Apply a structured method to analyse an unseen poem’s meaning, form, and language.' },
+          { title: 'Writing an analytical paragraph', objectives: 'Write a well-structured analytical paragraph about a poem, using embedded quotations.' },
+        ],
+      },
+      {
+        title: 'Speaking and Listening',
+        description: 'Formal debate with prepared and improvised elements.',
+        lessons: [
+          { title: 'A formal debate', objectives: 'Take part in a formal debate, using evidence to support points and responding to opposing arguments.' },
+          { title: 'Oral analysis of a text', objectives: 'Present a short oral analysis of a text’s key features to the class.' },
+        ],
+      },
+      {
+        title: 'Transactional Writing',
+        description: 'Writing formal letters, reports, and speeches for real purposes.',
+        lessons: [
+          { title: 'Writing a formal report', objectives: 'Write a formal report with clear sections, headings, and an appropriate register.' },
+          { title: 'Writing a speech', objectives: 'Write a speech designed to be delivered aloud, using techniques suited to a listening audience.' },
+        ],
+      },
+    ],
+  },
+  {
+    className: 'Secondary 9',
+    subject: 'English',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge IGCSE English, Year 1 (draft)',
+    units: [
+      {
+        title: 'Reading: Extended Fiction Texts',
+        description: 'Close analysis of extended prose extracts.',
+        lessons: [
+          { title: 'Close reading of an extract', objectives: 'Analyse a prose extract closely, commenting on language, structure, and effect on the reader.' },
+          { title: 'Comparing characters across a text', objectives: 'Compare how two characters are presented across an extended text.' },
+        ],
+      },
+      {
+        title: 'Reading: Non-Fiction and Media Texts',
+        description: 'Comparing viewpoint and technique across paired texts.',
+        lessons: [
+          { title: 'Comparing viewpoints', objectives: 'Compare the viewpoints presented in two non-fiction texts on a related topic.' },
+          { title: 'Evaluating writers’ techniques', objectives: 'Evaluate how effectively a writer uses language and structure to achieve their purpose.' },
+        ],
+      },
+      {
+        title: 'Directed and Transactional Writing',
+        description: 'Writing articles, speeches, and letters in exam-style directed tasks.',
+        lessons: [
+          { title: 'Writing an article from source material', objectives: 'Write an article that selects and adapts information from given source material for a new audience and purpose.' },
+          { title: 'Writing a speech from source material', objectives: 'Write a speech that transforms given source material into a persuasive spoken form.' },
+        ],
+      },
+      {
+        title: 'Descriptive and Narrative Writing',
+        description: 'Crafting original writing for effect, exam-style.',
+        lessons: [
+          { title: 'Descriptive writing from a stimulus', objectives: 'Write a descriptive piece inspired by a visual or written stimulus, using varied sentence structures and precise vocabulary.' },
+          { title: 'Narrative writing under timed conditions', objectives: 'Plan and write a complete short narrative within a set time limit.' },
+        ],
+      },
+      {
+        title: 'Language Analysis',
+        description: 'Analysing how writers use language to create effect.',
+        lessons: [
+          { title: 'Analysing word choice and imagery', objectives: 'Analyse a writer’s choice of words and imagery, explaining the effect created and supporting this with terminology.' },
+          { title: 'Analysing sentence structure', objectives: 'Explain how a writer’s sentence structures contribute to tone and pace.' },
+        ],
+      },
+      {
+        title: 'Summary Writing',
+        description: 'Selecting and synthesising information concisely.',
+        lessons: [
+          { title: 'Selecting relevant information', objectives: 'Identify the information relevant to a given summary task from a longer text.' },
+          { title: 'Writing a concise summary', objectives: 'Write a concise summary in continuous prose, in the student’s own words, within a word limit.' },
+        ],
+      },
+      {
+        title: 'Speaking and Listening',
+        description: 'Individual talk and structured discussion.',
+        lessons: [
+          { title: 'An individual talk', objectives: 'Prepare and deliver an individual talk on a chosen subject, structured for a listening audience.' },
+          { title: 'Responding in discussion', objectives: 'Respond to questions and challenges during discussion with relevant, well-reasoned answers.' },
+        ],
+      },
+    ],
+  },
+  {
+    className: 'Secondary 10',
+    subject: 'English',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge IGCSE English, Year 2 (draft)',
+    units: [
+      {
+        title: 'Exam Reading Skills Review',
+        description: 'Applying reading skills to unseen exam-style texts under time pressure.',
+        lessons: [
+          { title: 'Timed unseen fiction extract', objectives: 'Answer exam-style questions on an unseen fiction extract within a set time limit.' },
+          { title: 'Timed unseen non-fiction extract', objectives: 'Answer exam-style questions on an unseen non-fiction extract within a set time limit.' },
+        ],
+      },
+      {
+        title: 'Exam Writing Skills Review',
+        description: 'Directed writing tasks practised under timed, exam-realistic conditions.',
+        lessons: [
+          { title: 'Timed directed writing task', objectives: 'Complete a directed writing task from source material within a set time limit, addressing all bullet points.' },
+          { title: 'Reviewing writing against a mark scheme', objectives: 'Review a piece of writing against an exam mark scheme and identify specific improvements.' },
+        ],
+      },
+      {
+        title: 'Comparing Non-Fiction Texts',
+        description: 'Practising the cross-text comparison question found in exams.',
+        lessons: [
+          { title: 'Comparing tone and attitude across texts', objectives: 'Compare the tone and attitude of two non-fiction texts, using comparative language.' },
+          { title: 'Structuring a comparison answer', objectives: 'Structure a written comparison of two texts clearly, integrating evidence from both.' },
+        ],
+      },
+      {
+        title: 'Descriptive and Narrative Writing Practice',
+        description: 'Repeated, timed practice of original creative writing.',
+        lessons: [
+          { title: 'Timed descriptive writing practice', objectives: 'Produce a polished descriptive piece within exam time constraints.' },
+          { title: 'Timed narrative writing practice', objectives: 'Produce a polished narrative piece within exam time constraints.' },
+        ],
+      },
+      {
+        title: 'Wider Reading and Independent Study',
+        description: 'Building reading stamina and independent analytical skills.',
+        lessons: [
+          { title: 'Independent extended reading', objectives: 'Read an extended text independently and prepare notes on its key themes and techniques.' },
+          { title: 'Presenting independent reading', objectives: 'Present findings from independent reading clearly to a small group.' },
+        ],
+      },
+      {
+        title: 'Speaking and Listening Assessment Preparation',
+        description: 'Preparing for a formally assessed talk and discussion.',
+        lessons: [
+          { title: 'Preparing an assessed talk', objectives: 'Plan and rehearse a talk that meets the requirements of a formal speaking assessment.' },
+          { title: 'Handling assessed discussion', objectives: 'Practise responding to follow-up questions clearly and confidently in an assessed discussion.' },
+        ],
+      },
+      {
+        title: 'Exam Preparation and Technique',
+        description: 'Full past papers, timing, and command-word awareness.',
+        lessons: [
+          { title: 'A full timed past paper', objectives: 'Complete a full past exam paper within the official time allowance.' },
+          { title: 'Command words and exam technique', objectives: 'Interpret exam command words correctly and allocate time appropriately across a paper.' },
+        ],
+      },
+    ],
+  },
 ];

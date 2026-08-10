@@ -391,4 +391,329 @@ export const SCIENCE_TERMS: SampleTermSeed[] = [
       },
     ],
   },
+
+  // Secondary 6–10: see the equivalent note in curriculum-seed-mathematics.ts for the assumed
+  // Secondary-number-to-Cambridge-stage mapping this continues. Kept as a single combined "Science"
+  // subject through Secondary 8, then organised as IGCSE Combined/Coordinated Science strands for
+  // Secondary 9–10, matching how the primary and lower-secondary strands were already structured.
+  {
+    className: 'Secondary 6',
+    subject: 'Science',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge Lower Secondary Science, Stage 7 (draft)',
+    units: [
+      {
+        title: 'Biology: Cells and Organisation',
+        description: 'The building blocks of living things, from cell to organism.',
+        lessons: [
+          { title: 'Animal and plant cells', objectives: 'Identify and label the main structures of animal and plant cells and state their functions.' },
+          { title: 'Cells, tissues, organs and systems', objectives: 'Explain how cells are organised into tissues, organs, and organ systems.' },
+        ],
+      },
+      {
+        title: 'Biology: Reproduction in Plants',
+        description: 'Flower structure and how plants reproduce.',
+        lessons: [
+          { title: 'Flower structure', objectives: 'Label the parts of a flower and describe the function of each.' },
+          { title: 'Pollination and seed dispersal', objectives: 'Describe the process of pollination and explain methods of seed dispersal.' },
+        ],
+      },
+      {
+        title: 'Chemistry: States of Matter and the Particle Model',
+        description: 'Using the particle model to explain everyday observations.',
+        lessons: [
+          { title: 'The particle model', objectives: 'Use the particle model to explain the properties of solids, liquids, and gases.' },
+          { title: 'Changes of state', objectives: 'Explain melting, freezing, evaporation, and condensation in terms of particle behaviour and energy.' },
+        ],
+      },
+      {
+        title: 'Chemistry: Elements, Compounds and Mixtures',
+        description: 'Distinguishing pure substances from mixtures.',
+        lessons: [
+          { title: 'Elements and the periodic table', objectives: 'Explain what an element is and describe the basic layout of the periodic table.' },
+          { title: 'Compounds and mixtures', objectives: 'Distinguish compounds from mixtures and describe simple methods for separating mixtures.' },
+        ],
+      },
+      {
+        title: 'Physics: Forces and Motion',
+        description: 'Describing and measuring forces.',
+        lessons: [
+          { title: 'Identifying forces', objectives: 'Identify the forces acting in a given situation and represent them with force arrows.' },
+          { title: 'Balanced and unbalanced forces', objectives: 'Explain the effect of balanced and unbalanced forces on the motion of an object.' },
+        ],
+      },
+      {
+        title: 'Physics: Energy',
+        description: 'Energy stores and transfers in everyday situations.',
+        lessons: [
+          { title: 'Energy stores and transfers', objectives: 'Identify the energy stores involved in a given situation and describe how energy is transferred between them.' },
+          { title: 'Energy resources', objectives: 'Classify energy resources as renewable or non-renewable and evaluate their advantages and disadvantages.' },
+        ],
+      },
+      {
+        title: 'Scientific Enquiry and Investigation Skills',
+        description: 'Planning and carrying out a fair test with confidence.',
+        lessons: [
+          { title: 'Planning a fair test', objectives: 'Identify variables to control, change, and measure when planning a fair test.' },
+          { title: 'Presenting and evaluating results', objectives: 'Present results in an appropriate table and graph, and evaluate the reliability of an investigation.' },
+        ],
+      },
+    ],
+  },
+  {
+    className: 'Secondary 7',
+    subject: 'Science',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge Lower Secondary Science, Stage 8 (draft)',
+    units: [
+      {
+        title: 'Biology: Nutrition and Digestion',
+        description: 'How the body obtains and processes nutrients.',
+        lessons: [
+          { title: 'Nutrients and a balanced diet', objectives: 'Name the main nutrient groups and explain what makes a diet balanced.' },
+          { title: 'The digestive system', objectives: 'Describe the journey of food through the digestive system and the role of each main organ.' },
+        ],
+      },
+      {
+        title: 'Biology: Respiration and Gas Exchange',
+        description: 'Breathing, gas exchange, and respiration distinguished.',
+        lessons: [
+          { title: 'The breathing system', objectives: 'Describe the structure of the breathing system and the mechanism of breathing in and out.' },
+          { title: 'Aerobic respiration', objectives: 'Write a word equation for aerobic respiration and explain why organisms need it.' },
+        ],
+      },
+      {
+        title: 'Chemistry: Atoms, Elements and the Periodic Table',
+        description: 'A first formal look at atomic structure.',
+        lessons: [
+          { title: 'Atomic structure', objectives: 'Describe the basic structure of an atom, including protons, neutrons, and electrons.' },
+          { title: 'Groups and periods', objectives: 'Explain how elements are arranged into groups and periods in the periodic table and what this shows about their properties.' },
+        ],
+      },
+      {
+        title: 'Chemistry: Chemical Reactions',
+        description: 'Recognising and representing chemical change.',
+        lessons: [
+          { title: 'Signs of a chemical reaction', objectives: 'Identify the signs that a chemical reaction has taken place, such as gas production or a temperature change.' },
+          { title: 'Word equations', objectives: 'Write word equations for simple chemical reactions, including combustion.' },
+        ],
+      },
+      {
+        title: 'Physics: Electricity and Magnetism',
+        description: 'Circuits, current, and magnetic fields.',
+        lessons: [
+          { title: 'Series and parallel circuits', objectives: 'Draw and construct series and parallel circuits using standard circuit symbols.' },
+          { title: 'Magnets and magnetic fields', objectives: 'Describe the pattern of a magnetic field around a bar magnet and predict how two magnets will interact.' },
+        ],
+      },
+      {
+        title: 'Physics: Waves — Sound and Light',
+        description: 'How sound and light travel and behave.',
+        lessons: [
+          { title: 'How sound travels', objectives: 'Explain how sound travels as a vibration through a medium and relate pitch and volume to wave properties.' },
+          { title: 'Reflection and refraction of light', objectives: 'Describe and explain the reflection and refraction of light using ray diagrams.' },
+        ],
+      },
+      {
+        title: 'Scientific Enquiry and Investigation Skills',
+        description: 'Using and evaluating a wider range of investigative methods.',
+        lessons: [
+          { title: 'Choosing appropriate equipment', objectives: 'Select and justify the equipment needed to measure a given variable accurately.' },
+          { title: 'Identifying anomalous results', objectives: 'Identify an anomalous result in a data set and suggest a reason for it.' },
+        ],
+      },
+    ],
+  },
+  {
+    className: 'Secondary 8',
+    subject: 'Science',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge Lower Secondary Science, Stage 9 (draft)',
+    units: [
+      {
+        title: 'Biology: Human Reproduction and Puberty',
+        description: 'Human development from puberty onward, taught sensitively.',
+        lessons: [
+          { title: 'Changes during puberty', objectives: 'Describe the physical and emotional changes that occur during puberty.' },
+          { title: 'The human reproductive system', objectives: 'Describe the structure and function of the human male and female reproductive systems.' },
+        ],
+      },
+      {
+        title: 'Biology: Ecosystems and Interdependence',
+        description: 'How organisms depend on each other and their environment.',
+        lessons: [
+          { title: 'Food chains and food webs', objectives: 'Construct a food web from given information and identify producers, consumers, and predators.' },
+          { title: 'Interdependence in an ecosystem', objectives: 'Explain how a change to one part of an ecosystem can affect other organisms within it.' },
+        ],
+      },
+      {
+        title: 'Chemistry: Acids, Bases and Chemical Reactions',
+        description: 'The pH scale and neutralisation.',
+        lessons: [
+          { title: 'Acids, bases and the pH scale', objectives: 'Use the pH scale and an indicator to classify substances as acidic, neutral, or alkaline.' },
+          { title: 'Neutralisation reactions', objectives: 'Describe a neutralisation reaction between an acid and a base and give everyday examples of its use.' },
+        ],
+      },
+      {
+        title: 'Chemistry: Metals and Reactivity',
+        description: 'Comparing how different metals react.',
+        lessons: [
+          { title: 'Reactions of metals', objectives: 'Describe the reactions of common metals with water and dilute acid.' },
+          { title: 'The reactivity series', objectives: 'Use the results of reactions to place metals in order of reactivity.' },
+        ],
+      },
+      {
+        title: 'Physics: Energy Resources and Transfers',
+        description: 'A closer look at efficiency and energy resources.',
+        lessons: [
+          { title: 'Efficiency of energy transfers', objectives: 'Explain why no energy transfer is perfectly efficient and identify where energy is wasted in a system.' },
+          { title: 'Comparing energy resources', objectives: 'Compare renewable and non-renewable energy resources in terms of cost, reliability, and environmental impact.' },
+        ],
+      },
+      {
+        title: 'Physics: Forces, Pressure and Density',
+        description: 'Quantifying forces spread over an area or through a volume.',
+        lessons: [
+          { title: 'Calculating pressure', objectives: 'Calculate pressure from force and area, and explain everyday applications of increasing or decreasing pressure.' },
+          { title: 'Calculating density', objectives: 'Calculate the density of an object from its mass and volume, and use density to explain floating and sinking.' },
+        ],
+      },
+      {
+        title: 'Scientific Enquiry and Investigation Skills',
+        description: 'Independent investigation with a focus on evaluation.',
+        lessons: [
+          { title: 'Planning an independent investigation', objectives: 'Plan a full investigation independently, including a prediction and a method that controls relevant variables.' },
+          { title: 'Evaluating an investigation', objectives: 'Evaluate the method and results of an investigation and suggest specific improvements.' },
+        ],
+      },
+    ],
+  },
+  {
+    className: 'Secondary 9',
+    subject: 'Science',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge IGCSE Combined Science, Year 1 (draft)',
+    units: [
+      {
+        title: 'Biology: Cell Biology and Movement of Substances',
+        description: 'Cell structure in depth, and how substances move into and out of cells.',
+        lessons: [
+          { title: 'Specialised cells', objectives: 'Describe how the structure of specialised cells, such as red blood cells and root hair cells, relates to their function.' },
+          { title: 'Diffusion and osmosis', objectives: 'Explain diffusion and osmosis and describe their importance in living organisms.' },
+        ],
+      },
+      {
+        title: 'Biology: Human Biology — Nutrition, Circulation',
+        description: 'The digestive and circulatory systems in more depth.',
+        lessons: [
+          { title: 'Enzymes in digestion', objectives: 'Explain the role of enzymes in digestion, including the effect of temperature and pH on enzyme activity.' },
+          { title: 'The circulatory system', objectives: 'Describe the structure of the heart and blood vessels and explain the path of blood through the double circulatory system.' },
+        ],
+      },
+      {
+        title: 'Chemistry: The Particulate Nature of Matter and Atomic Structure',
+        description: 'Atomic structure and bonding, building toward IGCSE depth.',
+        lessons: [
+          { title: 'Atomic structure and isotopes', objectives: 'Describe atomic structure in terms of subatomic particles and explain what an isotope is.' },
+          { title: 'Ionic and covalent bonding', objectives: 'Describe the formation of ionic and covalent bonds and relate bonding type to a substance’s properties.' },
+        ],
+      },
+      {
+        title: 'Chemistry: Stoichiometry and Chemical Formulae',
+        description: 'Chemical formulae, equations, and simple calculations.',
+        lessons: [
+          { title: 'Chemical formulae and equations', objectives: 'Write and balance chemical equations for given reactions.' },
+          { title: 'Introducing moles', objectives: 'Use the concept of the mole to carry out simple quantitative calculations involving mass.' },
+        ],
+      },
+      {
+        title: 'Physics: Motion, Forces and Energy',
+        description: 'Quantitative motion and force calculations.',
+        lessons: [
+          { title: 'Speed, distance and time calculations', objectives: 'Calculate speed, distance, and time, and interpret distance-time and speed-time graphs.' },
+          { title: "Newton's laws of motion", objectives: "Apply Newton's laws of motion to explain the effect of resultant forces on moving objects." },
+        ],
+      },
+      {
+        title: 'Physics: Thermal Physics',
+        description: 'Heat transfer and its practical consequences.',
+        lessons: [
+          { title: 'Conduction, convection and radiation', objectives: 'Explain heat transfer by conduction, convection, and radiation, with everyday examples of each.' },
+          { title: 'Specific heat capacity', objectives: 'Explain what specific heat capacity means and use it to compare how substances heat up.' },
+        ],
+      },
+      {
+        title: 'Practical and Investigative Skills',
+        description: 'Building the practical skills assessed at IGCSE.',
+        lessons: [
+          { title: 'Recording and processing data', objectives: 'Record data to an appropriate precision and process it, including calculating averages and identifying trends.' },
+          { title: 'Evaluating experimental method', objectives: 'Identify sources of error in an experimental method and suggest how to improve accuracy.' },
+        ],
+      },
+    ],
+  },
+  {
+    className: 'Secondary 10',
+    subject: 'Science',
+    termLabel: 'Term 1 (draft)',
+    frameworkLabel: 'Cambridge IGCSE Combined Science, Year 2 (draft)',
+    units: [
+      {
+        title: 'Biology: Coordination and Response, Reproduction',
+        description: 'The nervous and endocrine systems, and human reproduction in depth.',
+        lessons: [
+          { title: 'The nervous system and reflexes', objectives: 'Describe the structure of a reflex arc and explain why reflex actions are important.' },
+          { title: 'Hormones and the endocrine system', objectives: 'Describe the role of key hormones in regulating processes in the human body.' },
+        ],
+      },
+      {
+        title: 'Biology: Ecology and Human Influences on Ecosystems',
+        description: 'Human impact on the environment, at IGCSE depth.',
+        lessons: [
+          { title: 'Energy flow and nutrient cycles', objectives: 'Describe energy flow through a food chain and explain the carbon cycle.' },
+          { title: 'Human impact on ecosystems', objectives: 'Evaluate the impact of human activity, such as deforestation and pollution, on ecosystems.' },
+        ],
+      },
+      {
+        title: 'Chemistry: Electricity and Chemistry (Electrolysis), Chemical Energetics',
+        description: 'Electrolysis and energy changes in reactions.',
+        lessons: [
+          { title: 'Electrolysis', objectives: 'Explain the process of electrolysis and predict the products formed at each electrode for a given electrolyte.' },
+          { title: 'Exothermic and endothermic reactions', objectives: 'Distinguish exothermic from endothermic reactions and sketch a simple energy profile diagram for each.' },
+        ],
+      },
+      {
+        title: 'Chemistry: Organic Chemistry Fundamentals',
+        description: 'An introduction to carbon-based compounds.',
+        lessons: [
+          { title: 'Alkanes and alkenes', objectives: 'Describe the structure of simple alkanes and alkenes and explain the key difference between them.' },
+          { title: 'Simple reactions of organic compounds', objectives: 'Describe combustion of alkanes and the addition reaction of alkenes with bromine water.' },
+        ],
+      },
+      {
+        title: 'Physics: Electricity and Magnetism (Advanced)',
+        description: 'Quantitative circuit calculations and electromagnetic induction.',
+        lessons: [
+          { title: 'Current, voltage and resistance', objectives: 'Use the relationship between current, voltage, and resistance to solve circuit problems.' },
+          { title: 'Electromagnetic induction', objectives: 'Describe how a changing magnetic field can induce a current, and give an everyday application.' },
+        ],
+      },
+      {
+        title: 'Physics: Radioactivity and Earth Physics',
+        description: 'Nuclear physics and the structure of the Earth.',
+        lessons: [
+          { title: 'Radioactive decay', objectives: 'Describe alpha, beta, and gamma radiation and explain the concept of half-life.' },
+          { title: 'The structure of the Earth', objectives: "Describe the structure of the Earth's crust, mantle, and core, and outline the theory of plate tectonics." },
+        ],
+      },
+      {
+        title: 'Exam Preparation and Practical Technique',
+        description: 'Consolidating two years of practical and theory skills for the exam.',
+        lessons: [
+          { title: 'Practical technique review', objectives: 'Demonstrate correct use of common laboratory equipment and techniques assessed in practical exams.' },
+          { title: 'Timed exam-style questions', objectives: 'Answer a set of timed, exam-style questions drawing on biology, chemistry, and physics content together.' },
+        ],
+      },
+    ],
+  },
 ];
