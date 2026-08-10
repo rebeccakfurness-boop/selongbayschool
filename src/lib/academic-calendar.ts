@@ -125,7 +125,16 @@ export async function regenerateScheduleOccurrences(opts?: { classScheduleId?: n
   // them from ever being reconsidered). Bounded to today-forward instead, so a change made now can
   // never rewrite what already happened.
   const today = new Date().toISOString().slice(0, 10);
+  if (patterns.length === 0) return result;
 
+  // All date math happens in memory first (cheap), so the database work below is a small, fixed
+  // number of round trips no matter how many patterns or how long the term is — a real school's
+  // terms x classes easily produces thousands of (pattern, date) pairs, and awaiting one INSERT and
+  // one SELECT per pair (the original version of this function) took long enough to blow past
+  // Vercel's function timeout, which looked to the browser like Save just hung forever. Same lesson
+  // already learned once in this codebase for the timetable import route (see its unnest() comment).
+  const validDatesByPattern = new Map<number, Set<string>>();
+  const toUpsert: { classScheduleId: number; date: string; startsAt: string; endsAt: string }[] = [];
   for (const pattern of patterns) {
     const validDates = new Set<string>();
     for (const term of terms) {
@@ -137,39 +146,50 @@ export async function regenerateScheduleOccurrences(opts?: { classScheduleId?: n
         validDates.add(date);
       }
     }
-
-    const staleRows = (await sql`
-      SELECT id, occurrence_date::text FROM schedule_session_occurrences
-      WHERE class_schedule_id = ${pattern.id} AND manually_edited = false
-        AND occurrence_date >= ${today}
-    `) as unknown as { id: number; occurrence_date: string }[];
-
-    for (const row of staleRows) {
-      if (!validDates.has(row.occurrence_date)) {
-        await sql`DELETE FROM schedule_session_occurrences WHERE id = ${row.id}`;
-        result.deleted += 1;
-      }
-    }
-
+    validDatesByPattern.set(pattern.id, validDates);
     for (const date of validDates) {
-      const startsAt = buildSchoolTimestamp(date, pattern.start_time);
-      const endsAt = buildSchoolTimestamp(date, pattern.end_time);
-      const rows = (await sql`
-        INSERT INTO schedule_session_occurrences (class_schedule_id, occurrence_date, starts_at, ends_at)
-        VALUES (${pattern.id}, ${date}, ${startsAt}, ${endsAt})
-        ON CONFLICT (class_schedule_id, occurrence_date) DO UPDATE
-          SET starts_at = EXCLUDED.starts_at, ends_at = EXCLUDED.ends_at
-          WHERE schedule_session_occurrences.manually_edited = false
-        RETURNING (xmax = 0) AS inserted
-      `) as unknown as { inserted: boolean }[];
+      toUpsert.push({
+        classScheduleId: pattern.id,
+        date,
+        startsAt: buildSchoolTimestamp(date, pattern.start_time),
+        endsAt: buildSchoolTimestamp(date, pattern.end_time),
+      });
+    }
+  }
 
-      if (rows.length === 0) {
-        result.skippedManuallyEdited += 1;
-      } else if (rows[0].inserted) {
-        result.created += 1;
-      } else {
-        result.updated += 1;
-      }
+  const patternIds = patterns.map((p) => p.id);
+  const existingRows = (await sql`
+    SELECT id, class_schedule_id, occurrence_date::text FROM schedule_session_occurrences
+    WHERE class_schedule_id = ANY(${patternIds}) AND manually_edited = false AND occurrence_date >= ${today}
+  `) as unknown as { id: number; class_schedule_id: number; occurrence_date: string }[];
+
+  const staleIds = existingRows
+    .filter((row) => !validDatesByPattern.get(row.class_schedule_id)?.has(row.occurrence_date))
+    .map((row) => row.id);
+  if (staleIds.length > 0) {
+    await sql`DELETE FROM schedule_session_occurrences WHERE id = ANY(${staleIds})`;
+    result.deleted = staleIds.length;
+  }
+
+  if (toUpsert.length > 0) {
+    const rows = (await sql`
+      INSERT INTO schedule_session_occurrences (class_schedule_id, occurrence_date, starts_at, ends_at)
+      SELECT * FROM unnest(
+        ${toUpsert.map((r) => r.classScheduleId)}::bigint[],
+        ${toUpsert.map((r) => r.date)}::date[],
+        ${toUpsert.map((r) => r.startsAt)}::timestamptz[],
+        ${toUpsert.map((r) => r.endsAt)}::timestamptz[]
+      )
+      ON CONFLICT (class_schedule_id, occurrence_date) DO UPDATE
+        SET starts_at = EXCLUDED.starts_at, ends_at = EXCLUDED.ends_at
+        WHERE schedule_session_occurrences.manually_edited = false
+      RETURNING (xmax = 0) AS inserted
+    `) as unknown as { inserted: boolean }[];
+
+    result.skippedManuallyEdited = toUpsert.length - rows.length;
+    for (const row of rows) {
+      if (row.inserted) result.created += 1;
+      else result.updated += 1;
     }
   }
 
