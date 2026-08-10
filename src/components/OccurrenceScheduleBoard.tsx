@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import type { SessionOccurrenceRow } from '@/lib/schedule';
 import { DAY_ORDER, DAY_LABELS, type DayOfWeek } from '@/lib/class-schedule';
 import { SCHOOL_TIMEZONE_LABEL, formatSchoolTime, formatViewerTime } from '@/lib/academic-calendar';
+import { colorForSubject } from '@/lib/schedule-colors';
 
 function formatOccurrenceDateLabel(dateStr: string): string {
   return new Intl.DateTimeFormat('en-US', { weekday: 'long', day: 'numeric', month: 'short', timeZone: 'UTC' }).format(
@@ -36,29 +37,6 @@ function schoolClock24(iso: string): string {
   return new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(
     new Date(iso)
   );
-}
-
-/** A small, fixed palette so the same subject always gets the same colour across every render —
- * loosely coordinated with the site's own palette (teal/orange/sand/aqua) with a few extra pastel
- * hues added, since a real timetable usually has more distinct subjects than the brand palette
- * has colours for. */
-const SUBJECT_PALETTE = [
-  '#fdf1a8', // soft yellow
-  '#aef2ee', // aqua
-  '#f3b9c1', // rose
-  '#c9c2f2', // lavender
-  '#bfe3c2', // sage
-  '#fcd9a8', // apricot
-  '#a9d3f2', // sky
-  '#e6c8ee', // orchid
-  '#d7e39a', // lime
-  '#f0c6a8', // clay
-];
-
-function colorForSubject(subject: string): string {
-  let hash = 0;
-  for (let i = 0; i < subject.length; i++) hash = (hash * 31 + subject.charCodeAt(i)) | 0;
-  return SUBJECT_PALETTE[Math.abs(hash) % SUBJECT_PALETTE.length];
 }
 
 function weekRangeLabel(mondayKey: string, daysPresent: DayOfWeek[]): string {
