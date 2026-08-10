@@ -29,7 +29,9 @@ export default async function StudentHomePage() {
   `) as unknown as { child_full_name: string; child_nickname: string | null; class_name: string | null; schedule_type: ScheduleType | null }[];
 
   const from = todayStr();
-  const to = addDaysStr(from, 14);
+  // Wide enough for a few weeks of Prev/Next navigation on the timetable grid, not just "this
+  // week" — OccurrenceScheduleBoard groups this into per-week pages client-side.
+  const to = addDaysStr(from, 56);
   const occurrences = await getUpcomingOccurrencesForClass(child?.class_name ?? null, child?.schedule_type ?? null, from, to);
 
   return (

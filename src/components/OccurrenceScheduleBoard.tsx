@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { SessionOccurrenceRow } from '@/lib/schedule';
+import { DAY_ORDER, DAY_LABELS, type DayOfWeek } from '@/lib/class-schedule';
 import { SCHOOL_TIMEZONE_LABEL, formatSchoolTime, formatViewerTime } from '@/lib/academic-calendar';
 
 function formatOccurrenceDateLabel(dateStr: string): string {
@@ -10,14 +11,63 @@ function formatOccurrenceDateLabel(dateStr: string): string {
   );
 }
 
-function groupByDate(occurrences: SessionOccurrenceRow[]): Map<string, SessionOccurrenceRow[]> {
-  const map = new Map<string, SessionOccurrenceRow[]>();
-  for (const o of occurrences) {
-    const list = map.get(o.occurrence_date) ?? [];
-    list.push(o);
-    map.set(o.occurrence_date, list);
-  }
-  return map;
+const DAY_TO_OFFSET: Record<DayOfWeek, number> = {
+  monday: 0,
+  tuesday: 1,
+  wednesday: 2,
+  thursday: 3,
+  friday: 4,
+  saturday: 5,
+  sunday: 6,
+};
+
+/** The Monday (as "YYYY-MM-DD") of the calendar week a given occurrence falls in — the key used
+ * to group occurrences into one grid ("this week") at a time, with Prev/Next to move between
+ * weeks that actually have sessions in them. */
+function mondayKeyFor(occurrence: SessionOccurrenceRow): string {
+  const d = new Date(`${occurrence.occurrence_date}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() - DAY_TO_OFFSET[occurrence.day_of_week]);
+  return d.toISOString().slice(0, 10);
+}
+
+/** "9:00 AM"-style school-local time isn't sortable as a string (AM/PM), so rows are ordered by
+ * this separate 24-hour rendering instead — display still uses formatSchoolTime(). */
+function schoolClock24(iso: string): string {
+  return new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: 'Asia/Makassar' }).format(
+    new Date(iso)
+  );
+}
+
+/** A small, fixed palette so the same subject always gets the same colour across every render —
+ * loosely coordinated with the site's own palette (teal/orange/sand/aqua) with a few extra pastel
+ * hues added, since a real timetable usually has more distinct subjects than the brand palette
+ * has colours for. */
+const SUBJECT_PALETTE = [
+  '#fdf1a8', // soft yellow
+  '#aef2ee', // aqua
+  '#f3b9c1', // rose
+  '#c9c2f2', // lavender
+  '#bfe3c2', // sage
+  '#fcd9a8', // apricot
+  '#a9d3f2', // sky
+  '#e6c8ee', // orchid
+  '#d7e39a', // lime
+  '#f0c6a8', // clay
+];
+
+function colorForSubject(subject: string): string {
+  let hash = 0;
+  for (let i = 0; i < subject.length; i++) hash = (hash * 31 + subject.charCodeAt(i)) | 0;
+  return SUBJECT_PALETTE[Math.abs(hash) % SUBJECT_PALETTE.length];
+}
+
+function weekRangeLabel(mondayKey: string, daysPresent: DayOfWeek[]): string {
+  const monday = new Date(`${mondayKey}T00:00:00Z`);
+  const lastOffset = daysPresent.length > 0 ? Math.max(...daysPresent.map((d) => DAY_TO_OFFSET[d])) : 4;
+  const last = new Date(monday);
+  last.setUTCDate(last.getUTCDate() + lastOffset);
+  const fmt = (d: Date) => new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(d);
+  return `${fmt(monday)} – ${fmt(last)}`;
 }
 
 interface Props {
@@ -32,10 +82,11 @@ interface Props {
   };
 }
 
-/** Read-only weekly schedule grid built off real dated occurrences (not the raw weekly pattern) —
- * shows school-local (WITA) time alongside the viewer's own auto-detected local time, since parents
- * and students may be in different timezones. Clicking a session opens its detail (teacher, lesson
- * plan, join link) rather than editing anything — there are no edit controls here at all, hidden or
+/** Read-only weekly timetable — a Time x Day grid (like the school's own spreadsheet timetable),
+ * one week at a time with Prev/Next to move between weeks, built off real dated occurrences (not
+ * the raw weekly pattern) so a click always shows that specific date's teacher/lesson plan/Meet
+ * link. Shows school-local (WITA) time alongside the viewer's own auto-detected local time, since
+ * parents and students may be in different timezones. No edit controls here at all, hidden or
  * disabled, matching the spec's "no edit controls visible" requirement for parent/student views. */
 export default function OccurrenceScheduleBoard({ occurrences, title, emptyMessage, notifications }: Props) {
   const [selected, setSelected] = useState<SessionOccurrenceRow | null>(null);
@@ -48,13 +99,44 @@ export default function OccurrenceScheduleBoard({ occurrences, title, emptyMessa
   }, []);
   const viewerIsSchoolTimeZone = viewerTimeZone === 'Asia/Makassar';
 
-  const byDate = groupByDate(occurrences);
-  const dates = [...byDate.keys()].sort();
+  const weeks = useMemo(() => {
+    const map = new Map<string, SessionOccurrenceRow[]>();
+    for (const o of occurrences) {
+      const key = mondayKeyFor(o);
+      const list = map.get(key) ?? [];
+      list.push(o);
+      map.set(key, list);
+    }
+    return map;
+  }, [occurrences]);
+  const weekKeys = useMemo(() => [...weeks.keys()].sort(), [weeks]);
+  const [weekIndex, setWeekIndex] = useState(0);
+  const clampedIndex = Math.min(weekIndex, Math.max(weekKeys.length - 1, 0));
+  const currentWeekKey = weekKeys[clampedIndex];
+  const weekOccurrences = useMemo(
+    () => (currentWeekKey ? weeks.get(currentWeekKey)! : []),
+    [weeks, currentWeekKey]
+  );
+
+  const daysPresent = DAY_ORDER.filter((day) => weekOccurrences.some((o) => o.day_of_week === day));
+
+  const rows = useMemo(() => {
+    const seen = new Map<string, string>(); // rowKey (24h sort key) -> display label
+    for (const o of weekOccurrences) {
+      const key = schoolClock24(o.starts_at);
+      if (!seen.has(key)) seen.set(key, `${formatSchoolTime(o.starts_at)}–${formatSchoolTime(o.ends_at)}`);
+    }
+    return [...seen.entries()].sort(([a], [b]) => a.localeCompare(b));
+  }, [weekOccurrences]);
+
+  function cellFor(day: DayOfWeek, rowKey: string): SessionOccurrenceRow | undefined {
+    return weekOccurrences.find((o) => o.day_of_week === day && schoolClock24(o.starts_at) === rowKey);
+  }
 
   return (
     <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-display text-lg font-semibold text-teal-deep">{title ?? 'Upcoming Sessions'}</h2>
+        <h2 className="font-display text-lg font-semibold text-teal-deep">{title ?? 'Weekly Schedule'}</h2>
         {notifications && (
           <label className="flex items-center gap-2 text-xs font-semibold text-ink-soft">
             <input
@@ -74,48 +156,74 @@ export default function OccurrenceScheduleBoard({ occurrences, title, emptyMessa
         </p>
       )}
 
-      {dates.length === 0 ? (
+      {weekKeys.length === 0 ? (
         <p className="mt-4 text-sm text-ink-soft">{emptyMessage ?? 'No upcoming sessions scheduled.'}</p>
       ) : (
-        <div className="mt-4 flex flex-col gap-4">
-          {dates.map((date) => (
-            <div key={date}>
-              <h3 className="font-display text-sm font-bold text-ink">{formatOccurrenceDateLabel(date)}</h3>
-              <ul className="mt-2 flex flex-col gap-2 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-3">
-                {byDate.get(date)!.map((o) => (
-                  <li key={o.occurrence_id}>
-                    <button
-                      type="button"
-                      onClick={() => setSelected(o)}
-                      className="w-full rounded-sm border border-sand-line bg-cream/40 p-3 text-left transition hover:border-teal"
-                    >
-                      <div className="font-semibold text-ink">{o.subject}</div>
-                      <div className="text-xs text-ink-soft">
-                        {formatSchoolTime(o.starts_at)}–{formatSchoolTime(o.ends_at)} {SCHOOL_TIMEZONE_LABEL}
-                        {!viewerIsSchoolTimeZone && viewerTimeZone && (
-                          <>
-                            {' '}
-                            <span className="text-ink-soft/70">
-                              ({formatViewerTime(o.starts_at, viewerTimeZone)}–{formatViewerTime(o.ends_at, viewerTimeZone)} your time)
-                            </span>
-                          </>
-                        )}
-                      </div>
-                      {o.teacher_label && <div className="text-xs text-ink-soft">{o.teacher_label}</div>}
-                      <span
-                        className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[11px] font-bold ${
-                          o.format === 'online' ? 'bg-teal/15 text-teal-deep' : 'bg-orange/20 text-orange-deep'
-                        }`}
-                      >
-                        {o.format === 'online' ? 'Online' : 'In person'}
-                      </span>
-                    </button>
-                  </li>
+        <>
+          <div className="mt-4 flex items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => setWeekIndex((i) => Math.max(i - 1, 0))}
+              disabled={clampedIndex === 0}
+              className="rounded-full border border-sand-line px-3 py-1 text-sm font-semibold text-ink hover:border-teal disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              &larr; Prev week
+            </button>
+            <span className="text-sm font-semibold text-ink">{weekRangeLabel(currentWeekKey, daysPresent)}</span>
+            <button
+              type="button"
+              onClick={() => setWeekIndex((i) => Math.min(i + 1, weekKeys.length - 1))}
+              disabled={clampedIndex === weekKeys.length - 1}
+              className="rounded-full border border-sand-line px-3 py-1 text-sm font-semibold text-ink hover:border-teal disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              Next week &rarr;
+            </button>
+          </div>
+
+          <div className="mt-4 overflow-x-auto rounded-md border border-sand-line">
+            <table className="w-full min-w-[640px] border-collapse text-sm">
+              <thead>
+                <tr className="bg-sand/40">
+                  <th className="border border-sand-line px-3 py-2 text-left font-bold text-ink-soft">Time</th>
+                  {daysPresent.map((day) => (
+                    <th key={day} className="border border-sand-line px-3 py-2 text-center font-bold text-ink-soft">
+                      {DAY_LABELS[day]}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map(([rowKey, rowLabel]) => (
+                  <tr key={rowKey}>
+                    <td className="whitespace-nowrap border border-sand-line bg-sand/20 px-3 py-2 font-semibold text-ink-soft">
+                      {rowLabel}
+                    </td>
+                    {daysPresent.map((day) => {
+                      const cell = cellFor(day, rowKey);
+                      return (
+                        <td key={day} className="border border-sand-line p-0 align-top">
+                          {cell ? (
+                            <button
+                              type="button"
+                              onClick={() => setSelected(cell)}
+                              style={{ backgroundColor: colorForSubject(cell.subject) }}
+                              className="flex h-full w-full flex-col gap-0.5 px-3 py-2 text-left transition hover:brightness-95"
+                            >
+                              <span className="font-semibold text-ink">{cell.subject}</span>
+                              {cell.teacher_label && <span className="text-xs text-ink/70">{cell.teacher_label}</span>}
+                            </button>
+                          ) : (
+                            <div className="px-3 py-2 text-center text-xs text-ink-soft">&nbsp;</div>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
                 ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {selected && (

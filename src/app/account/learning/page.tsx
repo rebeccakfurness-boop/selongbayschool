@@ -97,7 +97,9 @@ export default async function ParentLearningPage() {
     const lunchConfigured = Boolean(lunchSettings && lunchSettings.normal_price_idr > 0 && lunchSettings.large_price_idr > 0);
 
     const from = todayStr();
-    const to = addDaysStr(from, 14);
+    // Wide enough for a few weeks of Prev/Next navigation on the timetable grid, not just "this
+    // week" — OccurrenceScheduleBoard groups this into per-week pages client-side.
+    const to = addDaysStr(from, 56);
 
     const childSections: ChildSectionData[] = await Promise.all(
       children.map(async (child) => {
