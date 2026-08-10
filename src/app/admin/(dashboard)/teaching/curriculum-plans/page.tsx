@@ -3,6 +3,7 @@ import { getCurrentStaff, getAssignedClasses } from '@/lib/current-staff';
 import { getCurriculumTermsForClasses } from '@/lib/curriculum';
 import TeachingTabs from '@/components/admin/TeachingTabs';
 import CurriculumPlanManager, { type ClassRoster } from '@/components/admin/CurriculumPlanManager';
+import ImportSampleCurriculumButton from '@/components/admin/ImportSampleCurriculumButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,6 +42,11 @@ export default async function CurriculumPlansPage() {
         </div>
         <TeachingTabs active="curriculumPlans" />
       </div>
+      {staff.role === 'admin' && (
+        <div className="mt-6">
+          <ImportSampleCurriculumButton />
+        </div>
+      )}
       <div className="mt-6">
         <CurriculumPlanManager initialTerms={terms} classOptions={classOptions} childrenByClass={childrenByClass} />
       </div>
