@@ -147,7 +147,17 @@ function groupByClassBand(roster: BoardChild[]): { key: string; label: string; c
     }));
 }
 
-function Column({ columnId, roster, draggable = true }: { columnId: ColumnId; roster: BoardChild[]; draggable?: boolean }) {
+function Column({
+  columnId,
+  roster,
+  draggable = true,
+  searching = false,
+}: {
+  columnId: ColumnId;
+  roster: BoardChild[];
+  draggable?: boolean;
+  searching?: boolean;
+}) {
   const { setNodeRef, isOver } = useDroppable({ id: columnId });
   const label = columnId === 'inactive' ? 'Inactive' : STATUS_LEGEND[columnId].label;
   // Full Time is the one column split into Kindergarten/Primary/Secondary sub-sections — every
@@ -181,7 +191,7 @@ function Column({ columnId, roster, draggable = true }: { columnId: ColumnId; ro
         : roster.map((child) => <ChildCard key={child.id} child={child} draggable={draggable} />)}
       {roster.length === 0 && (
         <div className="rounded-md border border-dashed border-sand-line p-3 text-center text-xs text-ink-soft">
-          Drop here
+          {searching ? 'No matches' : 'Drop here'}
         </div>
       )}
     </div>
@@ -195,13 +205,25 @@ function columnFor(child: BoardChild): ColumnId {
   return child.is_active ? child.status : 'inactive';
 }
 
+/** Matches on whatever a staff member is likely to remember: the child's own name (full or
+ * nickname), either parent's name, or the class they're in. */
+function matchesSearch(child: BoardChild, query: string): boolean {
+  const haystacks = [child.child_full_name, child.child_nickname, child.parent1_name, child.parent2_name, child.class_name];
+  return haystacks.some((h) => h?.toLowerCase().includes(query));
+}
+
 export default function FamilyBoard({ initialChildren, canEdit }: { initialChildren: BoardChild[]; canEdit: boolean }) {
   const [children, setChildren] = useState(initialChildren);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
+  const normalizedQuery = query.trim().toLowerCase();
+  const searching = normalizedQuery.length > 0;
+  const visibleChildren = searching ? children.filter((c) => matchesSearch(c, normalizedQuery)) : children;
+
   const byColumn = new Map<ColumnId, BoardChild[]>(COLUMN_ORDER.map((c) => [c, []]));
-  for (const child of children) byColumn.get(columnFor(child))?.push(child);
+  for (const child of visibleChildren) byColumn.get(columnFor(child))?.push(child);
 
   async function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -243,23 +265,45 @@ export default function FamilyBoard({ initialChildren, canEdit }: { initialChild
     }
   }
 
+  const searchBox = (
+    <div className="mb-4 flex items-center gap-3">
+      <input
+        type="search"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search by child, parent, or class…"
+        aria-label="Search children"
+        className="w-full max-w-sm rounded-full border border-sand-line bg-paper px-4 py-2 text-sm text-ink placeholder:text-ink-soft focus:border-teal focus:outline-none"
+      />
+      {searching && (
+        <span className="text-xs font-semibold text-ink-soft">
+          {visibleChildren.length} match{visibleChildren.length === 1 ? '' : 'es'}
+        </span>
+      )}
+    </div>
+  );
+
   if (!canEdit) {
     return (
-      <div className="flex gap-5 overflow-x-auto pb-2">
-        {COLUMN_ORDER.map((columnId) => (
-          <Column key={columnId} columnId={columnId} roster={byColumn.get(columnId) || []} draggable={false} />
-        ))}
+      <div>
+        {searchBox}
+        <div className="flex gap-5 overflow-x-auto pb-2">
+          {COLUMN_ORDER.map((columnId) => (
+            <Column key={columnId} columnId={columnId} roster={byColumn.get(columnId) || []} draggable={false} searching={searching} />
+          ))}
+        </div>
       </div>
     );
   }
 
   return (
     <div>
+      {searchBox}
       {error && <p className="mb-3 text-sm font-semibold text-orange-deep">{error}</p>}
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <div className="flex gap-5 overflow-x-auto pb-2">
           {COLUMN_ORDER.map((columnId) => (
-            <Column key={columnId} columnId={columnId} roster={byColumn.get(columnId) || []} />
+            <Column key={columnId} columnId={columnId} roster={byColumn.get(columnId) || []} searching={searching} />
           ))}
         </div>
       </DndContext>
