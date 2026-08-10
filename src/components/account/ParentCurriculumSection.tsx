@@ -75,7 +75,13 @@ export default function ParentCurriculumSection({
       )}
       {loading && <p className="text-sm text-ink-soft">Loading…</p>}
       {!loading && termTree && (
-        <CurriculumTermBrowser term={termTree} progress={progress} canSetProgress onSetProgress={setLessonProgress} />
+        <CurriculumTermBrowser
+          term={termTree}
+          progress={progress}
+          canSetProgress
+          onSetProgress={setLessonProgress}
+          buildOnlineHref={(lessonId) => `/account/learning/lesson/${lessonId}?childId=${childId}`}
+        />
       )}
     </div>
   );

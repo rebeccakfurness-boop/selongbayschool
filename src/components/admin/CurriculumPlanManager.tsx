@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import DocumentUploadField from '@/components/DocumentUploadField';
-import type { CurriculumTerm, CurriculumTermTree, CurriculumUnit, CurriculumLesson, LessonProgressStatus } from '@/lib/curriculum';
+import type { CurriculumTerm, CurriculumTermTree, CurriculumUnit, CurriculumLesson, LessonProgressStatus, CurriculumQuizQuestion, QuizType } from '@/lib/curriculum';
 
 export type ClassRoster = { id: number; label: string }[];
 
@@ -517,6 +517,9 @@ function LessonRow({
   const [objectives, setObjectives] = useState(lesson.objectives ?? '');
   const [worksheetUrl, setWorksheetUrl] = useState(lesson.worksheet_url);
   const [worksheetTitle, setWorksheetTitle] = useState(lesson.worksheet_title ?? '');
+  const [videoUrl, setVideoUrl] = useState(lesson.video_url ?? '');
+  const [videoTitle, setVideoTitle] = useState(lesson.video_title ?? '');
+  const [equipmentNote, setEquipmentNote] = useState(lesson.equipment_note ?? '');
   const [saving, setSaving] = useState(false);
   const [newResourceTitle, setNewResourceTitle] = useState('');
   const [newResourceUrl, setNewResourceUrl] = useState('');
@@ -529,6 +532,9 @@ function LessonRow({
       objectives: objectives || null,
       worksheetUrl: worksheetUrl || null,
       worksheetTitle: worksheetTitle || null,
+      videoUrl: videoUrl || null,
+      videoTitle: videoTitle || null,
+      equipmentNote: equipmentNote || null,
     });
     setSaving(false);
     onRefresh();
@@ -604,6 +610,29 @@ function LessonRow({
           </div>
 
           <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Complete online — equipment &amp; video</p>
+            <p className="mt-1 text-xs text-ink-soft">
+              Shown on the &quot;Introduction&quot; step of the self-directed online lesson. Video is optional —
+              the step still appears without one, just with a &quot;no video yet&quot; placeholder.
+            </p>
+            <div className="mt-2 flex flex-col gap-2">
+              <TextArea
+                value={equipmentNote}
+                onChange={(e) => setEquipmentNote(e.target.value)}
+                rows={2}
+                placeholder="e.g. pencil, the printed worksheet, and something to count with"
+              />
+              <div className="flex flex-wrap items-center gap-2">
+                <TextInput value={videoUrl ?? ''} onChange={(e) => setVideoUrl(e.target.value)} placeholder="Video URL (YouTube, Drive, etc.)" className="max-w-sm" />
+                <TextInput value={videoTitle} onChange={(e) => setVideoTitle(e.target.value)} placeholder="Video title shown to students" className="max-w-xs" />
+              </div>
+            </div>
+          </div>
+
+          <QuizEditor lessonId={lesson.id} quizType="starter" label="Starter quiz" questions={lesson.starter_quiz} onRefresh={onRefresh} />
+          <QuizEditor lessonId={lesson.id} quizType="exit" label="Exit quiz" questions={lesson.exit_quiz} onRefresh={onRefresh} />
+
+          <div>
             <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Resources</p>
             <ul className="mt-1 flex flex-col gap-1">
               {lesson.resources.map((r) => (
@@ -658,6 +687,143 @@ function LessonRow({
             </div>
           )}
         </div>
+      )}
+    </div>
+  );
+}
+
+function QuizEditor({
+  lessonId,
+  quizType,
+  label,
+  questions,
+  onRefresh,
+}: {
+  lessonId: number;
+  quizType: QuizType;
+  label: string;
+  questions: CurriculumQuizQuestion[];
+  onRefresh: () => void;
+}) {
+  const [adding, setAdding] = useState(false);
+  const [newQuestion, setNewQuestion] = useState('');
+  const [newOptions, setNewOptions] = useState(['', '']);
+  const [newCorrectIndex, setNewCorrectIndex] = useState(0);
+  const [newHint, setNewHint] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  function updateOption(i: number, value: string) {
+    setNewOptions((prev) => prev.map((o, idx) => (idx === i ? value : o)));
+  }
+
+  function addOptionField() {
+    setNewOptions((prev) => (prev.length >= 6 ? prev : [...prev, '']));
+  }
+
+  function removeOptionField(i: number) {
+    setNewOptions((prev) => {
+      if (prev.length <= 2) return prev;
+      const next = prev.filter((_, idx) => idx !== i);
+      if (newCorrectIndex >= next.length) setNewCorrectIndex(0);
+      return next;
+    });
+  }
+
+  async function addQuestion() {
+    const options = newOptions.map((o) => o.trim()).filter(Boolean);
+    if (options.length < 2) return;
+    setSaving(true);
+    await apiCall(`/api/admin/curriculum/lessons/${lessonId}/quiz`, 'POST', {
+      quizType,
+      question: newQuestion,
+      options,
+      correctOptionIndex: Math.min(newCorrectIndex, options.length - 1),
+      hint: newHint || null,
+    });
+    setNewQuestion('');
+    setNewOptions(['', '']);
+    setNewCorrectIndex(0);
+    setNewHint('');
+    setSaving(false);
+    setAdding(false);
+    onRefresh();
+  }
+
+  async function deleteQuestion(id: number) {
+    await apiCall(`/api/admin/curriculum/quiz/${id}`, 'DELETE');
+    onRefresh();
+  }
+
+  return (
+    <div>
+      <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">
+        {label} <span className="font-normal normal-case text-ink-soft/70">({questions.length} question{questions.length === 1 ? '' : 's'})</span>
+      </p>
+      <ul className="mt-1 flex flex-col gap-1.5">
+        {questions.map((q, i) => (
+          <li key={q.id} className="rounded-sm border border-sand-line p-2 text-sm">
+            <div className="flex items-start justify-between gap-2">
+              <span className="font-semibold text-ink">{i + 1}. {q.question}</span>
+              <button type="button" onClick={() => deleteQuestion(q.id)} className="whitespace-nowrap text-xs font-semibold text-orange-deep hover:underline">
+                Remove
+              </button>
+            </div>
+            <ul className="mt-1 flex flex-col gap-0.5">
+              {q.options.map((o, oi) => (
+                <li key={oi} className={`text-xs ${oi === q.correct_option_index ? 'font-bold text-teal-deep' : 'text-ink-soft'}`}>
+                  {oi === q.correct_option_index ? '✓ ' : '· '}
+                  {o}
+                </li>
+              ))}
+            </ul>
+            {q.hint && <p className="mt-1 text-xs italic text-ink-soft">Hint: {q.hint}</p>}
+          </li>
+        ))}
+        {questions.length === 0 && <li className="text-xs text-ink-soft">No questions yet.</li>}
+      </ul>
+
+      {adding ? (
+        <div className="mt-2 rounded-sm border border-dashed border-sand-line p-3">
+          <TextInput value={newQuestion} onChange={(e) => setNewQuestion(e.target.value)} placeholder="Question text" className="w-full" />
+          <div className="mt-2 flex flex-col gap-1.5">
+            {newOptions.map((o, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name={`correct-${lessonId}-${quizType}`}
+                  checked={newCorrectIndex === i}
+                  onChange={() => setNewCorrectIndex(i)}
+                  aria-label={`Option ${i + 1} is correct`}
+                />
+                <TextInput value={o} onChange={(e) => updateOption(i, e.target.value)} placeholder={`Option ${i + 1}`} className="flex-1" />
+                {newOptions.length > 2 && (
+                  <button type="button" onClick={() => removeOptionField(i)} className="text-xs font-semibold text-orange-deep hover:underline">✕</button>
+                )}
+              </div>
+            ))}
+            {newOptions.length < 6 && (
+              <button type="button" onClick={addOptionField} className="self-start text-xs font-semibold text-teal-deep hover:underline">
+                + Add another option
+              </button>
+            )}
+          </div>
+          <TextInput value={newHint} onChange={(e) => setNewHint(e.target.value)} placeholder="Hint (optional)" className="mt-2 w-full" />
+          <div className="mt-2 flex items-center gap-2">
+            <Button
+              type="button"
+              variant="primary"
+              onClick={addQuestion}
+              disabled={saving || !newQuestion.trim() || newOptions.filter((o) => o.trim()).length < 2}
+            >
+              {saving ? 'Adding…' : 'Add question'}
+            </Button>
+            <button type="button" onClick={() => setAdding(false)} className="text-xs font-semibold text-ink-soft hover:underline">Cancel</button>
+          </div>
+        </div>
+      ) : (
+        <button type="button" onClick={() => setAdding(true)} className="mt-1 text-xs font-semibold text-teal-deep hover:underline">
+          + Add question
+        </button>
       )}
     </div>
   );

@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 17;
+const SCHEMA_VERSION = 18;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1543,6 +1543,60 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_child_lesson_progress_child ON child_lesson_progress (child_id)`;
+
+      // Self-directed "Complete online" flow (Oak National Academy-style: Introduction -> Starter
+      // quiz -> Lesson video -> Exit quiz), on top of the existing worksheet/resources a lesson
+      // already has. video_url stays nullable/empty until a teacher adds one -- there's no video
+      // content yet, but the step still needs to exist in the flow.
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS video_url TEXT`;
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS video_title TEXT`;
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS equipment_note TEXT`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_lesson_quiz_questions (
+          id BIGSERIAL PRIMARY KEY,
+          lesson_id BIGINT NOT NULL REFERENCES curriculum_unit_lessons(id) ON DELETE CASCADE,
+          quiz_type TEXT NOT NULL CHECK (quiz_type IN ('starter', 'exit')),
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          question TEXT NOT NULL,
+          options TEXT[] NOT NULL,
+          correct_option_index INTEGER NOT NULL,
+          hint TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`
+        CREATE INDEX IF NOT EXISTS idx_curriculum_lesson_quiz_questions_lesson
+        ON curriculum_lesson_quiz_questions (lesson_id, quiz_type, sort_order)
+      `;
+
+      // A student completing the online flow themselves is a third, distinct "who touched this"
+      // actor alongside the existing admin/customer pair -- earned through actually answering the
+      // exit quiz, not the free-form status picker parents/teachers get (students still don't get
+      // that; see child_lesson_progress's own comment above).
+      await sql`ALTER TABLE child_lesson_progress ADD COLUMN IF NOT EXISTS updated_by_student_account_id BIGINT REFERENCES student_accounts(id)`;
+
+      // Fine-grained step-by-step state for the online flow -- separate from child_lesson_progress
+      // (which stays the single coarse not_started/in_progress/completed status shown everywhere
+      // else) so a child can resume exactly where they left off, and so the hub screen can show
+      // each step's own state the way Oak's does.
+      await sql`
+        CREATE TABLE IF NOT EXISTS child_lesson_online_progress (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          lesson_id BIGINT NOT NULL REFERENCES curriculum_unit_lessons(id) ON DELETE CASCADE,
+          intro_done BOOLEAN NOT NULL DEFAULT false,
+          starter_quiz_score INTEGER,
+          starter_quiz_total INTEGER,
+          video_done BOOLEAN NOT NULL DEFAULT false,
+          exit_quiz_score INTEGER,
+          exit_quiz_total INTEGER,
+          completed_at TIMESTAMPTZ,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (child_id, lesson_id)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_child_lesson_online_progress_child ON child_lesson_online_progress (child_id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import type { CurriculumTermTree, CurriculumLesson, LessonProgressStatus } from '@/lib/curriculum';
 
 const STATUS_LABEL: Record<LessonProgressStatus, string> = {
@@ -33,13 +34,18 @@ interface Props {
    * students see it read-only, same as every other student-facing view in this app. */
   canSetProgress: boolean;
   onSetProgress?: (lessonId: number, status: LessonProgressStatus) => Promise<void>;
+  /** Builds the "Complete online" link target for a lesson — parent and student wrappers each
+   * point this at their own portal's route (the parent one needs a childId query string, the
+   * student one doesn't). Omitted entirely (e.g. the admin/teacher authoring page, which doesn't
+   * use this component's modal for previewing) means no "Complete online" button ever shows. */
+  buildOnlineHref?: (lessonId: number) => string;
 }
 
 /** Oak-National-Academy-style unit list -> click into a lesson for its worksheet, resources, and
  * progress -- shared by the parent, student, and (as a read/progress-only base) the teacher/admin
  * authoring page. Content editing lives separately in CurriculumPlanManager; this component never
  * shows edit controls. */
-export default function CurriculumTermBrowser({ term, progress, canSetProgress, onSetProgress }: Props) {
+export default function CurriculumTermBrowser({ term, progress, canSetProgress, onSetProgress, buildOnlineHref }: Props) {
   const [selected, setSelected] = useState<CurriculumLesson | null>(null);
   const [expandedUnit, setExpandedUnit] = useState<number | null>(term.units[0]?.id ?? null);
 
@@ -114,6 +120,7 @@ export default function CurriculumTermBrowser({ term, progress, canSetProgress, 
           status={progress.get(selected.id) ?? 'not_started'}
           canSetProgress={canSetProgress}
           onSetProgress={onSetProgress}
+          onlineHref={buildOnlineHref?.(selected.id)}
           onClose={() => setSelected(null)}
         />
       )}
@@ -126,14 +133,17 @@ function LessonDetailModal({
   status,
   canSetProgress,
   onSetProgress,
+  onlineHref,
   onClose,
 }: {
   lesson: CurriculumLesson;
   status: LessonProgressStatus;
   canSetProgress: boolean;
   onSetProgress?: (lessonId: number, status: LessonProgressStatus) => Promise<void>;
+  onlineHref?: string;
   onClose: () => void;
 }) {
+  const hasOnlineContent = lesson.starter_quiz.length > 0 || lesson.exit_quiz.length > 0 || Boolean(lesson.video_url);
   const [saving, setSaving] = useState(false);
   const [localStatus, setLocalStatus] = useState(status);
 
@@ -163,16 +173,23 @@ function LessonDetailModal({
 
         {lesson.objectives && <p className="mt-3 whitespace-pre-line text-sm text-ink-soft">{lesson.objectives}</p>}
 
-        {lesson.worksheet_url && (
-          <a
-            href={lesson.worksheet_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 inline-block rounded-full bg-teal px-5 py-2 text-sm font-bold text-white hover:bg-teal-deep"
-          >
-            Download {lesson.worksheet_title || 'worksheet'} (print at home or at school)
-          </a>
-        )}
+        <div className="mt-4 flex flex-wrap gap-3">
+          {lesson.worksheet_url && (
+            <a
+              href={lesson.worksheet_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block rounded-full bg-teal px-5 py-2 text-sm font-bold text-white hover:bg-teal-deep"
+            >
+              Download {lesson.worksheet_title || 'worksheet'} (print at home or at school)
+            </a>
+          )}
+          {onlineHref && hasOnlineContent && (
+            <Link href={onlineHref} className="inline-block rounded-full border-2 border-orange bg-orange/10 px-5 py-2 text-sm font-bold text-orange-deep hover:bg-orange/20">
+              Complete online →
+            </Link>
+          )}
+        </div>
 
         {lesson.resources.length > 0 && (
           <div className="mt-4 rounded-sm border border-sand-line p-3">

@@ -4,6 +4,7 @@ import { getCurriculumTermsForClasses, getAllCurriculumTerms } from '@/lib/curri
 import TeachingTabs from '@/components/admin/TeachingTabs';
 import CurriculumPlanManager, { type ClassRoster } from '@/components/admin/CurriculumPlanManager';
 import ImportSampleCurriculumButton from '@/components/admin/ImportSampleCurriculumButton';
+import ImportCurriculumQuizContentButton from '@/components/admin/ImportCurriculumQuizContentButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -42,14 +43,17 @@ export default async function CurriculumPlansPage() {
           <h1 className="font-display text-2xl font-semibold text-ink">Teaching</h1>
           <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
             A full term of units and lessons per class and subject — like Oak National Academy. Each lesson can
-            carry a downloadable worksheet, extra resources, and every student&apos;s progress through it.
+            carry a downloadable worksheet, extra resources, a video, and a self-directed &quot;Complete online&quot;
+            flow (Introduction → Starter quiz → Video → Exit quiz) that a parent or student can work through
+            themselves, alongside every student&apos;s progress through it.
           </p>
         </div>
         <TeachingTabs active="curriculumPlans" />
       </div>
       {isAdmin && (
-        <div className="mt-6">
+        <div className="mt-6 flex flex-col gap-4">
           <ImportSampleCurriculumButton />
+          <ImportCurriculumQuizContentButton />
         </div>
       )}
       {isAdmin && unmatchedTerms.length > 0 && (

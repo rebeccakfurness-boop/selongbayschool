@@ -9,11 +9,15 @@ interface LessonLookupRow {
   objectives: string | null;
   worksheet_url: string | null;
   worksheet_title: string | null;
+  video_url: string | null;
+  video_title: string | null;
+  equipment_note: string | null;
 }
 
 async function loadLesson(id: number): Promise<LessonLookupRow | null> {
   const rows = (await sql`
-    SELECT ct.class_name, l.title, l.objectives, l.worksheet_url, l.worksheet_title
+    SELECT ct.class_name, l.title, l.objectives, l.worksheet_url, l.worksheet_title,
+           l.video_url, l.video_title, l.equipment_note
     FROM curriculum_unit_lessons l
     JOIN curriculum_term_units u ON u.id = l.unit_id
     JOIN curriculum_terms ct ON ct.id = u.term_id
@@ -57,11 +61,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       objectives: d.objectives !== undefined ? d.objectives : existing.objectives,
       worksheetUrl: d.worksheetUrl !== undefined ? d.worksheetUrl : existing.worksheet_url,
       worksheetTitle: d.worksheetTitle !== undefined ? d.worksheetTitle : existing.worksheet_title,
+      videoUrl: d.videoUrl !== undefined ? d.videoUrl : existing.video_url,
+      videoTitle: d.videoTitle !== undefined ? d.videoTitle : existing.video_title,
+      equipmentNote: d.equipmentNote !== undefined ? d.equipmentNote : existing.equipment_note,
     };
     await sql`
       UPDATE curriculum_unit_lessons SET
         title = ${merged.title}, objectives = ${merged.objectives},
-        worksheet_url = ${merged.worksheetUrl}, worksheet_title = ${merged.worksheetTitle}
+        worksheet_url = ${merged.worksheetUrl}, worksheet_title = ${merged.worksheetTitle},
+        video_url = ${merged.videoUrl}, video_title = ${merged.videoTitle}, equipment_note = ${merged.equipmentNote}
       WHERE id = ${id}
     `;
     return NextResponse.json({ ok: true });

@@ -64,7 +64,14 @@ export default function StudentCurriculumSection({
         </div>
       )}
       {loading && <p className="text-sm text-ink-soft">Loading…</p>}
-      {!loading && termTree && <CurriculumTermBrowser term={termTree} progress={progress} canSetProgress={false} />}
+      {!loading && termTree && (
+        <CurriculumTermBrowser
+          term={termTree}
+          progress={progress}
+          canSetProgress={false}
+          buildOnlineHref={(lessonId) => `/student/curriculum/lesson/${lessonId}`}
+        />
+      )}
     </div>
   );
 }
