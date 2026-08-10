@@ -749,3 +749,53 @@ export const updateBudgetSettingsSchema = z.object({
 });
 export type UpdateBudgetSettingsInput = z.infer<typeof updateBudgetSettingsSchema>;
 export type AdminAttendanceCorrectionInput = z.infer<typeof adminAttendanceCorrectionSchema>;
+
+export const createCurriculumTermSchema = z.object({
+  className: z.string().trim().min(1, 'Class is required').max(100),
+  subject: z.string().trim().min(1, 'Subject is required').max(200),
+  termLabel: z.string().trim().min(1, 'Term is required').max(200),
+  frameworkLabel: z.string().trim().max(200).nullable().optional(),
+});
+export type CreateCurriculumTermInput = z.infer<typeof createCurriculumTermSchema>;
+
+export const createCurriculumUnitSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  description: z.string().trim().max(2000).nullable().optional(),
+});
+export type CreateCurriculumUnitInput = z.infer<typeof createCurriculumUnitSchema>;
+
+export const updateCurriculumUnitSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(300).optional(),
+  description: z.string().trim().max(2000).nullable().optional(),
+});
+export type UpdateCurriculumUnitInput = z.infer<typeof updateCurriculumUnitSchema>;
+
+export const createCurriculumLessonSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  objectives: z.string().trim().max(4000).nullable().optional(),
+});
+export type CreateCurriculumLessonInput = z.infer<typeof createCurriculumLessonSchema>;
+
+export const updateCurriculumLessonSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(300).optional(),
+  objectives: z.string().trim().max(4000).nullable().optional(),
+  worksheetUrl: z.string().trim().url().max(2000).nullable().optional(),
+  worksheetTitle: z.string().trim().max(300).nullable().optional(),
+});
+export type UpdateCurriculumLessonInput = z.infer<typeof updateCurriculumLessonSchema>;
+
+export const reorderSchema = z.object({ direction: z.enum(['up', 'down']) });
+export type ReorderInput = z.infer<typeof reorderSchema>;
+
+export const createCurriculumLessonResourceSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  url: z.string().trim().url().max(2000),
+});
+export type CreateCurriculumLessonResourceInput = z.infer<typeof createCurriculumLessonResourceSchema>;
+
+export const setLessonProgressSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  lessonId: z.coerce.number().int().positive(),
+  status: z.enum(['not_started', 'in_progress', 'completed']),
+});
+export type SetLessonProgressInput = z.infer<typeof setLessonProgressSchema>;
