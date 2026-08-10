@@ -10,7 +10,7 @@ export default async function StaffPage() {
 
   const staff = (await sql`
     SELECT
-      au.id, au.email, au.display_name, au.role,
+      au.id, au.email, au.display_name, au.role, au.is_active,
       COALESCE(
         array_agg(ta.class_name) FILTER (WHERE ta.class_name IS NOT NULL),
         ARRAY[]::text[]
@@ -18,7 +18,7 @@ export default async function StaffPage() {
     FROM admin_users au
     LEFT JOIN teacher_assignments ta ON ta.admin_user_id = au.id
     GROUP BY au.id
-    ORDER BY au.role, au.email
+    ORDER BY au.is_active DESC, au.role, au.email
   `) as unknown as StaffRow[];
 
   const classOptions = ((await sql`

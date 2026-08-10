@@ -25,7 +25,7 @@ export default async function ClassSchedulePage() {
   }
 
   const teacherOptions = (
-    (await sql`SELECT id, COALESCE(display_name, email) AS label FROM admin_users ORDER BY label`) as unknown as TeacherOption[]
+    (await sql`SELECT id, COALESCE(display_name, email) AS label FROM admin_users WHERE is_active = true ORDER BY label`) as unknown as TeacherOption[]
   );
 
   const lessonPlanOptions =

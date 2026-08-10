@@ -25,11 +25,14 @@ export async function POST(req: NextRequest) {
 
   try {
     await ensureSchema();
-    const rows = await sql`SELECT id, email, password_hash, role FROM admin_users WHERE email = ${email}`;
+    const rows = await sql`SELECT id, email, password_hash, role, is_active FROM admin_users WHERE email = ${email}`;
     const user = rows[0];
 
     if (!user || !(await bcrypt.compare(password, user.password_hash as string))) {
       return NextResponse.json({ error: 'Incorrect email or password.' }, { status: 401 });
+    }
+    if (!user.is_active) {
+      return NextResponse.json({ error: 'This account has been deactivated. Contact the school office.' }, { status: 403 });
     }
 
     const session = await getIronSession<AdminSessionData>(await cookies(), await getSessionOptions());

@@ -62,7 +62,7 @@ export async function getTeacherEmailsForClass(className: string | null): Promis
   const rows = (await sql`
     SELECT DISTINCT au.email FROM teacher_assignments ta
     JOIN admin_users au ON au.id = ta.admin_user_id
-    WHERE ta.class_name = ${className}
+    WHERE ta.class_name = ${className} AND au.is_active = true
   `) as unknown as { email: string }[];
   return rows.map((r) => r.email);
 }

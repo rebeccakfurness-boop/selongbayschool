@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 15;
+const SCHEMA_VERSION = 16;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1463,6 +1463,11 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_schedule_history_class ON schedule_session_history (class_schedule_id)`;
+
+      // Lets a departed teacher (or admin) be deactivated rather than deleted: blocks their login
+      // and drops them from teacher-assignment pickers, but their name stays intact on every
+      // session, lesson plan, and audit history row they're linked to.
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT true`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

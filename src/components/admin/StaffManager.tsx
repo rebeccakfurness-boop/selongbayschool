@@ -10,6 +10,7 @@ export interface StaffRow {
   email: string;
   display_name: string | null;
   role: 'admin' | 'teacher';
+  is_active: boolean;
   assigned_classes: string[];
 }
 
@@ -22,6 +23,22 @@ export default function StaffManager({ initial, classOptions }: { initial: Staff
   const [error, setError] = useState<string | null>(null);
   const [newTempPassword, setNewTempPassword] = useState<{ email: string; password: string } | null>(null);
   const [pendingClass, setPendingClass] = useState<Record<number, string>>({});
+
+  async function setActive(staffId: number, isActive: boolean) {
+    setError(null);
+    const res = await fetch(`/api/admin/staff/${staffId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isActive }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setError(data.error || 'Failed to update account');
+      return;
+    }
+    setStaff((prev) => prev.map((s) => (s.id === staffId ? { ...s, is_active: isActive } : s)));
+    router.refresh();
+  }
 
   async function createStaff() {
     setCreating(true);
@@ -36,7 +53,7 @@ export default function StaffManager({ initial, classOptions }: { initial: Staff
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Failed to create account');
       setNewTempPassword({ email, password: data.tempPassword });
-      setStaff((prev) => [...prev, { id: data.id, email, display_name: null, role, assigned_classes: [] }]);
+      setStaff((prev) => [...prev, { id: data.id, email, display_name: null, role, is_active: true, assigned_classes: [] }]);
       setEmail('');
       router.refresh();
     } catch (err) {
@@ -105,12 +122,22 @@ export default function StaffManager({ initial, classOptions }: { initial: Staff
 
       <div className="flex flex-col gap-3">
         {staff.map((s) => (
-          <div key={s.id} className="rounded-md border border-sand-line bg-paper p-4 shadow-soft">
-            <div className="flex items-center justify-between">
+          <div key={s.id} className={`rounded-md border border-sand-line bg-paper p-4 shadow-soft ${s.is_active ? '' : 'opacity-60'}`}>
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <span className="font-semibold text-ink">{s.display_name || s.email}</span>
                 <span className="ml-2 rounded-full bg-teal/10 px-2 py-0.5 text-xs font-bold capitalize text-teal-deep">{s.role}</span>
+                {!s.is_active && (
+                  <span className="ml-2 rounded-full bg-orange/20 px-2 py-0.5 text-xs font-bold text-orange-deep">Deactivated</span>
+                )}
               </div>
+              <button
+                type="button"
+                onClick={() => setActive(s.id, !s.is_active)}
+                className={`text-xs font-semibold hover:underline ${s.is_active ? 'text-orange-deep' : 'text-teal-deep'}`}
+              >
+                {s.is_active ? 'Deactivate' : 'Reactivate'}
+              </button>
             </div>
             {s.role === 'teacher' && (
               <div className="mt-3">

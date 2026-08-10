@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await ensureSchema();
-    const rows = await sql`SELECT id FROM admin_users WHERE email = ${email}`;
+    const rows = await sql`SELECT id FROM admin_users WHERE email = ${email} AND is_active = true`;
     const user = rows[0];
 
     // Always respond identically whether or not the email matches an admin
