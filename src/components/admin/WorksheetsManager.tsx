@@ -31,8 +31,12 @@ interface RubricCriterion {
  * submitted, and mark it. Mirrors the parent/student worksheet section's shape but as a whole-class
  * roster rather than a single child's view. */
 export default function WorksheetsManager({ occurrences }: { occurrences: SessionOccurrenceRow[] }) {
+  // starts_at comes back from the driver as a Date object, not the "string" its TypeScript type
+  // claims (every other read site just wraps it in `new Date(...)`, which happens to accept both a
+  // Date and a string, hiding the mismatch) -- comparing via getTime() works regardless of which it
+  // actually is, unlike calling a string-only method like localeCompare directly on it.
   const sorted = useMemo(
-    () => [...occurrences].sort((a, b) => b.starts_at.localeCompare(a.starts_at)),
+    () => [...occurrences].sort((a, b) => new Date(b.starts_at).getTime() - new Date(a.starts_at).getTime()),
     [occurrences]
   );
   const [selected, setSelected] = useState<SessionOccurrenceRow | null>(null);
