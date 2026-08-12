@@ -3,10 +3,11 @@ import Link from 'next/link';
 export default function TeachingTabs({
   active,
 }: {
-  active: 'lessons' | 'curriculum' | 'curriculumPlans' | 'resources' | 'schedule' | 'calendar';
+  active: 'lessons' | 'curriculum' | 'curriculumPlans' | 'resources' | 'schedule' | 'calendar' | 'worksheets';
 }) {
   const tabs = [
     { key: 'schedule', href: '/admin/teaching/schedule', label: 'Weekly Schedule' },
+    { key: 'worksheets', href: '/admin/teaching/worksheets', label: 'Worksheets' },
     { key: 'calendar', href: '/admin/teaching/calendar', label: 'Academic Calendar' },
     { key: 'curriculumPlans', href: '/admin/teaching/curriculum-plans', label: 'Curriculum Plans' },
     { key: 'lessons', href: '/admin/teaching', label: 'Lesson Plans' },

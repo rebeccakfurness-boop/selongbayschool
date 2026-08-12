@@ -180,8 +180,21 @@ export async function regenerateScheduleOccurrences(opts?: { classScheduleId?: n
         ${toUpsert.map((r) => r.startsAt)}::timestamptz[],
         ${toUpsert.map((r) => r.endsAt)}::timestamptz[]
       )
+      -- calendar_sync_status only resets to 'pending' when the actual time changed, not on every
+      -- touch -- this function also runs school-wide (no classScheduleId) after an unrelated term
+      -- or holiday-exception edit, and unconditionally resetting it there would re-trigger a Google
+      -- Calendar sync for every already-synced occurrence in the school, most of which didn't
+      -- actually move. A same-time change (e.g. just the teacher) doesn't touch starts_at/ends_at at
+      -- all, so it can't be caught here -- see the explicit re-flag in the class-schedule PATCH route
+      -- for that case.
       ON CONFLICT (class_schedule_id, occurrence_date) DO UPDATE
-        SET starts_at = EXCLUDED.starts_at, ends_at = EXCLUDED.ends_at
+        SET starts_at = EXCLUDED.starts_at, ends_at = EXCLUDED.ends_at,
+          calendar_sync_status = CASE
+            WHEN schedule_session_occurrences.starts_at IS DISTINCT FROM EXCLUDED.starts_at
+              OR schedule_session_occurrences.ends_at IS DISTINCT FROM EXCLUDED.ends_at
+            THEN 'pending'
+            ELSE schedule_session_occurrences.calendar_sync_status
+          END
         WHERE schedule_session_occurrences.manually_edited = false
       RETURNING (xmax = 0) AS inserted
     `) as unknown as { inserted: boolean }[];

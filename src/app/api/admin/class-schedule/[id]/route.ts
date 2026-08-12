@@ -3,6 +3,7 @@ import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff, requireAdmin, canAccessClass } from '@/lib/current-staff';
 import { updateClassScheduleSchema } from '@/lib/validation';
 import { regenerateScheduleOccurrences } from '@/lib/academic-calendar';
+import { cancelMeetingEvent, isCalendarConnected } from '@/lib/google-calendar';
 
 interface ExistingRow {
   class_name: string;
@@ -112,6 +113,17 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
     if (reschedule) {
       await regenerateScheduleOccurrences({ classScheduleId: id });
+      // regenerateScheduleOccurrences only re-flags an occurrence for Calendar resync when its
+      // starts_at/ends_at actually moved -- a same-time teacher, subject, or format change (all
+      // "reschedule" fields, since they change what the Calendar event should say or who's on it)
+      // wouldn't otherwise be caught, and would leave a stale attendee/title on an already-synced
+      // event. Forced explicitly here, scoped to just this one pattern's future occurrences.
+      await sql`
+        UPDATE schedule_session_occurrences
+        SET calendar_sync_status = 'pending'
+        WHERE class_schedule_id = ${id} AND manually_edited = false
+          AND occurrence_date >= CURRENT_DATE AND calendar_sync_status != 'pending'
+      `;
     }
 
     return NextResponse.json({ ok: true });
@@ -148,6 +160,26 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       INSERT INTO schedule_session_history (class_schedule_id, changed_by, change_type, old_value, new_value)
       VALUES (${id}, ${staff.adminUserId}, 'deleted', ${JSON.stringify(existing)}::jsonb, NULL)
     `;
+
+    // schedule_session_occurrences cascades away with the class_schedule row below, but the Google
+    // Calendar events they point to don't — cancel each one first or they'd keep existing on the
+    // teacher's (and any invited family's) calendar forever with no in-app trace left to clean them
+    // up from. Rare/admin-only action deleting a handful of occurrences at most, so a sequential
+    // loop of external calls is acceptable here (unlike the bulk-generation path).
+    if (await isCalendarConnected()) {
+      const withEvents = (await sql`
+        SELECT google_calendar_event_id FROM schedule_session_occurrences
+        WHERE class_schedule_id = ${id} AND google_calendar_event_id IS NOT NULL
+      `) as unknown as { google_calendar_event_id: string }[];
+      for (const row of withEvents) {
+        try {
+          await cancelMeetingEvent(row.google_calendar_event_id);
+        } catch (err) {
+          console.error(`[api/admin/class-schedule/:id] failed to cancel calendar event ${row.google_calendar_event_id}`, err);
+        }
+      }
+    }
+
     await sql`DELETE FROM class_schedule WHERE id = ${id}`;
     return NextResponse.json({ ok: true });
   } catch (err) {

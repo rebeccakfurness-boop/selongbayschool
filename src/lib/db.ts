@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 18;
+const SCHEMA_VERSION = 19;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1597,6 +1597,92 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_child_lesson_online_progress_child ON child_lesson_online_progress (child_id)`;
+
+      // Per-occurrence Google Meet/Calendar sync state. One event per dated session (not one shared
+      // event for the whole weekly pattern) -- deliberately chosen even though it means far more
+      // Calendar API calls, so a rescheduled or teacher-swapped single session gets its own updated
+      // event rather than sharing state with every other week. meet_link is only ever populated for
+      // an 'online' (or format_override 'online') occurrence; in-person ones still get a calendar
+      // event (so it's on the teacher's calendar) but no video link. Sync happens out of band (see
+      // /api/cron/sync-session-meetings) rather than inline during regenerateScheduleOccurrences --
+      // calling Google's API once per occurrence synchronously there, across a whole term's worth of
+      // rows, would reproduce the exact timeout bug that function's own unnest() batching was built
+      // to avoid in the first place. 'pending' is the default for both brand-new occurrences and ones
+      // regenerateScheduleOccurrences just updated (see that function's ON CONFLICT clause) -- the
+      // cron picks up anything not yet 'synced' and creates or updates the Calendar event accordingly.
+      await sql`ALTER TABLE schedule_session_occurrences ADD COLUMN IF NOT EXISTS meet_link TEXT`;
+      await sql`ALTER TABLE schedule_session_occurrences ADD COLUMN IF NOT EXISTS google_calendar_event_id TEXT`;
+      await sql`
+        ALTER TABLE schedule_session_occurrences ADD COLUMN IF NOT EXISTS calendar_sync_status TEXT
+        NOT NULL DEFAULT 'pending' CHECK (calendar_sync_status IN ('pending', 'synced', 'failed'))
+      `;
+      await sql`ALTER TABLE schedule_session_occurrences ADD COLUMN IF NOT EXISTS calendar_sync_error TEXT`;
+      await sql`
+        CREATE INDEX IF NOT EXISTS idx_schedule_occurrences_sync_status
+        ON schedule_session_occurrences (calendar_sync_status) WHERE calendar_sync_status != 'synced'
+      `;
+
+      // --- Post-lesson worksheet upload, marking, and gradebook ---
+      // One submission per (occurrence, child) -- who uploaded it is one of three nullable "actor"
+      // columns, same shape as child_lesson_progress's updated_by_* trio, since a plain FK can't
+      // point at three different tables and exactly one of these is set depending on whether a
+      // teacher, parent, or the student themselves uploaded it.
+      await sql`
+        CREATE TABLE IF NOT EXISTS session_worksheet_submissions (
+          id BIGSERIAL PRIMARY KEY,
+          occurrence_id BIGINT NOT NULL REFERENCES schedule_session_occurrences(id) ON DELETE CASCADE,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          file_url TEXT NOT NULL,
+          uploaded_by_admin_user_id BIGINT REFERENCES admin_users(id),
+          uploaded_by_customer_id BIGINT REFERENCES customers(id),
+          uploaded_by_student_account_id BIGINT REFERENCES student_accounts(id),
+          uploaded_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (occurrence_id, child_id)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_worksheet_submissions_child ON session_worksheet_submissions (child_id)`;
+
+      // One mark per submission (UNIQUE), numeric score always required, rubric ratings optional and
+      // layered on top via a separate table -- "both" per the agreed scope, not an either/or.
+      await sql`
+        CREATE TABLE IF NOT EXISTS worksheet_marks (
+          id BIGSERIAL PRIMARY KEY,
+          submission_id BIGINT NOT NULL UNIQUE REFERENCES session_worksheet_submissions(id) ON DELETE CASCADE,
+          score NUMERIC NOT NULL,
+          max_score NUMERIC NOT NULL DEFAULT 10,
+          comments TEXT,
+          marked_by BIGINT REFERENCES admin_users(id),
+          marked_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      // A small, fixed, reusable set of rubric criteria (e.g. "Effort", "Understanding") an admin
+      // defines once and every teacher rates against, rather than a bespoke rubric per lesson --
+      // matches the "small fixed rubric" scope agreed, not a full rubric-builder. label is UNIQUE
+      // so the starter set below can be seeded idempotently and an admin can still add more later
+      // (see /api/admin/worksheet-rubric-criteria) without ever duplicating one.
+      await sql`
+        CREATE TABLE IF NOT EXISTS worksheet_rubric_criteria (
+          id BIGSERIAL PRIMARY KEY,
+          label TEXT NOT NULL UNIQUE,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`
+        INSERT INTO worksheet_rubric_criteria (label, sort_order) VALUES
+          ('Effort', 1), ('Understanding', 2), ('Presentation', 3)
+        ON CONFLICT (label) DO NOTHING
+      `;
+      await sql`
+        CREATE TABLE IF NOT EXISTS worksheet_rubric_scores (
+          id BIGSERIAL PRIMARY KEY,
+          mark_id BIGINT NOT NULL REFERENCES worksheet_marks(id) ON DELETE CASCADE,
+          criterion_id BIGINT NOT NULL REFERENCES worksheet_rubric_criteria(id) ON DELETE CASCADE,
+          rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+          UNIQUE (mark_id, criterion_id)
+        )
+      `;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

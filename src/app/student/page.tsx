@@ -51,6 +51,7 @@ export default async function StudentHomePage() {
             occurrences={occurrences}
             title="Your Sessions"
             emptyMessage="No sessions in the next two weeks. If term dates haven't been set up yet, check back once the school has confirmed this term's calendar."
+            worksheetContext={session.childId ? { childId: session.childId, role: 'student' } : undefined}
           />
         </div>
       </div>

@@ -43,6 +43,7 @@ export default function ParentScheduleSection({
       title={title}
       emptyMessage="No sessions in the next two weeks. If term dates haven't been set up yet, check back once the school has confirmed this term's calendar."
       notifications={{ enabled, onToggle: toggle, saving }}
+      worksheetContext={{ childId, role: 'parent' }}
     />
   );
 }

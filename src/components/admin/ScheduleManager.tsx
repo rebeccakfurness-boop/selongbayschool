@@ -22,6 +22,9 @@ export interface ScheduleEntry {
   meet_link: string | null;
   lesson_plan_id: number | null;
   lesson_plan_title: string | null;
+  next_occurrence_meet_link: string | null;
+  next_occurrence_sync_status: 'pending' | 'synced' | 'failed' | null;
+  next_occurrence_sync_error: string | null;
 }
 
 export interface TeacherOption {
@@ -123,6 +126,9 @@ export default function ScheduleManager({
           meet_link: null,
           lesson_plan_id: null,
           lesson_plan_title: null,
+          next_occurrence_meet_link: null,
+          next_occurrence_sync_status: null,
+          next_occurrence_sync_error: null,
         },
       ]);
       setSubject('');
@@ -364,7 +370,15 @@ export default function ScheduleManager({
                                 style={{ backgroundColor: colorForSubject(cell.subject) }}
                                 className="flex h-full w-full flex-col gap-0.5 px-3 py-2 text-left transition hover:brightness-95"
                               >
-                                <span className="font-semibold text-ink">{cell.subject}</span>
+                                <span className="flex items-center gap-1.5 font-semibold text-ink">
+                                  {cell.subject}
+                                  {cell.next_occurrence_sync_status === 'failed' && (
+                                    <span
+                                      title="Google Calendar sync failed for the next session — open for details"
+                                      className="inline-block h-2 w-2 shrink-0 rounded-full bg-orange-deep"
+                                    />
+                                  )}
+                                </span>
                                 <span className="text-xs text-ink/70">{cell.teacher_label || 'No teacher set'}</span>
                               </button>
                             ) : (
@@ -473,6 +487,26 @@ function SessionCellModal({
             {entry.location_or_link && <span className="text-ink-soft"> ({entry.location_or_link})</span>}
           </div>
         )}
+
+        <div className="mt-4 border-t border-sand-line/60 pt-4">
+          <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Google Calendar sync</p>
+          {entry.next_occurrence_sync_status === null && (
+            <p className="mt-1 text-sm text-ink-soft">No upcoming dated session to sync yet.</p>
+          )}
+          {entry.next_occurrence_sync_status === 'pending' && (
+            <p className="mt-1 text-sm text-ink-soft">Next session hasn&apos;t synced to Google Calendar yet — this happens automatically, usually within a day.</p>
+          )}
+          {entry.next_occurrence_sync_status === 'synced' && (
+            <p className="mt-1 text-sm text-teal-deep">
+              Synced to Google Calendar{entry.next_occurrence_meet_link ? ' — Meet link ready.' : '.'}
+            </p>
+          )}
+          {entry.next_occurrence_sync_status === 'failed' && (
+            <p className="mt-1 text-sm text-orange-deep">
+              Sync failed for the next session{entry.next_occurrence_sync_error ? `: ${entry.next_occurrence_sync_error}` : '.'} It will retry automatically.
+            </p>
+          )}
+        </div>
 
         {canEditContent && (
           <div className="mt-4 flex flex-col gap-3 border-t border-sand-line/60 pt-4">

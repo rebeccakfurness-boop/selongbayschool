@@ -5,6 +5,7 @@ import type { SessionOccurrenceRow } from '@/lib/schedule';
 import { DAY_ORDER, DAY_LABELS, type DayOfWeek } from '@/lib/class-schedule';
 import { SCHOOL_TIMEZONE_LABEL, formatSchoolTime, formatViewerTime } from '@/lib/academic-calendar';
 import { colorForSubject } from '@/lib/schedule-colors';
+import ParentStudentWorksheetSection from '@/components/worksheets/ParentStudentWorksheetSection';
 
 function formatOccurrenceDateLabel(dateStr: string): string {
   return new Intl.DateTimeFormat('en-US', { weekday: 'long', day: 'numeric', month: 'short', timeZone: 'UTC' }).format(
@@ -58,6 +59,11 @@ interface Props {
     onToggle: (enabled: boolean) => void;
     saving: boolean;
   };
+  /** The one child this board belongs to and who's viewing it — needed to show that child's
+   * worksheet/mark in the session detail modal. Omitted entirely on any future reuse of this board
+   * that isn't scoped to a single child (none currently), in which case the worksheet section just
+   * doesn't render. */
+  worksheetContext?: { childId: number; role: 'parent' | 'student' };
 }
 
 /** Read-only weekly timetable — a Time x Day grid (like the school's own spreadsheet timetable),
@@ -66,7 +72,7 @@ interface Props {
  * link. Shows school-local (WITA) time alongside the viewer's own auto-detected local time, since
  * parents and students may be in different timezones. No edit controls here at all, hidden or
  * disabled, matching the spec's "no edit controls visible" requirement for parent/student views. */
-export default function OccurrenceScheduleBoard({ occurrences, title, emptyMessage, notifications }: Props) {
+export default function OccurrenceScheduleBoard({ occurrences, title, emptyMessage, notifications, worksheetContext }: Props) {
   const [selected, setSelected] = useState<SessionOccurrenceRow | null>(null);
   const viewerTimeZone = useMemo(() => {
     try {
@@ -205,7 +211,12 @@ export default function OccurrenceScheduleBoard({ occurrences, title, emptyMessa
       )}
 
       {selected && (
-        <SessionDetailModal occurrence={selected} viewerTimeZone={viewerTimeZone} onClose={() => setSelected(null)} />
+        <SessionDetailModal
+          occurrence={selected}
+          viewerTimeZone={viewerTimeZone}
+          onClose={() => setSelected(null)}
+          worksheetContext={worksheetContext}
+        />
       )}
     </div>
   );
@@ -215,10 +226,12 @@ function SessionDetailModal({
   occurrence,
   viewerTimeZone,
   onClose,
+  worksheetContext,
 }: {
   occurrence: SessionOccurrenceRow;
   viewerTimeZone: string | undefined;
   onClose: () => void;
+  worksheetContext?: { childId: number; role: 'parent' | 'student' };
 }) {
   const viewerIsSchoolTimeZone = viewerTimeZone === 'Asia/Makassar';
   return (
@@ -285,6 +298,15 @@ function SessionDetailModal({
             <p className="mt-1 font-semibold text-ink">{occurrence.lesson_plan_title}</p>
             {occurrence.lesson_plan_description && <p className="mt-1 text-sm text-ink-soft">{occurrence.lesson_plan_description}</p>}
           </div>
+        )}
+
+        {worksheetContext && !occurrence.is_cancelled && (
+          <ParentStudentWorksheetSection
+            occurrenceId={occurrence.occurrence_id}
+            childId={worksheetContext.childId}
+            role={worksheetContext.role}
+            canUpload={occurrence.format === 'online'}
+          />
         )}
       </div>
     </div>

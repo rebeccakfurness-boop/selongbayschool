@@ -9,6 +9,8 @@ import ChildAvatar from '@/components/ChildAvatar';
 import AvatarUploadField from '@/components/AvatarUploadField';
 import DocumentUploadField from '@/components/DocumentUploadField';
 import WorkSamplesSection, { type WorkSample } from '@/components/admin/WorkSamplesSection';
+import GradebookSection from '@/components/GradebookSection';
+import type { GradebookEntry } from '@/lib/worksheets';
 import ChildPhotoFeedSection, { type PhotoFeedItem } from '@/components/admin/ChildPhotoFeedSection';
 import GuardianLinksSection, { type GuardianLink } from '@/components/admin/GuardianLinksSection';
 import InvoicesSection from '@/components/admin/InvoicesSection';
@@ -195,6 +197,7 @@ export default function ChildCard({
   offboardingLetters,
   meetingInvites,
   classroomSubmissions,
+  gradebook,
 }: {
   child: ChildDetail;
   canEdit: boolean;
@@ -208,6 +211,7 @@ export default function ChildCard({
   offboardingLetters: OffboardingLetterSummaryRow[];
   meetingInvites: MeetingInviteSummaryRow[];
   classroomSubmissions: ClassroomSubmissionRow[];
+  gradebook: GradebookEntry[];
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
@@ -561,6 +565,10 @@ export default function ChildCard({
           <div className="grid gap-6 md:grid-cols-2">
             <WorkSamplesSection childId={child.id} initial={workSamples} canEdit={canEdit} />
             <ChildPhotoFeedSection childId={child.id} initial={photos} canEdit={canEdit} />
+          </div>
+
+          <div className="mt-6">
+            <GradebookSection entries={gradebook} />
           </div>
 
           <ClassroomSection classroomStudentEmail={child.classroom_student_email} submissions={classroomSubmissions} />

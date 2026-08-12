@@ -38,6 +38,14 @@ export interface ClassScheduleRow {
   meet_link: string | null;
   lesson_plan_id: number | null;
   lesson_plan_title: string | null;
+  /** Status of the soonest upcoming (not-cancelled) dated occurrence's real, auto-generated Calendar
+   * event — null when there's no such occurrence yet (e.g. no academic term configured), distinct
+   * from 'pending' (occurrence exists, cron hasn't synced it yet) and 'failed' (synced attempt
+   * errored — see next_occurrence_sync_error). meet_link above is the separate, manually-pasted
+   * pattern-level fallback; this is what the admin schedule editor actually shows as ground truth. */
+  next_occurrence_sync_status: 'pending' | 'synced' | 'failed' | null;
+  next_occurrence_sync_error: string | null;
+  next_occurrence_meet_link: string | null;
 }
 
 /** Sorted in JS rather than SQL (day_of_week is TEXT, so a plain ORDER BY would put Friday before
@@ -57,10 +65,19 @@ export async function getWeeklyScheduleForClass(className: string | null): Promi
     SELECT cs.id, cs.class_name, cs.subject, cs.teacher_id,
       COALESCE(au.display_name, au.email) AS teacher_label,
       cs.day_of_week, cs.start_time::text, cs.end_time::text, cs.format, cs.location_or_link,
-      cs.meet_link, cs.lesson_plan_id, lp.title AS lesson_plan_title
+      cs.meet_link, cs.lesson_plan_id, lp.title AS lesson_plan_title,
+      next_occ.meet_link AS next_occurrence_meet_link,
+      next_occ.calendar_sync_status AS next_occurrence_sync_status,
+      next_occ.calendar_sync_error AS next_occurrence_sync_error
     FROM class_schedule cs
     LEFT JOIN admin_users au ON au.id = cs.teacher_id
     LEFT JOIN lesson_plans lp ON lp.id = cs.lesson_plan_id
+    LEFT JOIN LATERAL (
+      SELECT meet_link, calendar_sync_status, calendar_sync_error
+      FROM schedule_session_occurrences o
+      WHERE o.class_schedule_id = cs.id AND o.occurrence_date >= CURRENT_DATE AND o.is_cancelled = false
+      ORDER BY o.occurrence_date ASC LIMIT 1
+    ) next_occ ON true
     WHERE cs.class_name = ${className}
   `) as unknown as ClassScheduleRow[];
   return sortSchedule(rows);
@@ -72,10 +89,19 @@ export async function getWeeklyScheduleForClasses(classNames: string[]): Promise
     SELECT cs.id, cs.class_name, cs.subject, cs.teacher_id,
       COALESCE(au.display_name, au.email) AS teacher_label,
       cs.day_of_week, cs.start_time::text, cs.end_time::text, cs.format, cs.location_or_link,
-      cs.meet_link, cs.lesson_plan_id, lp.title AS lesson_plan_title
+      cs.meet_link, cs.lesson_plan_id, lp.title AS lesson_plan_title,
+      next_occ.meet_link AS next_occurrence_meet_link,
+      next_occ.calendar_sync_status AS next_occurrence_sync_status,
+      next_occ.calendar_sync_error AS next_occurrence_sync_error
     FROM class_schedule cs
     LEFT JOIN admin_users au ON au.id = cs.teacher_id
     LEFT JOIN lesson_plans lp ON lp.id = cs.lesson_plan_id
+    LEFT JOIN LATERAL (
+      SELECT meet_link, calendar_sync_status, calendar_sync_error
+      FROM schedule_session_occurrences o
+      WHERE o.class_schedule_id = cs.id AND o.occurrence_date >= CURRENT_DATE AND o.is_cancelled = false
+      ORDER BY o.occurrence_date ASC LIMIT 1
+    ) next_occ ON true
     WHERE cs.class_name = ANY(${classNames})
   `) as unknown as ClassScheduleRow[];
   return sortSchedule(rows);

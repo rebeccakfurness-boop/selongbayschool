@@ -29,6 +29,8 @@ import {
 import { getLunchOrdersForChild, type LunchOrderSummaryRow } from '@/lib/lunch-orders';
 import { weekdaysSummaryLabel } from '@/lib/lunch-calc';
 import { getUpcomingOccurrencesForClass, getNotificationPref, type SessionOccurrenceRow } from '@/lib/schedule';
+import { getGradebookForChild, type GradebookEntry } from '@/lib/worksheets';
+import GradebookSection from '@/components/GradebookSection';
 import {
   getCurriculumTermsForClass,
   getCurriculumTermTree,
@@ -89,6 +91,7 @@ interface ChildSectionData {
   classroomSubmissions: ClassroomSubmissionRow[];
   lunchOrders: LunchOrderSummaryRow[];
   occurrences: SessionOccurrenceRow[];
+  gradebook: GradebookEntry[];
   notificationsEnabled: boolean;
   curriculumTerms: CurriculumTerm[];
   initialCurriculumTerm: CurriculumTermTree | null;
@@ -115,7 +118,7 @@ export default async function ParentLearningPage() {
 
     const childSections: ChildSectionData[] = await Promise.all(
       children.map(async (child) => {
-        const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, notificationsEnabled, curriculumTerms] = await Promise.all([
+        const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, gradebook, notificationsEnabled, curriculumTerms] = await Promise.all([
           getCurrentCurriculumUnit(child.class_name),
           getUpcomingLessonPlans(child.class_name, 5),
           getWorkSamplesForChild(child.id),
@@ -127,6 +130,7 @@ export default async function ParentLearningPage() {
           getClassroomSubmissionsForChild(child.id),
           getLunchOrdersForChild(child.id),
           getUpcomingOccurrencesForClass(child.class_name, child.schedule_type, from, to),
+          getGradebookForChild(child.id),
           customerId ? getNotificationPref(customerId, child.id) : Promise.resolve(false),
           getCurriculumTermsForClass(child.class_name),
         ]);
@@ -135,7 +139,7 @@ export default async function ParentLearningPage() {
           : [null, new Map<number, LessonProgressStatus>()];
         return {
           child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments,
-          classroomSubmissions, lunchOrders, occurrences, notificationsEnabled, curriculumTerms,
+          classroomSubmissions, lunchOrders, occurrences, gradebook, notificationsEnabled, curriculumTerms,
           initialCurriculumTerm, initialCurriculumProgress: [...progressMap.entries()],
         };
       })
@@ -168,7 +172,7 @@ function renderLearningPage(
         )}
 
         <div className="flex flex-col gap-12">
-          {childSections.map(({ child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, notificationsEnabled, curriculumTerms, initialCurriculumTerm, initialCurriculumProgress }) => {
+          {childSections.map(({ child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, gradebook, notificationsEnabled, curriculumTerms, initialCurriculumTerm, initialCurriculumProgress }) => {
             const submissionByAssignment = new Map(classroomSubmissions.map((s) => [s.classroom_assignment_id, s]));
 
             return (
@@ -274,6 +278,10 @@ function renderLearningPage(
                       ))}
                       {workSamples.length === 0 && <li className="text-sm text-ink-soft">No work samples yet.</li>}
                     </ul>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <GradebookSection entries={gradebook} />
                   </div>
 
                   <div className="rounded-md border border-sand-line bg-paper p-5 shadow-soft md:col-span-2">

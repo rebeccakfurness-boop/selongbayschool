@@ -6,6 +6,7 @@ import { getLettersOfOfferForChild } from '@/lib/letters-of-offer';
 import { getWelcomeLetterForChild } from '@/lib/welcome-letters';
 import { getOffboardingLettersForChild } from '@/lib/offboarding';
 import { getMeetingInvitesForChild } from '@/lib/meeting-scheduling';
+import { getGradebookForChild } from '@/lib/worksheets';
 import { COMPLIANCE_STALE_AFTER_DAYS } from '@/lib/child-lifecycle-shared';
 import ChildCard, { type ChildDetail } from '@/components/admin/ChildCard';
 import type { GuardianLink } from '@/components/admin/GuardianLinksSection';
@@ -73,6 +74,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
     const offboardingLetters = await getOffboardingLettersForChild(id);
     const meetingInvites = await getMeetingInvitesForChild(id);
     const classroomSubmissions = await getClassroomSubmissionsForChild(id);
+    const gradebook = await getGradebookForChild(id);
     const guardians = (await sql`
       SELECT gc.customer_id, c.name, c.email, gc.relationship
       FROM guardian_children gc JOIN customers c ON c.id = gc.customer_id
@@ -93,6 +95,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
       offboardingLetters,
       meetingInvites,
       classroomSubmissions,
+      gradebook,
     });
   } catch (error) {
     // redirect()/notFound() work by throwing a special error Next.js's router looks for by

@@ -42,6 +42,18 @@ export async function isCalendarConnected(): Promise<boolean> {
   return (await getConnection()) !== null;
 }
 
+/** The connected account's calendar_id is its own email address (see the comment where
+ * calendar_connection is populated) -- its domain is the closest thing this app has to "the
+ * school's Workspace domain" without a separate admin-configured setting, used to decide which
+ * family members can be added as real Calendar attendees (only those on the school's own domain;
+ * everyone else just sees the session/Meet link inside the dashboard itself). */
+export async function getWorkspaceDomain(): Promise<string | null> {
+  const connection = await getConnection();
+  if (!connection) return null;
+  const atIndex = connection.calendar_id.indexOf('@');
+  return atIndex === -1 ? null : connection.calendar_id.slice(atIndex + 1).toLowerCase();
+}
+
 /** Callers should generally check isCalendarConnected() first and surface a clear "connect Google
  * Calendar first" message — this is the fallback for the rare race where it's disconnected between
  * that check and the actual API call. */
@@ -154,4 +166,84 @@ export async function createMeetingEvent(input: CreateMeetingEventInput): Promis
   };
   const meetLink = data.conferenceData?.entryPoints?.find((e) => e.entryPointType === 'video')?.uri ?? null;
   return { eventId: data.id, meetLink };
+}
+
+export interface UpdateMeetingEventInput {
+  eventId: string;
+  summary: string;
+  description: string;
+  startIso: string;
+  endIso: string;
+  attendeeEmails: string[];
+  format: 'in_person' | 'video';
+  location: string | null;
+  /** Must only be true when the occurrence doesn't already have a meet_link. Google's PATCH leaves
+   * any field omitted from the body untouched — including conferenceData — so an occurrence that
+   * already has a Meet link keeps it automatically as long as this stays false. Sending a *new*
+   * conferenceData.createRequest on an event that already has one produces a second, different Meet
+   * link and orphans the first, so this must never be true for an already-synced occurrence. */
+  addConferenceData: boolean;
+}
+
+/** PATCH (not PUT) an existing event: fields omitted from the body are left as-is on Google's side,
+ * which is what lets this safely update time/attendees/title without touching a Meet link the
+ * caller doesn't want changed. Same conferenceDataVersion=1 requirement as createMeetingEvent when
+ * addConferenceData is true. */
+export async function updateMeetingEvent(input: UpdateMeetingEventInput): Promise<CreatedMeetingEvent> {
+  const connection = await requireConnection();
+  const token = await getAccessToken(connection);
+
+  const body: Record<string, unknown> = {
+    summary: input.summary,
+    description: input.description,
+    start: { dateTime: input.startIso, timeZone: 'Asia/Makassar' },
+    end: { dateTime: input.endIso, timeZone: 'Asia/Makassar' },
+    attendees: input.attendeeEmails.map((email) => ({ email })),
+  };
+  if (input.format === 'video') {
+    if (input.addConferenceData) {
+      body.conferenceData = {
+        createRequest: {
+          requestId: `meeting-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          conferenceSolutionKey: { type: 'hangoutsMeet' },
+        },
+      };
+    }
+  } else if (input.location) {
+    body.location = input.location;
+  }
+
+  const res = await fetch(
+    `${CALENDAR_API}/calendars/${encodeURIComponent(connection.calendar_id)}/events/${encodeURIComponent(input.eventId)}?conferenceDataVersion=1`,
+    {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }
+  );
+  if (!res.ok) {
+    throw new Error(`Google Calendar updateEvent error: ${res.status} ${await res.text()}`);
+  }
+  const data = (await res.json()) as {
+    id: string;
+    conferenceData?: { entryPoints?: { entryPointType: string; uri: string }[] };
+  };
+  const meetLink = data.conferenceData?.entryPoints?.find((e) => e.entryPointType === 'video')?.uri ?? null;
+  return { eventId: data.id, meetLink };
+}
+
+/** 404/410 mean the event is already gone from Google's side (deleted manually, calendar
+ * disconnected/reconnected, etc.) — treated as success rather than an error to retry, since the
+ * caller's goal ("this event shouldn't exist anymore") is already satisfied. */
+export async function cancelMeetingEvent(eventId: string): Promise<void> {
+  const connection = await requireConnection();
+  const token = await getAccessToken(connection);
+
+  const res = await fetch(
+    `${CALENDAR_API}/calendars/${encodeURIComponent(connection.calendar_id)}/events/${encodeURIComponent(eventId)}`,
+    { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } }
+  );
+  if (!res.ok && res.status !== 404 && res.status !== 410) {
+    throw new Error(`Google Calendar deleteEvent error: ${res.status} ${await res.text()}`);
+  }
 }
