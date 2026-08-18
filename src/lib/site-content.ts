@@ -195,13 +195,6 @@ export const teachers = [
     image: { src: '/images/teacher-marwan.jpg', alt: 'Marwan Desky, Primary Mathematics Specialist teacher at Selong Bay School' },
   },
   {
-    name: 'Nadine Natali Hanslik (Ms Nati)',
-    role: 'High School Teacher',
-    shortIntro: 'A High School teacher specialising in Chemistry and Physical Education, currently completing her Master of Education.',
-    bio: 'Nadine Natali Hanslik is currently completing her Master of Education in Germany, building on her Bachelor of Arts in Education with specialisations in Chemistry and Physical Education. She also completed an exchange semester at Griffith University in Australia, expanding her international teaching perspective. Nadine is multilingual, speaking German, English, and Polish, making her well suited to an international school environment. She is a certified Online Tutor with experience supporting students in both classroom and digital learning settings. Throughout her studies, Nadine has held leadership roles within faculty and student councils, demonstrating strong communication, collaboration, and organisational skills. Her diverse academic and professional experiences have developed her adaptability, professionalism, and ability to work effectively with students and colleagues from a wide range of cultural backgrounds.',
-    image: { src: '/images/teacher-nati.jpg', alt: 'Nadine Natali Hanslik (Ms Nati), High School teacher at Selong Bay School' },
-  },
-  {
     name: 'Rebecca Furness',
     role: 'Specialist High School Tutor',
     shortIntro: 'A Specialist High School Tutor with a strong background in business, leadership, and economics.',
@@ -468,7 +461,7 @@ export const admissionsGroups: AdmissionsGroup[] = [
       { programme: 'Junior Secondary', ageRange: '13–14', perTermFrom: 27_000_000 },
       { programme: 'Senior Secondary', ageRange: '15–17', perTermFrom: 30_000_000 },
     ],
-    featuredTeachers: ['Nadine Natali Hanslik (Ms Nati)', 'Marwan Desky', 'Rebecca Furness'],
+    featuredTeachers: ['Marwan Desky', 'Rebecca Furness'],
   },
 ];
 
