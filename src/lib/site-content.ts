@@ -195,6 +195,13 @@ export const teachers = [
     image: { src: '/images/teacher-marwan.jpg', alt: 'Marwan Desky, Primary Mathematics Specialist teacher at Selong Bay School' },
   },
   {
+    name: 'Tia Sofiana (Ms Tia)',
+    role: 'Visual Art Teacher & Art Specialist (Primary & Secondary)',
+    shortIntro: 'A Visual Art Teacher and Art Specialist experienced in the IGCSE and ACARA curricula, leading Inquiry-Based Learning across Primary and Secondary.',
+    bio: "Tia Sofiana is a Visual Art Teacher and Art Specialist with a degree from the Faculty of Language, Arts, and Culture Education at Yogyakarta State University (UNY). She has 5 years experience as Visual Arts under the IGCSE and ACARA curricula at an Intercultural School, where she develops art programmes spanning conceptual development, practical skills, and global art movements, and prepares students for IGCSE Art & Design assessments. Her wider experience includes roles as a Visual Art Teacher at Seruniih Art Studio, a Specialist Art Teacher and an Art Mentor for the Get Plastic Foundation's eco-art workshops, and a Museum Educator at the Indonesian Education Museum. Tia is skilled across drawing, painting, mural art, printmaking, sculpture, and digital media, and has exhibited her work in numerous national and international exhibitions. At Selong Bay, she teaches Arts, Global Perspectives, Photography, and leads Inquiry-Based Learning, bringing a student-centred, interdisciplinary approach that connects cultural heritage with contemporary artistic practice.",
+    image: { src: '/images/teacher-tia.jpg', alt: 'Tia Sofiana (Ms Tia), Visual Art Teacher at Selong Bay School' },
+  },
+  {
     name: 'Rebecca Furness',
     role: 'Specialist High School Tutor',
     shortIntro: 'A Specialist High School Tutor with a strong background in business, leadership, and economics.',
@@ -446,7 +453,7 @@ export const admissionsGroups: AdmissionsGroup[] = [
       { programme: 'Intermediate, age 9–10', perTermFrom: 24_750_000 },
       { programme: 'Senior, age 11–12', perTermFrom: 25_750_000 },
     ],
-    featuredTeachers: ['Marwan Desky', 'Ripki Pratama (Pak Ripki)'],
+    featuredTeachers: ['Marwan Desky', 'Ripki Pratama (Pak Ripki)', 'Tia Sofiana (Ms Tia)'],
   },
   {
     slug: 'secondary-school',
@@ -461,7 +468,7 @@ export const admissionsGroups: AdmissionsGroup[] = [
       { programme: 'Junior Secondary', ageRange: '13–14', perTermFrom: 27_000_000 },
       { programme: 'Senior Secondary', ageRange: '15–17', perTermFrom: 30_000_000 },
     ],
-    featuredTeachers: ['Marwan Desky', 'Rebecca Furness'],
+    featuredTeachers: ['Marwan Desky', 'Rebecca Furness', 'Tia Sofiana (Ms Tia)'],
   },
 ];
 
