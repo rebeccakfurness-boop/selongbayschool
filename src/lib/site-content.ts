@@ -394,6 +394,8 @@ export const temporaryQuickOverviewPdf = '/files/temporary-student-quick-overvie
 
 export const secondaryProgrammePdf = '/files/secondary-school-programme.pdf';
 
+export const financePolicyPdf = '/files/finance-policy.pdf';
+
 export const ourApproach = {
   heading: 'A curriculum built for both worlds',
   paragraphs: [

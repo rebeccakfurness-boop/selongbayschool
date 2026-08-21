@@ -4,7 +4,7 @@ import PhotoBanner from '@/components/PhotoBanner';
 import Button from '@/components/Button';
 import Reveal from '@/components/Reveal';
 import EnrolmentForm from '@/components/forms/EnrolmentForm';
-import { admissionsGroups, temporaryEnrolments, feesSummary, formatIDR, longTermPricingPdf, temporaryPricingPdf } from '@/lib/site-content';
+import { admissionsGroups, temporaryEnrolments, feesSummary, formatIDR, longTermPricingPdf, temporaryPricingPdf, financePolicyPdf } from '@/lib/site-content';
 
 export const metadata: Metadata = {
   title: 'Admissions',
@@ -97,9 +97,12 @@ export default function AdmissionsPage() {
               Full pricing schedule available upon request. A 5% discount applies if the annual fee is paid upfront.
               Prices include online membership, development, and resource fees; they exclude activity costs and lunch.
             </p>
-            <div className="mt-5">
+            <div className="mt-5 flex flex-wrap gap-4">
               <Button href={longTermPricingPdf} variant="primary" external>
                 Download the Long-Term Enrolment &amp; Pricing Overview (PDF)
+              </Button>
+              <Button href={financePolicyPdf} variant="accent" external>
+                Download the Finance Policy (PDF)
               </Button>
             </div>
           </div>

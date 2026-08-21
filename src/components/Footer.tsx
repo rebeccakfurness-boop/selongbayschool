@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { navItems, siteConfig } from '@/lib/site-content';
+import { navItems, siteConfig, financePolicyPdf } from '@/lib/site-content';
 
 function InstagramIcon() {
   return (
@@ -117,6 +117,9 @@ export default function Footer() {
           <Link href="/terms-of-service" className="hover:text-orange hover:underline">
             Terms of Service
           </Link>
+          <a href={financePolicyPdf} target="_blank" rel="noopener noreferrer" className="hover:text-orange hover:underline">
+            Finance Policy
+          </a>
         </p>
       </div>
     </footer>
