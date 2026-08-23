@@ -127,33 +127,53 @@ export const foundingFamilies = [
   },
 ];
 
-export const disasterAppeal = {
-  eyebrow: 'Disaster Response Appeal',
-  heading: 'Sade Village Fire Rebuilding Fund',
-  paragraphs: [
-    'Sade Village, one of the communities neighbouring Selong Bay School, was recently struck by a fire that caused significant damage to homes and property. Yayasan Selong Bay Sekolah has opened this fund to support the families affected as they rebuild and get back on their feet.',
-    'Every donation goes directly toward helping our neighbours in Sade Village recover and rebuild during this difficult time. If you are able to contribute, our bank details are below — thank you for your support.',
-  ],
-  domesticBank: {
-    label: 'Bank transfer (Indonesia)',
-    rows: [
-      { label: 'Bank', value: 'Mandiri Bank' },
-      { label: 'Account Name', value: 'Yayasan Selong Bay Sekolah' },
-      { label: 'Account Number', value: '1610018060082' },
-    ],
-  },
-  internationalBank: {
-    label: 'International wire transfer',
-    rows: [
-      { label: 'Bank Name', value: 'PT Bank Mandiri (Persero) Tbk' },
-      { label: 'SWIFT Code', value: 'BMRIIDJAXXX' },
-      { label: 'Bank Code', value: '008-3292 (Clearing Code)' },
-      { label: 'Branch', value: 'KCP Kuta Mandalika' },
-      { label: 'Branch Code', value: '16161' },
-      { label: 'Branch Address', value: 'Jl Raya Pujut Kuta Mandalika, Kabupaten Lombok Tengah, Nusa Tenggara Barat 83572' },
-    ],
-  },
+export const disasterResponseSection = {
+  eyebrow: 'Supporting our neighbours',
+  heading: 'Disaster Response Fund',
+  intro:
+    'When communities near Selong Bay School are hit by disaster, Yayasan Selong Bay Sekolah opens a dedicated fund to support them. Below are the funds we are currently raising for — expand a fund to read more and see how to donate.',
 };
+
+const mandiriDomesticBank = {
+  label: 'Bank transfer (Indonesia)',
+  rows: [
+    { label: 'Bank', value: 'Mandiri Bank' },
+    { label: 'Account Name', value: 'Yayasan Selong Bay Sekolah' },
+    { label: 'Account Number', value: '1610018060082' },
+  ],
+};
+
+const mandiriInternationalBank = {
+  label: 'International wire transfer',
+  rows: [
+    { label: 'Bank Name', value: 'PT Bank Mandiri (Persero) Tbk' },
+    { label: 'SWIFT Code', value: 'BMRIIDJAXXX' },
+    { label: 'Bank Code', value: '008-3292 (Clearing Code)' },
+    { label: 'Branch', value: 'KCP Kuta Mandalika' },
+    { label: 'Branch Code', value: '16161' },
+    { label: 'Branch Address', value: 'Jl Raya Pujut Kuta Mandalika, Kabupaten Lombok Tengah, Nusa Tenggara Barat 83572' },
+  ],
+};
+
+export const disasterResponseFunds = [
+  {
+    slug: 'sade-village-fire',
+    name: 'Sade Village Fire',
+    summary: 'Rebuilding fifty homes lost to fire in the Sasak cultural village of Sade, and supporting the community as they recover.',
+    photoPlaceholders: [
+      { label: 'Photo of the fire damage coming soon' },
+      { label: 'Photo of the rebuilding effort coming soon' },
+    ],
+    paragraphs: [
+      'On the night of 22 August, a fire believed to have started from an electrical fault broke out in Sade Village. After an extremely dry spell across Lombok, the village’s traditional alang-alang (thatched grass) roofs caught quickly, and within thirty minutes, at around 10pm, fifty homes had burned to the ground. Emergency responders attended and, thankfully, no one was seriously hurt, with only minor smoke inhalation reported.',
+      'Sade Village is one of Lombok’s best-known centres of Sasak culture, home to generations of weavers, dancers, and craftspeople. Our focus now is on helping the community rebuild safely, with proper fire safety measures in place, so that Sade can recover stronger than before and continue to be a thriving home for Sasak culture for generations to come. We encourage visitors to support the community directly by buying authentic Sasak-made weaving and handicrafts, alongside donating to this fund.',
+      'Yayasan Selong Bay Sekolah is responsible for ensuring every donation reaches the right people. We are working alongside Lombok Aid and other NGOs already active in Sade Village to make sure funds and building supplies are properly reported, tracked, and distributed. The Yayasan’s founders bring 25 years of disaster aid relief experience to this effort, including having chaired Habitat for Humanity, a humanitarian NGO working worldwide on disaster response. That experience allows us to assess each family’s needs directly and make sure that funds raised go straight to the families rebuilding their homes.',
+      'Beyond financial donations, the community also welcomes in-kind gifts of toys and books for children, and clothing and other everyday items lost in the fire. Food donations are appreciated but are not an urgent need at this time.',
+    ],
+    domesticBank: mandiriDomesticBank,
+    internationalBank: mandiriInternationalBank,
+  },
+];
 
 export const charitableWork = {
   heading: 'Charitable Work',
