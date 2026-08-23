@@ -6,7 +6,7 @@ import { disasterResponseFunds } from '@/lib/site-content';
 import { PlaceholderImage } from '@/components/PlaceholderBox';
 
 export default function DisasterResponseFunds() {
-  const [expandedFund, setExpandedFund] = useState<string | null>(disasterResponseFunds[0]?.slug ?? null);
+  const [expandedFund, setExpandedFund] = useState<string | null>(null);
 
   return (
     <div className="mt-8 flex flex-col gap-5">
@@ -14,19 +14,36 @@ export default function DisasterResponseFunds() {
         const isOpen = expandedFund === fund.slug;
 
         return (
-          <div key={fund.slug} className="overflow-hidden rounded-lg border-2 border-orange-deep/30 bg-orange/10 shadow-soft">
+          <div
+            key={fund.slug}
+            className="overflow-hidden rounded-lg border-2 border-orange-deep/30 bg-orange/10 shadow-soft transition-shadow hover:shadow-md"
+          >
             <button
               type="button"
               onClick={() => setExpandedFund(isOpen ? null : fund.slug)}
-              className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left md:px-10"
+              className="group flex w-full flex-col gap-4 px-6 py-5 text-left transition-colors hover:bg-orange/15 sm:flex-row sm:items-center sm:justify-between md:px-10"
               aria-expanded={isOpen}
             >
               <div>
                 <h3 className="font-display text-xl font-semibold text-ink md:text-2xl">{fund.name}</h3>
                 <p className="mt-1 text-[15px] text-ink-soft">{fund.summary}</p>
               </div>
-              <span className="shrink-0 text-2xl font-bold text-orange-deep" aria-hidden="true">
-                {isOpen ? '−' : '+'}
+              <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-orange-deep px-5 py-2.5 text-sm font-extrabold text-white shadow-[0_10px_24px_-10px_rgba(203,92,15,0.6)] transition-transform duration-150 group-hover:-translate-y-0.5 sm:self-auto">
+                {isOpen ? 'Show less' : 'Read more & donate'}
+                <svg
+                  viewBox="0 0 20 20"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                >
+                  <path d="M5 7.5 10 12.5 15 7.5" />
+                </svg>
               </span>
             </button>
 
