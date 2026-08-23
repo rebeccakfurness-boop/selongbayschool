@@ -160,9 +160,11 @@ export const disasterResponseFunds = [
     slug: 'sade-village-fire',
     name: 'Sade Village Fire',
     summary: 'Rebuilding fifty homes lost to fire in the Sasak cultural village of Sade, and supporting the community as they recover.',
-    photoPlaceholders: [
-      { label: 'Photo of the fire damage coming soon' },
-      { label: 'Photo of the rebuilding effort coming soon' },
+    photos: [
+      { src: '/images/foundation-disaster-fund-sade-fire-night.jpg', alt: 'The fire tearing through Sade Village at night' },
+      { src: '/images/foundation-disaster-fund-sade-fire-aftermath.jpg', alt: 'The burnt remains of homes in Sade Village after the fire' },
+      { src: '/images/foundation-disaster-fund-sade-fire-bicycle.jpg', alt: 'A burnt bicycle amid the ash and debris in Sade Village' },
+      { src: '/images/foundation-disaster-fund-sade-fire-community.jpg', alt: 'Members of the Sade Village community clearing debris after the fire' },
     ],
     paragraphs: [
       'On the night of 22 August, a fire believed to have started from an electrical fault broke out in Sade Village. After an extremely dry spell across Lombok, the village’s traditional alang-alang (thatched grass) roofs caught quickly, and within thirty minutes, at around 10pm, fifty homes had burned to the ground. Emergency responders attended and, thankfully, no one was seriously hurt, with only minor smoke inhalation reported.',

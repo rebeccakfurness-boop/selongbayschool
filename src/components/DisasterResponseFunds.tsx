@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { disasterResponseFunds } from '@/lib/site-content';
 import { PlaceholderImage } from '@/components/PlaceholderBox';
 
@@ -32,9 +33,13 @@ export default function DisasterResponseFunds() {
             {isOpen && (
               <div className="border-t border-orange-deep/20 px-6 pb-6 pt-6 md:px-10 md:pb-10">
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {fund.photoPlaceholders.map((photo) => (
-                    <PlaceholderImage key={photo.label} label={photo.label} className="h-48" />
-                  ))}
+                  {fund.photos && fund.photos.length > 0
+                    ? fund.photos.map((photo) => (
+                        <div key={photo.src} className="relative h-48 w-full overflow-hidden rounded-md">
+                          <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover" />
+                        </div>
+                      ))
+                    : [1, 2].map((n) => <PlaceholderImage key={n} label="Photo coming soon" className="h-48" />)}
                 </div>
 
                 <div className="mt-6 space-y-4 text-[16px] leading-relaxed text-ink-soft">
