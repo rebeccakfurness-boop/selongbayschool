@@ -33,7 +33,7 @@ export default function LetterOfOfferAcceptForm({ token }: { token: string }) {
   if (accepted) {
     return (
       <div className="rounded-md border border-teal/30 bg-teal/10 p-6 text-center">
-        <p className="font-display text-lg font-semibold text-teal-deep">Thank you — offer accepted!</p>
+        <p className="font-display text-lg font-semibold text-teal-deep">Thank you, offer accepted!</p>
         <p className="mt-2 text-sm text-ink-soft">We&apos;ll be in touch shortly with the tuition invoice.</p>
       </div>
     );

@@ -71,7 +71,7 @@ export default async function LetterOfOfferPage({ params }: { params: Promise<{ 
               Accepted{letter.accepted_by_name ? ` by ${letter.accepted_by_name}` : ''}
               {letter.accepted_at ? ` on ${formatDate(letter.accepted_at.slice(0, 10))}` : ''}.
             </p>
-            <p className="mt-2 text-sm text-ink-soft">Thank you — we&apos;ll be in touch with the tuition invoice shortly.</p>
+            <p className="mt-2 text-sm text-ink-soft">Thank you. We&apos;ll be in touch with the tuition invoice shortly.</p>
           </div>
         ) : (
           <LetterOfOfferAcceptForm token={token} />

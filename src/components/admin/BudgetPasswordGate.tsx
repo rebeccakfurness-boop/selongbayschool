@@ -41,7 +41,7 @@ export default function BudgetPasswordGate() {
     <div className="flex min-h-[60vh] items-center justify-center px-6">
       <div className="w-full max-w-sm rounded-md border border-sand-line bg-paper p-8 shadow-soft">
         <h1 className="font-display text-2xl font-semibold text-ink">Budget Tracker</h1>
-        <p className="mt-1 text-sm text-ink-soft">Restricted to the Principal — enter the budget password to continue.</p>
+        <p className="mt-1 text-sm text-ink-soft">Restricted to the Principal: enter the budget password to continue.</p>
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4" noValidate>
           <Field label="Password" htmlFor="budget-password" required>
             <TextInput

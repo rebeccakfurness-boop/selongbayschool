@@ -41,7 +41,7 @@ export default async function ClassSchedulePage() {
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">Teaching</h1>
           <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
-            The recurring weekly timetable — shown as the main screen on the parent and student portals, with
+            The recurring weekly timetable, shown as the main screen on the parent and student portals, with
             subject, teacher, time, and whether each class is online or in person.
           </p>
         </div>

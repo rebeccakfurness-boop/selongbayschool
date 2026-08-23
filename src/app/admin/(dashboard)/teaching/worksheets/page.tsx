@@ -66,7 +66,7 @@ function renderWorksheetsPage(occurrences: Awaited<ReturnType<typeof getOccurren
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">Teaching</h1>
           <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
-            Upload, mark, and review post-lesson worksheets for each dated session — marks feed straight into each
+            Upload, mark, and review post-lesson worksheets for each dated session; marks feed straight into each
             student&apos;s gradebook, viewable on their Child Card and by their own parent.
           </p>
         </div>

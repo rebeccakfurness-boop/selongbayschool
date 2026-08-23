@@ -107,7 +107,7 @@ export default function TransactionLogClient({ transactions }: { transactions: C
                   )}
                 </td>
                 <td className="max-w-xs px-4 py-3 text-ink-soft">
-                  {t.kind === 'revenue' ? t.description || '—' : `${t.vendor_description} · authorized by ${t.authorized_by}`}
+                  {t.kind === 'revenue' ? t.description || 'No description' : `${t.vendor_description} · authorized by ${t.authorized_by}`}
                 </td>
                 <td
                   className={`whitespace-nowrap px-4 py-3 text-right font-semibold tabular-nums ${
@@ -124,7 +124,7 @@ export default function TransactionLogClient({ transactions }: { transactions: C
                       <img src={t.receipt_url} alt="View receipt" className="h-10 w-10 rounded-sm border border-sand-line object-cover" />
                     </button>
                   ) : (
-                    <span className="text-xs text-ink-soft">—</span>
+                    <span className="text-xs text-ink-soft">No receipt</span>
                   )}
                 </td>
               </tr>

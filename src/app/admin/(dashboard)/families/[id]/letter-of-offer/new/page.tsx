@@ -23,7 +23,7 @@ export default async function NewLetterOfOfferPage({ params }: { params: Promise
 
   return (
     <section>
-      <h1 className="font-display text-2xl font-semibold text-ink">New Letter of Offer — {label}</h1>
+      <h1 className="font-display text-2xl font-semibold text-ink">New Letter of Offer: {label}</h1>
       <div className="mt-6">
         <LetterOfOfferForm
           childId={childId}

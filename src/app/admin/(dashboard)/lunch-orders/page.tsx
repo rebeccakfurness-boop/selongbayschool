@@ -54,16 +54,16 @@ export default async function LunchOrdersPage() {
                 </td>
                 <td className="whitespace-nowrap px-4 py-3 text-ink-soft">{o.own_lunch ? 'Bringing own' : 'Ordered'}</td>
                 <td className="whitespace-nowrap px-4 py-3 text-ink-soft">
-                  {o.start_date && o.end_date ? `${formatDate(o.start_date)} – ${formatDate(o.end_date)}` : '—'}
+                  {o.start_date && o.end_date ? `${formatDate(o.start_date)} – ${formatDate(o.end_date)}` : '-'}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3 text-ink-soft">
-                  {o.own_lunch ? '—' : weekdaysSummaryLabel({ monday: o.monday, tuesday: o.tuesday, wednesday: o.wednesday, thursday: o.thursday, friday: o.friday })}
+                  {o.own_lunch ? '-' : weekdaysSummaryLabel({ monday: o.monday, tuesday: o.tuesday, wednesday: o.wednesday, thursday: o.thursday, friday: o.friday })}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 capitalize text-ink-soft">{o.lunch_size ?? '—'}</td>
+                <td className="whitespace-nowrap px-4 py-3 capitalize text-ink-soft">{o.lunch_size ?? '-'}</td>
                 <td className="max-w-[240px] px-4 py-3 text-xs text-ink-soft">
                   {o.food_preference && <div>Food: {o.food_preference}</div>}
                   {o.allergies_notes && <div className="font-semibold text-orange-deep">Allergies: {o.allergies_notes}</div>}
-                  {!o.food_preference && !o.allergies_notes && '—'}
+                  {!o.food_preference && !o.allergies_notes && '-'}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3">
                   {o.invoice_id ? (
@@ -77,7 +77,7 @@ export default async function LunchOrdersPage() {
                       {o.invoice_total !== null && <span className="text-xs text-ink-soft">{formatIDR(o.invoice_total)}</span>}
                     </div>
                   ) : (
-                    <span className="text-ink-soft">—</span>
+                    <span className="text-ink-soft">-</span>
                   )}
                 </td>
               </tr>

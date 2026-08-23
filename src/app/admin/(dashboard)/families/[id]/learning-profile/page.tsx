@@ -39,7 +39,7 @@ export default async function LearningProfileListPage({ params }: { params: Prom
       <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">
-            Learning Profile — {(child.child_nickname as string) || (child.child_full_name as string)}
+            Learning Profile: {(child.child_nickname as string) || (child.child_full_name as string)}
           </h1>
           <p className="mt-1 text-sm text-ink-soft">Term reports for this child.</p>
         </div>

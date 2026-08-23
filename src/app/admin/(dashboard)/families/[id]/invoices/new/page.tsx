@@ -37,7 +37,7 @@ export default async function NewInvoicePage({
   return (
     <section>
       <h1 className="font-display text-2xl font-semibold text-ink">
-        New {invoiceType === 'tuition' ? 'tuition' : 'activity'} invoice — {label}
+        New {invoiceType === 'tuition' ? 'tuition' : 'activity'} invoice: {label}
       </h1>
       <div className="mt-6">
         <InvoiceForm

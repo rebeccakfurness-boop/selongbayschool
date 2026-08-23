@@ -40,7 +40,7 @@ export default async function LinkChildPage() {
             <h2 className="text-xs font-bold uppercase tracking-wide text-ink-soft">Pending requests</h2>
             <ul className="mt-2 flex flex-col gap-1 text-sm text-ink">
               {pending.map((p, i) => (
-                <li key={i}>{p.child_full_name} — awaiting school office review</li>
+                <li key={i}>{p.child_full_name}: awaiting school office review</li>
               ))}
             </ul>
           </div>

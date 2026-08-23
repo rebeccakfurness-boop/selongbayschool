@@ -53,7 +53,7 @@ export default function CurriculumTermBrowser({ term, progress, canSetProgress, 
     <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="font-display text-lg font-semibold text-teal-deep">
-          {term.subject} — {term.class_name}
+          {term.subject}: {term.class_name}
         </h2>
         <span className="text-xs font-semibold text-ink-soft">{term.term_label}</span>
       </div>

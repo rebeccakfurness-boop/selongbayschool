@@ -131,7 +131,7 @@ export const disasterResponseSection = {
   eyebrow: 'Supporting our neighbours',
   heading: 'Disaster Response Fund',
   intro:
-    'When communities near Selong Bay School are hit by disaster, Yayasan Selong Bay Sekolah opens a dedicated fund to support them. Below are the funds we are currently raising for — expand a fund to read more and see how to donate.',
+    'When communities near Selong Bay School are hit by disaster, Yayasan Selong Bay Sekolah opens a dedicated fund to support them. Below are the funds we are currently raising for; expand a fund to read more and see how to donate.',
 };
 
 const mandiriDomesticBank = {

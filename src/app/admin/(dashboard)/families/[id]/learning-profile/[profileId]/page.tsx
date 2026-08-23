@@ -73,7 +73,7 @@ export default async function EditLearningProfilePage({ params }: { params: Prom
   return (
     <section>
       <h1 className="font-display text-2xl font-semibold text-ink">
-        Edit {profile.term_label} — {child.child_full_name as string}
+        Edit {profile.term_label}: {child.child_full_name as string}
       </h1>
       <div className="mt-6">
         <LearningProfileForm childId={childId} initial={initial} />

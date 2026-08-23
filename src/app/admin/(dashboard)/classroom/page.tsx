@@ -5,7 +5,7 @@ import ClassroomManager from '@/components/admin/ClassroomManager';
 export const dynamic = 'force-dynamic';
 
 const ERROR_MESSAGES: Record<string, string> = {
-  state_mismatch: 'That connection attempt looked invalid (state mismatch) — please try connecting again.',
+  state_mismatch: 'That connection attempt looked invalid (state mismatch); please try connecting again.',
   not_configured: 'GOOGLE_CLASSROOM_CLIENT_ID/SECRET/REDIRECT_URI are not set in this environment yet.',
   token_exchange_failed: 'Google rejected the connection request. Check the redirect URI matches what’s configured in Google Cloud Console.',
   no_refresh_token: 'Google did not return a refresh token. Try disconnecting any prior authorization for this app in your Google Account’s security settings, then reconnect.',

@@ -98,7 +98,7 @@ export default function LunchOrderForm({
     return (
       <div className="rounded-md border border-teal/30 bg-teal/10 p-4 text-sm">
         <p className="font-semibold text-teal-deep">
-          Order confirmed — {confirmed.lunchCount} lunch{confirmed.lunchCount === 1 ? '' : 'es'}, {formatIDR(confirmed.totalAmount)}.
+          Order confirmed: {confirmed.lunchCount} lunch{confirmed.lunchCount === 1 ? '' : 'es'}, {formatIDR(confirmed.totalAmount)}.
         </p>
         <a href={`/api/invoices/${confirmed.invoiceId}/pdf`} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block font-semibold text-teal-deep underline">
           View invoice (bank transfer details inside)
@@ -109,7 +109,7 @@ export default function LunchOrderForm({
   }
 
   if (ownLunchSaved) {
-    return <p className="rounded-md border border-teal/30 bg-teal/10 p-4 text-sm font-semibold text-teal-deep">Noted — bringing lunch from home.</p>;
+    return <p className="rounded-md border border-teal/30 bg-teal/10 p-4 text-sm font-semibold text-teal-deep">Noted: bringing lunch from home.</p>;
   }
 
   if (mode === 'choose') {
@@ -131,7 +131,7 @@ export default function LunchOrderForm({
         >
           {submitting ? 'Saving…' : "I'll bring my own lunch"}
         </button>
-        {!configured && <p className="w-full text-xs text-ink-soft">Lunch ordering isn&apos;t set up yet — please check back later.</p>}
+        {!configured && <p className="w-full text-xs text-ink-soft">Lunch ordering isn&apos;t set up yet. Please check back later.</p>}
         {error && <p className="w-full text-xs font-semibold text-orange-deep">{error}</p>}
       </div>
     );
@@ -179,11 +179,11 @@ export default function LunchOrderForm({
         <div className="mt-1 flex flex-wrap gap-4">
           <label className="flex items-center gap-1.5 text-sm">
             <input type="radio" name="lunch-size" checked={lunchSize === 'normal'} onChange={() => setLunchSize('normal')} />
-            Normal — {formatIDR(normalPriceIdr)}/lunch
+            Normal: {formatIDR(normalPriceIdr)}/lunch
           </label>
           <label className="flex items-center gap-1.5 text-sm">
             <input type="radio" name="lunch-size" checked={lunchSize === 'large'} onChange={() => setLunchSize('large')} />
-            Large — {formatIDR(largePriceIdr)}/lunch
+            Large: {formatIDR(largePriceIdr)}/lunch
           </label>
         </div>
       </div>
@@ -202,7 +202,7 @@ export default function LunchOrderForm({
         <span className="font-semibold text-ink">{lunchCount} lunch{lunchCount === 1 ? '' : 'es'}</span>
         <span className="text-ink-soft"> × {formatIDR(unitPrice)} = </span>
         <span className="font-bold text-teal-deep">{formatIDR(total)}</span>
-        {lunchCount === 0 && <p className="mt-1 text-xs text-orange-deep">No lunch days fall in that date range — widen it or select more days.</p>}
+        {lunchCount === 0 && <p className="mt-1 text-xs text-orange-deep">No lunch days fall in that date range. Widen it or select more days.</p>}
       </div>
 
       {error && <p role="alert" className="mt-3 text-sm font-semibold text-orange-deep">{error}</p>}

@@ -18,7 +18,7 @@ export default async function EditLetterOfOfferPage({ params }: { params: Promis
 
   return (
     <section>
-      <h1 className="font-display text-2xl font-semibold text-ink">Edit Letter of Offer — {letter.child_full_name}</h1>
+      <h1 className="font-display text-2xl font-semibold text-ink">Edit Letter of Offer: {letter.child_full_name}</h1>
       {letter.status === 'accepted' && (
         <p className="mt-2 rounded-sm bg-orange/10 px-3 py-2 text-sm font-semibold text-orange-deep">
           This letter has already been accepted and can no longer be edited.

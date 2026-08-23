@@ -118,7 +118,7 @@ export default async function AdminInvoicesPage({
                     </a>
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 capitalize text-ink-soft">{inv.invoice_type}</td>
-                  <td className="px-4 py-3 text-ink">{inv.children_names || '—'}</td>
+                  <td className="px-4 py-3 text-ink">{inv.children_names || '-'}</td>
                   <td className="px-4 py-3 text-ink-soft">{inv.billed_to_name}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-ink-soft">{formatDate(inv.issue_date)}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-ink-soft">{formatDate(inv.due_date)}</td>

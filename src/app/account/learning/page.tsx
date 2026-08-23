@@ -182,7 +182,7 @@ function renderLearningPage(
                 <div className="mt-6">
                   <ParentScheduleSection
                     childId={child.id}
-                    title={`Schedule — ${child.class_name ?? 'No class set'}`}
+                    title={`Schedule: ${child.class_name ?? 'No class set'}`}
                     occurrences={occurrences}
                     initialNotificationsEnabled={notificationsEnabled}
                   />
@@ -364,7 +364,7 @@ function renderLearningPage(
                                 </span>
                                 {lo.invoice_id && (
                                   <a href={`/api/invoices/${lo.invoice_id}/pdf`} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap font-semibold text-teal-deep underline">
-                                    Invoice #{String(lo.invoice_number).padStart(3, '0')} — {lo.invoice_status === 'paid' ? 'Paid' : formatIDR(lo.invoice_total ?? 0)}
+                                    Invoice #{String(lo.invoice_number).padStart(3, '0')}: {lo.invoice_status === 'paid' ? 'Paid' : formatIDR(lo.invoice_total ?? 0)}
                                   </a>
                                 )}
                               </div>

@@ -137,7 +137,7 @@ export default function AcademicCalendarManager({
           ))}
           {sortedTerms.length === 0 && (
             <div className="rounded-md border border-dashed border-sand-line p-4 text-center text-sm text-ink-soft">
-              No terms set up yet — the Weekly Schedule won&apos;t generate any sessions until at least one is added.
+              No terms set up yet. The Weekly Schedule won&apos;t generate any sessions until at least one is added.
             </div>
           )}
         </div>
@@ -162,7 +162,7 @@ export default function AcademicCalendarManager({
       <div>
         <h2 className="font-display text-lg font-semibold text-ink">Holidays &amp; exceptions</h2>
         <p className="mt-1 text-xs text-ink-soft">
-          Public holidays and school closures — no sessions are generated on any date these cover. Review the
+          Public holidays and school closures: no sessions are generated on any date these cover. Review the
           seeded rows below marked &quot;(unconfirmed)&quot; against the school&apos;s official calendar and correct
           or remove any that are wrong.
         </p>

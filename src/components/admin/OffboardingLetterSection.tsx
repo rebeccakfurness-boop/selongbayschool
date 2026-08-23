@@ -8,7 +8,7 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 const STATUS_LABELS: Record<string, string> = {
-  sent: 'Sent — awaiting response',
+  sent: 'Sent, awaiting response',
   completed: 'Survey completed',
 };
 
@@ -38,7 +38,7 @@ function SurveyResults({ letter }: { letter: OffboardingLetterSummaryRow }) {
         </span>
       </div>
       {letter.feedback_text && <p className="mt-1.5 italic text-ink-soft">&ldquo;{letter.feedback_text}&rdquo;</p>}
-      {letter.completed_by_name && <p className="mt-1 text-ink-soft">— {letter.completed_by_name}</p>}
+      {letter.completed_by_name && <p className="mt-1 text-ink-soft">({letter.completed_by_name})</p>}
     </div>
   );
 }

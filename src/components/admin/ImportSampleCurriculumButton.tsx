@@ -25,7 +25,7 @@ export default function ImportSampleCurriculumButton() {
       if (!res.ok) throw new Error(data.error || 'Import failed');
       setResult(
         data.imported === 0
-          ? 'Already imported — open a programme above to review it.'
+          ? 'Already imported. Open a programme above to review it.'
           : `Imported ${data.imported} programme${data.imported === 1 ? '' : 's'} (${data.unitsCreated} units, ${data.lessonsCreated} lessons)${
               data.skipped ? `, skipped ${data.skipped} already imported` : ''
             }. Every objective and worksheet still needs a teacher's review before use.`
@@ -44,7 +44,7 @@ export default function ImportSampleCurriculumButton() {
         <div>
           <p className="text-sm font-semibold text-ink">Import draft sample terms (Primary 1–6, Secondary 6–10 · Maths, English, Science, Economics)</p>
           <p className="text-xs text-ink-soft">
-            Worked examples across eleven grades — 35 programmes, most drafted around the Cambridge Primary,
+            Worked examples across eleven grades: 35 programmes, most drafted around the Cambridge Primary,
             Lower Secondary, and IGCSE frameworks&apos; stage-by-stage strands, plus an introductory Economics
             sequence for Secondary 6 and Secondary 8. Explicitly a draft: review every objective before
             teaching from it, and each lesson still needs its own worksheet attached.

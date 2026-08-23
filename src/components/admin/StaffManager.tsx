@@ -114,7 +114,7 @@ export default function StaffManager({ initial, classOptions }: { initial: Staff
         {error && <p className="mt-3 font-semibold text-orange-deep">{error}</p>}
         {newTempPassword && (
           <p className="mt-4 rounded-md border border-teal/30 bg-aqua/50 px-4 py-3 text-sm text-teal-deep">
-            Account created for <strong>{newTempPassword.email}</strong>. Temporary password (shown once — copy it now):{' '}
+            Account created for <strong>{newTempPassword.email}</strong>. Temporary password (shown once, copy it now):{' '}
             <code className="rounded bg-white px-2 py-0.5 font-bold">{newTempPassword.password}</code>
           </p>
         )}

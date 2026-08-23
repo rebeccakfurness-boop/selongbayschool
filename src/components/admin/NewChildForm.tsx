@@ -103,7 +103,7 @@ export default function NewChildForm({
         {admissionsEnquiryId ? (
           <Field label="Status" htmlFor="new-child-status">
             <p className="rounded-sm border border-sand-line bg-sand/20 px-4 py-2.5 text-[15px] text-ink-soft">
-              Enquiry — drag to Booking once it&apos;s a confirmed booking
+              Enquiry (drag to Booking once it&apos;s a confirmed booking)
             </p>
           </Field>
         ) : (

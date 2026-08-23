@@ -129,7 +129,7 @@ export default function KioskDailyBoard({ roster, defaultCheckIn }: { roster: Ki
             onClick={() => undoEvent(confirm.childId, confirm.eventId)}
             className="rounded-full border-2 border-white/70 px-6 py-2 text-sm font-bold text-white hover:bg-white/10 disabled:opacity-60"
           >
-            {undoing === confirm.eventId ? 'Undoing…' : 'Undo — made a mistake'}
+            {undoing === confirm.eventId ? 'Undoing…' : 'Undo (made a mistake)'}
           </button>
           <button type="button" onClick={resetToList} className="text-sm font-semibold text-white/80 underline">
             Done

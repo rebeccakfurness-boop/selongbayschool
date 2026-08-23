@@ -106,7 +106,7 @@ function InfoRow({ label, value }: { label: string; value: string | null | undef
   return (
     <div>
       <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">{label}</div>
-      <div className="mt-0.5 text-sm text-ink">{value || '—'}</div>
+      <div className="mt-0.5 text-sm text-ink">{value || 'Not set'}</div>
     </div>
   );
 }
@@ -235,7 +235,7 @@ export default function ChildCard({
       });
       router.refresh();
     } catch {
-      setError('Uploaded, but failed to save the link — try Save changes below.');
+      setError('Uploaded, but failed to save the link. Try Save changes below.');
     }
   }
 
@@ -276,7 +276,7 @@ export default function ChildCard({
     const label = child.child_nickname || child.child_full_name;
     if (
       !window.confirm(
-        `Permanently delete ${label}'s card? This removes the child record completely and cannot be undone. Only do this for a duplicate or a card created in error — a real (even former) student should be moved to Inactive on the Family Board instead.`
+        `Permanently delete ${label}'s card? This removes the child record completely and cannot be undone. Only do this for a duplicate or a card created in error. A real (even former) student should be moved to Inactive on the Family Board instead.`
       )
     ) {
       return;
@@ -400,9 +400,9 @@ export default function ChildCard({
             <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
               <h2 className="font-display text-lg font-semibold text-ink">Parent / Guardian Info</h2>
               <div className="mt-4 grid grid-cols-2 gap-4">
-                <InfoRow label="Parent 1" value={[child.parent1_name, child.parent1_relationship].filter(Boolean).join(' — ')} />
+                <InfoRow label="Parent 1" value={[child.parent1_name, child.parent1_relationship].filter(Boolean).join(', ')} />
                 <InfoRow label="Parent 1 nationality" value={child.parent1_nationality} />
-                <InfoRow label="Parent 2" value={[child.parent2_name, child.parent2_relationship].filter(Boolean).join(' — ')} />
+                <InfoRow label="Parent 2" value={[child.parent2_name, child.parent2_relationship].filter(Boolean).join(', ')} />
                 <InfoRow label="Parent 2 nationality" value={child.parent2_nationality} />
                 <InfoRow label="Contact email" value={child.primary_contact_email} />
                 <InfoRow label="Contact phone" value={child.primary_contact_phone} />
@@ -449,7 +449,7 @@ export default function ChildCard({
             {canEdit && (
               <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
                 <h2 className="font-display text-lg font-semibold text-ink">Immigration Documents</h2>
-                <p className="mt-1 text-xs text-ink-soft">Admin-only — not shown on the teacher view of this card.</p>
+                <p className="mt-1 text-xs text-ink-soft">Admin-only: not shown on the teacher view of this card.</p>
                 <div className="mt-4 grid grid-cols-1 gap-4">
                   <InfoRow label="Visa status" value={child.visa_status} />
                   <div>
@@ -489,8 +489,8 @@ export default function ChildCard({
                     </div>
                   </div>
                   <p className="text-xs text-ink-soft">
-                    The child&apos;s own parent can also view and upload these from their portal — not one of the
-                    Forms &amp; Compliance checklist items below, just identity documents on file.
+                    The child&apos;s own parent can also view and upload these from their portal (not one of the
+                    Forms &amp; Compliance checklist items below, just identity documents on file).
                   </p>
                 </div>
               </div>
@@ -585,7 +585,7 @@ export default function ChildCard({
       ) : (
         <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
           <p className="mb-4 rounded-sm border border-dashed border-sand-line bg-sand/20 px-3 py-2 text-xs text-ink-soft">
-            Status and active/inactive aren&apos;t editable here — drag the card between columns on the{' '}
+            Status and active/inactive aren&apos;t editable here: drag the card between columns on the{' '}
             <Link href="/admin/families" className="font-semibold text-teal-deep underline">Family Board</Link> instead.
             Moving into Full Time/Temporary/Worldschooler/Hybrid needs the Enrolment date and Programme fields below set first.
           </p>
@@ -803,7 +803,7 @@ export default function ChildCard({
             </div>
             <p className="mt-3 text-xs text-ink-soft">
               Passport, KITAS, and birth certificate are visible to the child&apos;s own parent in their portal, and
-              admin here — never to teachers. These aren&apos;t part of the Forms &amp; Compliance checklist above.
+              admin here, never to teachers. These aren&apos;t part of the Forms &amp; Compliance checklist above.
             </p>
           </div>
 

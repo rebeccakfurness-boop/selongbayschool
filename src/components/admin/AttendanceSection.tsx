@@ -17,13 +17,13 @@ interface AttendanceHistoryRow {
 
 function eventLabel(row: AttendanceHistoryRow): string {
   const action = row.event_type === 'check_in' ? 'Checked in' : 'Checked out';
-  return row.session_type === 'activity' ? `${action} — ${row.activity_name ?? 'Activity'}` : action;
+  return row.session_type === 'activity' ? `${action}: ${row.activity_name ?? 'Activity'}` : action;
 }
 
 function sourceLabel(row: AttendanceHistoryRow): string {
-  if (row.source === 'kiosk') return row.signed_by_name ? `Gate kiosk — signed by ${row.signed_by_name}` : 'Gate kiosk';
-  if (row.source === 'parent_portal') return row.performed_by_label ? `Portal — ${row.performed_by_label}` : 'Parent portal';
-  return row.performed_by_label ? `Admin override — ${row.performed_by_label}` : 'Admin override';
+  if (row.source === 'kiosk') return row.signed_by_name ? `Gate kiosk, signed by ${row.signed_by_name}` : 'Gate kiosk';
+  if (row.source === 'parent_portal') return row.performed_by_label ? `Portal: ${row.performed_by_label}` : 'Parent portal';
+  return row.performed_by_label ? `Admin override: ${row.performed_by_label}` : 'Admin override';
 }
 
 /** YYYY-MM-DDTHH:mm in the browser's own local time — the format <input type="datetime-local">
@@ -126,7 +126,7 @@ export default function AttendanceSection({ childId }: { childId: number }) {
       {showCorrection && (
         <div className="mt-3 border-b border-sand-line pb-4">
           <p className="mb-2 text-xs text-ink-soft">
-            No signature required — this is recorded as an admin action on behalf of the parent (e.g. they called the
+            No signature required. This is recorded as an admin action on behalf of the parent (e.g. they called the
             office, or forgot to check out). Every kiosk/portal check-in normally requires the parent&apos;s signature;
             this is the deliberate override.
           </p>

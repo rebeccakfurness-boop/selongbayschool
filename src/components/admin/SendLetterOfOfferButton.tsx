@@ -38,7 +38,7 @@ export default function SendLetterOfOfferButton({ letterId, defaultEmail }: { le
   if (!expanded) {
     return (
       <button type="button" onClick={() => setExpanded(true)} className="text-xs font-semibold text-teal-deep hover:underline">
-        {result === 'sent' ? 'Sent ✓ — send again' : 'Send to parent'}
+        {result === 'sent' ? 'Sent ✓ (send again)' : 'Send to parent'}
       </button>
     );
   }

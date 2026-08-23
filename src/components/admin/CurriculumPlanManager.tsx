@@ -135,7 +135,7 @@ export default function CurriculumPlanManager({
       <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
         <h2 className="font-display text-lg font-semibold text-ink">New programme</h2>
         <p className="mt-1 text-xs text-ink-soft">
-          One class, one subject, one term — e.g. &quot;Primary 1 · Mathematics · Term 1 2026/27&quot;.
+          One class, one subject, one term (e.g. &quot;Primary 1 · Mathematics · Term 1 2026/27&quot;).
         </p>
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Field label="Class" htmlFor="term-class" required>
@@ -186,7 +186,7 @@ export default function CurriculumPlanManager({
             </button>
           );
         })}
-        {terms.length === 0 && <p className="text-sm text-ink-soft">No programmes yet — create one above.</p>}
+        {terms.length === 0 && <p className="text-sm text-ink-soft">No programmes yet. Create one above.</p>}
       </div>
 
       {loadingTerm && <p className="text-sm text-ink-soft">Loading…</p>}
@@ -286,7 +286,7 @@ function TermEditor({
           {unmatchedClass && !editingMeta && (
             <p className="mt-1 text-xs font-semibold text-orange-deep">
               ⚠ &quot;{term.class_name}&quot; doesn&apos;t match any class name in use on a Child Card, so no teacher
-              is scoped to see this yet — edit the class below to fix it.
+              is scoped to see this yet. Edit the class below to fix it.
             </p>
           )}
         </div>
@@ -358,7 +358,7 @@ function TermEditor({
             onRefresh={onRefresh}
           />
         ))}
-        {term.units.length === 0 && <p className="text-sm text-ink-soft">No units yet — add the first one below.</p>}
+        {term.units.length === 0 && <p className="text-sm text-ink-soft">No units yet. Add the first one below.</p>}
       </div>
 
       <div className="mt-4 rounded-md border border-dashed border-sand-line p-4">
@@ -610,9 +610,9 @@ function LessonRow({
           </div>
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Complete online — equipment &amp; video</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Complete online: equipment &amp; video</p>
             <p className="mt-1 text-xs text-ink-soft">
-              Shown on the &quot;Introduction&quot; step of the self-directed online lesson. Video is optional —
+              Shown on the &quot;Introduction&quot; step of the self-directed online lesson. Video is optional;
               the step still appears without one, just with a &quot;no video yet&quot; placeholder.
             </p>
             <div className="mt-2 flex flex-col gap-2">

@@ -66,7 +66,7 @@ export default async function BudgetDashboardPage() {
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">Budget Tracker</h1>
           <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
-            Visible to the Principal and the admin team who unlock it — how much is left to spend in each category,
+            Visible to the Principal and the admin team who unlock it: how much is left to spend in each category,
             right now.
           </p>
         </div>
@@ -77,20 +77,20 @@ export default async function BudgetDashboardPage() {
 
       <div className="mt-6 grid gap-4 rounded-md border border-sand-line bg-cream/50 p-6 sm:grid-cols-2 lg:grid-cols-4">
         <SummaryStat label={`Cash on hand`} value={formatBudgetIDR(data.cashOnHandIdr)} />
-        <SummaryStat label={`Revenue — ${data.month.label}`} value={formatBudgetIDR(data.month.revenue_idr)} tone="positive" />
-        <SummaryStat label={`Expenses — ${data.month.label}`} value={formatBudgetIDR(data.month.expenses_idr)} />
+        <SummaryStat label={`Revenue: ${data.month.label}`} value={formatBudgetIDR(data.month.revenue_idr)} tone="positive" />
+        <SummaryStat label={`Expenses: ${data.month.label}`} value={formatBudgetIDR(data.month.expenses_idr)} />
         <SummaryStat
-          label={`Net — ${data.month.label}`}
+          label={`Net: ${data.month.label}`}
           value={formatBudgetIDR(data.month.net_idr)}
           tone={data.month.net_idr < 0 ? 'negative' : 'positive'}
         />
       </div>
 
       <div className="mt-4 grid gap-4 rounded-md border border-sand-line bg-paper p-6 shadow-soft sm:grid-cols-3">
-        <SummaryStat label={`Revenue — ${data.term.label}`} value={formatBudgetIDR(data.term.revenue_idr)} tone="positive" />
-        <SummaryStat label={`Expenses — ${data.term.label}`} value={formatBudgetIDR(data.term.expenses_idr)} />
+        <SummaryStat label={`Revenue: ${data.term.label}`} value={formatBudgetIDR(data.term.revenue_idr)} tone="positive" />
+        <SummaryStat label={`Expenses: ${data.term.label}`} value={formatBudgetIDR(data.term.expenses_idr)} />
         <SummaryStat
-          label={`Net — ${data.term.label}`}
+          label={`Net: ${data.term.label}`}
           value={formatBudgetIDR(data.term.net_idr)}
           tone={data.term.net_idr < 0 ? 'negative' : 'positive'}
         />
@@ -103,7 +103,7 @@ export default async function BudgetDashboardPage() {
         ))}
         {data.categories.length === 0 && (
           <div className="rounded-md border border-dashed border-sand-line p-6 text-center text-sm text-ink-soft sm:col-span-3">
-            No budget categories yet — add one from Budget Setup.
+            No budget categories yet. Add one from Budget Setup.
           </div>
         )}
       </div>

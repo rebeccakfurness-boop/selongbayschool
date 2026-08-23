@@ -32,7 +32,7 @@ export default async function OffboardingLetterPage({ params }: { params: Promis
           with {letter.child_full_name}, and we wish your family all the very best for whatever comes next.
         </p>
         <p className="mt-3 text-sm leading-relaxed text-ink">
-          We&apos;d love to stay in touch — follow us on Instagram{' '}
+          We&apos;d love to stay in touch: follow us on Instagram{' '}
           <a href={siteConfig.contact.instagram} target="_blank" rel="noopener noreferrer" className="font-semibold text-teal-deep underline">
             @selongbay_school
           </a>{' '}
@@ -44,7 +44,7 @@ export default async function OffboardingLetterPage({ params }: { params: Promis
       <div className="mt-6">
         {letter.status === 'completed' ? (
           <div className="rounded-md border border-teal/30 bg-teal/10 p-6 text-center">
-            <p className="font-display text-lg font-semibold text-teal-deep">Thank you — feedback already received!</p>
+            <p className="font-display text-lg font-semibold text-teal-deep">Thank you, feedback already received!</p>
             <p className="mt-2 text-sm text-ink-soft">We really appreciate you taking the time to share it with us.</p>
           </div>
         ) : (

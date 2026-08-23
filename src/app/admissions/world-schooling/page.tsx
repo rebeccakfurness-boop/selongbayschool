@@ -76,15 +76,15 @@ export default function WorldSchoolingPage() {
           <h3 className="mt-8 font-display text-xl font-semibold text-ink">Join in the way that suits you:</h3>
           <ul className="mt-4 flex flex-col gap-3">
             <Bullet>
-              <strong className="font-semibold text-ink">Afternoon activities only</strong> — drop in for surfing, art, sports,
+              <strong className="font-semibold text-ink">Afternoon activities only:</strong> drop in for surfing, art, sports,
               or other afternoon sessions without committing to a full school day.
             </Bullet>
             <Bullet>
-              <strong className="font-semibold text-ink">Any number of days</strong> — stay for a single day, a week, or
+              <strong className="font-semibold text-ink">Any number of days:</strong> stay for a single day, a week, or
               several weeks. There&apos;s no minimum commitment, and no need to enrol for a full term.
             </Bullet>
             <Bullet>
-              <strong className="font-semibold text-ink">Full days or half days</strong> — choose whichever rhythm suits your
+              <strong className="font-semibold text-ink">Full days or half days:</strong> choose whichever rhythm suits your
               child and your travel plans.
             </Bullet>
           </ul>
@@ -96,17 +96,17 @@ export default function WorldSchoolingPage() {
           </p>
           <ul className="mt-4 flex flex-col gap-3">
             <Bullet>
-              <strong className="font-semibold text-ink">Wednesday community get-togethers</strong> — held after our surfing
+              <strong className="font-semibold text-ink">Wednesday community get-togethers:</strong> held after our surfing
               session at Selong Belanak, this is a relaxed chance for world schooling and homeschooling families to connect,
               swap stories, and get to know each other over the water and on the beach.
             </Bullet>
             <Bullet>
-              <strong className="font-semibold text-ink">Meet other world schooling and homeschooling families</strong> —
+              <strong className="font-semibold text-ink">Meet other world schooling and homeschooling families:</strong>
               Selong Bay attracts a steady stream of travelling families, so your children (and you) can build friendships
               with others living a similar lifestyle.
             </Bullet>
             <Bullet>
-              <strong className="font-semibold text-ink">Library and learning resources</strong> — visiting students have
+              <strong className="font-semibold text-ink">Library and learning resources:</strong> visiting students have
               access to our library and learning materials for the duration of their stay.
             </Bullet>
           </ul>
@@ -138,7 +138,7 @@ export default function WorldSchoolingPage() {
               </ul>
             </li>
             <Bullet>
-              <strong className="font-semibold text-ink">Camp outs and adventure weeks</strong> — join our regular overnight
+              <strong className="font-semibold text-ink">Camp outs and adventure weeks:</strong> join our regular overnight
               camp outs and themed adventure week programmes for a deeper, more immersive experience of Lombok&apos;s nature
               and culture.
             </Bullet>
@@ -226,7 +226,7 @@ export default function WorldSchoolingPage() {
 
           <p className="mt-8 text-[17px] leading-relaxed text-ink-soft">
             <strong className="font-semibold text-ink">Come back anytime:</strong> When your travels bring you back to
-            Lombok, your child can rejoin Selong Bay School in person whenever it suits you — there&apos;s no need to
+            Lombok, your child can rejoin Selong Bay School in person whenever it suits you, with no need to
             re-enrol or wait for a new term.
           </p>
         </div>

@@ -13,7 +13,7 @@ const STATUS_STYLES: Record<string, string> = {
 
 const STATUS_LABELS: Record<string, string> = {
   draft: 'Draft',
-  sent: 'Sent — awaiting acceptance',
+  sent: 'Sent, awaiting acceptance',
   accepted: 'Accepted',
 };
 
@@ -28,7 +28,7 @@ function MeetingStatus({ invite }: { invite: MeetingInviteSummaryRow | undefined
   if (invite.status === 'booked' && invite.booked_start) {
     return (
       <div className="mt-1 w-full text-xs text-ink-soft">
-        Meeting: {formatDateTime(invite.booked_start)} — {invite.meeting_format === 'video' ? 'video call' : 'in person'}
+        Meeting: {formatDateTime(invite.booked_start)} ({invite.meeting_format === 'video' ? 'video call' : 'in person'})
         {invite.meeting_format === 'video' && invite.meet_link && (
           <>
             {' · '}
@@ -41,7 +41,7 @@ function MeetingStatus({ invite }: { invite: MeetingInviteSummaryRow | undefined
     );
   }
   if (invite.status === 'sent') {
-    return <div className="mt-1 w-full text-xs text-ink-soft">Meeting invite sent to {invite.parent_email} — awaiting a time.</div>;
+    return <div className="mt-1 w-full text-xs text-ink-soft">Meeting invite sent to {invite.parent_email}, awaiting a time.</div>;
   }
   return null;
 }
@@ -78,7 +78,7 @@ export default function LetterOfOfferSection({
       {acceptedLetter && !hasInvoices && canEdit && (
         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-sm bg-orange/10 px-3 py-2 text-sm">
           <span className="font-semibold text-orange-deep">
-            Offer accepted{acceptedLetter.accepted_by_name ? ` by ${acceptedLetter.accepted_by_name}` : ''} — send the tuition invoice.
+            Offer accepted{acceptedLetter.accepted_by_name ? ` by ${acceptedLetter.accepted_by_name}` : ''}: send the tuition invoice.
           </span>
           <Link href={`/admin/families/${childId}/invoices/new?type=tuition`} className="whitespace-nowrap text-xs font-bold text-teal-deep hover:underline">
             Create tuition invoice →

@@ -187,7 +187,7 @@ export default function LearningProfileForm({
                 onChange={(e) => set(item.key as (typeof socialFields)[number], e.target.value as SocialRating | '')}
                 className="rounded-sm border border-sand-line bg-white px-2 py-1 text-sm"
               >
-                <option value="">—</option>
+                <option value=""></option>
                 {(['C', 'U', 'S'] as const).map((r) => (
                   <option key={r} value={r}>{SOCIAL_RATING_LABELS[r]}</option>
                 ))}
@@ -219,7 +219,7 @@ export default function LearningProfileForm({
                     onChange={(e) => setSubject(i, 'achievement', e.target.value)}
                     className="rounded-sm border border-sand-line bg-white px-4 py-2.5 text-[15px] text-ink"
                   >
-                    <option value="">—</option>
+                    <option value=""></option>
                     {ACHIEVEMENT_SCALE.map((a) => (
                       <option key={a.value} value={a.value}>{a.label}</option>
                     ))}
@@ -232,7 +232,7 @@ export default function LearningProfileForm({
                     onChange={(e) => setSubject(i, 'effort', e.target.value)}
                     className="rounded-sm border border-sand-line bg-white px-4 py-2.5 text-[15px] text-ink"
                   >
-                    <option value="">—</option>
+                    <option value=""></option>
                     {EFFORT_SCALE.map((ef) => (
                       <option key={ef.value} value={ef.value}>{ef.label}</option>
                     ))}

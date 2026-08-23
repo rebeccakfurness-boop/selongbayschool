@@ -27,7 +27,7 @@ export default function RescheduleActivitiesButton({ onDone }: { onDone?: () => 
         'Gardening and Padel on Fridays), and School Tour at midday Mon-Fri (capacity 8). Gymnastics Term 2 is a separate "Coming in ' +
         'September" activity with no bookable sessions yet. Hip Hop Dance and Ninja Warrior stays retired, and so ' +
         'are the duplicate "Gymnastics Term 1" activity and Scouts and Survival Challenge (replaced by Gardening ' +
-        'and Padel). Any old slot that’s not part of the new schedule will be removed — sessions with real ' +
+        'and Padel). Any old slot that’s not part of the new schedule will be removed. Sessions with real ' +
         'bookings will be cancelled and those families will be emailed. This cannot be undone. Continue?'
       )
     ) {

@@ -34,14 +34,14 @@ function OverviewLoadError({ error }: { error: unknown }) {
 
 function eventLabel(row: AttendanceHistoryRow): string {
   const action = row.event_type === 'check_in' ? 'Checked in' : 'Checked out';
-  if (row.session_type === 'activity') return `${action} — ${row.activity_name ?? 'Activity'}`;
+  if (row.session_type === 'activity') return `${action}: ${row.activity_name ?? 'Activity'}`;
   return action;
 }
 
 function sourceLabel(row: AttendanceHistoryRow): string {
-  if (row.source === 'kiosk') return row.signed_by_name ? `Gate kiosk — signed by ${row.signed_by_name}` : 'Gate kiosk';
-  if (row.source === 'parent_portal') return row.performed_by_label ? `Portal — ${row.performed_by_label}` : 'Parent portal';
-  return row.performed_by_label ? `Admin override — ${row.performed_by_label}` : 'Admin override';
+  if (row.source === 'kiosk') return row.signed_by_name ? `Gate kiosk: signed by ${row.signed_by_name}` : 'Gate kiosk';
+  if (row.source === 'parent_portal') return row.performed_by_label ? `Portal: ${row.performed_by_label}` : 'Parent portal';
+  return row.performed_by_label ? `Admin override: ${row.performed_by_label}` : 'Admin override';
 }
 
 export default async function AccountAttendancePage() {

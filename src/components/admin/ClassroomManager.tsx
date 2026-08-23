@@ -135,12 +135,12 @@ export default function ClassroomManager({
           </Button>
         </div>
         <p className="mt-1 text-xs text-ink-soft">
-          A course only syncs once it&apos;s mapped to one of the school&apos;s class names — course names in Google
+          A course only syncs once it&apos;s mapped to one of the school&apos;s class names: course names in Google
           Classroom won&apos;t reliably match automatically.
         </p>
         {classOptions.length === 0 && (
           <p className="mt-2 text-xs font-semibold text-orange-deep">
-            No class names found yet — set a Class on at least one Child Card first, so there&apos;s something to map
+            No class names found yet: set a Class on at least one Child Card first, so there&apos;s something to map
             a course to.
           </p>
         )}

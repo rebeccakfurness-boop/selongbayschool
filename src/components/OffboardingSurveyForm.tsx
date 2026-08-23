@@ -48,7 +48,7 @@ export default function OffboardingSurveyForm({ token }: { token: string }) {
       <div className="rounded-md border border-teal/30 bg-teal/10 p-6 text-center">
         <p className="font-display text-lg font-semibold text-teal-deep">Thank you!</p>
         <p className="mt-2 text-sm text-ink-soft">
-          We really appreciate you taking the time to share your feedback — and we hope to see your family again
+          We really appreciate you taking the time to share your feedback, and we hope to see your family again
           someday.
         </p>
       </div>
@@ -58,7 +58,7 @@ export default function OffboardingSurveyForm({ token }: { token: string }) {
   return (
     <div className="rounded-md border border-sand-line bg-paper p-6">
       <h3 className="font-display text-base font-semibold text-ink">A few quick questions</h3>
-      <p className="mt-1 text-xs text-ink-soft">Takes about two minutes — every answer helps.</p>
+      <p className="mt-1 text-xs text-ink-soft">Takes about two minutes. Every answer helps.</p>
 
       <div className="mt-5">
         <span className="text-sm font-bold text-ink">Your name</span>
@@ -121,7 +121,7 @@ export default function OffboardingSurveyForm({ token }: { token: string }) {
             value={feedbackText}
             onChange={(e) => setFeedbackText(e.target.value)}
             rows={4}
-            placeholder="Optional — any feedback for improvement is welcome"
+            placeholder="Optional: any feedback for improvement is welcome"
             className="!w-full"
           />
         </div>

@@ -239,7 +239,7 @@ export default function ScheduleManager({
         <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
           <h2 className="font-display text-lg font-semibold text-ink">New weekly slot</h2>
           <p className="mt-1 text-xs text-ink-soft">
-            A recurring weekly class time — e.g. &quot;Maths, Monday 8:30–9:30, in person.&quot; This feeds the
+            A recurring weekly class time, e.g. &quot;Maths, Monday 8:30–9:30, in person.&quot; This feeds the
             weekly schedule shown on the parent and student portals.
           </p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -374,7 +374,7 @@ export default function ScheduleManager({
                                   {cell.subject}
                                   {cell.next_occurrence_sync_status === 'failed' && (
                                     <span
-                                      title="Google Calendar sync failed for the next session — open for details"
+                                      title="Google Calendar sync failed for the next session: open for details"
                                       className="inline-block h-2 w-2 shrink-0 rounded-full bg-orange-deep"
                                     />
                                   )}
@@ -494,11 +494,11 @@ function SessionCellModal({
             <p className="mt-1 text-sm text-ink-soft">No upcoming dated session to sync yet.</p>
           )}
           {entry.next_occurrence_sync_status === 'pending' && (
-            <p className="mt-1 text-sm text-ink-soft">Next session hasn&apos;t synced to Google Calendar yet — this happens automatically, usually within a day.</p>
+            <p className="mt-1 text-sm text-ink-soft">Next session hasn&apos;t synced to Google Calendar yet. This happens automatically, usually within a day.</p>
           )}
           {entry.next_occurrence_sync_status === 'synced' && (
             <p className="mt-1 text-sm text-teal-deep">
-              Synced to Google Calendar{entry.next_occurrence_meet_link ? ' — Meet link ready.' : '.'}
+              Synced to Google Calendar{entry.next_occurrence_meet_link ? '. Meet link ready.' : '.'}
             </p>
           )}
           {entry.next_occurrence_sync_status === 'failed' && (

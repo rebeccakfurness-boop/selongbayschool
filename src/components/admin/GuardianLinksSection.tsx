@@ -53,13 +53,13 @@ export default function GuardianLinksSection({ childId, initial }: { childId: nu
       <h3 className="font-display text-base font-semibold text-ink">Linked Parent Portal Accounts</h3>
       <p className="mt-1 text-xs text-ink-soft">
         Controls who can see this child in the parent portal (/account). Linking an email that has never logged in
-        creates the account for them — they can then use &quot;Log in&quot; with that email to get a magic link.
+        creates the account for them. They can then use &quot;Log in&quot; with that email to get a magic link.
       </p>
       <ul className="mt-3 flex flex-col gap-2">
         {guardians.map((g) => (
           <li key={g.email} className="flex items-center justify-between gap-2 rounded-sm border border-sand-line px-3 py-2 text-sm">
             <span>
-              {g.name ? `${g.name} — ` : ''}
+              {g.name ? `${g.name}, ` : ''}
               {g.email}
               {g.relationship ? ` (${g.relationship})` : ''}
             </span>

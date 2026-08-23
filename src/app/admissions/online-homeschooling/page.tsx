@@ -150,7 +150,7 @@ export default function OnlineHomeschoolingPage() {
           </ul>
           <p className="mt-6 text-[17px] leading-relaxed text-ink-soft">
             <strong className="font-semibold text-ink">Come back anytime:</strong> Your child can rejoin the physical school
-            in person any time you&apos;re back in the area — no re-enrolment, and no need to wait for a new term.
+            in person any time you&apos;re back in the area, with no re-enrolment and no need to wait for a new term.
           </p>
         </div>
       </Reveal>

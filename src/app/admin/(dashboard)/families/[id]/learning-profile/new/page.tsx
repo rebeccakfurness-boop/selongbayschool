@@ -19,7 +19,7 @@ export default async function NewLearningProfilePage({ params }: { params: Promi
 
   return (
     <section>
-      <h1 className="font-display text-2xl font-semibold text-ink">New term report — {child.child_full_name as string}</h1>
+      <h1 className="font-display text-2xl font-semibold text-ink">New term report: {child.child_full_name as string}</h1>
       <div className="mt-6">
         <LearningProfileForm childId={childId} initial={emptyLearningProfileForm} />
       </div>

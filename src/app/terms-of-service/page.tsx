@@ -71,7 +71,7 @@ export default function TermsOfServicePage() {
                 {siteConfig.url.replace('https://', '')}{' '}
                 and every page under it, including the parent portal (/account), the student portal (/student), and
                 the staff admin dashboard (/admin). If you don&apos;t
-                agree with these terms, please don&apos;t use the website or portal — and get in touch instead at{' '}
+                agree with these terms, please don&apos;t use the website or portal, and get in touch instead at{' '}
                 <a href={`mailto:${siteConfig.contact.email}`} className="font-semibold text-teal-deep underline">
                   {siteConfig.contact.email}
                 </a>
@@ -89,7 +89,7 @@ export default function TermsOfServicePage() {
             <Section id="using-the-website" title="Using the website">
               <p>
                 The public parts of this site are here to give prospective and current families accurate information
-                about the school — our approach, admissions, activities, and how to get in touch. You&apos;re welcome
+                about the school: our approach, admissions, activities, and how to get in touch. You&apos;re welcome
                 to browse it and share it. Please don&apos;t attempt to disrupt the site, scrape it at scale, or use
                 it in any way that could damage, disable, or overburden it or interfere with anyone else&apos;s use
                 of it.
@@ -98,7 +98,7 @@ export default function TermsOfServicePage() {
 
             <Section id="the-portal" title="The parent, student, and staff portal">
               <p>
-                Access to the parent portal, student portal, and admin dashboard is by invitation from the school —
+                Access to the parent portal, student portal, and admin dashboard is by invitation from the school:
                 typically once your child is enrolled, or once you become a staff member. Login is by a one-time
                 email link (for parents and students) or an email and password (for staff); there is no password to
                 remember for the parent and student portals.
@@ -107,7 +107,7 @@ export default function TermsOfServicePage() {
               <ul className="list-disc space-y-2 pl-6">
                 <li>keep your login email account secure, since anyone with access to it can request a login link;</li>
                 <li>only view or update information relating to your own child, unless the school has separately linked another child to your account;</li>
-                <li>keep the information you provide (contact details, medical/allergy notes, and so on) accurate and up to date — this matters for your child&apos;s safety; and</li>
+                <li>keep the information you provide (contact details, medical/allergy notes, and so on) accurate and up to date, since this matters for your child&apos;s safety; and</li>
                 <li>use the portal only for its intended purpose of managing your family&apos;s relationship with the school.</li>
               </ul>
               <p>
@@ -119,7 +119,7 @@ export default function TermsOfServicePage() {
             <Section id="admissions" title="Enquiries, admissions, and enrolment">
               <p>
                 Submitting an enquiry, tour booking, or the online Student Enrolment Form is an expression of
-                interest, not a confirmed place at the school — a place is only confirmed once the school issues a
+                interest, not a confirmed place at the school: a place is only confirmed once the school issues a
                 Letter of Offer and it&apos;s accepted, and enrolment is finalised once the required compliance
                 forms (Liability Waiver, Financial Agreement, Photography &amp; Social Media Consent, Personal Data
                 Consent, and the others on your child&apos;s enrolment checklist) are signed. Where anything in this
@@ -132,7 +132,7 @@ export default function TermsOfServicePage() {
                 Tuition, activity, and lunch fees are set out in the fee schedule provided at enrolment and on
                 invoices issued through the parent portal, payable by bank transfer to the account details on the
                 invoice. The specific payment terms, late-payment handling, and withdrawal notice period your family
-                has agreed to are set out in full in the Financial Agreement signed at enrolment — these Terms of
+                has agreed to are set out in full in the Financial Agreement signed at enrolment. These Terms of
                 Service don&apos;t repeat or override that agreement.
               </p>
             </Section>
@@ -142,7 +142,7 @@ export default function TermsOfServicePage() {
                 The Selong Bay School name and logo, and the text, photos, and design on this website, belong to
                 Yayasan Selong Bay Sekolah or are used with permission (for example, photos of students used under
                 the family&apos;s Photography &amp; Social Media Consent). Please don&apos;t reproduce, redistribute,
-                or use any of it for your own commercial purposes without asking us first — we&apos;re usually happy
+                or use any of it for your own commercial purposes without asking us first. We&apos;re usually happy
                 to help if you have a genuine reason to use something.
               </p>
             </Section>
@@ -153,15 +153,14 @@ export default function TermsOfServicePage() {
                 purposes described in our{' '}
                 <Link href="/privacy-policy" className="font-semibold text-teal-deep underline">
                   Privacy Policy
-                </Link>{' '}
-                — we don&apos;t publish your messages, photos, or documents anywhere without asking first, beyond
+                </Link>. We don&apos;t publish your messages, photos, or documents anywhere without asking first, beyond
                 what&apos;s already covered by a form you&apos;ve signed (like photography consent).
               </p>
             </Section>
 
             <Section id="third-party-links" title="Third-party links and services">
               <p>
-                This site links to and embeds a small number of third-party services — Instagram, Facebook,
+                This site links to and embeds a small number of third-party services: Instagram, Facebook,
                 WhatsApp, Google Maps, and, for staff, Google Classroom and Google Calendar. We don&apos;t control
                 those services and aren&apos;t responsible for their content, availability, or their own terms and
                 privacy practices.
@@ -171,7 +170,7 @@ export default function TermsOfServicePage() {
             <Section id="disclaimer" title="Disclaimer">
               <p>
                 We do our best to keep information on this site accurate and current, but term dates, fees,
-                activities, staff, and programmes can change — always confirm anything time-sensitive directly with
+                activities, staff, and programmes can change. Always confirm anything time-sensitive directly with
                 the school office. The website and portal are provided on an &ldquo;as is&rdquo; basis, and while we
                 aim to keep them available and working correctly, we can&apos;t guarantee they&apos;ll be
                 uninterrupted or error-free.
@@ -184,7 +183,7 @@ export default function TermsOfServicePage() {
                 indirect or consequential loss arising from your use of this website or portal. Nothing here limits
                 or excludes any liability that can&apos;t lawfully be limited or excluded, and nothing here affects
                 the separate Liability Waiver that governs participation in the school&apos;s physical, on-campus,
-                and off-campus activities — that waiver, not these terms, is what applies to activity-related injury
+                and off-campus activities; that waiver, not these terms, is what applies to activity-related injury
                 or loss.
               </p>
             </Section>
@@ -199,7 +198,7 @@ export default function TermsOfServicePage() {
             <Section id="changes" title="Changes to these terms">
               <p>
                 We may update these terms from time to time as the website and portal evolve. The &ldquo;Last
-                updated&rdquo; date at the top of this page always reflects the current version — please check back
+                updated&rdquo; date at the top of this page always reflects the current version. Please check back
                 occasionally, especially before relying on anything time-sensitive.
               </p>
             </Section>

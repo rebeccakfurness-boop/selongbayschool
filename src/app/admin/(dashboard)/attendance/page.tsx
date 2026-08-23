@@ -33,7 +33,7 @@ export default async function AdminAttendancePage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">Attendance</h1>
-          <p className="mt-1 text-sm text-ink-soft">Today, {schoolLocalToday()} — gate check-in status and requests.</p>
+          <p className="mt-1 text-sm text-ink-soft">Today, {schoolLocalToday()}: gate check-in status and requests.</p>
         </div>
         <div className="flex gap-3">
           <Link href="/kiosk" className="rounded-full border border-teal px-5 py-2 text-sm font-bold text-teal-deep hover:bg-teal/10">
@@ -71,7 +71,7 @@ export default async function AdminAttendancePage() {
         <div className="flex flex-col gap-6">
           <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
             <h2 className="font-display text-lg font-semibold text-ink">Pending Child Link Requests</h2>
-            <p className="mt-1 text-xs text-ink-soft">Self-service requests from /account/link-child — approve to let a parent see and check in/out that child.</p>
+            <p className="mt-1 text-xs text-ink-soft">Self-service requests from /account/link-child; approve to let a parent see and check in/out that child.</p>
             <div className="mt-3">
               <GuardianRequestsList initial={pendingRequests} />
             </div>
@@ -80,7 +80,7 @@ export default async function AdminAttendancePage() {
           <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
             <h2 className="font-display text-lg font-semibold text-ink">Gate Kiosk</h2>
             <p className="mt-1 text-xs text-ink-soft">
-              No separate PIN anymore — log into <span className="font-mono">/kiosk</span> on the gate device with a
+              No separate PIN anymore: log into <span className="font-mono">/kiosk</span> on the gate device with a
               staff account (any admin or teacher) and leave it signed in for the day. From there, a parent can sign
               their own child in/out, or staff can check a child in/out directly without a signature.
             </p>

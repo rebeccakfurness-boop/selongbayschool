@@ -32,7 +32,7 @@ export default function ReceiptUploadField({ label = 'Proof of payment', onUploa
       // The photo failing to save must never block saving the rest of the entry — surfaced as a
       // dismissable warning, not a blocking error, and onUploaded(null) so the parent form still
       // knows to submit without a receipt_url rather than silently keeping a stale one.
-      setError('Photo could not be uploaded — you can still save this entry without it.');
+      setError('Photo could not be uploaded, but you can still save this entry without it.');
       onUploaded(null);
     } finally {
       setUploading(false);

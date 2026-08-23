@@ -60,7 +60,7 @@ export default function WorksheetsManager({ occurrences }: { occurrences: Sessio
                       : 'hover:bg-sand/30'
                   }`}
                 >
-                  <div className="font-semibold">{o.subject} — {o.class_name}</div>
+                  <div className="font-semibold">{o.subject}: {o.class_name}</div>
                   <div className={selected?.occurrence_id === o.occurrence_id ? 'text-white/80' : 'text-ink-soft'}>
                     {formatOccurrenceDateLabel(o.occurrence_date)}, {formatSchoolTime(o.starts_at)}
                   </div>
@@ -141,7 +141,7 @@ function SessionRoster({ occurrence }: { occurrence: SessionOccurrenceRow }) {
   return (
     <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
       <h2 className="font-display text-lg font-semibold text-teal-deep">
-        {occurrence.subject} — {occurrence.class_name}
+        {occurrence.subject}: {occurrence.class_name}
       </h2>
       <p className="text-sm text-ink-soft">
         {formatOccurrenceDateLabel(occurrence.occurrence_date)} · {formatSchoolTime(occurrence.starts_at)}–{formatSchoolTime(occurrence.ends_at)} {SCHOOL_TIMEZONE_LABEL}

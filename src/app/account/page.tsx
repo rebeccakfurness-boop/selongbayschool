@@ -228,7 +228,7 @@ function renderOverviewPage({
               )}
             </div>
             <div className="mt-4 flex flex-col gap-3">
-              {outstandingInvoices.length === 0 && <p className="text-sm text-ink-soft">Nothing outstanding — all invoices are paid up.</p>}
+              {outstandingInvoices.length === 0 && <p className="text-sm text-ink-soft">Nothing outstanding: all invoices are paid up.</p>}
               {outstandingInvoices.map((inv) => (
                 <a
                   key={inv.id}

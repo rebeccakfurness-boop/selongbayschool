@@ -58,7 +58,7 @@ export default function StudentCurriculumSection({
             className="rounded-sm border border-sand-line bg-white px-3 py-1.5 text-sm"
           >
             {terms.map((t) => (
-              <option key={t.id} value={t.id}>{t.subject} — {t.term_label}</option>
+              <option key={t.id} value={t.id}>{t.subject}: {t.term_label}</option>
             ))}
           </select>
         </div>

@@ -30,7 +30,7 @@ export default async function ClassForecastPage() {
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">Class Forecast</h1>
           <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
-            Monthly roster forecast imported from the &quot;Student Count&quot; sheet — named students per class band
+            Monthly roster forecast imported from the &quot;Student Count&quot; sheet: named students per class band
             per month, including forward-looking placeholders not yet enrolled as real Family records.
           </p>
         </div>
@@ -39,7 +39,7 @@ export default async function ClassForecastPage() {
 
       {months.length === 0 && (
         <p className="mt-6 text-ink-soft">
-          No forecast imported yet — run <code>npm run db:import-family</code> with the enrollment spreadsheet.
+          No forecast imported yet. Run <code>npm run db:import-family</code> with the enrollment spreadsheet.
         </p>
       )}
 

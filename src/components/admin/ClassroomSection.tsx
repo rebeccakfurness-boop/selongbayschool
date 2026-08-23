@@ -26,13 +26,13 @@ export default function ClassroomSection({
       <h3 className="font-display text-base font-semibold text-ink">Google Classroom</h3>
       {!matchedEmail ? (
         <p className="mt-2 text-sm text-ink-soft">
-          No Classroom email set for this child yet — set one below (Edit) to match their submissions once synced.
+          No Classroom email set for this child yet: set one below (Edit) to match their submissions once synced.
         </p>
       ) : (
         <>
           <p className="mt-1 text-xs text-ink-soft">
             Matched via {matchedEmail}
-            {!classroomStudentEmail && ' (via primary contact email — set a Classroom email below if this should be different)'}
+            {!classroomStudentEmail && ' (via primary contact email; set a Classroom email below if this should be different)'}
           </p>
           <ul className="mt-3 flex flex-col gap-2">
             {submissions.map((s) => (

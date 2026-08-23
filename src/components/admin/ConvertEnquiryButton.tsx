@@ -32,7 +32,7 @@ export default function ConvertEnquiryButton({ enquiryId, prefill }: { enquiryId
           <div>
             <h3 className="font-display text-lg font-semibold text-ink">Convert lead to Family record</h3>
             <p className="mt-1 text-xs text-ink-soft">
-              Pre-filled from this lead — nothing to retype, but review before creating.
+              Pre-filled from this lead, nothing to retype, but review before creating.
             </p>
           </div>
           <button type="button" onClick={() => setOpen(false)} className="text-ink-soft hover:text-ink" aria-label="Close">

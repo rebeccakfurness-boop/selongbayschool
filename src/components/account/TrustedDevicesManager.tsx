@@ -49,7 +49,7 @@ export default function TrustedDevicesManager({ devices }: { devices: TrustedDev
   }
 
   async function logOutEverywhere() {
-    if (!confirm("This signs you out on every device, including this one — you'll need to log in again. Continue?")) return;
+    if (!confirm("This signs you out on every device, including this one: you'll need to log in again. Continue?")) return;
     setLoggingOutEverywhere(true);
     setError(null);
     try {
@@ -67,7 +67,7 @@ export default function TrustedDevicesManager({ devices }: { devices: TrustedDev
     <div>
       <p className="mt-1 text-sm text-ink-soft">
         Devices where you&apos;ve stayed signed in without needing a new login link each time. Not sure what one of
-        these is? Remove it — you&apos;ll just need a login link next time on that device.
+        these is? Remove it; you&apos;ll just need a login link next time on that device.
       </p>
 
       {devices.length === 0 ? (

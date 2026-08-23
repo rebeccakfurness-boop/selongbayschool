@@ -90,7 +90,7 @@ export default function LinkChildForm() {
 
       {matches && (
         <div className="mt-4 flex flex-col gap-2">
-          {matches.length === 0 && <p className="text-sm text-ink-soft">No matching student found — double-check the name and date of birth.</p>}
+          {matches.length === 0 && <p className="text-sm text-ink-soft">No matching student found. Double-check the name and date of birth.</p>}
           {matches.map((m) => {
             const requested = requestedIds.has(m.id) || m.link_status === 'pending';
             const approved = m.link_status === 'approved';

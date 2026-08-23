@@ -42,7 +42,7 @@ export default async function CurriculumPlansPage() {
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">Teaching</h1>
           <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
-            A full term of units and lessons per class and subject — like Oak National Academy. Each lesson can
+            A full term of units and lessons per class and subject, like Oak National Academy. Each lesson can
             carry a downloadable worksheet, extra resources, a video, and a self-directed &quot;Complete online&quot;
             flow (Introduction → Starter quiz → Video → Exit quiz) that a parent or student can work through
             themselves, alongside every student&apos;s progress through it.
@@ -63,7 +63,7 @@ export default async function CurriculumPlansPage() {
           </p>
           <p className="mt-1 text-xs text-ink-soft">
             Their class doesn&apos;t match any class name currently used on a Child Card, so no teacher is scoped
-            to see them. Open one below and edit its class to match — current class names in use:{' '}
+            to see them. Open one below and edit its class to match. Current class names in use:{' '}
             {classOptions.length > 0 ? classOptions.join(', ') : 'none yet'}.
           </p>
           <ul className="mt-2 flex flex-wrap gap-1.5">

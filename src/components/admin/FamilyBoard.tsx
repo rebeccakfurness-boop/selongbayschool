@@ -260,7 +260,7 @@ export default function FamilyBoard({ initialChildren, canEdit }: { initialChild
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Failed to update status');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not save that move — reverted.');
+      setError(err instanceof Error ? err.message : 'Could not save that move. Reverted.');
       setChildren((prev) => prev.map((c) => (c.id === childId ? { ...c, status: current.status, is_active: current.is_active } : c)));
     }
   }

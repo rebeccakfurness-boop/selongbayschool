@@ -49,7 +49,7 @@ export default function ScheduleMeetingButton({
   if (!expanded) {
     return (
       <button type="button" onClick={() => setExpanded(true)} className="text-xs font-semibold text-teal-deep hover:underline">
-        {result === 'sent' ? 'Sent ✓ — send again' : 'Schedule a meeting'}
+        {result === 'sent' ? 'Sent ✓ (send again)' : 'Schedule a meeting'}
       </button>
     );
   }

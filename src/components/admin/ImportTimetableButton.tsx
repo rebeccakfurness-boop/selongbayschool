@@ -37,7 +37,7 @@ export default function ImportTimetableButton() {
           <p className="text-sm font-semibold text-ink">Import the school timetable</p>
           <p className="text-xs text-ink-soft">
             Loads Primary, Secondary, and Early Years &amp; Kindergarten from the spreadsheet the school provided.
-            Safe to click again — it skips anything already added, and won&apos;t duplicate.
+            Safe to click again: it skips anything already added, and won&apos;t duplicate.
           </p>
         </div>
         <button

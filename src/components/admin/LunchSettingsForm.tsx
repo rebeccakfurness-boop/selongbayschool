@@ -88,7 +88,7 @@ export default function LunchSettingsForm({ initial }: { initial: LunchSettings 
       </p>
       {notConfigured && (
         <p className="mt-3 rounded-sm bg-orange/10 px-3 py-2 text-xs font-semibold text-orange-deep">
-          Not fully set up yet — parents can&apos;t order lunches until pricing (both sizes) and bank details are filled in.
+          Not fully set up yet: parents can&apos;t order lunches until pricing (both sizes) and bank details are filled in.
         </p>
       )}
 

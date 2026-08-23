@@ -42,7 +42,7 @@ export default function AttendanceSignModal({
         onClick={(e) => e.stopPropagation()}
       >
         <h3 className="font-display text-lg font-semibold text-ink">{title}</h3>
-        <p className="mt-1 text-xs text-ink-soft">Sign below to confirm — this is recorded with the check-in/out.</p>
+        <p className="mt-1 text-xs text-ink-soft">Sign below to confirm. This is recorded with the check-in/out.</p>
 
         <div className="mt-3">
           <SignaturePad ref={padRef} />

@@ -67,7 +67,7 @@ export default function SchoolSettingsForm({ initial }: { initial: SchoolSetting
     <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
       <h2 className="font-display text-lg font-semibold text-ink">Invoicing & Bank Details</h2>
       <p className="mt-1 text-xs text-ink-soft">
-        Used on every generated invoice PDF — the invoice template never hardcodes these, so a change here applies
+        Used on every generated invoice PDF: the invoice template never hardcodes these, so a change here applies
         to every future invoice immediately.
       </p>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">

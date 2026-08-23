@@ -30,7 +30,7 @@ export default async function ScheduleMeetingPage({ params }: { params: Promise<
           <p className="mt-2 text-sm text-ink-soft">
             {invite.meeting_format === 'video'
               ? invite.meet_link
-                ? <>Video call — join at the scheduled time via <a href={invite.meet_link} className="font-semibold text-teal-deep underline">this link</a>.</>
+                ? <>Video call: join at the scheduled time via <a href={invite.meet_link} className="font-semibold text-teal-deep underline">this link</a>.</>
                 : 'Video call.'
               : `In person at ${siteConfig.contact.address}.`}
           </p>
@@ -68,7 +68,7 @@ export default async function ScheduleMeetingPage({ params }: { params: Promise<
       <p className="font-script text-3xl text-orange-deep">Schedule a Meeting</p>
       <h1 className="mt-1 font-display text-2xl font-semibold text-ink md:text-3xl">{invite.child_full_name}</h1>
       <p className="mt-2 text-sm text-ink-soft">
-        Pick a time that suits you — in person on campus, or over a video call. All times shown are Lombok time.
+        Pick a time that suits you: in person on campus, or over a video call. All times shown are Lombok time.
       </p>
 
       {loadError ? (

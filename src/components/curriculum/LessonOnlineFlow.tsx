@@ -201,7 +201,7 @@ function HubView({
 
       {justCompleted && (
         <div className="mt-4 rounded-md border border-teal/40 bg-teal/10 p-4 text-sm font-semibold text-teal-deep">
-          🎉 Nice work — lesson complete!
+          🎉 Nice work! Lesson complete!
         </div>
       )}
 
@@ -234,7 +234,7 @@ function HubView({
               title="Starter quiz"
               subtitle={
                 progress.starter_quiz_score !== null
-                  ? `Completed — ${progress.starter_quiz_score}/${progress.starter_quiz_total}`
+                  ? `Completed: ${progress.starter_quiz_score}/${progress.starter_quiz_total}`
                   : `Activate · ${lesson.starter_quiz.length} question${lesson.starter_quiz.length === 1 ? '' : 's'}`
               }
               onClick={() => onOpenStep('starter')}
@@ -254,7 +254,7 @@ function HubView({
               title="Exit quiz"
               subtitle={
                 progress.exit_quiz_score !== null
-                  ? `Completed — ${progress.exit_quiz_score}/${progress.exit_quiz_total}`
+                  ? `Completed: ${progress.exit_quiz_score}/${progress.exit_quiz_total}`
                   : `Check · ${lesson.exit_quiz.length} question${lesson.exit_quiz.length === 1 ? '' : 's'}`
               }
               onClick={() => onOpenStep('exit')}
@@ -269,7 +269,7 @@ function HubView({
             href={backHref}
             className="inline-flex items-center gap-2 rounded-full bg-teal px-6 py-3 text-sm font-bold text-white hover:bg-teal-deep"
           >
-            ✓ Lesson complete — back to all lessons
+            ✓ Lesson complete: back to all lessons
           </Link>
         ) : (
           <button
@@ -350,7 +350,7 @@ function IntroStep({ lesson, onBack, onReady }: { lesson: CurriculumLesson; onBa
               Download {lesson.worksheet_title || 'worksheet'}
             </a>
           ) : (
-            <p className="mt-3 text-sm text-ink-soft">No worksheet for this lesson — optional.</p>
+            <p className="mt-3 text-sm text-ink-soft">No worksheet for this lesson (optional).</p>
           )}
         </div>
       </div>
@@ -401,7 +401,7 @@ function VideoStep({
           <p className="mt-3 font-display text-xl font-bold text-ink">{lesson.title}</p>
           <p className="mt-1 text-sm text-ink-soft">{unitTitle}</p>
           <p className="mt-4 max-w-sm text-sm text-ink-soft">
-            No video for this lesson yet — check back soon, or carry on to the next step.
+            No video for this lesson yet: check back soon, or carry on to the next step.
           </p>
         </div>
       )}

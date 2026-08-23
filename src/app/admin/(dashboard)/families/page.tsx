@@ -96,7 +96,7 @@ function renderBoard(
           <h1 className="font-display text-2xl font-semibold text-ink">Family Board</h1>
           <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
             {staff.role === 'teacher'
-              ? `Children in your assigned classes${assignedClasses.length ? ` (${assignedClasses.join(', ')})` : ' — no classes assigned yet, ask an admin.'}.`
+              ? `Children in your assigned classes${assignedClasses.length ? ` (${assignedClasses.join(', ')})` : ': no classes assigned yet, ask an admin.'}.`
               : `${children.length} children across all statuses. Drag a card between columns to change status, or click a name for the full child card.`}
           </p>
         </div>

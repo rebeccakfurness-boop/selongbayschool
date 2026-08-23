@@ -60,7 +60,7 @@ export default function ImportFamilyDataForm() {
       <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
         <h2 className="font-display text-lg font-semibold text-ink">Upload spreadsheet</h2>
         <p className="mt-1 text-sm text-ink-soft">
-          The real enrollment/forecast .xlsx file — expects the same tab names as the original
+          The real enrollment/forecast .xlsx file: expects the same tab names as the original
           (Sheet1, School Tours, Inquiries from WA, Old Inquiries, Other islanders, Visitors only, Student Count).
         </p>
         <input
@@ -85,8 +85,8 @@ export default function ImportFamilyDataForm() {
             className="h-4 w-4"
           />
           <label htmlFor="clear-enquiries" className="text-sm text-ink-soft">
-            Clear existing admissions enquiries before importing (check this if you&apos;ve run an import before —
-            enquiries have no de-duplication and would otherwise be duplicated)
+            Clear existing admissions enquiries before importing (check this if you&apos;ve run an import before,
+            since enquiries have no de-duplication and would otherwise be duplicated)
           </label>
         </div>
 
@@ -104,7 +104,7 @@ export default function ImportFamilyDataForm() {
 
       {preview && (
         <div className="rounded-md border border-teal/30 bg-aqua/30 p-6">
-          <h3 className="font-display text-base font-semibold text-teal-deep">Preview — nothing saved yet</h3>
+          <h3 className="font-display text-base font-semibold text-teal-deep">Preview (nothing saved yet)</h3>
           <ul className="mt-2 text-sm text-ink">
             <li>{preview.childrenParsed} students found in Sheet1</li>
             <li>
@@ -141,7 +141,7 @@ export default function ImportFamilyDataForm() {
           <h3 className="font-display text-base font-semibold text-orange-deep">
             {importResult.rowErrors.length} row{importResult.rowErrors.length === 1 ? '' : 's'} skipped
           </h3>
-          <p className="mt-1 text-sm text-ink-soft">Everything else imported fine — these specific rows had bad data and were skipped:</p>
+          <p className="mt-1 text-sm text-ink-soft">Everything else imported fine. These specific rows had bad data and were skipped:</p>
           <ul className="mt-2 flex flex-col gap-1 text-sm text-ink">
             {importResult.rowErrors.map((e, i) => (
               <li key={i}>{e}</li>

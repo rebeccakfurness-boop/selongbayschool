@@ -61,7 +61,7 @@ export default function ScheduleMeetingForm({ token, slots, location }: { token:
         <p className="mt-2 text-sm text-ink-soft">
           {format === 'video'
             ? confirmed.meetLink
-              ? <>Join at the scheduled time via <a href={confirmed.meetLink} className="font-semibold text-teal-deep underline">this link</a> — we&apos;ve also emailed it to you.</>
+              ? <>Join at the scheduled time via <a href={confirmed.meetLink} className="font-semibold text-teal-deep underline">this link</a>. We&apos;ve also emailed it to you.</>
               : "We've emailed you the video call details."
             : `See you at ${location}.`}
         </p>
@@ -72,7 +72,7 @@ export default function ScheduleMeetingForm({ token, slots, location }: { token:
   if (slots.length === 0) {
     return (
       <p className="mt-6 rounded-md border border-sand-line bg-paper p-6 text-sm text-ink-soft">
-        No open times in the next few weeks — please contact the school directly to arrange a meeting.
+        No open times in the next few weeks. Please contact the school directly to arrange a meeting.
       </p>
     );
   }

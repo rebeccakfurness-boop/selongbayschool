@@ -25,7 +25,7 @@ export default async function AcademicCalendarPage() {
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">Teaching</h1>
           <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
-            Term dates and holidays — the calendar the Weekly Schedule generates real, dated sessions against.
+            Term dates and holidays: the calendar the Weekly Schedule generates real, dated sessions against.
             Changes apply immediately: no session is ever generated on a date a holiday or closure covers.
           </p>
         </div>

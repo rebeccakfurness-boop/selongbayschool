@@ -42,8 +42,8 @@ export default function PrivacyPolicyPage() {
           <p className="font-script text-3xl text-orange-deep md:text-4xl">Your trust matters to us</p>
           <h1 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Privacy Policy</h1>
           <p className="mt-4 max-w-2xl text-[16px] leading-relaxed text-ink-soft">
-            Last updated: August 2026. This policy explains what personal data Selong Bay School collects — from
-            website visitors, prospective families, and enrolled families using our parent portal — why we collect
+            Last updated: August 2026. This policy explains what personal data Selong Bay School collects (from
+            website visitors, prospective families, and enrolled families using our parent portal), why we collect
             it, and the choices and rights you have over it.
           </p>
         </div>
@@ -85,7 +85,7 @@ export default function PrivacyPolicyPage() {
             <Section id="information-we-collect" title="Information we collect">
               <p>
                 <strong className="text-ink">From anyone visiting the website:</strong> whatever you submit through
-                the Contact form or Student Enrolment form on the Admissions/Contact pages — name, email, phone
+                the Contact form or Student Enrolment form on the Admissions/Contact pages: name, email, phone
                 number, and your message or enquiry details.
               </p>
               <p>
@@ -95,7 +95,7 @@ export default function PrivacyPolicyPage() {
                 photographs of your child you upload or that staff post to their learning feed; identity documents
                 you choose to upload (passport copy, KITAS copy, birth certificate); attendance check-in/out records
                 and the signature used to confirm them; invoices and the fee/payment details on them (we do not
-                collect or store card numbers — fees are paid by bank transfer); and lunch orders you place.
+                collect or store card numbers; fees are paid by bank transfer); and lunch orders you place.
               </p>
               <p>
                 <strong className="text-ink">From students with their own login:</strong> a login email and whatever
@@ -110,7 +110,7 @@ export default function PrivacyPolicyPage() {
               <p>
                 <strong className="text-ink">Automatically:</strong> our hosting provider keeps standard technical
                 logs (like IP address and browser type) for security and reliability, the same as almost any
-                website. We do not run any analytics or advertising tracking on this site — see{' '}
+                website. We do not run any analytics or advertising tracking on this site. See{' '}
                 <a href="#cookies" className="font-semibold text-teal-deep underline">Cookies</a> below.
               </p>
             </Section>
@@ -120,7 +120,7 @@ export default function PrivacyPolicyPage() {
               <ul className="list-disc space-y-2 pl-6">
                 <li>respond to enquiries and process admissions and enrolment;</li>
                 <li>
-                  educate and care for enrolled students — attendance, learning profiles and term reports, lesson
+                  educate and care for enrolled students: attendance, learning profiles and term reports, lesson
                   plans, work samples, and Google Classroom coursework;
                 </li>
                 <li>keep students safe, including administering first aid and contacting you in an emergency;</li>
@@ -168,10 +168,10 @@ export default function PrivacyPolicyPage() {
                 never sell it. The main services we use are:
               </p>
               <ul className="list-disc space-y-2 pl-6">
-                <li><strong className="text-ink">Brevo</strong> — sends transactional emails (form confirmations, login links, invoices, notifications) on our behalf.</li>
-                <li><strong className="text-ink">Vercel and Neon</strong> — host this website, our database, and uploaded files (photos and identity documents) securely.</li>
+                <li><strong className="text-ink">Brevo</strong>: sends transactional emails (form confirmations, login links, invoices, notifications) on our behalf.</li>
+                <li><strong className="text-ink">Vercel and Neon</strong>: host this website, our database, and uploaded files (photos and identity documents) securely.</li>
                 <li>
-                  <strong className="text-ink">Google Workspace / Google Classroom / Google Calendar</strong> — used
+                  <strong className="text-ink">Google Workspace / Google Classroom / Google Calendar</strong>: used
                   by staff to sync coursework and assignments, and to schedule meetings with parents; connected only
                   when a staff member sets it up, and only for the class/child data needed to make that feature work.
                 </li>
@@ -205,7 +205,7 @@ export default function PrivacyPolicyPage() {
                 We keep a website enquiry only as long as needed to respond to it and for a reasonable follow-up
                 period. For enrolled families, we keep personal data for as long as your child is enrolled at
                 Selong Bay School, and for a reasonable period afterwards to meet our academic, financial, and legal
-                record-keeping obligations — after which it is securely deleted or anonymised.
+                record-keeping obligations, after which it is securely deleted or anonymised.
               </p>
             </Section>
 
@@ -243,7 +243,7 @@ export default function PrivacyPolicyPage() {
                 <a href={`mailto:${siteConfig.contact.email}`} className="font-semibold text-teal-deep underline">
                   {siteConfig.contact.email}
                 </a>{' '}
-                and we will respond as promptly as we can — this is always subject to our own legitimate
+                and we will respond as promptly as we can. This is always subject to our own legitimate
                 record-keeping and legal obligations, which may mean some data cannot be deleted immediately.
               </p>
             </Section>

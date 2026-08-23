@@ -16,7 +16,7 @@ function InfoRow({ label, value }: { label: string; value: string | null | undef
   return (
     <div>
       <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">{label}</div>
-      <div className="mt-0.5 text-sm text-ink">{value || '—'}</div>
+      <div className="mt-0.5 text-sm text-ink">{value || 'Not provided'}</div>
     </div>
   );
 }
@@ -96,8 +96,8 @@ export default function ParentChildProfileCard({ child }: { child: GuardianChild
         <InfoRow label="Date of birth" value={child.dob ? formatDate(child.dob) : null} />
         <InfoRow label="Nationality" value={child.nationality} />
         <InfoRow label="Programme" value={child.programme} />
-        <InfoRow label="Parent 1" value={[child.parent1_name, child.parent1_relationship].filter(Boolean).join(' — ')} />
-        <InfoRow label="Parent 2" value={[child.parent2_name, child.parent2_relationship].filter(Boolean).join(' — ')} />
+        <InfoRow label="Parent 1" value={[child.parent1_name, child.parent1_relationship].filter(Boolean).join(', ')} />
+        <InfoRow label="Parent 2" value={[child.parent2_name, child.parent2_relationship].filter(Boolean).join(', ')} />
         <InfoRow label="Religion" value={child.religion} />
       </div>
       <p className="mt-2 text-xs text-ink-soft">
@@ -154,7 +154,7 @@ export default function ParentChildProfileCard({ child }: { child: GuardianChild
       <div className="mt-6 border-t border-sand-line pt-6">
         <h3 className="font-display text-base font-semibold text-ink">Identity Documents</h3>
         <p className="mt-1 text-xs text-ink-soft">
-          Visible only to you and school admin — never to teachers. Not part of the Forms &amp; Compliance
+          Visible only to you and school admin, never to teachers. Not part of the Forms &amp; Compliance
           checklist the school tracks separately.
         </p>
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
