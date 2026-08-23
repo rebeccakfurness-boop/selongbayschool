@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import PhotoBanner from '@/components/PhotoBanner';
 import Reveal from '@/components/Reveal';
-import { charitableWork, communityPartners } from '@/lib/site-content';
+import { charitableWork, communityPartners, disasterAppeal } from '@/lib/site-content';
 
 export const metadata: Metadata = {
   title: 'Foundation & Charity',
@@ -23,6 +23,42 @@ export default function FoundationAndCharityPage() {
         }}
         card={{ script: 'Not for profit', heading: 'Foundation & Charity', align: 'left' }}
       />
+
+      <Reveal>
+        <div className="mx-auto max-w-4xl px-6 md:px-8">
+          <div className="rounded-lg border-2 border-orange-deep/30 bg-orange/10 p-6 shadow-soft md:p-10">
+            <p className="font-script text-3xl text-orange-deep md:text-4xl">{disasterAppeal.eyebrow}</p>
+            <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">{disasterAppeal.heading}</h2>
+            <div className="mt-5 space-y-4 text-[16px] leading-relaxed text-ink-soft">
+              {disasterAppeal.paragraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+            <div className="mt-8 grid gap-6 sm:grid-cols-2">
+              {[disasterAppeal.domesticBank, disasterAppeal.internationalBank].map((bank) => (
+                <div key={bank.label} className="rounded-md border border-sand-line bg-paper p-5">
+                  <h3 className="font-display text-base font-semibold text-teal-deep">{bank.label}</h3>
+                  <div className="mt-3 flex flex-col gap-2.5">
+                    {bank.rows.map((row) => (
+                      <div key={row.label}>
+                        <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">{row.label}</p>
+                        <p className="text-[15px] text-ink">{row.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="mt-6 text-sm text-ink-soft">
+              Questions about this appeal?{' '}
+              <a href="/contact" className="font-semibold text-teal-deep underline">
+                Contact us
+              </a>
+              . Thank you for standing with the Sade Village community.
+            </p>
+          </div>
+        </div>
+      </Reveal>
 
       <Reveal>
         <div className="mx-auto max-w-4xl px-6 md:px-8">

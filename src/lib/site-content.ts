@@ -127,6 +127,34 @@ export const foundingFamilies = [
   },
 ];
 
+export const disasterAppeal = {
+  eyebrow: 'Disaster Response Appeal',
+  heading: 'Sade Village Fire Rebuilding Fund',
+  paragraphs: [
+    'Sade Village, one of the communities neighbouring Selong Bay School, was recently struck by a fire that caused significant damage to homes and property. Yayasan Selong Bay Sekolah has opened this fund to support the families affected as they rebuild and get back on their feet.',
+    'Every donation goes directly toward helping our neighbours in Sade Village recover and rebuild during this difficult time. If you are able to contribute, our bank details are below — thank you for your support.',
+  ],
+  domesticBank: {
+    label: 'Bank transfer (Indonesia)',
+    rows: [
+      { label: 'Bank', value: 'Mandiri Bank' },
+      { label: 'Account Name', value: 'Yayasan Selong Bay Sekolah' },
+      { label: 'Account Number', value: '1610018060082' },
+    ],
+  },
+  internationalBank: {
+    label: 'International wire transfer',
+    rows: [
+      { label: 'Bank Name', value: 'PT Bank Mandiri (Persero) Tbk' },
+      { label: 'SWIFT Code', value: 'BMRIIDJAXXX' },
+      { label: 'Bank Code', value: '008-3292 (Clearing Code)' },
+      { label: 'Branch', value: 'KCP Kuta Mandalika' },
+      { label: 'Branch Code', value: '16161' },
+      { label: 'Branch Address', value: 'Jl Raya Pujut Kuta Mandalika, Kabupaten Lombok Tengah, Nusa Tenggara Barat 83572' },
+    ],
+  },
+};
+
 export const charitableWork = {
   heading: 'Charitable Work',
   body: 'As part of our charitable commitment to the community of South Lombok, Selong Bay School runs the Serangan English School, a free programme where our team teaches English to the local Serangan village every Sunday morning. This is one of the ways we reinvest in the community that welcomes us.',
