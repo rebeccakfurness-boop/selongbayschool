@@ -160,6 +160,10 @@ export const disasterResponseFunds = [
     slug: 'sade-village-fire',
     name: 'Sade Village Fire',
     summary: 'Rebuilding fifty homes lost to fire in the Sasak cultural village of Sade, and supporting the community as they recover.',
+    shareableImage: {
+      src: '/images/foundation-disaster-fund-sade-fire-share-poster.jpg',
+      downloadName: 'sade-village-fire-appeal.jpg',
+    },
     photos: [
       { src: '/images/foundation-disaster-fund-sade-fire-night.jpg', alt: 'The fire tearing through Sade Village at night' },
       { src: '/images/foundation-disaster-fund-sade-fire-aftermath.jpg', alt: 'The burnt remains of homes in Sade Village after the fire' },

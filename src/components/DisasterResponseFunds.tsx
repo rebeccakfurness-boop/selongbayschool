@@ -59,6 +59,29 @@ export default function DisasterResponseFunds() {
                     : [1, 2].map((n) => <PlaceholderImage key={n} label="Photo coming soon" className="h-48" />)}
                 </div>
 
+                {fund.shareableImage && (
+                  <div className="mt-6 flex flex-col items-start gap-4 rounded-md border border-teal/30 bg-aqua/30 p-5 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="relative h-24 w-[76px] shrink-0 overflow-hidden rounded-sm border border-sand-line shadow-soft">
+                        <Image src={fund.shareableImage.src} alt="" fill sizes="76px" className="object-cover" />
+                      </div>
+                      <p className="text-[15px] leading-snug text-ink-soft">
+                        Help spread the word: download this image and share it on social media or with friends and family.
+                      </p>
+                    </div>
+                    <a
+                      href={fund.shareableImage.src}
+                      download={fund.shareableImage.downloadName}
+                      className="inline-flex shrink-0 items-start gap-2 self-stretch justify-center rounded-full bg-teal px-6 py-3.5 text-center font-sans text-sm font-extrabold leading-snug text-white shadow-[0_10px_24px_-10px_rgba(0,124,131,0.55)] transition-transform duration-150 ease-out hover:-translate-y-0.5 hover:bg-teal-deep sm:items-center sm:self-auto sm:text-[15.5px]"
+                    >
+                      <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="mt-0.5 shrink-0 sm:mt-0">
+                        <path d="M10 3v10m0 0-4-4m4 4 4-4M4 16.5h12" />
+                      </svg>
+                      Download Shareable Image to Spread Awareness
+                    </a>
+                  </div>
+                )}
+
                 <div className="mt-6 space-y-4 text-[16px] leading-relaxed text-ink-soft">
                   {fund.paragraphs.map((paragraph) => (
                     <p key={paragraph}>{paragraph}</p>
