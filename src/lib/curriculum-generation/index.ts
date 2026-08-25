@@ -3,6 +3,7 @@ export { computeLessonPacing, type LessonPacing } from './pacing';
 export { checkCalculations, type CalculationCheck } from './calculation-check';
 export { validateStepOrdering } from './validate';
 export { NotConfiguredProvider } from './provider';
+export { StaticContentGenerationProvider, type AuthoredTermContent } from './static-provider';
 export type {
   ContentGenerationProvider,
   ParsedSyllabus,

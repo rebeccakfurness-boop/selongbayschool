@@ -13,7 +13,8 @@
     "db:reschedule-activities": "tsx --env-file-if-exists=.env.local scripts/reschedule-activities.ts",
     "db:import-family": "tsx --env-file-if-exists=.env.local scripts/import-family-tracker.ts",
     "db:create-staff": "tsx --env-file-if-exists=.env.local scripts/create-staff-user.ts",
-    "db:create-student": "tsx --env-file-if-exists=.env.local scripts/create-student-account.ts"
+    "db:create-student": "tsx --env-file-if-exists=.env.local scripts/create-student-account.ts",
+    "db:generate-curriculum": "tsx --env-file-if-exists=.env.local scripts/generate-curriculum-term.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
