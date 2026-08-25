@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff, canAccessClass } from '@/lib/current-staff';
+import { publishLesson } from '@/lib/curriculum';
 import { updateCurriculumLessonSchema } from '@/lib/validation';
 
 interface LessonLookupRow {
@@ -72,6 +73,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         video_url = ${merged.videoUrl}, video_title = ${merged.videoTitle}, equipment_note = ${merged.equipmentNote}
       WHERE id = ${id}
     `;
+    if (d.reviewStatus === 'published') {
+      await publishLesson(id);
+    }
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[api/admin/curriculum/lessons/:id] failed to update', err);

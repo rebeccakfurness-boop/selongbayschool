@@ -569,11 +569,36 @@ function LessonRow({
     onRefresh();
   }
 
+  const [publishing, setPublishing] = useState(false);
+  async function publish() {
+    setPublishing(true);
+    await apiCall(`/api/admin/curriculum/lessons/${lesson.id}`, 'PATCH', { reviewStatus: 'published' });
+    setPublishing(false);
+    onRefresh();
+  }
+
   return (
     <div className="border-t border-sand-line/60 px-4 py-3 first:border-t-0">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="text-sm font-semibold text-ink">Lesson {index + 1}: {lesson.title}</span>
+        <span className="flex items-center gap-2 text-sm font-semibold text-ink">
+          Lesson {index + 1}: {lesson.title}
+          {lesson.review_status === 'needs_review' && (
+            <span className="rounded-full bg-orange/20 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-orange-deep">
+              Needs review
+            </span>
+          )}
+        </span>
         <div className="flex items-center gap-2">
+          {lesson.review_status === 'needs_review' && (
+            <button
+              type="button"
+              onClick={publish}
+              disabled={publishing}
+              className="rounded-full bg-teal px-3 py-1 text-xs font-bold text-white hover:bg-teal-deep disabled:opacity-50"
+            >
+              {publishing ? 'Publishing…' : 'Publish'}
+            </button>
+          )}
           <button type="button" onClick={() => reorder('up')} disabled={isFirst} className="text-xs font-semibold text-ink-soft hover:text-ink disabled:opacity-30">↑</button>
           <button type="button" onClick={() => reorder('down')} disabled={isLast} className="text-xs font-semibold text-ink-soft hover:text-ink disabled:opacity-30">↓</button>
           <button type="button" onClick={() => setEditing((v) => !v)} className="text-xs font-semibold text-teal-deep hover:underline">{editing ? 'Close' : 'Edit'}</button>

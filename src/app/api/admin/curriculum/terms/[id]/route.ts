@@ -18,7 +18,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   try {
     await ensureSchema();
-    const term = await getCurriculumTermTree(id);
+    const term = await getCurriculumTermTree(id, true);
     if (!term) {
       return NextResponse.json({ error: 'Programme not found.' }, { status: 404 });
     }
