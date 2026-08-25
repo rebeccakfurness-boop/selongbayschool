@@ -784,6 +784,10 @@ export const updateCurriculumLessonSchema = z.object({
   videoUrl: z.string().trim().url().max(2000).nullable().optional(),
   videoTitle: z.string().trim().max(300).nullable().optional(),
   equipmentNote: z.string().trim().max(1000).nullable().optional(),
+  /** Only 'published' is ever accepted here -- a teacher confirming a generated lesson is the one
+   * reviewStatus transition this route allows; there's no UI path back to 'needs_review' (see
+   * publishLesson's own comment in curriculum.ts). */
+  reviewStatus: z.literal('published').optional(),
 });
 export type UpdateCurriculumLessonInput = z.infer<typeof updateCurriculumLessonSchema>;
 
@@ -846,5 +850,6 @@ export const onlineProgressStepSchema = z.discriminatedUnion('step', [
     score: z.coerce.number().int().min(0),
     total: z.coerce.number().int().min(1),
   }),
+  z.object({ step: z.literal('interactive_complete'), childId: z.coerce.number().int().positive().optional() }),
 ]);
 export type OnlineProgressStepInput = z.infer<typeof onlineProgressStepSchema>;

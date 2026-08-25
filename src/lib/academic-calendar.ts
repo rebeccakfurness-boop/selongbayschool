@@ -61,8 +61,10 @@ const DAY_TO_JS_DOW: Record<DayOfWeek, number> = {
 
 /** Every calendar date between start/end (inclusive) that falls on `dayOfWeek`. Dates are plain
  * "YYYY-MM-DD" strings throughout (see db.ts's DATE type-parser override) and compared as UTC days
- * to sidestep any server-local-timezone drift. */
-function datesForDayOfWeek(startDate: string, endDate: string, dayOfWeek: DayOfWeek): string[] {
+ * to sidestep any server-local-timezone drift. Exported for the curriculum generation engine's
+ * pacing calculation (src/lib/curriculum-generation/pacing.ts), which counts real class_schedule
+ * sessions the same way regenerateScheduleOccurrences below does, rather than reimplementing this. */
+export function datesForDayOfWeek(startDate: string, endDate: string, dayOfWeek: DayOfWeek): string[] {
   const targetDow = DAY_TO_JS_DOW[dayOfWeek];
   const cursor = new Date(`${startDate}T00:00:00Z`);
   const end = new Date(`${endDate}T00:00:00Z`);
@@ -77,7 +79,7 @@ function datesForDayOfWeek(startDate: string, endDate: string, dayOfWeek: DayOfW
   return dates;
 }
 
-function isHoliday(date: string, exceptions: AcademicExceptionRow[]): boolean {
+export function isHoliday(date: string, exceptions: AcademicExceptionRow[]): boolean {
   return exceptions.some((ex) => date >= ex.start_date && date <= ex.end_date);
 }
 

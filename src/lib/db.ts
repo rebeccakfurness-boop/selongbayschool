@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 19;
+const SCHEMA_VERSION = 20;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1683,6 +1683,64 @@ export function ensureSchema(): Promise<void> {
           UNIQUE (mark_id, criterion_id)
         )
       `;
+
+      // --- Interactive lesson content (generation-engine output) ---
+      // interactive_content is the step-by-step experience InteractiveLessonStepper renders in
+      // place of the plain objectives/worksheet/video view -- see src/lib/interactive-content-types.ts
+      // for its shape. teaching_script is separate, teacher-facing generation output (talking
+      // points/timing/misconceptions per step) -- never shown to a student. video_source labels
+      // where video_url's content came from so the player knows how to embed it; null (every
+      // existing lesson) keeps today's YouTube-only embed behaviour unchanged.
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS interactive_content JSONB`;
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS teaching_script JSONB`;
+      await sql`
+        ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS video_source TEXT
+        CHECK (video_source IN ('notebooklm', 'uploaded', 'youtube'))
+      `;
+
+      // Generated content lands here and is invisible to parents/students (see curriculum.ts's
+      // review_status filtering) until a teacher explicitly publishes it -- defaults to
+      // 'published' so every lesson that already exists today keeps rendering exactly as before.
+      await sql`
+        ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS review_status TEXT
+        NOT NULL DEFAULT 'published' CHECK (review_status IN ('needs_review', 'published'))
+      `;
+
+      // A lesson's vocabulary deck -- shown together at the closing recap step alongside the
+      // homework checklist, not scattered as separate flip-card moments (those come from an
+      // inline 'flip_card' step in interactive_content instead; see that type's own comment).
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_lesson_flashcards (
+          id BIGSERIAL PRIMARY KEY,
+          lesson_id BIGINT NOT NULL REFERENCES curriculum_unit_lessons(id) ON DELETE CASCADE,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          term TEXT NOT NULL,
+          definition TEXT NOT NULL
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_curriculum_lesson_flashcards_lesson ON curriculum_lesson_flashcards (lesson_id, sort_order)`;
+
+      // A per-child override of a lesson's interactive_content -- when a row exists here for the
+      // child currently taking the lesson, InteractiveLessonStepper renders personalized_content
+      // instead of the lesson's own base interactive_content. UNIQUE (lesson_id, child_id) since
+      // there's at most one active personalization per child per lesson; regenerating one is an
+      // upsert, not a new row.
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_unit_lesson_personalizations (
+          id BIGSERIAL PRIMARY KEY,
+          lesson_id BIGINT NOT NULL REFERENCES curriculum_unit_lessons(id) ON DELETE CASCADE,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          personalized_content JSONB NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (lesson_id, child_id)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_curriculum_personalizations_child ON curriculum_unit_lesson_personalizations (child_id)`;
+
+      // Short, teacher-set list of interests/local references the generation engine can draw on
+      // for examples -- generation input only, never shown to students directly. Null/empty means
+      // the engine falls back to solid generic examples (see the generation engine's own comment).
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS context_pack JSONB`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

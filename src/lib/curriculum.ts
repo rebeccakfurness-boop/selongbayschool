@@ -1,4 +1,5 @@
 import { sql } from '@/lib/db';
+import type { InteractiveLessonContent, TeachingScript, VideoSource } from '@/lib/interactive-content-types';
 
 export interface CurriculumTerm {
   id: number;
@@ -28,6 +29,16 @@ export interface CurriculumQuizQuestion {
   hint: string | null;
 }
 
+export type LessonReviewStatus = 'needs_review' | 'published';
+
+export interface CurriculumFlashcard {
+  id: number;
+  lesson_id: number;
+  sort_order: number;
+  term: string;
+  definition: string;
+}
+
 export interface CurriculumLesson {
   id: number;
   unit_id: number;
@@ -38,10 +49,18 @@ export interface CurriculumLesson {
   worksheet_title: string | null;
   video_url: string | null;
   video_title: string | null;
+  video_source: VideoSource | null;
   equipment_note: string | null;
+  /** Rendered by InteractiveLessonStepper in place of the plain view below when present. Already
+   * has any per-child personalization overlaid where the caller asked for it (see
+   * getLessonForOnlineFlow's childId param) — never the base row's raw value in that case. */
+  interactive_content: InteractiveLessonContent | null;
+  teaching_script: TeachingScript | null;
+  review_status: LessonReviewStatus;
   resources: CurriculumLessonResource[];
   starter_quiz: CurriculumQuizQuestion[];
   exit_quiz: CurriculumQuizQuestion[];
+  flashcards: CurriculumFlashcard[];
 }
 
 export interface CurriculumUnit {
@@ -89,10 +108,15 @@ export async function getAllCurriculumTerms(): Promise<CurriculumTerm[]> {
   `) as unknown as CurriculumTerm[];
 }
 
-/** The full term -> units -> lessons -> resources tree in four queries total (not one per unit/
+/** The full term -> units -> lessons -> resources tree in five queries total (not one per unit/
  * lesson), assembled in memory — a term's whole content is small (a handful of units, a few dozen
- * lessons at most), so this is simpler and just as fast as a single deeply-joined query. */
-export async function getCurriculumTermTree(termId: number): Promise<CurriculumTermTree | null> {
+ * lessons at most), so this is simpler and just as fast as a single deeply-joined query.
+ *
+ * includeNeedsReview defaults to false (parent/student/teacher-browsing callers): a
+ * generation-engine lesson stuck in 'needs_review' is filtered out entirely, exactly as if it
+ * didn't exist yet, until a teacher publishes it. Pass true only for the authoring page, which
+ * needs to see (and act on) needs_review lessons. */
+export async function getCurriculumTermTree(termId: number, includeNeedsReview = false): Promise<CurriculumTermTree | null> {
   const [term] = (await sql`
     SELECT id, class_name, subject, term_label, framework_label FROM curriculum_terms WHERE id = ${termId}
   `) as unknown as CurriculumTerm[];
@@ -104,17 +128,18 @@ export async function getCurriculumTermTree(termId: number): Promise<CurriculumT
   `) as unknown as Omit<CurriculumUnit, 'lessons'>[];
   const unitIds = units.map((u) => u.id);
 
-  const lessons =
+  const allLessons =
     unitIds.length === 0
       ? []
       : ((await sql`
           SELECT id, unit_id, sort_order, title, objectives, worksheet_url, worksheet_title,
-                 video_url, video_title, equipment_note
+                 video_url, video_title, video_source, equipment_note, interactive_content, teaching_script, review_status
           FROM curriculum_unit_lessons WHERE unit_id = ANY(${unitIds}) ORDER BY sort_order, id
-        `) as unknown as Omit<CurriculumLesson, 'resources' | 'starter_quiz' | 'exit_quiz'>[]);
+        `) as unknown as Omit<CurriculumLesson, 'resources' | 'starter_quiz' | 'exit_quiz' | 'flashcards'>[]);
+  const lessons = includeNeedsReview ? allLessons : allLessons.filter((l) => l.review_status === 'published');
   const lessonIds = lessons.map((l) => l.id);
 
-  const [resources, quizQuestions] = await Promise.all([
+  const [resources, quizQuestions, flashcards] = await Promise.all([
     lessonIds.length === 0
       ? Promise.resolve([])
       : ((sql`
@@ -128,6 +153,12 @@ export async function getCurriculumTermTree(termId: number): Promise<CurriculumT
           FROM curriculum_lesson_quiz_questions
           WHERE lesson_id = ANY(${lessonIds}) ORDER BY quiz_type, sort_order, id
         `) as unknown as Promise<CurriculumQuizQuestion[]>),
+    lessonIds.length === 0
+      ? Promise.resolve([])
+      : ((sql`
+          SELECT id, lesson_id, sort_order, term, definition FROM curriculum_lesson_flashcards
+          WHERE lesson_id = ANY(${lessonIds}) ORDER BY sort_order, id
+        `) as unknown as Promise<CurriculumFlashcard[]>),
   ]);
 
   const resourcesByLesson = new Map<number, CurriculumLessonResource[]>();
@@ -140,6 +171,9 @@ export async function getCurriculumTermTree(termId: number): Promise<CurriculumT
     map.set(q.lesson_id, [...(map.get(q.lesson_id) ?? []), q]);
   }
 
+  const flashcardsByLesson = new Map<number, CurriculumFlashcard[]>();
+  for (const f of flashcards) flashcardsByLesson.set(f.lesson_id, [...(flashcardsByLesson.get(f.lesson_id) ?? []), f]);
+
   const lessonsByUnit = new Map<number, CurriculumLesson[]>();
   for (const l of lessons) {
     const full: CurriculumLesson = {
@@ -147,6 +181,7 @@ export async function getCurriculumTermTree(termId: number): Promise<CurriculumT
       resources: resourcesByLesson.get(l.id) ?? [],
       starter_quiz: starterQuizByLesson.get(l.id) ?? [],
       exit_quiz: exitQuizByLesson.get(l.id) ?? [],
+      flashcards: flashcardsByLesson.get(l.id) ?? [],
     };
     lessonsByUnit.set(l.unit_id, [...(lessonsByUnit.get(l.unit_id) ?? []), full]);
   }
@@ -157,21 +192,30 @@ export async function getCurriculumTermTree(termId: number): Promise<CurriculumT
 /** Standalone lesson lookup (with its quiz questions and parent unit/term context) for the
  * self-directed "Complete online" flow's own route -- unlike getCurriculumTermTree, this loads
  * just one lesson rather than a whole programme, since the online-flow page is reached directly
- * (deep link / browser back-forward), not by walking the term tree client-side. */
+ * (deep link / browser back-forward), not by walking the term tree client-side.
+ *
+ * Unconditionally published-only (unlike getCurriculumTermTree, there's no includeNeedsReview
+ * here) -- this backs the actual student-facing "complete this lesson" experience, so a
+ * needs_review lesson is treated as not found rather than served half-checked.
+ *
+ * childId, when given, overlays that child's row from curriculum_unit_lesson_personalizations
+ * onto interactive_content if one exists -- the base lesson's own interactive_content is never
+ * returned in that case, per the "render that instead of the base content" rule. */
 export async function getLessonForOnlineFlow(
-  lessonId: number
+  lessonId: number,
+  childId?: number
 ): Promise<{ lesson: CurriculumLesson; unitTitle: string; term: CurriculumTerm } | null> {
   const rows = (await sql`
     SELECT
       l.id, l.unit_id, l.sort_order, l.title, l.objectives, l.worksheet_url, l.worksheet_title,
-      l.video_url, l.video_title, l.equipment_note,
+      l.video_url, l.video_title, l.video_source, l.equipment_note, l.interactive_content, l.teaching_script, l.review_status,
       u.title AS unit_title,
       t.id AS term_id, t.class_name, t.subject, t.term_label, t.framework_label
     FROM curriculum_unit_lessons l
     JOIN curriculum_term_units u ON u.id = l.unit_id
     JOIN curriculum_terms t ON t.id = u.term_id
     WHERE l.id = ${lessonId}
-  `) as unknown as (Omit<CurriculumLesson, 'resources' | 'starter_quiz' | 'exit_quiz'> & {
+  `) as unknown as (Omit<CurriculumLesson, 'resources' | 'starter_quiz' | 'exit_quiz' | 'flashcards'> & {
     unit_title: string;
     term_id: number;
     class_name: string;
@@ -180,9 +224,9 @@ export async function getLessonForOnlineFlow(
     framework_label: string | null;
   })[];
   const row = rows[0];
-  if (!row) return null;
+  if (!row || row.review_status !== 'published') return null;
 
-  const [resources, quizQuestions] = await Promise.all([
+  const [resources, quizQuestions, flashcards, personalization] = await Promise.all([
     (sql`
       SELECT id, lesson_id, title, url FROM curriculum_lesson_resources WHERE lesson_id = ${lessonId} ORDER BY id
     `) as unknown as Promise<CurriculumLessonResource[]>,
@@ -190,6 +234,16 @@ export async function getLessonForOnlineFlow(
       SELECT id, lesson_id, quiz_type, sort_order, question, options, correct_option_index, hint
       FROM curriculum_lesson_quiz_questions WHERE lesson_id = ${lessonId} ORDER BY quiz_type, sort_order, id
     `) as unknown as Promise<CurriculumQuizQuestion[]>,
+    (sql`
+      SELECT id, lesson_id, sort_order, term, definition FROM curriculum_lesson_flashcards
+      WHERE lesson_id = ${lessonId} ORDER BY sort_order, id
+    `) as unknown as Promise<CurriculumFlashcard[]>,
+    childId
+      ? ((sql`
+          SELECT personalized_content FROM curriculum_unit_lesson_personalizations
+          WHERE lesson_id = ${lessonId} AND child_id = ${childId}
+        `) as unknown as Promise<{ personalized_content: InteractiveLessonContent }[]>)
+      : Promise.resolve([]),
   ]);
 
   const lesson: CurriculumLesson = {
@@ -202,10 +256,15 @@ export async function getLessonForOnlineFlow(
     worksheet_title: row.worksheet_title,
     video_url: row.video_url,
     video_title: row.video_title,
+    video_source: row.video_source,
     equipment_note: row.equipment_note,
+    interactive_content: personalization[0]?.personalized_content ?? row.interactive_content,
+    teaching_script: row.teaching_script,
+    review_status: row.review_status,
     resources,
     starter_quiz: quizQuestions.filter((q) => q.quiz_type === 'starter'),
     exit_quiz: quizQuestions.filter((q) => q.quiz_type === 'exit'),
+    flashcards,
   };
 
   return {
@@ -299,13 +358,18 @@ export type OnlineProgressStep =
   | { step: 'intro' }
   | { step: 'video' }
   | { step: 'starter_quiz'; score: number; total: number }
-  | { step: 'exit_quiz'; score: number; total: number };
+  | { step: 'exit_quiz'; score: number; total: number }
+  /** Finishing InteractiveLessonStepper's last step, for a lesson with interactive_content --
+   * the stepper doesn't have separate intro/starter/video/exit milestones, so this is the one
+   * signal it sends, and it's treated exactly like exit_quiz below (marks completed_at and
+   * cascades to child_lesson_progress = 'completed'). */
+  | { step: 'interactive_complete' };
 
-/** Records one step of the online flow and, only for the exit quiz, also marks the lesson
- * 'completed' in the same shared child_lesson_progress status every other view reads (see
- * setChildLessonProgress's own comment on why a student is allowed to trigger that here but
- * nowhere else). Starting the flow (finishing the intro) nudges a still-'not_started' lesson to
- * 'in_progress', mirroring Oak's "Activate" framing for the starter quiz. */
+/** Records one step of the online flow and, only for the exit quiz (or an interactive lesson's
+ * completion), also marks the lesson 'completed' in the same shared child_lesson_progress status
+ * every other view reads (see setChildLessonProgress's own comment on why a student is allowed to
+ * trigger that here but nowhere else). Starting the flow (finishing the intro) nudges a still-
+ * 'not_started' lesson to 'in_progress', mirroring Oak's "Activate" framing for the starter quiz. */
 export async function upsertOnlineProgressStep(
   childId: number,
   lessonId: number,
@@ -324,6 +388,9 @@ export async function upsertOnlineProgressStep(
   if (update.step === 'exit_quiz') {
     next.exit_quiz_score = update.score;
     next.exit_quiz_total = update.total;
+    next.completed_at = new Date().toISOString();
+  }
+  if (update.step === 'interactive_complete') {
     next.completed_at = new Date().toISOString();
   }
 
@@ -345,7 +412,7 @@ export async function upsertOnlineProgressStep(
       updated_at = now()
   `;
 
-  if (update.step === 'exit_quiz') {
+  if (update.step === 'exit_quiz' || update.step === 'interactive_complete') {
     await setChildLessonProgress(childId, lessonId, 'completed', actor);
   } else {
     const rows = await sql`SELECT status FROM child_lesson_progress WHERE child_id = ${childId} AND lesson_id = ${lessonId}`;
@@ -366,4 +433,13 @@ export function currentLessonId(term: CurriculumTermTree, progress: Map<number, 
     }
   }
   return null;
+}
+
+/** Flips a generated lesson's review gate -- 'published' is the only status a teacher can set
+ * through this (there's no UI path back to needs_review; a teacher who wants to redo a lesson
+ * edits or deletes it instead), so this only ever moves one direction. See review_status's own
+ * schema comment in db.ts for why the default is 'published' and only generation-engine inserts
+ * ever start a lesson at 'needs_review'. */
+export async function publishLesson(lessonId: number): Promise<void> {
+  await sql`UPDATE curriculum_unit_lessons SET review_status = 'published' WHERE id = ${lessonId}`;
 }
