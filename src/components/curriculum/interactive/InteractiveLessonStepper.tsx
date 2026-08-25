@@ -13,6 +13,7 @@ import WorkedExampleSteps from './WorkedExampleSteps';
 import InteractiveCalculator from './InteractiveCalculator';
 import DataTable from './DataTable';
 import ProportionalBarCompare from './ProportionalBarCompare';
+import InlineQuizCards from './InlineQuizCards';
 import VocabRecapChecklist from './VocabRecapChecklist';
 
 /** One step visible at a time, progress dots, Back/Next, and left/right arrow keys -- the shared
@@ -112,6 +113,7 @@ export default function InteractiveLessonStepper({
         </div>
 
         <div className="mt-8" key={step.id}>
+          <StepHeader step={step} />
           <StepBody step={step} lesson={lesson} />
         </div>
 
@@ -128,6 +130,25 @@ export default function InteractiveLessonStepper({
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** The kicker/title/lede header every step type shares -- ports the header every
+ * <section class="step"> carries in Tom's prototype (kicker + h1.title + p.lede above the
+ * widget), rendered once here rather than duplicated inside each widget component. All three
+ * fields are optional since not every step needs a lede. */
+function StepHeader({ step }: { step: Exclude<InteractiveStep, { type: 'quiz' }> }) {
+  if (!step.kicker && !step.title && !step.lede) return null;
+  return (
+    <div className="mb-6">
+      {step.kicker && (
+        <p className="mb-2 inline-flex items-center rounded-full bg-orange/15 px-3 py-1 text-xs font-bold uppercase tracking-wide text-orange-deep">
+          {step.kicker}
+        </p>
+      )}
+      {step.title && <h1 className="font-display text-2xl font-bold text-ink md:text-3xl">{step.title}</h1>}
+      {step.lede && <p className="mt-2 max-w-prose text-[15px] leading-relaxed text-ink-soft">{step.lede}</p>}
     </div>
   );
 }
@@ -152,6 +173,8 @@ function StepBody({ step, lesson }: { step: Exclude<InteractiveStep, { type: 'qu
       return <DataTable step={step} />;
     case 'proportional_bar_compare':
       return <ProportionalBarCompare step={step} />;
+    case 'inline_quiz':
+      return <InlineQuizCards step={step} />;
     case 'recap_checklist':
       return <VocabRecapChecklist step={step} flashcards={lesson.flashcards} />;
   }

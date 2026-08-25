@@ -3,30 +3,38 @@
 import { useState } from 'react';
 import type { FlipCardStep } from '@/lib/interactive-content-types';
 
-/** One inline term/definition flip moment -- distinct from the lesson's full flashcard deck
- * (VocabRecapChecklist), see FlipCardStep's own comment on why. */
-export default function FlipCard({ step }: { step: FlipCardStep }) {
+function Card({ card }: { card: FlipCardStep['cards'][number] }) {
   const [flipped, setFlipped] = useState(false);
-
   return (
-    <div className="flex flex-col items-center">
-      <p className="text-sm font-semibold text-ink-soft">Tap the card to reveal the definition</p>
-      <button
-        type="button"
-        onClick={() => setFlipped((f) => !f)}
-        className={`mt-4 flex min-h-[220px] w-full max-w-md items-center justify-center rounded-md border-2 p-8 text-center shadow-soft transition-colors ${
-          flipped ? 'border-orange-deep bg-orange/10' : 'border-teal/30 bg-teal/10'
-        }`}
-      >
-        {flipped ? (
-          <p className="text-base leading-relaxed text-ink">{step.definition}</p>
-        ) : (
-          <p className="font-display text-3xl font-bold text-ink">{step.term}</p>
-        )}
-      </button>
-      <p className="mt-3 text-xs font-bold uppercase tracking-wide text-ink-soft">
-        {flipped ? 'Definition' : 'Term'}
-      </p>
+    <button
+      type="button"
+      onClick={() => setFlipped((f) => !f)}
+      className={`flex min-h-[130px] flex-col items-center justify-center rounded-md border-2 p-5 text-center shadow-soft transition-colors ${
+        flipped ? 'border-orange-deep bg-orange/10' : 'border-teal/30 bg-teal/10'
+      }`}
+    >
+      {flipped ? (
+        <p className="text-sm leading-snug text-ink">{card.definition}</p>
+      ) : (
+        <>
+          <p className="font-display text-lg font-bold text-ink">{card.term}</p>
+          <p className="mt-1.5 text-xs text-ink-soft">{card.hint || 'Tap to reveal ↻'}</p>
+        </>
+      )}
+    </button>
+  );
+}
+
+/** A grid of several term/definition flip cards -- matches buildFlipGrid, which always renders
+ * a data array shown together (e.g. lesson-06's 4 recap flashcards in one step), not one card at
+ * a time. The "tap to flip" instruction lives in the step's own `lede` (rendered once by
+ * InteractiveLessonStepper's shared header), not duplicated here. */
+export default function FlipCard({ step }: { step: FlipCardStep }) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      {step.cards.map((card) => (
+        <Card key={card.term} card={card} />
+      ))}
     </div>
   );
 }

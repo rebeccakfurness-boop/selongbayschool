@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import DocumentUploadField from '@/components/DocumentUploadField';
+import InteractiveLessonStepper from '@/components/curriculum/interactive/InteractiveLessonStepper';
 import type { CurriculumTerm, CurriculumTermTree, CurriculumUnit, CurriculumLesson, LessonProgressStatus, CurriculumQuizQuestion, QuizType } from '@/lib/curriculum';
 
 export type ClassRoster = { id: number; label: string }[];
@@ -577,6 +578,8 @@ function LessonRow({
     onRefresh();
   }
 
+  const [previewing, setPreviewing] = useState(false);
+
   return (
     <div className="border-t border-sand-line/60 px-4 py-3 first:border-t-0">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -599,12 +602,35 @@ function LessonRow({
               {publishing ? 'Publishing…' : 'Publish'}
             </button>
           )}
+          {lesson.interactive_content && (
+            <button
+              type="button"
+              onClick={() => setPreviewing((v) => !v)}
+              className="rounded-full border-2 border-orange-deep px-3 py-1 text-xs font-bold text-orange-deep hover:bg-orange/10"
+            >
+              {previewing ? 'Close preview' : 'Preview'}
+            </button>
+          )}
           <button type="button" onClick={() => reorder('up')} disabled={isFirst} className="text-xs font-semibold text-ink-soft hover:text-ink disabled:opacity-30">↑</button>
           <button type="button" onClick={() => reorder('down')} disabled={isLast} className="text-xs font-semibold text-ink-soft hover:text-ink disabled:opacity-30">↓</button>
           <button type="button" onClick={() => setEditing((v) => !v)} className="text-xs font-semibold text-teal-deep hover:underline">{editing ? 'Close' : 'Edit'}</button>
           <button type="button" onClick={deleteLesson} className="text-xs font-semibold text-orange-deep hover:underline">Remove</button>
         </div>
       </div>
+
+      {previewing && lesson.interactive_content && (
+        <div className="mt-3 overflow-hidden rounded-md border-2 border-orange-deep/30">
+          <p className="bg-orange/15 px-4 py-2 text-xs font-bold uppercase tracking-wide text-orange-deep">
+            Preview -- read-only, nothing here is saved
+          </p>
+          <InteractiveLessonStepper
+            lesson={lesson}
+            content={lesson.interactive_content}
+            onExit={() => setPreviewing(false)}
+            onComplete={() => setPreviewing(false)}
+          />
+        </div>
+      )}
 
       {editing && (
         <div className="mt-3 flex flex-col gap-3 border-t border-sand-line/60 pt-3">
