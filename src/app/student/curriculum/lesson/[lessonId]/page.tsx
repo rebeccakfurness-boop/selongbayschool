@@ -21,7 +21,7 @@ export default async function StudentLessonOnlinePage({ params }: { params: Prom
     notFound();
   }
 
-  const found = await getLessonForOnlineFlow(lessonId);
+  const found = await getLessonForOnlineFlow(lessonId, session.childId);
   if (!found) {
     notFound();
   }

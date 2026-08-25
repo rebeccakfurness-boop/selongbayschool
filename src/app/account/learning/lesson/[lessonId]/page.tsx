@@ -33,7 +33,7 @@ export default async function ParentLessonOnlinePage({
     notFound();
   }
 
-  const found = await getLessonForOnlineFlow(lessonId);
+  const found = await getLessonForOnlineFlow(lessonId, childId);
   if (!found) {
     notFound();
   }

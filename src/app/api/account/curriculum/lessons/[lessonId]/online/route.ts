@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ less
     if (!(await guardianOwnsChild(session.customerId, childId))) {
       return NextResponse.json({ error: 'Not authorized for this child.' }, { status: 403 });
     }
-    const found = await getLessonForOnlineFlow(lessonId);
+    const found = await getLessonForOnlineFlow(lessonId, childId);
     if (!found) {
       return NextResponse.json({ error: 'Lesson not found.' }, { status: 404 });
     }

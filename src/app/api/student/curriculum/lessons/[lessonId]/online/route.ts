@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ less
 
   try {
     await ensureSchema();
-    const found = await getLessonForOnlineFlow(lessonId);
+    const found = await getLessonForOnlineFlow(lessonId, session.childId);
     if (!found) {
       return NextResponse.json({ error: 'Lesson not found.' }, { status: 404 });
     }
