@@ -376,6 +376,14 @@ export const createResourceSchema = z.object({
 });
 export type CreateResourceInput = z.infer<typeof createResourceSchema>;
 
+export const createSchoolPolicySchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  description: z.string().trim().max(2000).nullable().optional(),
+  fileUrl: z.string().trim().url().max(2000),
+  sortOrder: z.coerce.number().int().optional(),
+});
+export type CreateSchoolPolicyInput = z.infer<typeof createSchoolPolicySchema>;
+
 export const upsertCurriculumUnitSchema = z.object({
   className: z.string().trim().min(1, 'Class is required').max(100),
   termLabel: z.string().trim().min(1, 'Term is required').max(100),

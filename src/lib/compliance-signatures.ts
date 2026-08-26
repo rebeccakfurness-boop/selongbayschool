@@ -1,8 +1,41 @@
 import { sql } from '@/lib/db';
 import { COMPLIANCE_FORM_CONTENT, type ComplianceFormKey } from '@/lib/compliance-forms';
+import { COMPLIANCE_ITEMS } from '@/lib/family-data';
 
 export function isComplianceFormKey(key: string): key is ComplianceFormKey {
   return key in COMPLIANCE_FORM_CONTENT;
+}
+
+export interface ComplianceStatusItem {
+  formKey: ComplianceFormKey;
+  label: string;
+  signed: boolean;
+  date: string | null;
+}
+
+/** Read-only status of all 7 compliance forms for one child -- what the parent portal and
+ * teacher-visible Child Card both need to show, without exposing edit access (signing/clearing
+ * stays admin-only, see the /api/admin/compliance/:childId/:formKey/sign route). */
+export async function getComplianceStatusForChild(childId: number): Promise<ComplianceStatusItem[]> {
+  const rows = (await sql`
+    SELECT
+      liability_form_signed, liability_form_date::text,
+      photography_signed, photography_form_date::text,
+      pickup_authorization_signed, pickup_form_date::text,
+      behavioral_form_signed, behavioral_form_date::text,
+      financial_agreement_signed, financial_agreement_date::text,
+      parent_protection_addendum_signed,
+      data_consent_signed
+    FROM children WHERE id = ${childId}
+  `) as unknown as Record<string, boolean | string | null>[];
+  const row = rows[0];
+  if (!row) return [];
+  return COMPLIANCE_ITEMS.map((item) => ({
+    formKey: item.signedKey,
+    label: item.label,
+    signed: Boolean(row[item.signedKey]),
+    date: item.dateKey ? (row[item.dateKey] as string | null) : null,
+  }));
 }
 
 export interface ComplianceSignatureRow {

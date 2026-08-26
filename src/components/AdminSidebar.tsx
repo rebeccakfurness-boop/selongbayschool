@@ -11,6 +11,7 @@ const SECTIONS: { href: string; label: string; adminOnly?: boolean }[] = [
   { href: '/admin/import', label: 'Import Data', adminOnly: true },
   { href: '/admin/staff', label: 'Staff', adminOnly: true },
   { href: '/admin/teaching', label: 'Teaching' },
+  { href: '/admin/policies', label: 'School Policies' },
   { href: '/admin/invoices', label: 'Invoices', adminOnly: true },
   { href: '/admin/budget', label: 'Budget Tracker', adminOnly: true },
   { href: '/admin/lunch-orders', label: 'Lunch Orders', adminOnly: true },

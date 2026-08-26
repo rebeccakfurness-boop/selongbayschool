@@ -30,6 +30,7 @@ import { getLunchOrdersForChild, type LunchOrderSummaryRow } from '@/lib/lunch-o
 import { weekdaysSummaryLabel } from '@/lib/lunch-calc';
 import { getUpcomingOccurrencesForClass, getNotificationPref, type SessionOccurrenceRow } from '@/lib/schedule';
 import { getGradebookForChild, type GradebookEntry } from '@/lib/worksheets';
+import { getComplianceStatusForChild, type ComplianceStatusItem } from '@/lib/compliance-signatures';
 import GradebookSection from '@/components/GradebookSection';
 import {
   getCurriculumTermsForClass,
@@ -92,6 +93,7 @@ interface ChildSectionData {
   lunchOrders: LunchOrderSummaryRow[];
   occurrences: SessionOccurrenceRow[];
   gradebook: GradebookEntry[];
+  complianceStatus: ComplianceStatusItem[];
   notificationsEnabled: boolean;
   curriculumTerms: CurriculumTerm[];
   initialCurriculumTerm: CurriculumTermTree | null;
@@ -118,7 +120,7 @@ export default async function ParentLearningPage() {
 
     const childSections: ChildSectionData[] = await Promise.all(
       children.map(async (child) => {
-        const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, gradebook, notificationsEnabled, curriculumTerms] = await Promise.all([
+        const [unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, gradebook, complianceStatus, notificationsEnabled, curriculumTerms] = await Promise.all([
           getCurrentCurriculumUnit(child.class_name),
           getUpcomingLessonPlans(child.class_name, 5),
           getWorkSamplesForChild(child.id),
@@ -131,6 +133,7 @@ export default async function ParentLearningPage() {
           getLunchOrdersForChild(child.id),
           getUpcomingOccurrencesForClass(child.class_name, child.schedule_type, from, to),
           getGradebookForChild(child.id),
+          getComplianceStatusForChild(child.id),
           customerId ? getNotificationPref(customerId, child.id) : Promise.resolve(false),
           getCurriculumTermsForClass(child.class_name),
         ]);
@@ -139,7 +142,7 @@ export default async function ParentLearningPage() {
           : [null, new Map<number, LessonProgressStatus>()];
         return {
           child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments,
-          classroomSubmissions, lunchOrders, occurrences, gradebook, notificationsEnabled, curriculumTerms,
+          classroomSubmissions, lunchOrders, occurrences, gradebook, complianceStatus, notificationsEnabled, curriculumTerms,
           initialCurriculumTerm, initialCurriculumProgress: [...progressMap.entries()],
         };
       })
@@ -172,12 +175,12 @@ function renderLearningPage(
         )}
 
         <div className="flex flex-col gap-12">
-          {childSections.map(({ child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, gradebook, notificationsEnabled, curriculumTerms, initialCurriculumTerm, initialCurriculumProgress }) => {
+          {childSections.map(({ child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments, classroomSubmissions, lunchOrders, occurrences, gradebook, complianceStatus, notificationsEnabled, curriculumTerms, initialCurriculumTerm, initialCurriculumProgress }) => {
             const submissionByAssignment = new Map(classroomSubmissions.map((s) => [s.classroom_assignment_id, s]));
 
             return (
               <section key={child.id} id={`child-${child.id}`} className="scroll-mt-6">
-                <ParentChildProfileCard child={child} />
+                <ParentChildProfileCard child={child} complianceStatus={complianceStatus} />
 
                 <div className="mt-6">
                   <ParentScheduleSection

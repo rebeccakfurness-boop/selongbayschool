@@ -11,6 +11,7 @@ import { useFormSubmit } from '@/lib/useFormSubmit';
 import { STATUS_LEGEND, CLASS_BAND_LABELS, type ChildStatus, type ClassBand } from '@/lib/family-data';
 import { formatDate } from '@/lib/admin-format';
 import type { GuardianChildRow } from '@/lib/lms-data';
+import type { ComplianceStatusItem } from '@/lib/compliance-signatures';
 
 function InfoRow({ label, value }: { label: string; value: string | null | undefined }) {
   return (
@@ -26,7 +27,13 @@ function InfoRow({ label, value }: { label: string; value: string | null | undef
  * the fields a parent may view or edit for their own linked child. Status, class, programme, and
  * every financial/compliance field are read-only here (or entirely absent) regardless of what's
  * shown — the API enforces this too (updateOwnChildSchema), this is just the matching UI. */
-export default function ParentChildProfileCard({ child }: { child: GuardianChildRow }) {
+export default function ParentChildProfileCard({
+  child,
+  complianceStatus,
+}: {
+  child: GuardianChildRow;
+  complianceStatus: ComplianceStatusItem[];
+}) {
   const [form, setForm] = useState({
     primaryContactEmail: child.primary_contact_email ?? '',
     primaryContactPhone: child.primary_contact_phone ?? '',
@@ -149,6 +156,37 @@ export default function ParentChildProfileCard({ child }: { child: GuardianChild
             {status === 'submitting' ? 'Saving…' : 'Save changes'}
           </Button>
         </div>
+      </div>
+
+      <div className="mt-6 border-t border-sand-line pt-6">
+        <div className="flex items-center justify-between">
+          <h3 className="font-display text-base font-semibold text-ink">Forms &amp; Compliance</h3>
+          <span className="text-xs font-bold text-ink-soft">
+            {complianceStatus.filter((item) => item.signed).length}/{complianceStatus.length} signed
+          </span>
+        </div>
+        <p className="mt-1 text-xs text-ink-soft">
+          These are signed by the school office on enrolment. Contact us if a form needs updating.
+        </p>
+        <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+          {complianceStatus.map((item) => (
+            <li key={item.formKey}>
+              <a
+                href={`/api/account/compliance/${child.id}/${item.formKey}/pdf`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center justify-between gap-2 rounded-sm px-3 py-2 text-sm transition-colors hover:opacity-80 ${
+                  item.signed ? 'bg-teal/10 text-teal-deep' : 'bg-orange/10 text-orange-deep'
+                }`}
+              >
+                <span className="font-semibold underline">{item.label}</span>
+                <span className="whitespace-nowrap text-xs font-bold">
+                  {item.signed ? `Signed${item.date ? ` ${formatDate(item.date)}` : ''}` : 'Not signed'}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="mt-6 border-t border-sand-line pt-6">

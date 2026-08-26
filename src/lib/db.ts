@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 20;
+const SCHEMA_VERSION = 21;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1741,6 +1741,22 @@ export function ensureSchema(): Promise<void> {
       // for examples -- generation input only, never shown to students directly. Null/empty means
       // the engine falls back to solid generic examples (see the generation engine's own comment).
       await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS context_pack JSONB`;
+
+      // School-wide policy documents (safeguarding, code of conduct, uniform, etc.) -- the admin
+      // pastes a link (typically a Google Drive share link, since that's where the school already
+      // keeps these) rather than this app hosting a live Drive sync. No class_band scoping since
+      // policies apply to every family, unlike `resources`.
+      await sql`
+        CREATE TABLE IF NOT EXISTS school_policies (
+          id BIGSERIAL PRIMARY KEY,
+          title TEXT NOT NULL,
+          description TEXT,
+          file_url TEXT NOT NULL,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          uploaded_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();
