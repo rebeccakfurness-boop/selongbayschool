@@ -5,6 +5,7 @@ import TeachingTabs from '@/components/admin/TeachingTabs';
 import CurriculumPlanManager, { type ClassRoster } from '@/components/admin/CurriculumPlanManager';
 import ImportSampleCurriculumButton from '@/components/admin/ImportSampleCurriculumButton';
 import ImportCurriculumQuizContentButton from '@/components/admin/ImportCurriculumQuizContentButton';
+import EconomicsRoadmap from '@/components/admin/EconomicsRoadmap';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,6 +55,7 @@ export default async function CurriculumPlansPage() {
         <div className="mt-6 flex flex-col gap-4">
           <ImportSampleCurriculumButton />
           <ImportCurriculumQuizContentButton />
+          <EconomicsRoadmap />
         </div>
       )}
       {isAdmin && unmatchedTerms.length > 0 && (
