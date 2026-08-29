@@ -6,6 +6,7 @@ const LINKS = [
   { href: '/account/attendance', label: 'Attendance' },
   { href: '/account/bookings', label: 'My Bookings' },
   { href: '/account/policies', label: 'Policies' },
+  { href: '/account/feedback', label: 'Report a Concern' },
   { href: '/account/settings', label: 'Settings' },
 ];
 

@@ -384,6 +384,33 @@ export const createSchoolPolicySchema = z.object({
 });
 export type CreateSchoolPolicyInput = z.infer<typeof createSchoolPolicySchema>;
 
+export const FEEDBACK_CATEGORIES = [
+  'child_safety_safeguarding',
+  'bullying_behavioral',
+  'health_medical',
+  'facilities_environment',
+  'staff_conduct',
+  'academic_teaching',
+  'communication_admin',
+  'other',
+] as const;
+
+export const createParentFeedbackSchema = z.object({
+  childId: z.coerce.number().int().positive().nullable().optional(),
+  category: z.enum(FEEDBACK_CATEGORIES),
+  description: z.string().trim().min(10, 'Please give a few more details.').max(4000),
+  desiredOutcome: z.string().trim().max(2000).nullable().optional(),
+  urgent: z.boolean().optional(),
+});
+export type CreateParentFeedbackInput = z.infer<typeof createParentFeedbackSchema>;
+
+export const updateParentFeedbackSchema = z.object({
+  status: z.enum(['new', 'in_review', 'resolved']).optional(),
+  adminNotes: z.string().trim().max(4000).nullable().optional(),
+  isRead: z.boolean().optional(),
+});
+export type UpdateParentFeedbackInput = z.infer<typeof updateParentFeedbackSchema>;
+
 export const upsertCurriculumUnitSchema = z.object({
   className: z.string().trim().min(1, 'Class is required').max(100),
   termLabel: z.string().trim().min(1, 'Term is required').max(100),

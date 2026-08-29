@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 21;
+const SCHEMA_VERSION = 22;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1757,6 +1757,34 @@ export function ensureSchema(): Promise<void> {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
+
+      // Parent-reported concerns -- covers exactly the kind of thing the policy documents above
+      // deal with (child safety/safeguarding, bullying, health, facilities, staff conduct, etc.),
+      // not just website-style enquiries. desired_outcome is deliberately separate from
+      // description -- "what's wrong" and "what you want done about it" are different questions
+      // and mixing them into one free-text box loses the second one more often than not.
+      await sql`
+        CREATE TABLE IF NOT EXISTS parent_feedback (
+          id BIGSERIAL PRIMARY KEY,
+          customer_id BIGINT NOT NULL REFERENCES customers(id),
+          child_id BIGINT REFERENCES children(id),
+          category TEXT NOT NULL CHECK (category IN (
+            'child_safety_safeguarding', 'bullying_behavioral', 'health_medical',
+            'facilities_environment', 'staff_conduct', 'academic_teaching',
+            'communication_admin', 'other'
+          )),
+          description TEXT NOT NULL,
+          desired_outcome TEXT,
+          urgent BOOLEAN NOT NULL DEFAULT false,
+          status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'in_review', 'resolved')),
+          admin_notes TEXT,
+          is_read BOOLEAN NOT NULL DEFAULT false,
+          notify_email_status TEXT NOT NULL DEFAULT 'pending',
+          resolved_at TIMESTAMPTZ,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_parent_feedback_customer ON parent_feedback (customer_id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

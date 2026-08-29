@@ -946,3 +946,34 @@ export async function sendChildProfileEditNotification(input: {
   const results = await Promise.all(recipients.map((to) => send(to, subject, html)));
   return results.every(Boolean);
 }
+
+/** Sent to the school inbox the moment a parent submits a concern through the portal (see
+ * src/lib/parent-feedback.ts) -- replyTo is the parent's own email so a staff member can respond
+ * directly from their inbox without looking anything up first. Subject is prefixed for anything
+ * flagged urgent (typically child safety/safeguarding) so it doesn't sit unread in a busy inbox. */
+export async function sendParentFeedbackNotification(input: {
+  parentName: string;
+  parentEmail: string;
+  childFullName: string | null;
+  categoryLabel: string;
+  description: string;
+  desiredOutcome: string | null;
+  urgent: boolean;
+}): Promise<boolean> {
+  const html = wrapEmail(
+    input.urgent ? '⚠️ Urgent parent concern submitted' : 'Parent concern submitted',
+    `<p>${input.parentName} (${input.parentEmail}) submitted a concern through the parent portal${
+      input.childFullName ? ` about <strong>${input.childFullName}</strong>` : ''
+    }.</p>
+     ${fieldRows([
+       ['Category', input.categoryLabel],
+       ['Child', input.childFullName],
+       ['Urgent', input.urgent ? 'Yes' : 'No'],
+       ['What happened', input.description],
+       ['What they would like done', input.desiredOutcome],
+     ])}
+     <p style="margin-top: 16px;">Reply directly to this email to respond to ${input.parentName}, or review it in the admin portal under Parent Feedback.</p>`
+  );
+  const subject = `${input.urgent ? '⚠️ URGENT — ' : ''}Parent concern — ${input.categoryLabel} — Selong Bay School`;
+  return send(NOTIFY_TO, subject, html, { replyTo: input.parentEmail });
+}
