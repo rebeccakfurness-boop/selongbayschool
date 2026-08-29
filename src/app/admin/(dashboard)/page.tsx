@@ -147,6 +147,10 @@ export default async function AdminOverviewPage() {
     SELECT COUNT(*)::int AS count FROM parent_feedback WHERE is_read = false
   `) as unknown as { count: number }[];
 
+  const [openIncidents] = (await sql`
+    SELECT COUNT(*)::int AS count FROM incident_reports WHERE status != 'closed'
+  `) as unknown as { count: number }[];
+
   const [sessionsToday] = (await sql`
     SELECT COUNT(*)::int AS count FROM sessions WHERE session_date = CURRENT_DATE AND status = 'active'
   `) as unknown as { count: number }[];
@@ -155,7 +159,12 @@ export default async function AdminOverviewPage() {
     { label: 'Bookings this week', value: bookingsThisWeek.count, href: '/admin/bookings' },
     { label: 'Unread website enquiries', value: unreadEnquiries.count, href: '/admin/enquiries' },
     { label: 'Upcoming sessions today', value: sessionsToday.count, href: '/admin/activities' },
-    ...(staff.role === 'admin' ? [{ label: 'Unread parent feedback', value: unreadFeedback.count, href: '/admin/feedback' }] : []),
+    ...(staff.role === 'admin'
+      ? [
+          { label: 'Unread parent feedback', value: unreadFeedback.count, href: '/admin/feedback' },
+          { label: 'Open incident reports', value: openIncidents.count, href: '/admin/incidents' },
+        ]
+      : []),
   ];
 
   return (

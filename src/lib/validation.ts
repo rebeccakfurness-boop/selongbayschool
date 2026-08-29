@@ -411,6 +411,31 @@ export const updateParentFeedbackSchema = z.object({
 });
 export type UpdateParentFeedbackInput = z.infer<typeof updateParentFeedbackSchema>;
 
+export const INCIDENT_TYPES = ['hazard', 'child_incident', 'first_aid_injury', 'near_miss'] as const;
+export const INJURY_SEVERITIES = ['none', 'minor', 'moderate', 'severe'] as const;
+
+export const createIncidentReportSchema = z.object({
+  incidentType: z.enum(INCIDENT_TYPES),
+  childId: z.coerce.number().int().positive().nullable().optional(),
+  className: z.string().trim().max(100).nullable().optional(),
+  location: z.string().trim().max(300).nullable().optional(),
+  occurredAt: z.string().trim().min(1, 'Please enter when this happened.'),
+  description: z.string().trim().min(10, 'Please give a few more details.').max(4000),
+  actionTaken: z.string().trim().max(2000).nullable().optional(),
+  witnesses: z.string().trim().max(1000).nullable().optional(),
+  injurySeverity: z.enum(INJURY_SEVERITIES).nullable().optional(),
+  followUpRequired: z.boolean().optional(),
+  parentNotified: z.boolean().optional(),
+});
+export type CreateIncidentReportInput = z.infer<typeof createIncidentReportSchema>;
+
+export const updateIncidentReportSchema = z.object({
+  status: z.enum(['open', 'in_review', 'closed']).optional(),
+  adminNotes: z.string().trim().max(4000).nullable().optional(),
+  isRead: z.boolean().optional(),
+});
+export type UpdateIncidentReportInput = z.infer<typeof updateIncidentReportSchema>;
+
 export const upsertCurriculumUnitSchema = z.object({
   className: z.string().trim().min(1, 'Class is required').max(100),
   termLabel: z.string().trim().min(1, 'Term is required').max(100),

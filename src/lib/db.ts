@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 22;
+const SCHEMA_VERSION = 23;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1785,6 +1785,37 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_parent_feedback_customer ON parent_feedback (customer_id)`;
+
+      // Staff-filed safety records -- hazards, child-related incidents, first aid/injury reports,
+      // and near misses all share one shape (what happened, where, when, what was done about it)
+      // rather than four separate tables, since they're reviewed together for the same reason:
+      // spotting patterns and following up. injury_severity/parent_notified only make sense for
+      // some incident_types but stay nullable/false-default rather than split into subtables --
+      // the same "one shared shape, some fields blank for some rows" call as parent_feedback.
+      await sql`
+        CREATE TABLE IF NOT EXISTS incident_reports (
+          id BIGSERIAL PRIMARY KEY,
+          reported_by BIGINT NOT NULL REFERENCES admin_users(id),
+          incident_type TEXT NOT NULL CHECK (incident_type IN ('hazard', 'child_incident', 'first_aid_injury', 'near_miss')),
+          child_id BIGINT REFERENCES children(id),
+          class_name TEXT,
+          location TEXT,
+          occurred_at TIMESTAMPTZ NOT NULL,
+          description TEXT NOT NULL,
+          action_taken TEXT,
+          witnesses TEXT,
+          injury_severity TEXT CHECK (injury_severity IN ('none', 'minor', 'moderate', 'severe')),
+          follow_up_required BOOLEAN NOT NULL DEFAULT false,
+          parent_notified BOOLEAN NOT NULL DEFAULT false,
+          status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'in_review', 'closed')),
+          admin_notes TEXT,
+          is_read BOOLEAN NOT NULL DEFAULT false,
+          notify_email_status TEXT NOT NULL DEFAULT 'pending',
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_incident_reports_reported_by ON incident_reports (reported_by)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_incident_reports_child ON incident_reports (child_id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

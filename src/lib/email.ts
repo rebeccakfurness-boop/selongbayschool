@@ -977,3 +977,43 @@ export async function sendParentFeedbackNotification(input: {
   const subject = `${input.urgent ? '⚠️ URGENT — ' : ''}Parent concern — ${input.categoryLabel} — Selong Bay School`;
   return send(NOTIFY_TO, subject, html, { replyTo: input.parentEmail });
 }
+
+/** Sent to the school inbox whenever staff file an incident report (see
+ * src/lib/incident-reports.ts) -- hazards, child incidents, first aid/injury, and near misses all
+ * go through this one function since they share one form. `flagged` covers anything involving a
+ * child directly or an actual injury (as opposed to a hazard/near miss with no injury) -- those get
+ * the same urgent-subject treatment as a flagged parent concern, since they're the ones most likely
+ * to need same-day follow-up. */
+export async function sendIncidentReportNotification(input: {
+  reporterName: string;
+  incidentTypeLabel: string;
+  childFullName: string | null;
+  className: string | null;
+  location: string | null;
+  occurredAt: string;
+  description: string;
+  actionTaken: string | null;
+  injurySeverityLabel: string | null;
+  followUpRequired: boolean;
+  parentNotified: boolean;
+  flagged: boolean;
+}): Promise<boolean> {
+  const html = wrapEmail(
+    input.flagged ? '⚠️ Incident report filed' : 'Incident report filed',
+    `<p>${input.reporterName} filed a <strong>${input.incidentTypeLabel}</strong> report.</p>
+     ${fieldRows([
+       ['Child', input.childFullName],
+       ['Class', input.className],
+       ['Location', input.location],
+       ['When', input.occurredAt],
+       ['What happened', input.description],
+       ['Action taken', input.actionTaken],
+       ['Injury severity', input.injurySeverityLabel],
+       ['Follow-up required', input.followUpRequired ? 'Yes' : 'No'],
+       ['Parent notified', input.parentNotified ? 'Yes' : 'No'],
+     ])}
+     <p style="margin-top: 16px;">Review it in the admin portal under Incident Reports.</p>`
+  );
+  const subject = `${input.flagged ? '⚠️ ' : ''}Incident report — ${input.incidentTypeLabel} — Selong Bay School`;
+  return send(NOTIFY_TO, subject, html);
+}
