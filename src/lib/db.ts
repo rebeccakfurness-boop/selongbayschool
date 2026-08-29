@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 23;
+const SCHEMA_VERSION = 24;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1816,6 +1816,54 @@ export function ensureSchema(): Promise<void> {
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_incident_reports_reported_by ON incident_reports (reported_by)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_incident_reports_child ON incident_reports (child_id)`;
+
+      // Teacher-facing lesson-planning fields on top of the existing authoring columns above --
+      // phase/syllabus_ref/occurrence_id are metadata a teacher plans against (what kind of session
+      // this is, which syllabus point it covers, which real class occurrence it's pinned to);
+      // taught/flagged_for_reteach are the day-to-day "did I deliver this" tracking a teacher
+      // updates from the planning dashboard. Deliberately separate from review_status (which gates
+      // parent/student visibility) -- a lesson can be published and taught, or published and not
+      // yet taught; the two answer different questions.
+      //
+      // occurrence_id links a lesson to one real, already-scheduled class_schedule occurrence
+      // (schedule_session_occurrences) rather than storing a redundant date -- same "schedule row
+      // references content" precedent as class_schedule.lesson_plan_id, just pointed the other way
+      // since here it's the content that optionally knows which real session it's for. Nullable:
+      // a lesson can be fully authored before it's pinned to a specific date.
+      await sql`
+        ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS phase TEXT NOT NULL DEFAULT 'content'
+        CHECK (phase IN ('content', 'review', 'revision', 'exam_skill', 'past_paper', 'buffer'))
+      `;
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS syllabus_ref TEXT`;
+      await sql`
+        ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS occurrence_id
+        BIGINT REFERENCES schedule_session_occurrences(id) ON DELETE SET NULL
+      `;
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS taught BOOLEAN NOT NULL DEFAULT false`;
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS taught_at TIMESTAMPTZ`;
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS flagged_for_reteach BOOLEAN NOT NULL DEFAULT false`;
+
+      // The exam-board topic/subtopic reference tree for a term -- distinct from
+      // curriculum_term_units (the actual authored units/lessons): most subtopics here have no
+      // lesson yet, and `known` is a live prior-knowledge signal a teacher toggles over time, not
+      // generation-time input. parent_ref is null for a top-level topic ("2") and set to that
+      // topic's own ref for its subtopics ("2.4"), so the map renders as a two-level tree without
+      // assuming a fixed depth. curriculum_unit_lessons.syllabus_ref cross-references `ref` by
+      // loose prefix match (a lesson can cover more than one ref, e.g. "2.4.3 / 2.5") rather than a
+      // foreign key, matching how syllabus refs are actually written up.
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_syllabus_topics (
+          id BIGSERIAL PRIMARY KEY,
+          term_id BIGINT NOT NULL REFERENCES curriculum_terms(id) ON DELETE CASCADE,
+          ref TEXT NOT NULL,
+          parent_ref TEXT,
+          title TEXT NOT NULL,
+          known BOOLEAN NOT NULL DEFAULT false,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          UNIQUE (term_id, ref)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_curriculum_syllabus_topics_term ON curriculum_syllabus_topics (term_id, sort_order)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

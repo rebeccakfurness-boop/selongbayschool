@@ -830,9 +830,13 @@ export const updateCurriculumUnitSchema = z.object({
 });
 export type UpdateCurriculumUnitInput = z.infer<typeof updateCurriculumUnitSchema>;
 
+export const LESSON_PHASES = ['content', 'review', 'revision', 'exam_skill', 'past_paper', 'buffer'] as const;
+
 export const createCurriculumLessonSchema = z.object({
   title: z.string().trim().min(1, 'Title is required').max(300),
   objectives: z.string().trim().max(4000).nullable().optional(),
+  phase: z.enum(LESSON_PHASES).optional(),
+  syllabusRef: z.string().trim().max(200).nullable().optional(),
 });
 export type CreateCurriculumLessonInput = z.infer<typeof createCurriculumLessonSchema>;
 
@@ -848,8 +852,26 @@ export const updateCurriculumLessonSchema = z.object({
    * reviewStatus transition this route allows; there's no UI path back to 'needs_review' (see
    * publishLesson's own comment in curriculum.ts). */
   reviewStatus: z.literal('published').optional(),
+  phase: z.enum(LESSON_PHASES).optional(),
+  syllabusRef: z.string().trim().max(200).nullable().optional(),
+  occurrenceId: z.coerce.number().int().positive().nullable().optional(),
+  taught: z.boolean().optional(),
+  flaggedForReteach: z.boolean().optional(),
 });
 export type UpdateCurriculumLessonInput = z.infer<typeof updateCurriculumLessonSchema>;
+
+export const createSyllabusTopicSchema = z.object({
+  ref: z.string().trim().min(1, 'Reference is required').max(50),
+  parentRef: z.string().trim().max(50).nullable().optional(),
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  sortOrder: z.coerce.number().int().optional(),
+});
+export type CreateSyllabusTopicInput = z.infer<typeof createSyllabusTopicSchema>;
+
+export const updateSyllabusTopicSchema = z.object({
+  known: z.boolean(),
+});
+export type UpdateSyllabusTopicInput = z.infer<typeof updateSyllabusTopicSchema>;
 
 export const reorderSchema = z.object({ direction: z.enum(['up', 'down']) });
 export type ReorderInput = z.infer<typeof reorderSchema>;

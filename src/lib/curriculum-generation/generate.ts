@@ -1,4 +1,5 @@
 import { sql } from '@/lib/db';
+import { upsertSyllabusTopic } from '@/lib/curriculum';
 import { computeLessonPacing } from './pacing';
 import { checkCalculations } from './calculation-check';
 import { validateStepOrdering } from './validate';
@@ -31,6 +32,20 @@ function flattenTopics(nodes: SyllabusTopicNode[]): SyllabusTopicNode[] {
     if (node.subtopics) flat.push(...flattenTopics(node.subtopics));
   }
   return flat;
+}
+
+/** Persists the parsed syllabus's topic tree into curriculum_syllabus_topics so the planning
+ * dashboard's Syllabus Map has real data without a teacher re-entering it by hand -- upsertSyllabusTopic
+ * never touches `known` on conflict, so re-generating a term doesn't reset a teacher's own "already
+ * known" flags. Only two levels deep (top-level topic -> subtopic) since that's what the dashboard
+ * renders; a topic three levels deep would just get parent_ref pointed at its immediate parent's id,
+ * which still round-trips correctly even though the dashboard only groups two levels. */
+async function persistSyllabusTopics(termId: number, nodes: SyllabusTopicNode[], parentId: string | null = null): Promise<void> {
+  let sortOrder = 0;
+  for (const node of nodes) {
+    await upsertSyllabusTopic(termId, { ref: node.id, parentRef: parentId, title: node.title, sortOrder: sortOrder++ });
+    if (node.subtopics) await persistSyllabusTopics(termId, node.subtopics, node.id);
+  }
 }
 
 /**
@@ -132,6 +147,8 @@ export async function generateCurriculumTerm(
   `) as unknown as { id: number }[];
   const termId = term.id;
 
+  await persistSyllabusTopics(termId, topLevelTopics);
+
   const existingUnitCount = (await sql`
     SELECT count(*)::int AS n FROM curriculum_term_units WHERE term_id = ${termId}
   `) as unknown as { n: number }[];
@@ -155,10 +172,11 @@ export async function generateCurriculumTerm(
     for (const lesson of unit.lessons) {
       const [lessonRow] = (await sql`
         INSERT INTO curriculum_unit_lessons
-          (unit_id, sort_order, title, objectives, interactive_content, teaching_script, review_status)
+          (unit_id, sort_order, title, objectives, interactive_content, teaching_script, review_status, phase, syllabus_ref)
         VALUES (
           ${unitRow.id}, ${lessonSortOrder}, ${lesson.title}, ${lesson.objectives},
-          ${JSON.stringify(lesson.interactiveContent)}::jsonb, ${JSON.stringify(lesson.teachingScript)}::jsonb, 'needs_review'
+          ${JSON.stringify(lesson.interactiveContent)}::jsonb, ${JSON.stringify(lesson.teachingScript)}::jsonb, 'needs_review',
+          ${lesson.phase ?? 'content'}, ${lesson.syllabusRef ?? null}
         )
         RETURNING id
       `) as unknown as { id: number }[];

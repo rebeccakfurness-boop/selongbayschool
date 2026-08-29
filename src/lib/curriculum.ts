@@ -31,6 +31,11 @@ export interface CurriculumQuizQuestion {
 
 export type LessonReviewStatus = 'needs_review' | 'published';
 
+/** What kind of teaching slot a lesson is -- mirrors the phases a real exam-board pacing plan
+ * moves through (new content, consolidation, exam technique, sitting past papers, flex slots),
+ * not just "lesson vs quiz." Drives the Full Sequence view's filter chips and phase pills. */
+export type LessonPhase = 'content' | 'review' | 'revision' | 'exam_skill' | 'past_paper' | 'buffer';
+
 export interface CurriculumFlashcard {
   id: number;
   lesson_id: number;
@@ -57,6 +62,19 @@ export interface CurriculumLesson {
   interactive_content: InteractiveLessonContent | null;
   teaching_script: TeachingScript | null;
   review_status: LessonReviewStatus;
+  phase: LessonPhase;
+  /** Free text, e.g. "2.4.3 / 2.5" -- can name more than one syllabus point. Matched against
+   * curriculum_syllabus_topics.ref by loose prefix, not a foreign key (see that table's schema
+   * comment in db.ts). */
+  syllabus_ref: string | null;
+  occurrence_id: number | null;
+  /** Denormalized from schedule_session_occurrences at read time (see getCurriculumTermTree) --
+   * null whenever occurrence_id is null or points at a since-cancelled occurrence. */
+  occurrence_date: string | null;
+  occurrence_starts_at: string | null;
+  taught: boolean;
+  taught_at: string | null;
+  flagged_for_reteach: boolean;
   resources: CurriculumLessonResource[];
   starter_quiz: CurriculumQuizQuestion[];
   exit_quiz: CurriculumQuizQuestion[];
@@ -132,9 +150,15 @@ export async function getCurriculumTermTree(termId: number, includeNeedsReview =
     unitIds.length === 0
       ? []
       : ((await sql`
-          SELECT id, unit_id, sort_order, title, objectives, worksheet_url, worksheet_title,
-                 video_url, video_title, video_source, equipment_note, interactive_content, teaching_script, review_status
-          FROM curriculum_unit_lessons WHERE unit_id = ANY(${unitIds}) ORDER BY sort_order, id
+          SELECT l.id, l.unit_id, l.sort_order, l.title, l.objectives, l.worksheet_url, l.worksheet_title,
+                 l.video_url, l.video_title, l.video_source, l.equipment_note, l.interactive_content, l.teaching_script,
+                 l.review_status, l.phase, l.syllabus_ref, l.occurrence_id, l.taught, l.taught_at::text,
+                 l.flagged_for_reteach,
+                 CASE WHEN o.is_cancelled THEN NULL ELSE o.occurrence_date::text END AS occurrence_date,
+                 CASE WHEN o.is_cancelled THEN NULL ELSE o.starts_at::text END AS occurrence_starts_at
+          FROM curriculum_unit_lessons l
+          LEFT JOIN schedule_session_occurrences o ON o.id = l.occurrence_id
+          WHERE l.unit_id = ANY(${unitIds}) ORDER BY l.sort_order, l.id
         `) as unknown as Omit<CurriculumLesson, 'resources' | 'starter_quiz' | 'exit_quiz' | 'flashcards'>[]);
   const lessons = includeNeedsReview ? allLessons : allLessons.filter((l) => l.review_status === 'published');
   const lessonIds = lessons.map((l) => l.id);
@@ -209,6 +233,7 @@ export async function getLessonForOnlineFlow(
     SELECT
       l.id, l.unit_id, l.sort_order, l.title, l.objectives, l.worksheet_url, l.worksheet_title,
       l.video_url, l.video_title, l.video_source, l.equipment_note, l.interactive_content, l.teaching_script, l.review_status,
+      l.phase, l.syllabus_ref, l.occurrence_id, l.taught, l.taught_at::text, l.flagged_for_reteach,
       u.title AS unit_title,
       t.id AS term_id, t.class_name, t.subject, t.term_label, t.framework_label
     FROM curriculum_unit_lessons l
@@ -261,6 +286,16 @@ export async function getLessonForOnlineFlow(
     interactive_content: personalization[0]?.personalized_content ?? row.interactive_content,
     teaching_script: row.teaching_script,
     review_status: row.review_status,
+    phase: row.phase,
+    syllabus_ref: row.syllabus_ref,
+    occurrence_id: row.occurrence_id,
+    // Not joined here -- the online flow never displays a lesson's real-world date, only the
+    // planning dashboard does (see getCurriculumTermTree, which does join it).
+    occurrence_date: null,
+    occurrence_starts_at: null,
+    taught: row.taught,
+    taught_at: row.taught_at,
+    flagged_for_reteach: row.flagged_for_reteach,
     resources,
     starter_quiz: quizQuestions.filter((q) => q.quiz_type === 'starter'),
     exit_quiz: quizQuestions.filter((q) => q.quiz_type === 'exit'),
@@ -442,4 +477,73 @@ export function currentLessonId(term: CurriculumTermTree, progress: Map<number, 
  * ever start a lesson at 'needs_review'. */
 export async function publishLesson(lessonId: number): Promise<void> {
   await sql`UPDATE curriculum_unit_lessons SET review_status = 'published' WHERE id = ${lessonId}`;
+}
+
+/** Every lesson in a term, in one flat teaching order (unit order, then lesson order within each
+ * unit) -- what the planning dashboard's Home/Full Sequence views actually work from, since a
+ * teacher thinks in terms of "lesson 14 of 74," not which unit it happens to sit in. */
+export function flattenLessons(term: CurriculumTermTree): CurriculumLesson[] {
+  return term.units.flatMap((u) => u.lessons);
+}
+
+export interface SyllabusTopicRow {
+  id: number;
+  term_id: number;
+  ref: string;
+  parent_ref: string | null;
+  title: string;
+  known: boolean;
+  sort_order: number;
+}
+
+export async function getSyllabusTopicsForTerm(termId: number): Promise<SyllabusTopicRow[]> {
+  return (await sql`
+    SELECT id, term_id, ref, parent_ref, title, known, sort_order
+    FROM curriculum_syllabus_topics WHERE term_id = ${termId} ORDER BY sort_order, ref
+  `) as unknown as SyllabusTopicRow[];
+}
+
+export async function setSyllabusTopicKnown(id: number, known: boolean): Promise<void> {
+  await sql`UPDATE curriculum_syllabus_topics SET known = ${known} WHERE id = ${id}`;
+}
+
+/** Upserts on (term_id, ref) so re-running a syllabus import (or re-generating a term) doesn't
+ * duplicate topics that already exist -- matches ON CONFLICT usage elsewhere in this file (see the
+ * term insert in generate.ts). Never touches `known` on conflict: that's a live teaching signal a
+ * teacher sets from the dashboard, not something a re-import should silently reset. */
+export async function upsertSyllabusTopic(
+  termId: number,
+  input: { ref: string; parentRef: string | null; title: string; sortOrder: number }
+): Promise<void> {
+  await sql`
+    INSERT INTO curriculum_syllabus_topics (term_id, ref, parent_ref, title, sort_order)
+    VALUES (${termId}, ${input.ref}, ${input.parentRef}, ${input.title}, ${input.sortOrder})
+    ON CONFLICT (term_id, ref) DO UPDATE SET
+      parent_ref = EXCLUDED.parent_ref, title = EXCLUDED.title, sort_order = EXCLUDED.sort_order
+  `;
+}
+
+export interface AssignableOccurrenceRow {
+  occurrence_id: number;
+  occurrence_date: string;
+  starts_at: string;
+  already_assigned_lesson_title: string | null;
+}
+
+/** Real, not-cancelled class occurrences for one class+subject from today onward -- the picker
+ * list a teacher assigns a lesson's occurrence_id from. Includes occurrences another lesson is
+ * already pinned to (flagged via already_assigned_lesson_title) rather than hiding them, since
+ * re-pinning a slot to a different lesson is a legitimate re-plan, not an error. */
+export async function getAssignableOccurrences(className: string, subject: string): Promise<AssignableOccurrenceRow[]> {
+  return (await sql`
+    SELECT o.id AS occurrence_id, o.occurrence_date::text, o.starts_at::text,
+      l.title AS already_assigned_lesson_title
+    FROM schedule_session_occurrences o
+    JOIN class_schedule cs ON cs.id = o.class_schedule_id
+    LEFT JOIN curriculum_unit_lessons l ON l.occurrence_id = o.id
+    WHERE cs.class_name = ${className} AND cs.subject = ${subject}
+      AND o.is_cancelled = false AND o.occurrence_date >= CURRENT_DATE
+    ORDER BY o.starts_at
+    LIMIT 200
+  `) as unknown as AssignableOccurrenceRow[];
 }

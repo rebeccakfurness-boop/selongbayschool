@@ -53,6 +53,11 @@ export interface GeneratedFlashcard {
   definition: string;
 }
 
+/** Mirrors curriculum_unit_lessons.phase's CHECK constraint in db.ts -- kept as a plain string
+ * union here rather than importing it from lib/curriculum.ts, matching this module's existing
+ * one-directional dependency (curriculum-generation depends on nothing curriculum-authoring-side). */
+export type LessonPhase = 'content' | 'review' | 'revision' | 'exam_skill' | 'past_paper' | 'buffer';
+
 export interface GeneratedLesson {
   title: string;
   objectives: string;
@@ -63,6 +68,12 @@ export interface GeneratedLesson {
   /** Only populated by a provider for calculation-heavy subjects -- see checkCalculations in
    * ./calculation-check, which generate.ts runs against these before publishing anything. */
   calculationChecks?: CalculationCheck[];
+  /** Defaults to 'content' in generate.ts if omitted -- most generated lessons are new content,
+   * so a provider only needs to set this for review/revision/exam-skill/past-paper/buffer slots. */
+  phase?: LessonPhase;
+  /** Free text, e.g. "2.4.3 / 2.5" -- can name more than one syllabus point. Feeds the planning
+   * dashboard's Syllabus Map view (see curriculum_unit_lessons.syllabus_ref in db.ts). */
+  syllabusRef?: string;
 }
 
 export interface GeneratedUnit {

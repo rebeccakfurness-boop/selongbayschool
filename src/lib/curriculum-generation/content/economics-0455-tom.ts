@@ -43,8 +43,32 @@ const economics0455Tom: CurriculumTermContentModule = {
       subject: 'Economics',
       frameworkLabel: 'Cambridge IGCSE 0455',
       topicTree: [
-        { id: 'topic-1', title: 'The basic economic problem' },
-        { id: 'topic-2', title: 'The allocation of resources' },
+        {
+          id: 'topic-1',
+          title: 'The basic economic problem',
+          subtopics: [
+            { id: '1.1', title: 'The nature of the basic economic problem' },
+            { id: '1.2', title: 'Factors of production' },
+            { id: '1.3', title: 'Opportunity cost' },
+            { id: '1.4', title: 'Production possibility curve (PPC) diagrams' },
+          ],
+        },
+        {
+          id: 'topic-2',
+          title: 'The allocation of resources',
+          subtopics: [
+            { id: '2.1', title: 'The role of markets in allocating resources' },
+            { id: '2.2', title: 'Demand' },
+            { id: '2.3', title: 'Supply' },
+            { id: '2.4', title: 'Price determination' },
+            { id: '2.5', title: 'Price changes' },
+            { id: '2.6', title: 'Price elasticity of demand (PED)' },
+            { id: '2.7', title: 'Price elasticity of supply (PES)' },
+            { id: '2.8', title: 'Market economic system' },
+            { id: '2.9', title: 'Market failure' },
+            { id: '2.10', title: 'Mixed economic system' },
+          ],
+        },
       ],
       assessmentObjectives: [
         'AO1 Knowledge and understanding',
@@ -62,6 +86,7 @@ const economics0455Tom: CurriculumTermContentModule = {
         lessons: [
           {
             title: 'Lesson 1 -- Factors of Production',
+            syllabusRef: '1.2',
             objectives:
               'Define the four factors of production (land, labour, capital, enterprise), state each one’s ' +
               'reward (rent, wages, interest, profit), and explain what changes a factor’s quantity vs quality.',
@@ -323,6 +348,7 @@ const economics0455Tom: CurriculumTermContentModule = {
         lessons: [
           {
             title: 'Lesson 2 -- Disequilibrium & Price Changes',
+            syllabusRef: '2.4.3 / 2.5',
             objectives:
               'Define market disequilibrium and distinguish a shortage from a surplus, read them off a demand-supply ' +
               'diagram/schedule, and explain that price changes are caused by shifts in demand and/or supply.',
@@ -543,6 +569,7 @@ const economics0455Tom: CurriculumTermContentModule = {
           },
           {
             title: 'Lesson 3 -- Price Elasticity of Demand',
+            syllabusRef: '2.6',
             objectives: 'Define price elasticity of demand (PED), calculate and classify it, and explain the main determinants of elastic vs inelastic demand.',
             interactiveContent: {
               steps: [
@@ -682,6 +709,7 @@ const economics0455Tom: CurriculumTermContentModule = {
           },
           {
             title: 'Lesson 4 -- PED: Revenue & Significance',
+            syllabusRef: '2.6',
             objectives: 'Calculate total revenue before and after a price change, explain why revenue rises or falls depending on PED, and explain why PED matters to firms, consumers and government.',
             interactiveContent: {
               steps: [
@@ -870,6 +898,7 @@ const economics0455Tom: CurriculumTermContentModule = {
           },
           {
             title: 'Lesson 5 -- Price Elasticity of Supply',
+            syllabusRef: '2.7',
             objectives: 'Define price elasticity of supply (PES), calculate and classify it, and explain the main determinants of elastic vs inelastic supply.',
             interactiveContent: {
               steps: [
@@ -1026,6 +1055,7 @@ const economics0455Tom: CurriculumTermContentModule = {
           },
           {
             title: 'Lesson 6 -- The Market Economic System',
+            syllabusRef: '2.8',
             objectives: 'Explain how the price mechanism answers the three basic economic questions in a market economy, describe its defining characteristics, and evaluate its advantages and disadvantages.',
             interactiveContent: {
               steps: [

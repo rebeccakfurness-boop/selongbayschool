@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
@@ -292,6 +293,12 @@ function TermEditor({
           )}
         </div>
         <div className="flex items-center gap-3">
+          <Link
+            href={`/admin/teaching/curriculum-plans/${term.id}`}
+            className="rounded-full border-2 border-teal-deep px-4 py-1.5 text-xs font-bold text-teal-deep hover:bg-teal-deep hover:text-white"
+          >
+            Planning Dashboard →
+          </Link>
           {isAdmin && (
             <button type="button" onClick={() => (editingMeta ? setEditingMeta(false) : startEditingMeta())} className="text-xs font-semibold text-teal-deep hover:underline">
               {editingMeta ? 'Cancel' : 'Edit class/subject/term'}
