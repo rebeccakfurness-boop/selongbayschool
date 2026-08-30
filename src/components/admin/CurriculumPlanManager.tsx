@@ -80,7 +80,17 @@ export default function CurriculumPlanManager({
         frameworkLabel: frameworkLabel || null,
       });
       if (!ok) throw new Error((data.error as string) || 'Failed to create programme');
-      const newTerm: CurriculumTerm = { id: data.id as number, class_name: className, subject, term_label: termLabel, framework_label: frameworkLabel || null };
+      const newTerm: CurriculumTerm = {
+        id: data.id as number,
+        class_name: className,
+        subject,
+        term_label: termLabel,
+        framework_label: frameworkLabel || null,
+        exam_board: null,
+        exam_series: null,
+        syllabus_pdf_url: null,
+        workbook_pdf_url: null,
+      };
       setTerms((prev) => [...prev, newTerm]);
       setSubject('');
       setTermLabel('');
@@ -133,6 +143,15 @@ export default function CurriculumPlanManager({
   return (
     <div className="flex flex-col gap-6">
       {error && <p className="font-semibold text-orange-deep">{error}</p>}
+
+      <div className="flex justify-end">
+        <Link
+          href="/admin/teaching/curriculum-plans/new"
+          className="rounded-full bg-orange px-4 py-1.5 text-xs font-bold text-ink hover:bg-orange-deep hover:text-white"
+        >
+          ✨ Generate a new course
+        </Link>
+      </div>
 
       <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
         <h2 className="font-display text-lg font-semibold text-ink">New programme</h2>

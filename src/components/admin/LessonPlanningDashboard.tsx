@@ -230,6 +230,26 @@ function MaterialButtons({
           📝 Worksheet
         </a>
       )}
+      {lesson.worksheet_docx_url && (
+        <a
+          href={lesson.worksheet_docx_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full border border-sand-line bg-paper px-3 py-1.5 text-xs font-semibold text-ink hover:border-teal"
+        >
+          📄 Worksheet (.docx)
+        </a>
+      )}
+      {lesson.worksheet_pdf_url && (
+        <a
+          href={lesson.worksheet_pdf_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full border border-sand-line bg-paper px-3 py-1.5 text-xs font-semibold text-ink hover:border-teal"
+        >
+          📄 Worksheet (PDF preview)
+        </a>
+      )}
       {lesson.interactive_content && (
         <button type="button" onClick={() => onOpenPreview(lesson.id)} className="rounded-full border border-sand-line bg-paper px-3 py-1.5 text-xs font-semibold text-ink hover:border-teal">
           🖥️ Interactive lesson
@@ -240,7 +260,7 @@ function MaterialButtons({
           🃏 Flashcards ({lesson.flashcards.length})
         </button>
       )}
-      {!hasMaterials(lesson) && !lesson.worksheet_url && !lesson.teaching_script && (
+      {!hasMaterials(lesson) && !lesson.worksheet_url && !lesson.worksheet_docx_url && !lesson.worksheet_pdf_url && !lesson.teaching_script && (
         <span className="text-xs text-ink-soft">Materials not generated yet.</span>
       )}
     </div>

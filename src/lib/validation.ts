@@ -935,3 +935,15 @@ export const onlineProgressStepSchema = z.discriminatedUnion('step', [
   z.object({ step: z.literal('interactive_complete'), childId: z.coerce.number().int().positive().optional() }),
 ]);
 export type OnlineProgressStepInput = z.infer<typeof onlineProgressStepSchema>;
+
+export const createGenerationJobSchema = z.object({
+  className: z.string().trim().min(1, 'Class is required').max(100),
+  subject: z.string().trim().min(1, 'Subject is required').max(200),
+  termLabel: z.string().trim().min(1, 'Term is required').max(200),
+  examBoard: z.string().trim().min(1, 'Exam board / code is required').max(200),
+  examSeries: z.string().trim().min(1, 'Exam series is required').max(100),
+  frameworkLabel: z.string().trim().max(200).nullable().optional(),
+  syllabusPdfUrl: z.string().trim().url().max(2000),
+  workbookPdfUrl: z.string().trim().url().max(2000).nullable().optional(),
+});
+export type CreateGenerationJobInput = z.infer<typeof createGenerationJobSchema>;

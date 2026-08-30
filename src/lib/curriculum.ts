@@ -7,6 +7,12 @@ export interface CurriculumTerm {
   subject: string;
   term_label: string;
   framework_label: string | null;
+  /** Populated only for a term created through the Course Builder (see
+   * curriculum-generation/job-runner.ts) -- null for every hand-created "New programme". */
+  exam_board: string | null;
+  exam_series: string | null;
+  syllabus_pdf_url: string | null;
+  workbook_pdf_url: string | null;
 }
 
 export interface CurriculumLessonResource {
@@ -52,6 +58,12 @@ export interface CurriculumLesson {
   objectives: string | null;
   worksheet_url: string | null;
   worksheet_title: string | null;
+  /** A real, generated .docx (primary, mandatory format -- printable/editable) and PDF (secondary
+   * preview) rendered from worksheet_content by ./curriculum-generation/worksheet-files.ts.
+   * Independent of worksheet_url/worksheet_title above, which stay a teacher-pasted link to any
+   * external file -- a lesson can have either, both, or neither. */
+  worksheet_docx_url: string | null;
+  worksheet_pdf_url: string | null;
   video_url: string | null;
   video_title: string | null;
   video_source: VideoSource | null;
@@ -99,7 +111,7 @@ export type LessonProgressStatus = 'not_started' | 'in_progress' | 'completed';
 export async function getCurriculumTermsForClass(className: string | null): Promise<CurriculumTerm[]> {
   if (!className) return [];
   return (await sql`
-    SELECT id, class_name, subject, term_label, framework_label
+    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url
     FROM curriculum_terms WHERE class_name = ${className}
     ORDER BY subject, term_label
   `) as unknown as CurriculumTerm[];
@@ -108,7 +120,7 @@ export async function getCurriculumTermsForClass(className: string | null): Prom
 export async function getCurriculumTermsForClasses(classNames: string[]): Promise<CurriculumTerm[]> {
   if (classNames.length === 0) return [];
   return (await sql`
-    SELECT id, class_name, subject, term_label, framework_label
+    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url
     FROM curriculum_terms WHERE class_name = ANY(${classNames})
     ORDER BY class_name, subject, term_label
   `) as unknown as CurriculumTerm[];
@@ -120,7 +132,7 @@ export async function getCurriculumTermsForClasses(classNames: string[]): Promis
  * foreign key and a mismatch would otherwise make the programme invisible to everyone. */
 export async function getAllCurriculumTerms(): Promise<CurriculumTerm[]> {
   return (await sql`
-    SELECT id, class_name, subject, term_label, framework_label
+    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url
     FROM curriculum_terms
     ORDER BY class_name, subject, term_label
   `) as unknown as CurriculumTerm[];
@@ -136,7 +148,8 @@ export async function getAllCurriculumTerms(): Promise<CurriculumTerm[]> {
  * needs to see (and act on) needs_review lessons. */
 export async function getCurriculumTermTree(termId: number, includeNeedsReview = false): Promise<CurriculumTermTree | null> {
   const [term] = (await sql`
-    SELECT id, class_name, subject, term_label, framework_label FROM curriculum_terms WHERE id = ${termId}
+    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url
+    FROM curriculum_terms WHERE id = ${termId}
   `) as unknown as CurriculumTerm[];
   if (!term) return null;
 
@@ -151,6 +164,7 @@ export async function getCurriculumTermTree(termId: number, includeNeedsReview =
       ? []
       : ((await sql`
           SELECT l.id, l.unit_id, l.sort_order, l.title, l.objectives, l.worksheet_url, l.worksheet_title,
+                 l.worksheet_docx_url, l.worksheet_pdf_url,
                  l.video_url, l.video_title, l.video_source, l.equipment_note, l.interactive_content, l.teaching_script,
                  l.review_status, l.phase, l.syllabus_ref, l.occurrence_id, l.taught, l.taught_at::text,
                  l.flagged_for_reteach,
@@ -232,6 +246,7 @@ export async function getLessonForOnlineFlow(
   const rows = (await sql`
     SELECT
       l.id, l.unit_id, l.sort_order, l.title, l.objectives, l.worksheet_url, l.worksheet_title,
+      l.worksheet_docx_url, l.worksheet_pdf_url,
       l.video_url, l.video_title, l.video_source, l.equipment_note, l.interactive_content, l.teaching_script, l.review_status,
       l.phase, l.syllabus_ref, l.occurrence_id, l.taught, l.taught_at::text, l.flagged_for_reteach,
       u.title AS unit_title,
@@ -279,6 +294,8 @@ export async function getLessonForOnlineFlow(
     objectives: row.objectives,
     worksheet_url: row.worksheet_url,
     worksheet_title: row.worksheet_title,
+    worksheet_docx_url: row.worksheet_docx_url,
+    worksheet_pdf_url: row.worksheet_pdf_url,
     video_url: row.video_url,
     video_title: row.video_title,
     video_source: row.video_source,
@@ -305,7 +322,19 @@ export async function getLessonForOnlineFlow(
   return {
     lesson,
     unitTitle: row.unit_title,
-    term: { id: row.term_id, class_name: row.class_name, subject: row.subject, term_label: row.term_label, framework_label: row.framework_label },
+    term: {
+      id: row.term_id,
+      class_name: row.class_name,
+      subject: row.subject,
+      term_label: row.term_label,
+      framework_label: row.framework_label,
+      // Not selected here -- the online flow never displays these, only the authoring/planning
+      // pages do (see getCurriculumTermTree, which does select them).
+      exam_board: null,
+      exam_series: null,
+      syllabus_pdf_url: null,
+      workbook_pdf_url: null,
+    },
   };
 }
 

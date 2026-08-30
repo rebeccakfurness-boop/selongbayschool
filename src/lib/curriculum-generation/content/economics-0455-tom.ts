@@ -323,6 +323,17 @@ const economics0455Tom: CurriculumTermContentModule = {
                 },
               ],
             },
+            worksheetContent: {
+              title: 'Worksheet — Factors of Production',
+              instructions: 'Answer in full sentences using Tom’s Print Co. as your example wherever asked.',
+              questions: [
+                { prompt: 'Name the four factors of production and state the reward paid to each one.', marks: 4, answer: 'Land — rent; Labour — wages; Capital — interest; Enterprise — profit.' },
+                { prompt: 'Identify the factor of production each of these belongs to for Tom’s Print Co.: (a) the PLA filament, (b) the 3D printer, (c) Tom’s time designing CAD files, (d) Tom’s decision to start the business.', marks: 4, answer: '(a) Land (b) Capital (c) Labour (d) Enterprise.' },
+                { prompt: 'Explain the difference between the quantity and the quality of a factor of production, using Tom buying a second 3D printer versus upgrading to a faster one as your example.', marks: 4, answer: 'Quantity is how much of a factor exists — buying a second printer increases the quantity of capital. Quality is how productive/effective a factor is — upgrading to a faster, more precise printer increases the quality of capital without changing how many printers Tom owns.' },
+                { prompt: 'Tom says: "Capital just means the money I have saved up." Explain why this is a common misconception in economics.', marks: 3, answer: 'In economics, capital means the physical manufactured goods used to produce other things (machinery, tools, equipment) — e.g. the 3D printer itself, not the cash used to buy it. Money used to buy capital is finance, not capital.' },
+                { prompt: 'Explain why profit is described as a "residual" reward, unlike rent, wages, and interest.', marks: 3, answer: 'Profit is not guaranteed — it is what is left over after all other costs (rent, wages, interest) have been paid, so it can be negative (a loss), unlike rent, wages, and interest which are fixed, contractual payments.' },
+              ],
+            },
             quizQuestions: [],
             flashcards: [
               { term: 'Factors of production', definition: 'The resources used to produce goods and services — classified into land, labour, capital and enterprise.' },
@@ -554,6 +565,18 @@ const economics0455Tom: CurriculumTermContentModule = {
                 { stepId: 'explain-causes-vs-consequences', talkingPoints: ['State plainly: price changes are caused by shifts in demand/supply, not by shortages/surpluses themselves.', 'Flag explicitly that how much quantity changes is price elasticity of demand — the next lesson.'], timingMinutes: 6, misconceptions: ['Movement along vs shift of a curve.', '“Shortage” doesn’t mean zero stock exists — it means Qd > Qs at the current price.', 'Assuming prices adjust instantly and perfectly.'] },
               ],
             },
+            worksheetContent: {
+              title: 'Worksheet — Disequilibrium & Price Changes',
+              instructions: 'Sketch a demand/supply diagram where asked, labelling the equilibrium and the price line described.',
+              questions: [
+                { prompt: 'Define market disequilibrium.', marks: 2, answer: 'A situation where quantity demanded does not equal quantity supplied at the current price, i.e. price is not at its equilibrium level.' },
+                { prompt: 'At 6pm the padel club has more people wanting to book courts than courts available. Name this type of disequilibrium and sketch a diagram showing where the price line sits relative to equilibrium.', marks: 3, answer: 'A shortage (excess demand). The price line sits below the equilibrium price, so quantity demanded exceeds quantity supplied.' },
+                { prompt: 'At 9am the padel club has courts sitting empty. Name this type of disequilibrium and explain what happens to price as a result.', marks: 3, answer: 'A surplus (excess supply). Price falls towards equilibrium as sellers cut price to clear unsold capacity/stock.' },
+                { prompt: 'Explain the price mechanism that eventually eliminates a shortage.', marks: 3, answer: 'Excess demand pushes price up; as price rises, quantity demanded falls and quantity supplied rises, until quantity demanded equals quantity supplied at the new equilibrium.' },
+                { prompt: 'A shop discontinues a popular Lego set. Explain, using the idea of a shortage, why second-hand prices for that set often rise sharply.', marks: 3, answer: 'With no new stock, supply stays fixed or falls while demand from collectors continues, creating a shortage at the old price; second-hand sellers raise price until quantity demanded falls to match the limited quantity available.' },
+                { prompt: 'Explain the difference between what causes a price change and what a price change itself causes.', marks: 3, answer: 'Price changes are caused by shifts in demand and/or supply (not by shortages/surpluses themselves, which are just the disequilibrium symptom); the price change itself then causes quantity demanded and quantity supplied to adjust back towards equilibrium.' },
+              ],
+            },
             quizQuestions: [],
             flashcards: [
               { term: 'Market disequilibrium', definition: 'A situation where quantity demanded and quantity supplied are not equal at the current price — the market is not at equilibrium.' },
@@ -687,6 +710,17 @@ const economics0455Tom: CurriculumTermContentModule = {
                 { stepId: 'worked-ped-calc', talkingPoints: ['Walk through both worked examples (padel bookings elastic, Lego resale inelastic) together, then have Tom name the category out loud for each.'], timingMinutes: 8 },
                 { stepId: 'tap-determinants', talkingPoints: ['Go through each determinant, always landing on a Tom’s Print Co./padel/Lego example.'], timingMinutes: 8, misconceptions: ['Sign confusion — elastic/inelastic is about size, not sign.', 'Elastic ≠ “big price change” — it’s about responsiveness relative to the price change.', 'Confusing PED determinants with demand shifters.'] },
                 { stepId: 'recap-key-words', talkingPoints: ['Set the worksheet + flashcards; preview Lesson 4: what PED means for revenue.'], timingMinutes: 2 },
+              ],
+            },
+            worksheetContent: {
+              title: 'Worksheet — Price Elasticity of Demand',
+              instructions: 'Show your working for every calculation. Give your answer to 2 decimal places where relevant.',
+              questions: [
+                { prompt: 'Define price elasticity of demand (PED).', marks: 2, answer: 'PED measures the responsiveness (or sensitivity) of quantity demanded to a change in price: PED = % change in quantity demanded ÷ % change in price.' },
+                { prompt: 'PED is technically a negative number for almost every good. Explain why economists usually ignore the sign and just discuss its size.', marks: 2, answer: 'Because price and quantity demanded move in opposite directions for almost all goods (the law of demand), PED is always negative; the sign carries no extra information, so economists focus on the size (magnitude) to judge how responsive demand is.' },
+                { prompt: 'Padel court bookings fall from 200 to 150 per week when price rises by 10%. Calculate PED and state whether demand is elastic or inelastic.', marks: 4, answer: '% change in quantity demanded = (150-200)/200 × 100 = -25%. PED = -25% ÷ 10% = -2.5 (size 2.5). Since the size is greater than 1, demand is elastic.' },
+                { prompt: 'Lego resale prices rise by 20% but quantity demanded only falls from 100 to 95. Calculate PED and state whether demand is elastic or inelastic.', marks: 4, answer: '% change in quantity demanded = (95-100)/100 × 100 = -5%. PED = -5% ÷ 20% = -0.25 (size 0.25). Since the size is less than 1, demand is inelastic.' },
+                { prompt: 'Name three determinants of PED and explain how each one affects the size of PED.', marks: 6, answer: 'Any three of: availability of substitutes (more substitutes = more elastic); proportion of income spent on the good (higher proportion = more elastic); necessity vs luxury (necessities = more inelastic, luxuries = more elastic); time period (demand becomes more elastic over a longer time as consumers find alternatives); addictiveness/habit-forming nature (more addictive = more inelastic).' },
               ],
             },
             quizQuestions: [],
@@ -875,6 +909,17 @@ const economics0455Tom: CurriculumTermContentModule = {
                 { stepId: 'tap-firms-consumers-govt', talkingPoints: ['Ask why governments prefer to tax cigarettes over luxury holidays — ties PED directly to real policy.'], timingMinutes: 6 },
               ],
             },
+            worksheetContent: {
+              title: 'Worksheet — PED, Revenue & Significance',
+              instructions: 'Remember: Total Revenue (TR) = Price (P) × Quantity (Q).',
+              questions: [
+                { prompt: 'State the formula for total revenue.', marks: 1, answer: 'Total Revenue = Price × Quantity.' },
+                { prompt: 'Padel court bookings are price elastic. Explain what happens to total revenue if the club raises its price.', marks: 3, answer: 'When demand is elastic, a price rise causes a proportionally larger fall in quantity demanded, so total revenue falls (the fall in quantity outweighs the rise in price).' },
+                { prompt: 'Lego resale demand is price inelastic. Explain what happens to total revenue if a seller raises the price.', marks: 3, answer: 'When demand is inelastic, a price rise causes a proportionally smaller fall in quantity demanded, so total revenue rises (the rise in price outweighs the small fall in quantity).' },
+                { prompt: 'The padel club cuts its price by 10% and bookings rise by 25%. Calculate the change in total revenue as a percentage, and explain whether this confirms demand is elastic.', marks: 4, answer: 'A 10% price cut with a 25% rise in quantity means revenue rises overall (quantity effect outweighs price effect) — TR moves in the same direction as quantity, confirming PED size > 1, i.e. demand is elastic.' },
+                { prompt: 'Explain why a government trying to raise tax revenue would prefer to tax a good with inelastic demand (e.g. cigarettes) rather than a good with elastic demand (e.g. luxury holidays).', marks: 4, answer: 'Taxing an inelastic good barely reduces quantity demanded, so the government collects tax on almost the same volume of sales and raises significant, predictable revenue. Taxing an elastic good causes a large fall in quantity demanded, undermining the tax base and raising much less revenue.' },
+              ],
+            },
             quizQuestions: [],
             flashcards: [
               { term: 'Total revenue (TR)', definition: 'The total amount of money a firm receives from selling its product. TR = Price × Quantity sold.' },
@@ -1029,6 +1074,17 @@ const economics0455Tom: CurriculumTermContentModule = {
                 { stepId: 'worked-pes-calc', talkingPoints: ['Walk through the padel-grips worked example step by step: price +25%, quantity +50%, PES = 2, elastic.'], timingMinutes: 6 },
                 { stepId: 'tap-determinants-pes', talkingPoints: ['Go through each determinant, landing on a Tom’s Print Co./padel example for each.'], timingMinutes: 8 },
                 { stepId: 'recap-key-words', talkingPoints: ['Set the worksheet + flashcards; preview Lesson 6: how a whole market economy decides what gets made.'], timingMinutes: 2 },
+              ],
+            },
+            worksheetContent: {
+              title: 'Worksheet — Price Elasticity of Supply',
+              instructions: 'Show your working for every calculation.',
+              questions: [
+                { prompt: 'Define price elasticity of supply (PES).', marks: 2, answer: 'PES measures the responsiveness of quantity supplied to a change in price: PES = % change in quantity supplied ÷ % change in price.' },
+                { prompt: 'Explain why PES is almost always a positive number, unlike PED.', marks: 2, answer: 'Price and quantity supplied usually move in the same direction (the law of supply — a higher price incentivises firms to supply more), so PES is almost always positive, unlike PED where price and quantity demanded move in opposite directions.' },
+                { prompt: 'The price of padel grips rises by 25% and the quantity Tom supplies rises by 50%. Calculate PES and state whether supply is elastic or inelastic.', marks: 4, answer: 'PES = 50% ÷ 25% = 2. Since PES is greater than 1, supply is elastic.' },
+                { prompt: 'Explain why Tom (a small 3D-printing business) can usually increase supply faster than the padel club can add more courts.', marks: 3, answer: 'Tom can buy another 3D printer and print more grips relatively quickly and cheaply, whereas building new padel courts requires land, planning permission, construction time and much larger capital investment — so Tom’s supply is more elastic (responsive) than the padel club’s in the short run.' },
+                { prompt: 'Name three determinants of PES and explain how each one affects the size of PES.', marks: 6, answer: 'Any three of: spare capacity (more spare capacity = more elastic supply); ease of storing stock (easier to store = more elastic); time period (supply becomes more elastic over a longer time as firms can build new capacity); ease of switching between production of different goods (easier to switch = more elastic); availability of factors of production (more readily available = more elastic).' },
               ],
             },
             quizQuestions: [],
@@ -1225,6 +1281,17 @@ const economics0455Tom: CurriculumTermContentModule = {
                 { stepId: 'explain-advantages', talkingPoints: ['Cover efficient allocation, consumer choice, incentive to innovate, no costly bureaucracy — with a concrete example for each.'], timingMinutes: 6 },
                 { stepId: 'explain-disadvantages', talkingPoints: ['Cover inequality, public goods, externalities, monopoly power — the same price mechanism that makes markets efficient also creates these problems.'], timingMinutes: 6, misconceptions: ['Assuming a pure market economy has no downsides.', 'Confusing effective demand with need — wanting something is not the same as being able to pay for it.'] },
                 { stepId: 'recap-key-words', talkingPoints: ['Set the worksheet + flashcards for self-directed time.'], timingMinutes: 2 },
+              ],
+            },
+            worksheetContent: {
+              title: 'Worksheet — The Market Economic System',
+              instructions: 'Answer in full sentences, referring to the price mechanism where relevant.',
+              questions: [
+                { prompt: 'Define a market economic system.', marks: 2, answer: 'An economic system in which resource allocation decisions (what, how, and for whom to produce) are made by the interaction of buyers and sellers through the price mechanism, with little or no government intervention.' },
+                { prompt: 'State two characteristics of a market economic system.', marks: 2, answer: 'Any two of: private ownership of resources; the price mechanism allocates resources; freedom of choice for consumers and producers; profit motive drives firms; minimal government intervention.' },
+                { prompt: 'Explain two advantages of a market economic system.', marks: 6, answer: 'Any two of: efficient allocation of resources (prices signal what consumers want, so resources flow to where they are most valued); wide consumer choice (firms compete to offer variety); incentive to innovate (profit motive rewards efficiency and new ideas); no costly bureaucracy needed to plan the economy (the price mechanism does the coordinating).' },
+                { prompt: 'Explain two disadvantages of a market economic system.', marks: 6, answer: 'Any two of: inequality (those who own more resources/earn more can buy more, creating a gap between rich and poor); public goods may be under-provided (no profit incentive to provide non-excludable, non-rival goods); externalities are ignored (firms don’t account for costs/benefits to third parties, e.g. pollution); monopoly power can develop, reducing consumer choice and raising prices.' },
+                { prompt: 'Explain the difference between "demand" (wanting something) and "effective demand" (being willing and able to pay for it), and why this distinction matters in a market economy.', marks: 3, answer: 'Demand is simply wanting a good or service; effective demand also requires the ability and willingness to pay for it. In a market economy, only effective demand actually influences resource allocation through the price mechanism — a want with no purchasing power behind it does not affect what gets produced.' },
               ],
             },
             quizQuestions: [],

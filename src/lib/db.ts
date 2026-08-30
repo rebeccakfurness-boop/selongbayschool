@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 24;
+const SCHEMA_VERSION = 25;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1864,6 +1864,73 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_curriculum_syllabus_topics_term ON curriculum_syllabus_topics (term_id, sort_order)`;
+
+      // Course Builder (Phase 2 of the generation engine): a course is requested against a real
+      // exam board/series rather than just a curriculum framework label, and the source syllabus
+      // (plus an optional workbook) it was generated from is kept re-fetchable rather than
+      // discarded after the one parse -- a teacher revisiting the programme later can still open
+      // the PDF it was built from. All four columns are nullable: every existing term (and every
+      // term created by hand via "New programme") has none of this, and that's a normal, permanent
+      // state for a manually-authored programme, not a not-yet-filled-in one.
+      await sql`ALTER TABLE curriculum_terms ADD COLUMN IF NOT EXISTS exam_board TEXT`;
+      await sql`ALTER TABLE curriculum_terms ADD COLUMN IF NOT EXISTS exam_series TEXT`;
+      await sql`ALTER TABLE curriculum_terms ADD COLUMN IF NOT EXISTS syllabus_pdf_url TEXT`;
+      await sql`ALTER TABLE curriculum_terms ADD COLUMN IF NOT EXISTS workbook_pdf_url TEXT`;
+
+      // Real, printable/editable worksheet files -- docx is the primary, mandatory format (most
+      // teachers print and mark up a worksheet before class, which a locked PDF doesn't support);
+      // the PDF is a secondary preview/print-as-is format generated alongside it, never instead of
+      // it. worksheet_content is the structured source (title/instructions/questions/answers) both
+      // files are rendered from, kept on the lesson so the files can be regenerated later without
+      // re-running the whole generation pipeline -- same "keep the structured source, not just the
+      // rendered output" precedent as interactive_content/teaching_script above. Fully independent
+      // of the pre-existing worksheet_url/worksheet_title (a teacher-pasted link to any external
+      // file) -- a lesson can have either, both, or neither.
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS worksheet_content JSONB`;
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS worksheet_docx_url TEXT`;
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS worksheet_pdf_url TEXT`;
+
+      // One row per Course Builder run -- generation for anything beyond a handful of lessons is
+      // too slow for a single request/response, so the actual work happens across many small
+      // "step" calls the client's own polling loop drives (see
+      // src/lib/curriculum-generation/job-runner.ts): each step call does one unit of work (parse
+      // the syllabus, or generate one topic's unit) and returns, so no single request runs long
+      // enough to hit a serverless function timeout. parsed_syllabus/pacing/workbook_mastery_signals
+      // cache what stepJob's first call produces so later steps (and a page reload mid-run) don't
+      // need to re-parse; current_topic_index is the resume cursor into parsed_syllabus's topic
+      // tree. term_id is null until the term row is created (job status moves past 'parsing') and
+      // ON DELETE SET NULL rather than CASCADE -- deleting the generated programme later shouldn't
+      // silently delete the job's own audit trail of how it was produced.
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_generation_jobs (
+          id BIGSERIAL PRIMARY KEY,
+          class_name TEXT NOT NULL,
+          subject TEXT NOT NULL,
+          term_label TEXT NOT NULL,
+          exam_board TEXT NOT NULL,
+          exam_series TEXT NOT NULL,
+          framework_label TEXT,
+          syllabus_pdf_url TEXT NOT NULL,
+          workbook_pdf_url TEXT,
+          status TEXT NOT NULL DEFAULT 'pending'
+            CHECK (status IN ('pending', 'parsing', 'generating', 'completed', 'failed')),
+          term_id BIGINT REFERENCES curriculum_terms(id) ON DELETE SET NULL,
+          parsed_syllabus JSONB,
+          pacing JSONB,
+          workbook_mastery_signals JSONB,
+          current_topic_index INTEGER NOT NULL DEFAULT 0,
+          lesson_count_per_unit INTEGER,
+          total_units INTEGER,
+          completed_units INTEGER NOT NULL DEFAULT 0,
+          completed_lessons INTEGER NOT NULL DEFAULT 0,
+          progress_log JSONB NOT NULL DEFAULT '[]',
+          error TEXT,
+          requested_by_admin_user_id BIGINT REFERENCES admin_users(id) ON DELETE SET NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_curriculum_generation_jobs_class ON curriculum_generation_jobs (class_name, subject)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

@@ -3,6 +3,7 @@ import { upsertSyllabusTopic } from '@/lib/curriculum';
 import { computeLessonPacing } from './pacing';
 import { checkCalculations } from './calculation-check';
 import { validateStepOrdering } from './validate';
+import { generateAndAttachWorksheetFiles } from './worksheet-files';
 import type {
   ContentGenerationProvider,
   ExampleContext,
@@ -16,7 +17,7 @@ interface AdminUserContextRow {
   context_pack: { interests?: string[]; localReferences?: string[] } | null;
 }
 
-async function loadExampleContext(adminUserId?: number): Promise<ExampleContext> {
+export async function loadExampleContext(adminUserId?: number): Promise<ExampleContext> {
   if (!adminUserId) return { interests: [], localReferences: [] };
   const rows = (await sql`
     SELECT context_pack FROM admin_users WHERE id = ${adminUserId}
@@ -25,7 +26,7 @@ async function loadExampleContext(adminUserId?: number): Promise<ExampleContext>
   return { interests: pack?.interests ?? [], localReferences: pack?.localReferences ?? [] };
 }
 
-function flattenTopics(nodes: SyllabusTopicNode[]): SyllabusTopicNode[] {
+export function flattenTopics(nodes: SyllabusTopicNode[]): SyllabusTopicNode[] {
   const flat: SyllabusTopicNode[] = [];
   for (const node of nodes) {
     flat.push(node);
@@ -40,12 +41,91 @@ function flattenTopics(nodes: SyllabusTopicNode[]): SyllabusTopicNode[] {
  * known" flags. Only two levels deep (top-level topic -> subtopic) since that's what the dashboard
  * renders; a topic three levels deep would just get parent_ref pointed at its immediate parent's id,
  * which still round-trips correctly even though the dashboard only groups two levels. */
-async function persistSyllabusTopics(termId: number, nodes: SyllabusTopicNode[], parentId: string | null = null): Promise<void> {
+export async function persistSyllabusTopics(termId: number, nodes: SyllabusTopicNode[], parentId: string | null = null): Promise<void> {
   let sortOrder = 0;
   for (const node of nodes) {
     await upsertSyllabusTopic(termId, { ref: node.id, parentRef: parentId, title: node.title, sortOrder: sortOrder++ });
     if (node.subtopics) await persistSyllabusTopics(termId, node.subtopics, node.id);
   }
+}
+
+export interface InsertUnitCounts {
+  lessonsCreated: number;
+  flashcardsCreated: number;
+  quizQuestionsCreated: number;
+  calculationWarnings: { lessonTitle: string; warnings: string[] }[];
+}
+
+/** Inserts one generated unit and its lessons/quiz questions/flashcards, generating and attaching
+ * each lesson's worksheet files (see ./worksheet-files) along the way -- the reusable body of
+ * generateCurriculumTerm's own per-unit loop below, factored out so the Course Builder's
+ * job-runner (src/lib/curriculum-generation/job-runner.ts) can insert exactly one unit per "step"
+ * call without duplicating this SQL. Runs the same interactive-content step-ordering and
+ * calculation checks generateCurriculumTerm always has -- both pipelines produce lessons that are
+ * equally safe to review, never silently skipped for one caller and not the other. */
+export async function insertGeneratedUnit(termId: number, sortOrder: number, unit: GeneratedUnit): Promise<InsertUnitCounts> {
+  const [unitRow] = (await sql`
+    INSERT INTO curriculum_term_units (term_id, sort_order, title, description)
+    VALUES (${termId}, ${sortOrder}, ${unit.title}, ${unit.description ?? null})
+    RETURNING id
+  `) as unknown as { id: number }[];
+
+  const calculationWarnings: { lessonTitle: string; warnings: string[] }[] = [];
+  let lessonsCreated = 0;
+  let flashcardsCreated = 0;
+  let quizQuestionsCreated = 0;
+
+  let lessonSortOrder = 0;
+  for (const lesson of unit.lessons) {
+    const problems = [
+      ...validateStepOrdering(lesson.interactiveContent),
+      ...(lesson.calculationChecks ? checkCalculations(lesson.calculationChecks) : []),
+    ];
+    if (problems.length > 0) calculationWarnings.push({ lessonTitle: lesson.title, warnings: problems });
+
+    const [lessonRow] = (await sql`
+      INSERT INTO curriculum_unit_lessons
+        (unit_id, sort_order, title, objectives, interactive_content, teaching_script, review_status, phase, syllabus_ref)
+      VALUES (
+        ${unitRow.id}, ${lessonSortOrder}, ${lesson.title}, ${lesson.objectives},
+        ${JSON.stringify(lesson.interactiveContent)}::jsonb, ${JSON.stringify(lesson.teachingScript)}::jsonb, 'needs_review',
+        ${lesson.phase ?? 'content'}, ${lesson.syllabusRef ?? null}
+      )
+      RETURNING id
+    `) as unknown as { id: number }[];
+    lessonSortOrder++;
+    lessonsCreated++;
+
+    if (lesson.worksheetContent) {
+      await generateAndAttachWorksheetFiles(lessonRow.id, lesson.worksheetContent, lesson.title);
+    }
+
+    let starterOrder = 0;
+    let exitOrder = 0;
+    for (const q of lesson.quizQuestions) {
+      const questionSortOrder = q.quizType === 'starter' ? starterOrder++ : exitOrder++;
+      await sql`
+        INSERT INTO curriculum_lesson_quiz_questions
+          (lesson_id, quiz_type, sort_order, question, options, correct_option_index, hint)
+        VALUES (
+          ${lessonRow.id}, ${q.quizType}, ${questionSortOrder}, ${q.question}, ${q.options}, ${q.correctOptionIndex}, ${q.hint ?? null}
+        )
+      `;
+      quizQuestionsCreated++;
+    }
+
+    let flashcardOrder = 0;
+    for (const card of lesson.flashcards) {
+      await sql`
+        INSERT INTO curriculum_lesson_flashcards (lesson_id, sort_order, term, definition)
+        VALUES (${lessonRow.id}, ${flashcardOrder}, ${card.term}, ${card.definition})
+      `;
+      flashcardOrder++;
+      flashcardsCreated++;
+    }
+  }
+
+  return { lessonsCreated, flashcardsCreated, quizQuestionsCreated, calculationWarnings };
 }
 
 /**
@@ -128,17 +208,6 @@ export async function generateCurriculumTerm(
     );
   }
 
-  const calculationWarnings: { lessonTitle: string; warnings: string[] }[] = [];
-  for (const unit of generatedUnits) {
-    for (const lesson of unit.lessons) {
-      const problems = [
-        ...validateStepOrdering(lesson.interactiveContent),
-        ...(lesson.calculationChecks ? checkCalculations(lesson.calculationChecks) : []),
-      ];
-      if (problems.length > 0) calculationWarnings.push({ lessonTitle: lesson.title, warnings: problems });
-    }
-  }
-
   const [term] = (await sql`
     INSERT INTO curriculum_terms (class_name, subject, term_label, framework_label)
     VALUES (${input.className}, ${input.subject}, ${input.termLabel}, ${input.frameworkLabel ?? parsedSyllabus.frameworkLabel ?? null})
@@ -158,55 +227,16 @@ export async function generateCurriculumTerm(
   let lessonsCreated = 0;
   let flashcardsCreated = 0;
   let quizQuestionsCreated = 0;
+  const calculationWarnings: { lessonTitle: string; warnings: string[] }[] = [];
 
   for (const unit of generatedUnits) {
-    const [unitRow] = (await sql`
-      INSERT INTO curriculum_term_units (term_id, sort_order, title, description)
-      VALUES (${termId}, ${unitSortOrder}, ${unit.title}, ${unit.description ?? null})
-      RETURNING id
-    `) as unknown as { id: number }[];
+    const counts = await insertGeneratedUnit(termId, unitSortOrder, unit);
     unitSortOrder++;
     unitsCreated++;
-
-    let lessonSortOrder = 0;
-    for (const lesson of unit.lessons) {
-      const [lessonRow] = (await sql`
-        INSERT INTO curriculum_unit_lessons
-          (unit_id, sort_order, title, objectives, interactive_content, teaching_script, review_status, phase, syllabus_ref)
-        VALUES (
-          ${unitRow.id}, ${lessonSortOrder}, ${lesson.title}, ${lesson.objectives},
-          ${JSON.stringify(lesson.interactiveContent)}::jsonb, ${JSON.stringify(lesson.teachingScript)}::jsonb, 'needs_review',
-          ${lesson.phase ?? 'content'}, ${lesson.syllabusRef ?? null}
-        )
-        RETURNING id
-      `) as unknown as { id: number }[];
-      lessonSortOrder++;
-      lessonsCreated++;
-
-      let starterOrder = 0;
-      let exitOrder = 0;
-      for (const q of lesson.quizQuestions) {
-        const sortOrder = q.quizType === 'starter' ? starterOrder++ : exitOrder++;
-        await sql`
-          INSERT INTO curriculum_lesson_quiz_questions
-            (lesson_id, quiz_type, sort_order, question, options, correct_option_index, hint)
-          VALUES (
-            ${lessonRow.id}, ${q.quizType}, ${sortOrder}, ${q.question}, ${q.options}, ${q.correctOptionIndex}, ${q.hint ?? null}
-          )
-        `;
-        quizQuestionsCreated++;
-      }
-
-      let flashcardOrder = 0;
-      for (const card of lesson.flashcards) {
-        await sql`
-          INSERT INTO curriculum_lesson_flashcards (lesson_id, sort_order, term, definition)
-          VALUES (${lessonRow.id}, ${flashcardOrder}, ${card.term}, ${card.definition})
-        `;
-        flashcardOrder++;
-        flashcardsCreated++;
-      }
-    }
+    lessonsCreated += counts.lessonsCreated;
+    flashcardsCreated += counts.flashcardsCreated;
+    quizQuestionsCreated += counts.quizQuestionsCreated;
+    calculationWarnings.push(...counts.calculationWarnings);
   }
 
   return {

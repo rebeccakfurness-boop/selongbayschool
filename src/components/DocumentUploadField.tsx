@@ -9,6 +9,7 @@ export default function DocumentUploadField({
   label,
   onUploaded,
   uploadEndpoint = '/api/admin/lms/upload',
+  accept = 'image/jpeg,image/png,image/webp,application/pdf',
 }: {
   currentUrl: string | null;
   pathPrefix: string;
@@ -19,6 +20,10 @@ export default function DocumentUploadField({
    * admin-only /api/admin/children/upload, and the parent portal passes its own
    * /api/account/children/[id]/upload (ownership-checked, scoped to that one child). */
   uploadEndpoint?: string;
+  /** Narrows the file picker's own filter -- e.g. the Course Builder passes "application/pdf" for
+   * its syllabus/workbook uploads. Purely a UI nicety; the upload route's own allowedContentTypes
+   * is what actually enforces the real restriction. */
+  accept?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -55,7 +60,7 @@ export default function DocumentUploadField({
         <input
           ref={inputRef}
           type="file"
-          accept="image/jpeg,image/png,image/webp,application/pdf"
+          accept={accept}
           onChange={handleFileChange}
           disabled={uploading}
           className="hidden"

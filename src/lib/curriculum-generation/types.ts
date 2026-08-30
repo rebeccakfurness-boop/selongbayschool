@@ -74,6 +74,33 @@ export interface GeneratedLesson {
   /** Free text, e.g. "2.4.3 / 2.5" -- can name more than one syllabus point. Feeds the planning
    * dashboard's Syllabus Map view (see curriculum_unit_lessons.syllabus_ref in db.ts). */
   syllabusRef?: string;
+  /** When present, generate.ts renders this into a real .docx (primary, mandatory format) and PDF
+   * (secondary) via ./worksheet-files and uploads both to Vercel Blob -- see WorksheetContent's
+   * own comment. Omitted entirely for a lesson with no worksheet (e.g. a pure discussion/review
+   * slot), same as every other optional GeneratedLesson field. */
+  worksheetContent?: WorksheetContent;
+}
+
+export interface WorksheetQuestion {
+  prompt: string;
+  /** Shown next to the question on the printed worksheet, e.g. "(3 marks)" -- omitted when not
+   * meaningful (a short-answer or discussion-style prompt). */
+  marks?: number;
+  /** Never shown next to the question itself -- rendered under a separate "Answer key" heading
+   * (after a page break) at the end of both the docx and PDF, matching how this app already
+   * surfaces correct answers transparently elsewhere (see the online quiz flow). Omitted for a
+   * question with no single correct answer to check against. */
+  answer?: string;
+}
+
+/** The structured source both worksheet files (docx primary, PDF secondary) are rendered from --
+ * see buildWorksheetDocx/buildWorksheetPdf in ./worksheet-files. Kept as data rather than
+ * pre-rendered markup so a future regeneration (a different template, a fixed typo) doesn't
+ * require re-running the whole generation pipeline. */
+export interface WorksheetContent {
+  title: string;
+  instructions?: string;
+  questions: WorksheetQuestion[];
 }
 
 export interface GeneratedUnit {
