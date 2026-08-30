@@ -15,7 +15,8 @@
     "db:create-staff": "tsx --env-file-if-exists=.env.local scripts/create-staff-user.ts",
     "db:create-student": "tsx --env-file-if-exists=.env.local scripts/create-student-account.ts",
     "db:generate-curriculum": "tsx --env-file-if-exists=.env.local scripts/generate-curriculum-term.ts",
-    "db:backfill-worksheet-files": "tsx --env-file-if-exists=.env.local scripts/backfill-worksheet-files.ts"
+    "db:backfill-worksheet-files": "tsx --env-file-if-exists=.env.local scripts/backfill-worksheet-files.ts",
+    "db:import-course": "tsx --env-file-if-exists=.env.local scripts/import-course-json.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0",
