@@ -11,19 +11,18 @@ export default async function LessonPlanningPage() {
   const staff = await getCurrentStaff();
   const isAdmin = staff.role === 'admin';
 
-  // Known year levels first, in YEAR_LEVELS' own Primary 1 -> Secondary 11 order (not whatever
-  // order the DB returns a teacher's assignments in); any assigned class_name that doesn't
-  // exactly match one of those (a typo, different spacing, a class not yet in the reference
-  // list) still gets a tile -- appended afterwards -- rather than silently vanishing.
-  let yearLevels: string[];
-  if (isAdmin) {
-    yearLevels = [...YEAR_LEVELS];
-  } else {
-    const assigned = await getAssignedClasses(staff.adminUserId);
-    const known = YEAR_LEVELS.filter((yl) => assigned.includes(yl));
-    const unknown = assigned.filter((c) => !(YEAR_LEVELS as readonly string[]).includes(c)).sort();
-    yearLevels = [...known, ...unknown];
-  }
+  // Always in YEAR_LEVELS' own Primary 1 -> Secondary 11 order, not whatever order the DB
+  // happens to return a teacher's assignments in. Only the canonical YEAR_LEVELS spellings get a
+  // tile here -- a teacher's real class_name assignments in this school's data are inconsistent
+  // (a mix of "G1", "Grade 2", "Kindergarten", "Secondary 6", etc. alongside the canonical
+  // "Primary 1"-style names), and surfacing every raw variant as its own tile was worse than the
+  // occasional silently-missing class this filter can produce -- see canAccessClass for how a
+  // class still works everywhere else even without a tile here.
+  const yearLevels = isAdmin
+    ? [...YEAR_LEVELS]
+    : (await getAssignedClasses(staff.adminUserId))
+        .filter((c) => (YEAR_LEVELS as readonly string[]).includes(c))
+        .sort((a, b) => YEAR_LEVELS.indexOf(a as (typeof YEAR_LEVELS)[number]) - YEAR_LEVELS.indexOf(b as (typeof YEAR_LEVELS)[number]));
 
   return (
     <section>
