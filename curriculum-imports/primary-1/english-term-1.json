@@ -1,0 +1,672 @@
+{
+  "input": {
+    "className": "Primary 1",
+    "subject": "English",
+    "termLabel": "Term 1 2026/27",
+    "frameworkLabel": "Cambridge Primary"
+  },
+  "content": {
+    "parsedSyllabus": {
+      "subject": "English",
+      "frameworkLabel": "Cambridge Primary English (0058/0844), Stage 1",
+      "assessmentObjectives": [
+        "Reading: decode and understand simple words, sentences and short texts",
+        "Writing: form letters correctly and write simple words and sentences",
+        "Speaking and listening: speak clearly, listen attentively, and take turns in conversation"
+      ],
+      "components": [],
+      "topicTree": [
+        {
+          "id": "unit-1",
+          "title": "Sounds and Stories",
+          "description": "Phonics: initial sounds, blending, and listening to and retelling simple stories.",
+          "subtopics": [
+            { "id": "1.1", "title": "Initial sounds" },
+            { "id": "1.2", "title": "Blending sounds to read words" },
+            { "id": "1.3", "title": "Listening to and retelling stories" }
+          ]
+        },
+        {
+          "id": "unit-2",
+          "title": "Writing Our Ideas",
+          "description": "Pencil grip and letter formation, writing simple words, and writing a simple punctuated sentence.",
+          "subtopics": [
+            { "id": "2.1", "title": "Holding a pencil and forming letters" },
+            { "id": "2.2", "title": "Writing simple words" },
+            { "id": "2.3", "title": "Writing a simple sentence" }
+          ]
+        },
+        {
+          "id": "unit-3",
+          "title": "Speaking and Listening Together",
+          "description": "Speaking clearly and taking turns; listening carefully and following instructions.",
+          "subtopics": [
+            { "id": "3.1", "title": "Speaking clearly and taking turns" },
+            { "id": "3.2", "title": "Listening carefully and following instructions" }
+          ]
+        }
+      ]
+    },
+    "units": {
+      "unit-1": {
+        "topicId": "unit-1",
+        "title": "Sounds and Stories",
+        "description": "Phonics: initial sounds, blending, and listening to and retelling simple stories.",
+        "lessons": [
+          {
+            "title": "Lesson 1 -- Learning Initial Sounds",
+            "objectives": "Recognise and say the sounds of the letters s, a, t, p; identify the initial (first) sound in a spoken word.",
+            "syllabusRef": "Reading -- Phonics",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-initial-sound",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "What is an initial sound?",
+                  "conceptId": "initial-sound",
+                  "definition": "The initial sound is the very first sound you hear at the start of a word.",
+                  "example": "The word \"sun\" starts with the /s/ sound. The word \"ant\" starts with the /a/ sound."
+                },
+                {
+                  "id": "tap-letter-sounds",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Four letter sounds",
+                  "cards": [
+                    { "id": "s", "icon": "☀️", "label": "s", "content": "Sounds like a snake hissing: /s/. As in \"sun\"." },
+                    { "id": "a", "icon": "🐜", "label": "a", "content": "A short sound: /a/. As in \"ant\"." },
+                    { "id": "t", "icon": "🌳", "label": "t", "content": "A quick tap sound: /t/. As in \"tree\"." },
+                    { "id": "p", "icon": "🍍", "label": "p", "content": "A little pop sound: /p/. As in \"pineapple\"." }
+                  ]
+                },
+                {
+                  "id": "guess-initial-sound",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "What's the first sound?",
+                  "cards": [
+                    { "question": "What sound does \"tiger\" start with?", "answer": "/t/ -- just like \"tree\"." },
+                    { "question": "What sound does \"pig\" start with?", "answer": "/p/ -- just like \"pineapple\"." }
+                  ],
+                  "testsConceptIds": ["initial-sound"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["The initial sound is the first sound at the start of a word.", "We practised the sounds s, a, t, p."],
+                  "homeworkItems": ["Find one thing at home that starts with the /s/ sound and tell your family."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Say each sound in isolation (not the letter name) and exaggerate it slightly so children can hear it clearly before matching it to a word.",
+              "steps": [
+                { "stepId": "explain-initial-sound", "talkingPoints": ["Say \"sun\" slowly, stretching the /s/ so children can hear it separated from the rest of the word."], "timingMinutes": 6 },
+                { "stepId": "tap-letter-sounds", "talkingPoints": ["Have children say each sound aloud with you, not just listen -- repetition builds the sound-symbol link."], "timingMinutes": 8 },
+                { "stepId": "guess-initial-sound", "talkingPoints": ["Give a physical action for right answers (thumbs up) to keep energy high at this age."], "timingMinutes": 6, "misconceptions": ["Children may say the letter name (\"tee\") instead of the sound (/t/) -- gently model the sound each time."] },
+                { "stepId": "recap", "talkingPoints": ["Go round the circle quickly, each child naming one word starting with today's sounds."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Which word starts with the /s/ sound?", "options": ["Sun", "Pineapple", "Tree"], "correctOptionIndex": 0 },
+              { "quizType": "exit", "question": "The word \"ant\" starts with which sound?", "options": ["/t/", "/a/", "/p/"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Initial sound", "definition": "The first sound you hear at the start of a word." },
+              { "term": "s", "definition": "Sounds like a snake hissing: /s/, as in \"sun\"." },
+              { "term": "a", "definition": "A short sound: /a/, as in \"ant\"." },
+              { "term": "t", "definition": "A quick tap sound: /t/, as in \"tree\"." },
+              { "term": "p", "definition": "A little pop sound: /p/, as in \"pineapple\"." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Learning Initial Sounds",
+              "instructions": "Say each picture's name out loud before you answer.",
+              "questions": [
+                { "prompt": "Circle the pictures that start with the /s/ sound (e.g. sun, sand, snake)." },
+                { "prompt": "Draw one thing that starts with the /p/ sound." },
+                { "prompt": "Say the word \"tap\" slowly. What sound does it start with?", "answer": "/t/" }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 2 -- Blending Sounds to Read Words",
+            "objectives": "Blend two or three letter sounds together smoothly to read a simple word (e.g. s-a-t = sat).",
+            "syllabusRef": "Reading -- Phonics",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-blending",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "What is blending?",
+                  "conceptId": "blending",
+                  "definition": "Blending means saying each sound separately, then pushing them together smoothly to read the whole word.",
+                  "example": "s...a...t said slowly becomes \"sat\" when we blend the sounds together quickly."
+                },
+                {
+                  "id": "worked-blend-sat",
+                  "type": "worked_example",
+                  "kicker": "Watch and blend",
+                  "title": "Blending s-a-t",
+                  "steps": [
+                    { "label": "Say each sound separately", "detail": "/s/ ... /a/ ... /t/" },
+                    { "label": "Say them a little faster", "detail": "/s/-/a/-/t/" },
+                    { "label": "Blend them into one word", "detail": "sat" }
+                  ],
+                  "testsConceptIds": ["blending"]
+                },
+                {
+                  "id": "inline-blend-check",
+                  "type": "inline_quiz",
+                  "kicker": "Quick check",
+                  "title": "Blend these sounds",
+                  "questions": [
+                    { "question": "s...i...t blended together says...", "options": ["Sat", "Sit", "Tap"], "correctOptionIndex": 1, "feedback": "✓ /s/-/i/-/t/ blends into \"sit\"." },
+                    { "question": "t...a...p blended together says...", "options": ["Sat", "Tap", "Pat"], "correctOptionIndex": 1, "feedback": "✓ /t/-/a/-/p/ blends into \"tap\"." }
+                  ]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Blending means pushing separate sounds together to make a word.", "We blended sat, sit, and tap today."],
+                  "homeworkItems": ["Practise blending s-u-n with a grown-up."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Use finger-pointing (one finger per sound) to make blending physically visible before children try it alone.",
+              "steps": [
+                { "stepId": "explain-blending", "talkingPoints": ["Physically slide your finger under each sound as you say it, then sweep quickly under the whole word for the blend."], "timingMinutes": 6 },
+                { "stepId": "worked-blend-sat", "talkingPoints": ["Do this several times at different speeds -- very slow, then a little faster, then blended -- so children hear the transition."], "timingMinutes": 8 },
+                { "stepId": "inline-blend-check", "talkingPoints": ["Have children say each answer aloud with you before selecting it, since hearing themselves blend matters more than the answer itself."], "timingMinutes": 8, "misconceptions": ["Children may guess a similar-looking word instead of actually blending the sounds -- always ask them to say the sounds first."] },
+                { "stepId": "recap", "talkingPoints": ["Finish with a quick round where each child blends one word aloud."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Blending means...", "options": ["Saying sounds separately forever", "Pushing separate sounds together to make a word", "Writing a word down"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "s...u...n blended together says...", "options": ["Sun", "Sat", "Tap"], "correctOptionIndex": 0 }
+            ],
+            "flashcards": [
+              { "term": "Blending", "definition": "Pushing separate sounds together smoothly to read a whole word." },
+              { "term": "sat", "definition": "Blended from the sounds /s/-/a/-/t/." },
+              { "term": "sit", "definition": "Blended from the sounds /s/-/i/-/t/." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Blending Sounds to Read Words",
+              "instructions": "Say each set of sounds slowly, then blend them together.",
+              "questions": [
+                { "prompt": "Blend s-a-t. What word did you make?", "answer": "sat" },
+                { "prompt": "Blend t-a-p. What word did you make?", "answer": "tap" },
+                { "prompt": "Draw a picture of one of the words you blended." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 3 -- Listening to and Retelling a Story",
+            "objectives": "Listen attentively to a simple story or nursery rhyme; retell the main events in order (beginning, middle, end) using pictures or simple words.",
+            "syllabusRef": "Reading -- Understanding",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-story-order",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Every story has an order",
+                  "conceptId": "story-order",
+                  "definition": "A story has a beginning (what happens first), a middle (what happens next), and an end (what happens last).",
+                  "example": "In a story about a lost puppy: the beginning is the puppy getting lost, the middle is looking for it, and the end is finding it and going home."
+                },
+                {
+                  "id": "flip-story-parts",
+                  "type": "flip_card",
+                  "kicker": "Tap to flip",
+                  "title": "Parts of a story",
+                  "cards": [
+                    { "term": "Beginning", "hint": "Tap to reveal", "definition": "What happens first in the story." },
+                    { "term": "Middle", "hint": "Tap to reveal", "definition": "What happens next, after the beginning." },
+                    { "term": "End", "hint": "Tap to reveal", "definition": "What happens last, to finish the story." }
+                  ]
+                },
+                {
+                  "id": "sort-story-events",
+                  "type": "sort_classify",
+                  "kicker": "Now you try",
+                  "title": "Where does each event belong?",
+                  "categories": ["Beginning", "Middle", "End"],
+                  "items": [
+                    { "id": "puppy-lost", "label": "The puppy gets lost in the market.", "correctCategory": "Beginning", "reason": "This is what starts the story and sets up the problem." },
+                    { "id": "puppy-search", "label": "The children search everywhere for the puppy.", "correctCategory": "Middle", "reason": "This is what happens as a result of the beginning, before the problem is solved." },
+                    { "id": "puppy-found", "label": "The puppy is found asleep under a table and everyone goes home happy.", "correctCategory": "End", "reason": "This is how the story finishes -- the problem is solved." }
+                  ],
+                  "testsConceptIds": ["story-order"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Every story has a beginning, a middle, and an end.", "Retelling a story means saying the events in the right order."],
+                  "homeworkItems": ["Retell your favourite story to a grown-up, using the words beginning, middle, and end."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Read a real, familiar short story or nursery rhyme aloud first, then map it onto beginning/middle/end together as a class before independent sorting practice.",
+              "steps": [
+                { "stepId": "explain-story-order", "talkingPoints": ["Read a short, familiar story aloud in full before naming its beginning/middle/end."], "timingMinutes": 8 },
+                { "stepId": "flip-story-parts", "talkingPoints": ["Ask children to point to where in the room \"beginning,\" \"middle,\" and \"end\" would be if the story were a walk across the room."], "timingMinutes": 5 },
+                { "stepId": "sort-story-events", "talkingPoints": ["Use picture cards from the story just read if you have them, rather than only the puppy example."], "timingMinutes": 8, "misconceptions": ["Children may retell events in the order they remember them rather than the order they happened -- gently prompt \"what happened first?\""] },
+                { "stepId": "recap", "talkingPoints": ["Have one or two volunteers retell the whole story in one sentence each for beginning/middle/end."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "The part of the story that happens first is called the...", "options": ["End", "Beginning", "Middle"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "\"The puppy is found and everyone goes home happy\" is most likely the...", "options": ["Beginning", "Middle", "End"], "correctOptionIndex": 2 }
+            ],
+            "flashcards": [
+              { "term": "Beginning", "definition": "What happens first in a story." },
+              { "term": "Middle", "definition": "What happens next in a story." },
+              { "term": "End", "definition": "What happens last in a story." },
+              { "term": "Retell", "definition": "To tell a story again, in your own words, in the right order." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Listening to and Retelling a Story",
+              "instructions": "Think about the story we listened to in class.",
+              "questions": [
+                { "prompt": "Draw what happened at the beginning of the story." },
+                { "prompt": "Draw what happened at the end of the story." },
+                { "prompt": "Tell a grown-up what happened in the middle." }
+              ]
+            }
+          }
+        ]
+      },
+      "unit-2": {
+        "topicId": "unit-2",
+        "title": "Writing Our Ideas",
+        "description": "Pencil grip and letter formation, writing simple words, and writing a simple punctuated sentence.",
+        "lessons": [
+          {
+            "title": "Lesson 4 -- Holding a Pencil and Forming Letters",
+            "objectives": "Hold a pencil correctly using a comfortable, controlled grip; form letters starting and finishing in the right place.",
+            "syllabusRef": "Writing -- Handwriting",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-grip",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "A good pencil grip",
+                  "conceptId": "pencil-grip",
+                  "definition": "A good pencil grip means holding the pencil gently between your thumb and first two fingers, not squeezing it tightly in your fist.",
+                  "example": "It's like holding a small twig you don't want to snap -- gentle, but steady enough to control where it goes."
+                },
+                {
+                  "id": "tap-grip-tips",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Tips for a good grip",
+                  "cards": [
+                    { "id": "thumb", "icon": "👍", "label": "Thumb and two fingers", "content": "Hold the pencil with your thumb and first two fingers, like a tiny tripod." },
+                    { "id": "gentle", "icon": "🪶", "label": "Gentle, not tight", "content": "Squeezing too hard makes your hand tired and your writing shaky." },
+                    { "id": "paper", "icon": "📄", "label": "Steady the paper", "content": "Use your other hand to hold the paper still while you write." }
+                  ]
+                },
+                {
+                  "id": "guess-grip",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "Is this a good grip?",
+                  "cards": [
+                    { "question": "Someone is holding the pencil in their whole fist, squeezing it very tightly. Is this a good grip?", "answer": "No -- squeezing tightly in a fist makes writing tiring and hard to control." },
+                    { "question": "Someone is holding the pencil gently between their thumb and two fingers. Is this a good grip?", "answer": "Yes! This gentle tripod grip gives the best control." }
+                  ],
+                  "testsConceptIds": ["pencil-grip"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["A good grip uses the thumb and first two fingers, held gently.", "Steady the paper with your other hand."],
+                  "homeworkItems": ["Practise holding a pencil correctly while colouring or drawing at home."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Model the grip on your own hand up close, then walk round to check and gently correct each child's grip individually during practice.",
+              "steps": [
+                { "stepId": "explain-grip", "talkingPoints": ["Hold your own pencil up close so children can see the exact finger placement."], "timingMinutes": 5 },
+                { "stepId": "tap-grip-tips", "talkingPoints": ["Have children practise the grip in the air with an imaginary pencil before picking up a real one."], "timingMinutes": 6 },
+                { "stepId": "guess-grip", "talkingPoints": ["Demonstrate both a fist-squeeze grip and a correct grip live so the contrast is obvious."], "timingMinutes": 6, "misconceptions": ["Children who have been colouring with a fist grip may find the tripod grip tiring at first -- reassure them this is normal and improves with practice."] },
+                { "stepId": "recap", "talkingPoints": ["Give each child one minute of quiet practice while you check grips individually."], "timingMinutes": 8 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "A good pencil grip uses...", "options": ["A tight fist", "Your thumb and first two fingers", "Your whole hand"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "While writing, your other hand should...", "options": ["Rest in your lap", "Steady the paper", "Hold another pencil"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Pencil grip", "definition": "How you hold a pencil -- gently, with your thumb and first two fingers." },
+              { "term": "Steady", "definition": "To hold something still, like your paper while writing." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Holding a Pencil and Forming Letters",
+              "instructions": "Check your grip before you start each line.",
+              "questions": [
+                { "prompt": "Trace the dotted lines and circles on this page using your best pencil grip." },
+                { "prompt": "Trace the letters s, a, t, p, following the arrows." },
+                { "prompt": "Show a grown-up your pencil grip. Did they say it looked steady?" }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 5 -- Writing Simple Words",
+            "objectives": "Write simple CVC (consonant-vowel-consonant) words independently, such as cat, dog, sun, using known letter sounds.",
+            "syllabusRef": "Writing -- Spelling",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-cvc",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Writing a word sound by sound",
+                  "conceptId": "cvc-words",
+                  "definition": "Many simple words are made of three sounds: consonant, vowel, consonant (a \"CVC\" word). We write each sound in order.",
+                  "example": "The word \"sun\" has three sounds: /s/, /u/, /n/. We write s, then u, then n."
+                },
+                {
+                  "id": "worked-write-sun",
+                  "type": "worked_example",
+                  "kicker": "Watch and write",
+                  "title": "Writing \"sun\" sound by sound",
+                  "steps": [
+                    { "label": "Say the word slowly", "detail": "/s/ ... /u/ ... /n/" },
+                    { "label": "Write the first sound", "detail": "s" },
+                    { "label": "Write the second sound", "detail": "u" },
+                    { "label": "Write the third sound", "detail": "n -- the finished word is \"sun\"" }
+                  ],
+                  "testsConceptIds": ["cvc-words"]
+                },
+                {
+                  "id": "inline-cvc-check",
+                  "type": "inline_quiz",
+                  "kicker": "Quick check",
+                  "title": "Spell it out",
+                  "questions": [
+                    { "question": "How many sounds are in the word \"cat\"?", "options": ["Two", "Three", "Four"], "correctOptionIndex": 1, "feedback": "✓ /c/-/a/-/t/ is three sounds." },
+                    { "question": "What is the middle sound in \"dog\"?", "options": ["/d/", "/o/", "/g/"], "correctOptionIndex": 1, "feedback": "✓ /d/-/o/-/g/ -- the middle sound is /o/." }
+                  ]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["We write a word by saying it slowly and writing each sound in order.", "We practised writing sun, cat and dog."],
+                  "homeworkItems": ["Practise writing one CVC word (e.g. cat, dog, sun) three times at home."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Say the word aloud slowly as a class before anyone writes, so children hear the sounds separated before committing them to paper.",
+              "steps": [
+                { "stepId": "explain-cvc", "talkingPoints": ["Clap once per sound as you say \"sun\" slowly, so the three-sound structure is felt physically."], "timingMinutes": 6 },
+                { "stepId": "worked-write-sun", "talkingPoints": ["Write on the board sound by sound, pausing to say each sound again before writing the next letter."], "timingMinutes": 7 },
+                { "stepId": "inline-cvc-check", "talkingPoints": ["Have children count sounds on their fingers before answering."], "timingMinutes": 6, "misconceptions": ["Children may confuse letter names and sounds when counting -- keep the focus on the sound, not the letter name."] },
+                { "stepId": "recap", "talkingPoints": ["Ask a few children to write one CVC word on the board with support."], "timingMinutes": 6 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "A CVC word has this pattern of sounds:", "options": ["Consonant, vowel, consonant", "Vowel, vowel, vowel", "Consonant, consonant, consonant"], "correctOptionIndex": 0 },
+              { "quizType": "exit", "question": "Which of these is a CVC word?", "options": ["Cat", "Elephant", "The"], "correctOptionIndex": 0 }
+            ],
+            "flashcards": [
+              { "term": "CVC word", "definition": "A word made of three sounds: consonant, vowel, consonant, e.g. cat, sun, dog." },
+              { "term": "Consonant", "definition": "A letter sound that isn't a, e, i, o, or u -- like s, t, p, c, d, n, g." },
+              { "term": "Vowel", "definition": "One of the letter sounds a, e, i, o, u." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Writing Simple Words",
+              "instructions": "Say each word slowly before you write it.",
+              "questions": [
+                { "prompt": "Write the word \"cat\" sound by sound." },
+                { "prompt": "Write the word \"sun\" sound by sound." },
+                { "prompt": "Draw a picture to match one of your words." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 6 -- Writing a Simple Sentence",
+            "objectives": "Write a simple sentence using a capital letter at the start, finger spaces between words, and a full stop at the end.",
+            "syllabusRef": "Writing -- Sentence construction",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-sentence",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "What makes a sentence?",
+                  "conceptId": "sentence-punctuation",
+                  "definition": "A sentence starts with a capital letter and ends with a full stop, with spaces between each word.",
+                  "example": "\"The cat sat.\" starts with a capital T, has a space between each word, and ends with a full stop."
+                },
+                {
+                  "id": "tap-sentence-parts",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Parts of a sentence",
+                  "cards": [
+                    { "id": "capital", "icon": "🔠", "label": "Capital letter", "content": "A big letter at the very start of the sentence." },
+                    { "id": "spaces", "icon": "␣", "label": "Finger spaces", "content": "A small gap, about the width of a finger, between each word." },
+                    { "id": "fullstop", "icon": "⏹️", "label": "Full stop", "content": "A small dot at the end, to show the sentence has finished." }
+                  ]
+                },
+                {
+                  "id": "guess-sentence",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "Is this a complete sentence?",
+                  "cards": [
+                    { "question": "\"the cat sat\" -- with no capital letter and no full stop. Is this finished correctly?", "answer": "Not quite! It needs a capital T at the start and a full stop at the end: \"The cat sat.\"" },
+                    { "question": "\"The dog ran.\" -- with a capital letter and a full stop. Is this finished correctly?", "answer": "Yes! It has a capital letter, finger spaces, and a full stop." }
+                  ],
+                  "testsConceptIds": ["sentence-punctuation"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["A sentence starts with a capital letter and ends with a full stop.", "We leave a finger space between each word."],
+                  "homeworkItems": ["Write one sentence at home about your day, remembering the capital letter and full stop."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Write an example sentence on the board with all three features missing first, then fix it together as a class before independent writing.",
+              "steps": [
+                { "stepId": "explain-sentence", "talkingPoints": ["Write \"the cat sat\" with no capital or full stop, and ask what's missing before you explain."], "timingMinutes": 6 },
+                { "stepId": "tap-sentence-parts", "talkingPoints": ["Have children use an actual finger to check spacing on their own first attempt."], "timingMinutes": 6 },
+                { "stepId": "guess-sentence", "talkingPoints": ["Fix the incorrect example together as a class, adding the capital letter and full stop live."], "timingMinutes": 7, "misconceptions": ["Children often remember the full stop but forget the capital letter, or vice versa -- check for both explicitly."] },
+                { "stepId": "recap", "talkingPoints": ["Have a few children read their own sentence aloud, pointing to the capital letter and full stop as they go."], "timingMinutes": 6 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "A sentence should start with a...", "options": ["Full stop", "Capital letter", "Finger space"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "A sentence should end with a...", "options": ["Capital letter", "Finger space", "Full stop"], "correctOptionIndex": 2 }
+            ],
+            "flashcards": [
+              { "term": "Sentence", "definition": "A group of words starting with a capital letter and ending with a full stop." },
+              { "term": "Capital letter", "definition": "A big letter used at the start of a sentence." },
+              { "term": "Full stop", "definition": "A small dot used at the end of a sentence." },
+              { "term": "Finger space", "definition": "A small gap, about the width of a finger, left between words." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Writing a Simple Sentence",
+              "instructions": "Remember: capital letter, finger spaces, full stop.",
+              "questions": [
+                { "prompt": "Write a sentence about your favourite animal." },
+                { "prompt": "Check your sentence: does it have a capital letter at the start? Circle it." },
+                { "prompt": "Check your sentence: does it have a full stop at the end? Circle it." }
+              ]
+            }
+          }
+        ]
+      },
+      "unit-3": {
+        "topicId": "unit-3",
+        "title": "Speaking and Listening Together",
+        "description": "Speaking clearly and taking turns; listening carefully and following instructions.",
+        "lessons": [
+          {
+            "title": "Lesson 7 -- Speaking Clearly and Taking Turns",
+            "objectives": "Speak clearly so others can understand; take turns when speaking in a group and wait for others to finish.",
+            "syllabusRef": "Speaking and listening",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-turns",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Taking turns to speak",
+                  "conceptId": "taking-turns",
+                  "definition": "Taking turns means waiting until someone else has finished speaking before you start, so everyone gets a chance to be heard.",
+                  "example": "In a circle, we might pass a small object around -- only the person holding it speaks, and everyone else listens."
+                },
+                {
+                  "id": "tap-speaking-tips",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Tips for speaking clearly",
+                  "cards": [
+                    { "id": "voice", "icon": "🗣️", "label": "Clear voice", "content": "Speak loud enough for everyone in the circle to hear, but not shouting." },
+                    { "id": "eyes", "icon": "👀", "label": "Look at your listener", "content": "Looking at the person you're speaking to helps them know you're talking to them." },
+                    { "id": "wait", "icon": "⏳", "label": "Wait your turn", "content": "Let the speaker finish their whole idea before you start talking." }
+                  ]
+                },
+                {
+                  "id": "inline-turns-check",
+                  "type": "inline_quiz",
+                  "kicker": "Quick check",
+                  "title": "Good turn-taking or not?",
+                  "questions": [
+                    { "question": "Two friends are both talking loudly at the same time. Is this good turn-taking?", "options": ["Yes", "No -- only one person should speak at a time"], "correctOptionIndex": 1, "feedback": "✓ Talking over each other means no one can be properly heard." },
+                    { "question": "A friend waits until you finish your sentence, then speaks. Is this good turn-taking?", "options": ["Yes -- everyone gets heard", "No"], "correctOptionIndex": 0, "feedback": "✓ Waiting for a turn lets everyone be heard clearly." }
+                  ],
+                  "testsConceptIds": ["taking-turns"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Speak clearly and look at your listener.", "Wait your turn so everyone gets to be heard."],
+                  "homeworkItems": ["Practise taking turns to talk during dinner at home tonight."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Use a real object (a small ball or soft toy) as a physical \"talking piece\" during circle time to make turn-taking concrete for this age group.",
+              "steps": [
+                { "stepId": "explain-turns", "talkingPoints": ["Introduce the talking-piece object and explain the rule: only the holder speaks."], "timingMinutes": 5 },
+                { "stepId": "tap-speaking-tips", "talkingPoints": ["Model a too-quiet voice and a good clear voice so children hear the contrast."], "timingMinutes": 6 },
+                { "stepId": "inline-turns-check", "talkingPoints": ["Role-play both the interrupting example and the good example live before asking the question."], "timingMinutes": 6 },
+                { "stepId": "recap", "talkingPoints": ["Run one full round of the circle using the talking piece so every child gets a turn to practise."], "timingMinutes": 8, "misconceptions": ["Some children may want to speak again out of turn -- gently remind them the object shows whose turn it is."] }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Taking turns means...", "options": ["Speaking as loudly as possible", "Waiting until someone finishes before you speak", "Never speaking at all"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "When you speak, it helps to...", "options": ["Look away from your listener", "Look at your listener and speak clearly", "Whisper very quietly"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Taking turns", "definition": "Waiting until someone else finishes speaking before you start." },
+              { "term": "Clear voice", "definition": "A voice loud enough for your listener to hear, but not shouting." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Speaking Clearly and Taking Turns",
+              "instructions": "Think about our circle time talking practice.",
+              "questions": [
+                { "prompt": "Draw a picture of you speaking to a friend and looking at them." },
+                { "prompt": "Tell a grown-up one thing you remember about taking turns." },
+                { "prompt": "Practise waiting for a grown-up to finish talking before you speak, at home tonight." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 8 -- Listening Carefully and Following Instructions",
+            "objectives": "Listen carefully to spoken instructions and follow them in the correct order, including instructions with two or more steps.",
+            "syllabusRef": "Speaking and listening",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-instructions",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Following instructions in order",
+                  "conceptId": "following-instructions",
+                  "definition": "An instruction tells us what to do. Some instructions have more than one step, and we need to remember the order.",
+                  "example": "\"Stand up, then touch your toes\" has two steps -- first stand up, then touch your toes, in that order."
+                },
+                {
+                  "id": "worked-two-step",
+                  "type": "worked_example",
+                  "kicker": "Watch the steps",
+                  "title": "Following a two-step instruction",
+                  "steps": [
+                    { "label": "Listen to the whole instruction first", "detail": "\"Clap your hands, then jump once.\"" },
+                    { "label": "Do the first step", "detail": "Clap your hands." },
+                    { "label": "Do the second step", "detail": "Jump once." }
+                  ],
+                  "testsConceptIds": ["following-instructions"]
+                },
+                {
+                  "id": "inline-instruction-check",
+                  "type": "inline_quiz",
+                  "kicker": "Quick check",
+                  "title": "What's the right order?",
+                  "questions": [
+                    { "question": "The instruction is: \"Pick up your pencil, then write your name.\" What should you do first?", "options": ["Write your name", "Pick up your pencil"], "correctOptionIndex": 1, "feedback": "✓ The instruction says pick up your pencil first, then write your name." },
+                    { "question": "The instruction is: \"Stand up, turn around, sit back down.\" How many steps are there?", "options": ["One", "Two", "Three"], "correctOptionIndex": 2, "feedback": "✓ Stand up, turn around, and sit back down -- three steps in order." }
+                  ]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Listen to the whole instruction before starting.", "Remember the order: what comes first, then next."],
+                  "homeworkItems": ["Ask a grown-up to give you a two-step instruction at home and follow it in order."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Play a short physical \"Simon Says\"-style game with two-step instructions to make listening-and-following an active, memorable practice, not just a talking point.",
+              "steps": [
+                { "stepId": "explain-instructions", "talkingPoints": ["Give one very simple one-step instruction first (\"stand up\") so the concept is anchored before adding a second step."], "timingMinutes": 5 },
+                { "stepId": "worked-two-step", "talkingPoints": ["Physically demonstrate the two-step instruction yourself before asking children to try it."], "timingMinutes": 6 },
+                { "stepId": "inline-instruction-check", "talkingPoints": ["Ask children to repeat the instruction back in their own words before answering, to check they really listened."], "timingMinutes": 6, "misconceptions": ["Children may do the steps in the wrong order, or skip the first step -- praise attempts and gently replay the instruction if needed."] },
+                { "stepId": "recap", "talkingPoints": ["Play a quick round of two-step \"Simon says\" instructions as a fun, physical recap."], "timingMinutes": 8 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Before following an instruction, you should...", "options": ["Start moving immediately", "Listen to the whole instruction first", "Ask someone else to do it"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "\"Touch your head, then touch your toes\" -- what should you do second?", "options": ["Touch your head", "Touch your toes", "Sit down"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Instruction", "definition": "Words that tell us what to do." },
+              { "term": "In order", "definition": "Doing things in the correct sequence -- first, then next." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Listening Carefully and Following Instructions",
+              "instructions": "A grown-up will read each instruction aloud to you.",
+              "questions": [
+                { "prompt": "Listen to a two-step instruction from a grown-up, then draw yourself doing step one." },
+                { "prompt": "Draw yourself doing step two of the same instruction." },
+                { "prompt": "Tell a grown-up which step came first." }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "allowUpdatingExistingTerm": false
+}
