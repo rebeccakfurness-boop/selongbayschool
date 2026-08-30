@@ -6,9 +6,13 @@ import type {
   GeneratedUnit,
 } from './types';
 
-/** Non-negotiable per this app's own build conventions -- always claude-opus-5 unless a human
- * explicitly asks for a different model. */
-const MODEL = 'claude-opus-5';
+/** claude-sonnet-5, not the default claude-opus-5 -- an explicit, cost-driven choice (this runs
+ * across many subjects, not just one course), made by a human request, not by this provider's own
+ * judgment. Sonnet 5 supports the same adaptive-thinking + forced tool-use pattern this file uses
+ * (see the drift table in the claude-api skill: budget_tokens is rejected on Sonnet 5 exactly as
+ * on Opus 5, and thinking: {type: "adaptive"} is the replacement on both), so nothing else in this
+ * file needed to change. */
+const MODEL = 'claude-sonnet-5';
 
 function getClient(): Anthropic {
   // Resolves ANTHROPIC_API_KEY from the environment -- see this provider's own class comment for
