@@ -1,0 +1,672 @@
+{
+  "sourceVerified": false,
+  "sourceNote": "SOURCING DISCLAIMER (read before use): This course's topic/strand structure was NOT read from the official Cambridge Primary Mathematics (0096) syllabus PDF. It was reconstructed by an AI assistant from public web search results (search-engine snippets and third-party summaries describing the framework), because the actual Cambridge syllabus document could not be accessed in this session. The strand names, topic groupings, and lesson content below have NOT been checked against the real official syllabus for accuracy or completeness. A qualified teacher must verify this content against the actual Cambridge Primary Mathematics (0096) syllabus document before using it with students.",
+  "input": {
+    "className": "Primary 1",
+    "subject": "Mathematics",
+    "termLabel": "Term 1 2026/27",
+    "frameworkLabel": "Cambridge Primary"
+  },
+  "content": {
+    "parsedSyllabus": {
+      "subject": "Mathematics",
+      "frameworkLabel": "Cambridge Primary Mathematics (0096), Stage 1",
+      "assessmentObjectives": [
+        "Number: count, read, write and order numbers; understand addition and subtraction",
+        "Geometry and Measure: recognise 2D shapes and compare measures",
+        "Statistics and Probability: sort objects and represent information simply",
+        "Thinking and Working Mathematically: explore, predict, and explain mathematical ideas"
+      ],
+      "components": [],
+      "topicTree": [
+        {
+          "id": "unit-1",
+          "title": "Counting and Numbers to 20",
+          "description": "Counting objects, reading and writing numbers, one more/one less, and ordering numbers to 20.",
+          "subtopics": [
+            { "id": "1.1", "title": "Counting objects to 10" },
+            { "id": "1.2", "title": "Reading and writing numbers, one more and one less" },
+            { "id": "1.3", "title": "Counting and ordering numbers to 20" }
+          ]
+        },
+        {
+          "id": "unit-2",
+          "title": "Addition and Subtraction within 10",
+          "description": "Adding by counting on and subtracting by taking away, within 10.",
+          "subtopics": [
+            { "id": "2.1", "title": "Adding by counting on" },
+            { "id": "2.2", "title": "Subtracting by taking away" }
+          ]
+        },
+        {
+          "id": "unit-3",
+          "title": "Shapes and Measuring",
+          "description": "Naming 2D shapes, comparing length, and sorting and representing information simply.",
+          "subtopics": [
+            { "id": "3.1", "title": "Naming 2D shapes" },
+            { "id": "3.2", "title": "Comparing length" },
+            { "id": "3.3", "title": "Sorting and simple pictograms" }
+          ]
+        }
+      ]
+    },
+    "units": {
+      "unit-1": {
+        "topicId": "unit-1",
+        "title": "Counting and Numbers to 20",
+        "description": "Counting objects, reading and writing numbers, one more/one less, and ordering numbers to 20.",
+        "lessons": [
+          {
+            "title": "Lesson 1 -- Counting Objects to 10",
+            "objectives": "Count a group of up to 10 objects accurately, touching each object once and saying one number for each; understand that the last number said tells us how many there are.",
+            "syllabusRef": "Number -- Counting",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-counting",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Counting carefully",
+                  "conceptId": "counting",
+                  "definition": "To count a group of objects accurately, we touch each object once and say one number for each -- not too fast, and never skipping or counting one twice.",
+                  "example": "Counting 5 shells: touch the first shell and say \"one\", touch the next and say \"two\", and so on until you've touched all 5 and said \"five\"."
+                },
+                {
+                  "id": "tap-counting-tips",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Tips for accurate counting",
+                  "cards": [
+                    { "id": "touch", "icon": "👆", "label": "Touch each one", "content": "Touch or move each object as you count it, so you don't lose track." },
+                    { "id": "one-number", "icon": "1️⃣", "label": "One number each", "content": "Say exactly one number for each object -- never two numbers for one object." },
+                    { "id": "last-number", "icon": "🏁", "label": "The last number is the total", "content": "The very last number you say tells you how many objects there are altogether." }
+                  ]
+                },
+                {
+                  "id": "guess-count-total",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "How many altogether?",
+                  "cards": [
+                    { "question": "You count 6 shells one by one: one, two, three, four, five, six. How many shells are there altogether?", "answer": "6 shells! The last number said (six) tells us the total." },
+                    { "question": "You touch each of 8 stones and count up to \"eight\". How many stones are there?", "answer": "8 stones -- the last number counted is the total." }
+                  ],
+                  "testsConceptIds": ["counting"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Touch each object once and say one number for each as you count.", "The last number you say is the total number of objects."],
+                  "homeworkItems": ["Count a group of up to 10 objects at home (spoons, toys, shoes) and tell a grown-up the total."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Use real, moveable objects (shells, counters, stones) rather than only pictures, so children can physically move each item as they count -- this builds the one-to-one correspondence skill.",
+              "steps": [
+                { "stepId": "explain-counting", "talkingPoints": ["Count a small group of real objects slowly and deliberately in front of the class first."], "timingMinutes": 6 },
+                { "stepId": "tap-counting-tips", "talkingPoints": ["Demonstrate a common mistake (counting too fast and skipping an object) so children see what NOT to do."], "timingMinutes": 6 },
+                { "stepId": "guess-count-total", "talkingPoints": ["Have children count along with you before answering, rather than just reading the number."], "timingMinutes": 6, "misconceptions": ["Children may recite number names without matching them one-to-one with objects -- watch for this and slow the pace if needed."] },
+                { "stepId": "recap", "talkingPoints": ["Give each child a small handful of counters to count independently while you circulate."], "timingMinutes": 7 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "When counting objects, we should...", "options": ["Count as fast as possible", "Touch each object once and say one number for each", "Guess the total without counting"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "If you count 7 objects one by one up to \"seven\", how many objects are there?", "options": ["Six", "Seven", "Eight"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Count", "definition": "To say numbers in order, one for each object, to find out how many there are." },
+              { "term": "Total", "definition": "The whole amount -- the last number said when counting." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Counting Objects to 10",
+              "instructions": "Use real objects or counters if you have them.",
+              "questions": [
+                { "prompt": "Count the dots in each box and write the total number next to it." },
+                { "prompt": "Draw a group of 7 objects (stars, circles, or anything you like)." },
+                { "prompt": "Count a group of objects at home and write the total you found." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 2 -- Reading and Writing Numbers, One More and One Less",
+            "objectives": "Read and write numbers to 10; find one more and one less than a given number.",
+            "syllabusRef": "Number -- Place value",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-one-more-less",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "One more and one less",
+                  "conceptId": "one-more-less",
+                  "definition": "One more than a number means the next number up when counting. One less means the number just before it.",
+                  "example": "One more than 5 is 6, because 6 comes right after 5 when counting. One less than 5 is 4, because 4 comes right before 5."
+                },
+                {
+                  "id": "worked-one-more",
+                  "type": "worked_example",
+                  "kicker": "Watch and work out",
+                  "title": "Finding one more than 7",
+                  "steps": [
+                    { "label": "Start with the number", "detail": "7" },
+                    { "label": "Count on one more", "detail": "7, then the next number is 8" },
+                    { "label": "The answer", "detail": "One more than 7 is 8" }
+                  ],
+                  "testsConceptIds": ["one-more-less"]
+                },
+                {
+                  "id": "inline-one-more-check",
+                  "type": "inline_quiz",
+                  "kicker": "Quick check",
+                  "title": "One more or one less?",
+                  "questions": [
+                    { "question": "What is one more than 4?", "options": ["3", "5", "6"], "correctOptionIndex": 1, "feedback": "✓ 5 comes right after 4." },
+                    { "question": "What is one less than 6?", "options": ["5", "7", "6"], "correctOptionIndex": 0, "feedback": "✓ 5 comes right before 6." }
+                  ]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["One more than a number is the next number when counting up.", "One less than a number is the number just before it when counting."],
+                  "homeworkItems": ["Practise saying one more and one less than your age with a grown-up."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Use a physical number line or number track children can point to and step along, so \"one more\"/\"one less\" is a physical movement, not just an abstract idea.",
+              "steps": [
+                { "stepId": "explain-one-more-less", "talkingPoints": ["Have a child physically step forward one space on a floor number line for \"one more\", and back one space for \"one less\"."], "timingMinutes": 6 },
+                { "stepId": "worked-one-more", "talkingPoints": ["Point along the number line as you count on, so the movement matches the words."], "timingMinutes": 6 },
+                { "stepId": "inline-one-more-check", "talkingPoints": ["Encourage children to point to the number line before answering rather than guessing."], "timingMinutes": 7, "misconceptions": ["Children sometimes confuse \"one more\" and \"one less\" -- consistently pair the words with the physical direction (forward/back) to reduce confusion."] },
+                { "stepId": "recap", "talkingPoints": ["Play a quick round where you say a number and children call out one more, then one less."], "timingMinutes": 6 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "One more than 8 is...", "options": ["7", "9", "10"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "One less than 3 is...", "options": ["2", "4", "1"], "correctOptionIndex": 0 }
+            ],
+            "flashcards": [
+              { "term": "One more", "definition": "The next number when counting up -- one more than 5 is 6." },
+              { "term": "One less", "definition": "The number just before, when counting down -- one less than 5 is 4." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Reading and Writing Numbers, One More and One Less",
+              "instructions": "Use a number line to help if you get stuck.",
+              "questions": [
+                { "prompt": "Write one more than 6.", "answer": "7" },
+                { "prompt": "Write one less than 9.", "answer": "8" },
+                { "prompt": "Write the numbers from 1 to 10 in order." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 3 -- Counting and Ordering Numbers to 20",
+            "objectives": "Count reliably to 20; read, write and compare numbers between 10 and 20, saying which of two numbers is bigger or smaller.",
+            "syllabusRef": "Number -- Counting and ordering",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-ordering",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Comparing numbers to 20",
+                  "conceptId": "ordering-numbers",
+                  "definition": "When we compare two numbers, the one further along when counting is bigger, and the one earlier is smaller.",
+                  "example": "Between 14 and 17, 17 is bigger because you count further to reach it -- 14, 15, 16, 17."
+                },
+                {
+                  "id": "tap-teen-numbers",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Numbers in the teens",
+                  "cards": [
+                    { "id": "eleven", "icon": "1️⃣1️⃣", "label": "11", "content": "Comes right after 10." },
+                    { "id": "fifteen", "icon": "1️⃣5️⃣", "label": "15", "content": "Halfway between 10 and 20." },
+                    { "id": "nineteen", "icon": "1️⃣9️⃣", "label": "19", "content": "Comes right before 20." }
+                  ]
+                },
+                {
+                  "id": "guess-bigger",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "Which number is bigger?",
+                  "cards": [
+                    { "question": "Which is bigger: 12 or 18?", "answer": "18 is bigger -- you count further to reach it." },
+                    { "question": "Which is smaller: 13 or 9?", "answer": "9 is smaller -- it comes earlier when counting." }
+                  ],
+                  "testsConceptIds": ["ordering-numbers"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["We can count reliably all the way to 20.", "The number further along when counting is the bigger number."],
+                  "homeworkItems": ["Practise counting from 1 to 20 out loud with a grown-up."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Use a long floor or wall number line from 1-20 so children can physically point out which number is further along -- this is far more intuitive than comparing digits alone at this age.",
+              "steps": [
+                { "stepId": "explain-ordering", "talkingPoints": ["Point along the number line to show why 17 is further along (and so bigger) than 14."], "timingMinutes": 6 },
+                { "stepId": "tap-teen-numbers", "talkingPoints": ["Have children find each teen number on the floor number line as it's revealed."], "timingMinutes": 6 },
+                { "stepId": "guess-bigger", "talkingPoints": ["Let children point to both numbers on the number line before deciding which is bigger."], "timingMinutes": 7, "misconceptions": ["Some children may think a number that \"looks bigger\" (has more strokes when written) is bigger -- redirect them to counting position instead."] },
+                { "stepId": "recap", "talkingPoints": ["Count together as a class from 1 to 20, clapping on every 5th number."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Which number is bigger: 16 or 11?", "options": ["11", "16", "They are the same"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "Counting from 1, which number comes right after 19?", "options": ["18", "20", "21"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Bigger", "definition": "Further along when counting -- has a greater value." },
+              { "term": "Smaller", "definition": "Earlier when counting -- has a lesser value." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Counting and Ordering Numbers to 20",
+              "instructions": "Use a number line to help if you get stuck.",
+              "questions": [
+                { "prompt": "Write the numbers from 11 to 20 in order." },
+                { "prompt": "Circle the bigger number: 14 or 18.", "answer": "18" },
+                { "prompt": "Count out loud from 1 to 20 to a grown-up." }
+              ]
+            }
+          }
+        ]
+      },
+      "unit-2": {
+        "topicId": "unit-2",
+        "title": "Addition and Subtraction within 10",
+        "description": "Adding by counting on and subtracting by taking away, within 10.",
+        "lessons": [
+          {
+            "title": "Lesson 4 -- Adding by Counting On",
+            "objectives": "Understand addition as combining two groups; add two small numbers together within 10 by counting on.",
+            "syllabusRef": "Number -- Addition",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-addition",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "What is addition?",
+                  "conceptId": "addition",
+                  "definition": "Addition means combining two groups together to find the total. We can count on from the bigger number to add faster.",
+                  "example": "If you have 4 shells and find 3 more, you can count on from 4: \"5, 6, 7\" -- so 4 + 3 = 7."
+                },
+                {
+                  "id": "worked-add-4-3",
+                  "type": "worked_example",
+                  "kicker": "Watch and add",
+                  "title": "Adding 4 + 3 by counting on",
+                  "steps": [
+                    { "label": "Start with the bigger number", "detail": "4" },
+                    { "label": "Count on 3 more", "detail": "5, 6, 7" },
+                    { "label": "The total", "detail": "4 + 3 = 7" }
+                  ],
+                  "testsConceptIds": ["addition"]
+                },
+                {
+                  "id": "inline-add-check",
+                  "type": "inline_quiz",
+                  "kicker": "Quick check",
+                  "title": "Add by counting on",
+                  "questions": [
+                    { "question": "5 + 2 = ?", "options": ["6", "7", "8"], "correctOptionIndex": 1, "feedback": "✓ Count on 2 from 5: 6, 7." },
+                    { "question": "3 + 4 = ?", "options": ["6", "7", "8"], "correctOptionIndex": 1, "feedback": "✓ Count on 4 from the bigger number, 4: 5, 6, 7." }
+                  ]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Addition means combining two groups to find the total.", "Counting on from the bigger number is a fast way to add."],
+                  "homeworkItems": ["Practise counting on to add two small numbers with a grown-up, using real objects."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Use two real groups of objects (shells, counters) that physically combine into one pile, so addition is felt as \"joining together\" before the counting-on shortcut is introduced.",
+              "steps": [
+                { "stepId": "explain-addition", "talkingPoints": ["Physically push two small groups of objects together and count the new total before introducing counting on."], "timingMinutes": 6 },
+                { "stepId": "worked-add-4-3", "talkingPoints": ["Show fingers or objects for the count-on part, raising one finger per number counted."], "timingMinutes": 7 },
+                { "stepId": "inline-add-check", "talkingPoints": ["Prompt children to identify the bigger number first before counting on."], "timingMinutes": 6, "misconceptions": ["Children may always count on from the first number said rather than the bigger number, which is slower and more error-prone -- gently redirect to starting from the bigger number."] },
+                { "stepId": "recap", "talkingPoints": ["Give a couple of quick oral addition questions using real objects for a final check."], "timingMinutes": 6 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Addition means...", "options": ["Taking objects away", "Combining two groups to find the total", "Sorting objects into groups"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "6 + 3 = ?", "options": ["8", "9", "10"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Addition", "definition": "Combining two groups together to find the total." },
+              { "term": "Count on", "definition": "Starting from the bigger number and counting up to add." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Adding by Counting On",
+              "instructions": "Use real objects or your fingers to help you count on.",
+              "questions": [
+                { "prompt": "5 + 3 = ?", "answer": "8" },
+                { "prompt": "6 + 2 = ?", "answer": "8" },
+                { "prompt": "Draw two groups of objects and add them together. Write the total." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 5 -- Subtracting by Taking Away",
+            "objectives": "Understand subtraction as taking away from a group; subtract a small number from a number within 10.",
+            "syllabusRef": "Number -- Subtraction",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-subtraction",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "What is subtraction?",
+                  "conceptId": "subtraction",
+                  "definition": "Subtraction means taking some objects away from a group and counting how many are left.",
+                  "example": "If you have 7 shells and give 2 away, count what's left: 7 shells, take away 2, leaves 5 shells. So 7 - 2 = 5."
+                },
+                {
+                  "id": "worked-subtract-7-2",
+                  "type": "worked_example",
+                  "kicker": "Watch and subtract",
+                  "title": "Subtracting 7 - 2",
+                  "steps": [
+                    { "label": "Start with the whole group", "detail": "7 shells" },
+                    { "label": "Take away 2", "detail": "Remove 2 shells from the group" },
+                    { "label": "Count what's left", "detail": "5 shells remain -- so 7 - 2 = 5" }
+                  ],
+                  "testsConceptIds": ["subtraction"]
+                },
+                {
+                  "id": "inline-subtract-check",
+                  "type": "inline_quiz",
+                  "kicker": "Quick check",
+                  "title": "Take away and count what's left",
+                  "questions": [
+                    { "question": "8 - 3 = ?", "options": ["4", "5", "6"], "correctOptionIndex": 1, "feedback": "✓ Take 3 away from 8, and 5 are left." },
+                    { "question": "6 - 4 = ?", "options": ["1", "2", "3"], "correctOptionIndex": 1, "feedback": "✓ Take 4 away from 6, and 2 are left." }
+                  ]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Subtraction means taking objects away from a group and counting what's left.", "We can use real objects to see how many remain after taking some away."],
+                  "homeworkItems": ["Practise taking away with real objects at home and count how many are left each time."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Physically remove real objects from a group in front of the class before writing any subtraction number sentence -- the physical act of taking away builds the concept solidly.",
+              "steps": [
+                { "stepId": "explain-subtraction", "talkingPoints": ["Start with a real group of objects, physically remove some, then count what remains together."], "timingMinutes": 6 },
+                { "stepId": "worked-subtract-7-2", "talkingPoints": ["Have a child come and physically remove the objects as you narrate each step."], "timingMinutes": 7 },
+                { "stepId": "inline-subtract-check", "talkingPoints": ["Encourage children to use real objects or fingers to model each subtraction before answering."], "timingMinutes": 6, "misconceptions": ["Children sometimes count the objects taken away instead of the objects remaining -- always ask \"how many are LEFT?\" explicitly."] },
+                { "stepId": "recap", "talkingPoints": ["Do one final live subtraction with real objects, asking a volunteer to count what's left."], "timingMinutes": 6 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Subtraction means...", "options": ["Combining two groups", "Taking objects away and counting what's left", "Sorting objects by colour"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "9 - 5 = ?", "options": ["3", "4", "5"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Subtraction", "definition": "Taking objects away from a group and counting how many are left." },
+              { "term": "Take away", "definition": "To remove some objects from a group." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Subtracting by Taking Away",
+              "instructions": "Use real objects to help you take away and count what's left.",
+              "questions": [
+                { "prompt": "7 - 3 = ?", "answer": "4" },
+                { "prompt": "9 - 4 = ?", "answer": "5" },
+                { "prompt": "Draw a group of 8 objects, cross out 3, and write how many are left." }
+              ]
+            }
+          }
+        ]
+      },
+      "unit-3": {
+        "topicId": "unit-3",
+        "title": "Shapes and Measuring",
+        "description": "Naming 2D shapes, comparing length, and sorting and representing information simply.",
+        "lessons": [
+          {
+            "title": "Lesson 6 -- Naming 2D Shapes",
+            "objectives": "Recognise and name common 2D shapes (circle, square, triangle, rectangle) and describe them by their sides and corners.",
+            "syllabusRef": "Geometry and Measure -- Shape",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-shapes",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "2D shapes",
+                  "conceptId": "shapes",
+                  "definition": "2D shapes are flat shapes we can draw on paper. We can tell shapes apart by counting their sides (straight edges) and corners (where two sides meet).",
+                  "example": "A triangle has 3 sides and 3 corners. A square has 4 sides that are all the same length, and 4 corners."
+                },
+                {
+                  "id": "tap-shape-names",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Four 2D shapes",
+                  "cards": [
+                    { "id": "circle", "icon": "⭕", "label": "Circle", "content": "Round, with no straight sides and no corners." },
+                    { "id": "square", "icon": "🟦", "label": "Square", "content": "4 sides, all the same length, and 4 corners." },
+                    { "id": "triangle", "icon": "🔺", "label": "Triangle", "content": "3 sides and 3 corners." },
+                    { "id": "rectangle", "icon": "▭", "label": "Rectangle", "content": "4 sides and 4 corners, but the sides aren't all the same length." }
+                  ]
+                },
+                {
+                  "id": "sort-real-shapes",
+                  "type": "sort_classify",
+                  "kicker": "Now you try",
+                  "title": "Sort real objects by shape",
+                  "categories": ["Circle", "Square or rectangle", "Triangle"],
+                  "items": [
+                    { "id": "coin", "label": "A coin", "correctCategory": "Circle", "reason": "A coin is round, with no straight sides or corners." },
+                    { "id": "book", "label": "A book cover", "correctCategory": "Square or rectangle", "reason": "A book cover has 4 straight sides and 4 corners." },
+                    { "id": "sail", "label": "A sailboat's sail", "correctCategory": "Triangle", "reason": "A sail often has 3 sides and 3 corners." },
+                    { "id": "plate", "label": "A round plate", "correctCategory": "Circle", "reason": "A plate is round, like a circle." }
+                  ],
+                  "testsConceptIds": ["shapes"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["We can tell 2D shapes apart by counting their sides and corners.", "Circle, square, triangle and rectangle are four common 2D shapes."],
+                  "homeworkItems": ["Find one object at home shaped like a circle, square, triangle, or rectangle and tell a grown-up."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Give children real cut-out shapes to hold and physically trace the sides and corners with a finger before naming the shapes formally.",
+              "steps": [
+                { "stepId": "explain-shapes", "talkingPoints": ["Have children trace the sides of a real triangle cut-out with their finger, counting each side aloud."], "timingMinutes": 6 },
+                { "stepId": "tap-shape-names", "talkingPoints": ["Ask children to find each shape in the classroom before revealing the card's description."], "timingMinutes": 7 },
+                { "stepId": "sort-real-shapes", "talkingPoints": ["Bring in real classroom objects (a coin, a book, a plate) rather than only pictures for the sorting activity."], "timingMinutes": 8, "misconceptions": ["Children may confuse squares and rectangles since both have 4 sides and 4 corners -- point out that a square's sides are all equal, while a rectangle's are not."] },
+                { "stepId": "recap", "talkingPoints": ["Play a quick \"I spy a shape\" game around the classroom."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "A triangle has how many sides?", "options": ["3", "4", "5"], "correctOptionIndex": 0 },
+              { "quizType": "exit", "question": "Which shape has no straight sides or corners?", "options": ["Square", "Circle", "Triangle"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Side", "definition": "A straight edge of a shape." },
+              { "term": "Corner", "definition": "The point where two sides of a shape meet." },
+              { "term": "Circle", "definition": "A round shape with no straight sides or corners." },
+              { "term": "Triangle", "definition": "A shape with 3 sides and 3 corners." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Naming 2D Shapes",
+              "instructions": "Look carefully at the sides and corners of each shape.",
+              "questions": [
+                { "prompt": "Draw a circle, a square, a triangle, and a rectangle." },
+                { "prompt": "How many sides does a square have?", "answer": "4" },
+                { "prompt": "Find one object at home shaped like a circle and draw it." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 7 -- Comparing Length",
+            "objectives": "Compare the length of two or more objects directly, using the words longer, shorter and the same length.",
+            "syllabusRef": "Geometry and Measure -- Length",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-length",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Comparing length",
+                  "conceptId": "comparing-length",
+                  "definition": "To compare the length of two objects, line them up carefully at one end and see which one reaches further.",
+                  "example": "If you line up a pencil and a crayon at one end, and the pencil reaches further, the pencil is longer and the crayon is shorter."
+                },
+                {
+                  "id": "tap-length-words",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Words for comparing length",
+                  "cards": [
+                    { "id": "longer", "icon": "📏", "label": "Longer", "content": "Reaches further than the other object." },
+                    { "id": "shorter", "icon": "✏️", "label": "Shorter", "content": "Does not reach as far as the other object." },
+                    { "id": "same", "icon": "⚖️", "label": "Same length", "content": "Both objects reach exactly the same distance." }
+                  ]
+                },
+                {
+                  "id": "guess-length",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "Longer or shorter?",
+                  "cards": [
+                    { "question": "You line up a shoelace and a small twig at one end. The shoelace reaches further. What can you say about the twig?", "answer": "The twig is shorter than the shoelace." },
+                    { "question": "Two pencils are lined up and both reach exactly the same point. What can you say?", "answer": "The pencils are the same length." }
+                  ],
+                  "testsConceptIds": ["comparing-length"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["To compare length, line objects up carefully at one end.", "We use the words longer, shorter, and same length."],
+                  "homeworkItems": ["Find two objects at home and compare their length -- which is longer, and which is shorter?"]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Have children physically line up real objects at a straight edge (like a table edge) rather than estimating by eye -- accurate comparison at this age needs a real, aligned starting point.",
+              "steps": [
+                { "stepId": "explain-length", "talkingPoints": ["Demonstrate lining up two objects at one end against a ruler or table edge before comparing."], "timingMinutes": 6 },
+                { "stepId": "tap-length-words", "talkingPoints": ["Have children act out \"longer\" and \"shorter\" with their arms stretched to different lengths."], "timingMinutes": 6 },
+                { "stepId": "guess-length", "talkingPoints": ["Use real classroom objects for both examples rather than only describing them."], "timingMinutes": 7, "misconceptions": ["Children may compare objects that aren't lined up at the same starting point, leading to wrong conclusions -- always check the starting edge is aligned."] },
+                { "stepId": "recap", "talkingPoints": ["Have pairs of children compare the length of their own pencils and report back."], "timingMinutes": 6 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "To compare the length of two objects, we should...", "options": ["Guess without looking", "Line them up carefully at one end", "Weigh them"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "If Object A reaches further than Object B when lined up, Object A is...", "options": ["Shorter", "Longer", "The same length"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Longer", "definition": "Reaches further than another object when lined up." },
+              { "term": "Shorter", "definition": "Does not reach as far as another object when lined up." },
+              { "term": "Same length", "definition": "Both objects reach exactly the same distance." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Comparing Length",
+              "instructions": "Line objects up carefully at one end before comparing.",
+              "questions": [
+                { "prompt": "Find two objects at home. Draw them, and circle the longer one." },
+                { "prompt": "Draw a line that is longer than the example line shown." },
+                { "prompt": "Draw two lines that are the same length." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 8 -- Sorting and Simple Pictograms",
+            "objectives": "Sort objects into groups using a chosen property; read and interpret a simple pictogram to answer questions like which group has the most.",
+            "syllabusRef": "Statistics and Probability",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-pictogram",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "What is a pictogram?",
+                  "conceptId": "pictograms",
+                  "definition": "A pictogram uses pictures to show how many of something there are, so we can compare groups at a glance.",
+                  "example": "If a pictogram shows 4 apple pictures next to \"apples\" and 2 banana pictures next to \"bananas\", we can see there are more apples than bananas without counting a big list."
+                },
+                {
+                  "id": "table-fruit-picto",
+                  "type": "data_table",
+                  "kicker": "Look closely",
+                  "title": "Our class's favourite fruit",
+                  "columns": ["Fruit", "Number of children"],
+                  "rows": [
+                    ["Mango", "6"],
+                    ["Banana", "4"],
+                    ["Rambutan", "8"],
+                    ["Papaya", "3"]
+                  ],
+                  "highlightRowIndex": 2
+                },
+                {
+                  "id": "inline-picto-check",
+                  "type": "inline_quiz",
+                  "kicker": "Quick check",
+                  "title": "Reading our pictogram",
+                  "questions": [
+                    { "question": "Looking at the table, which fruit was most popular?", "options": ["Banana", "Rambutan", "Papaya"], "correctOptionIndex": 1, "feedback": "✓ Rambutan had 8 children choose it -- the highest number." },
+                    { "question": "Which fruit was least popular?", "options": ["Papaya", "Mango", "Rambutan"], "correctOptionIndex": 0, "feedback": "✓ Papaya had only 3 children choose it -- the lowest number." }
+                  ],
+                  "testsConceptIds": ["pictograms"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["A pictogram uses pictures or numbers to show how many of something there are.", "We can compare groups quickly by looking at a pictogram."],
+                  "homeworkItems": ["Ask 5 family members their favourite fruit and see which one is chosen most."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Build a real pictogram together as a class first (e.g. a show-of-hands vote on favourite fruit, with children placing a sticker or drawing per vote), then use the sample table for reading-comprehension practice.",
+              "steps": [
+                { "stepId": "explain-pictogram", "talkingPoints": ["Run a quick real class vote (favourite fruit) and record it as simple tally marks or stickers on the board before showing the finished table."], "timingMinutes": 8 },
+                { "stepId": "table-fruit-picto", "talkingPoints": ["Ask children to find the biggest and smallest numbers in the table before you point them out."], "timingMinutes": 6 },
+                { "stepId": "inline-picto-check", "talkingPoints": ["Have children explain in their own words HOW they know rambutan is the most popular, not just which one it is."], "timingMinutes": 6, "misconceptions": ["Children may look at which row is listed first rather than which number is biggest -- redirect attention to the actual numbers."] },
+                { "stepId": "recap", "talkingPoints": ["Compare the sample table to the real class vote taken earlier in the lesson, if the results differ."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "A pictogram helps us to...", "options": ["Hide information", "Compare groups quickly using pictures or numbers", "Write long sentences"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "If one group has 8 and another has 3, which group is bigger?", "options": ["The group with 3", "The group with 8", "They are the same"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Pictogram", "definition": "A way of showing how many of something there are, using pictures or numbers, so groups can be compared quickly." },
+              { "term": "Sort", "definition": "To put objects into groups based on something they have in common." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Sorting and Simple Pictograms",
+              "instructions": "Ask 5 people at home a simple question, like their favourite colour.",
+              "questions": [
+                { "prompt": "Ask 5 people their favourite colour. Draw one picture for each answer, sorted into groups." },
+                { "prompt": "Which colour did the most people choose?" },
+                { "prompt": "Which colour did the fewest people choose?" }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "allowUpdatingExistingTerm": false
+}
