@@ -11,13 +11,19 @@ export default async function LessonPlanningPage() {
   const staff = await getCurrentStaff();
   const isAdmin = staff.role === 'admin';
 
-  // Always in YEAR_LEVELS' own Primary 1 -> Secondary 11 order, not whatever order the DB
-  // happens to return a teacher's assignments in.
-  const yearLevels = isAdmin
-    ? [...YEAR_LEVELS]
-    : (await getAssignedClasses(staff.adminUserId))
-        .filter((c) => (YEAR_LEVELS as readonly string[]).includes(c))
-        .sort((a, b) => YEAR_LEVELS.indexOf(a as (typeof YEAR_LEVELS)[number]) - YEAR_LEVELS.indexOf(b as (typeof YEAR_LEVELS)[number]));
+  // Known year levels first, in YEAR_LEVELS' own Primary 1 -> Secondary 11 order (not whatever
+  // order the DB returns a teacher's assignments in); any assigned class_name that doesn't
+  // exactly match one of those (a typo, different spacing, a class not yet in the reference
+  // list) still gets a tile -- appended afterwards -- rather than silently vanishing.
+  let yearLevels: string[];
+  if (isAdmin) {
+    yearLevels = [...YEAR_LEVELS];
+  } else {
+    const assigned = await getAssignedClasses(staff.adminUserId);
+    const known = YEAR_LEVELS.filter((yl) => assigned.includes(yl));
+    const unknown = assigned.filter((c) => !(YEAR_LEVELS as readonly string[]).includes(c)).sort();
+    yearLevels = [...known, ...unknown];
+  }
 
   return (
     <section>
