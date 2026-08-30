@@ -1,0 +1,694 @@
+{
+  "input": {
+    "className": "Primary 1",
+    "subject": "Science",
+    "termLabel": "Term 1 2026/27",
+    "frameworkLabel": "Cambridge Primary"
+  },
+  "content": {
+    "parsedSyllabus": {
+      "subject": "Science",
+      "frameworkLabel": "Cambridge Primary Science (0097), Stage 1",
+      "assessmentObjectives": [
+        "Biology: describe humans and animals using their senses; describe how animals and plants grow and what they need",
+        "Chemistry: describe and group everyday materials by their simple properties",
+        "Physics: describe pushes and pulls, and describe light, dark and shadows",
+        "Thinking and Working Scientifically: observe closely, compare, sort, and talk about what is noticed"
+      ],
+      "components": [],
+      "topicTree": [
+        {
+          "id": "unit-1",
+          "title": "Ourselves and Other Animals",
+          "description": "Using our five senses to explore the world, and comparing animals by how they move and where they live.",
+          "subtopics": [
+            { "id": "1.1", "title": "Our five senses" },
+            { "id": "1.2", "title": "Comparing animals around us" }
+          ]
+        },
+        {
+          "id": "unit-2",
+          "title": "Growing Plants",
+          "description": "Naming the parts of a plant and finding out what plants need to grow well.",
+          "subtopics": [
+            { "id": "2.1", "title": "Parts of a plant" },
+            { "id": "2.2", "title": "What plants need to grow" }
+          ]
+        },
+        {
+          "id": "unit-3",
+          "title": "Materials All Around Us",
+          "description": "Describing and grouping everyday materials by their properties, and choosing materials for a job.",
+          "subtopics": [
+            { "id": "3.1", "title": "Grouping materials by their properties" },
+            { "id": "3.2", "title": "Choosing the right material for a job" }
+          ]
+        },
+        {
+          "id": "unit-4",
+          "title": "Forces, Light and Sky",
+          "description": "Exploring pushes and pulls, and how light, dark and shadows work.",
+          "subtopics": [
+            { "id": "4.1", "title": "Pushes and pulls" },
+            { "id": "4.2", "title": "Light, shadows, and day and night" }
+          ]
+        }
+      ]
+    },
+    "units": {
+      "unit-1": {
+        "topicId": "unit-1",
+        "title": "Ourselves and Other Animals",
+        "description": "Using our five senses to explore the world, and comparing animals by how they move and where they live.",
+        "lessons": [
+          {
+            "title": "Lesson 1 -- Our Five Senses",
+            "objectives": "Name the five senses and the body part used for each; use senses to describe objects safely.",
+            "syllabusRef": "Biology -- Humans and animals",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-senses",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Our five senses",
+                  "conceptId": "senses",
+                  "definition": "We have five senses that help us find out about the world: sight (eyes), hearing (ears), smell (nose), taste (tongue), and touch (skin).",
+                  "example": "You use sight to see the colour of a mango, and smell to notice it is ripe before you even taste it."
+                },
+                {
+                  "id": "tap-senses",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Which body part, which sense?",
+                  "cards": [
+                    { "id": "sight", "icon": "👀", "label": "Sight", "content": "We use our eyes to see shapes, colours, and how far away things are." },
+                    { "id": "hearing", "icon": "👂", "label": "Hearing", "content": "We use our ears to hear sounds like waves, birds, or someone calling our name." },
+                    { "id": "smell", "icon": "👃", "label": "Smell", "content": "We use our nose to notice smells, like fresh bread or the sea air." },
+                    { "id": "taste", "icon": "👅", "label": "Taste", "content": "We use our tongue to taste whether food is sweet, sour, salty, or bitter." },
+                    { "id": "touch", "icon": "✋", "label": "Touch", "content": "We use our skin to feel whether something is rough, smooth, hot, or cold." }
+                  ]
+                },
+                {
+                  "id": "guess-sense",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "Which sense would you use?",
+                  "cards": [
+                    { "question": "Which sense would you use to find out if the sand is hot or cool?", "answer": "Touch -- your skin can feel temperature." },
+                    { "question": "Which sense would you use to find out if a shell has bumps or is smooth?", "answer": "Touch -- your skin can feel the surface of the shell." },
+                    { "question": "Which sense would you use to find out if a coconut sounds hollow when you tap it?", "answer": "Hearing -- your ears can hear the sound it makes." }
+                  ],
+                  "testsConceptIds": ["senses"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["We have five senses: sight, hearing, smell, taste, and touch.", "Each sense uses a different body part to find out about the world."],
+                  "homeworkItems": ["With a grown-up, use touch and smell (never taste) to describe three objects you find at home."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Bring in a small set of safe real objects (a shell, a leaf, a piece of fruit) so children can genuinely look, listen, smell, and touch during the lesson -- never taste unfamiliar items.",
+              "steps": [
+                { "stepId": "explain-senses", "talkingPoints": ["Point to each body part as you name its sense so the link is physical, not just verbal."], "timingMinutes": 6 },
+                { "stepId": "tap-senses", "talkingPoints": ["Let children pass around one safe object per sense and describe what they notice."], "timingMinutes": 8 },
+                { "stepId": "guess-sense", "talkingPoints": ["Encourage children to explain why, not just name the sense."], "timingMinutes": 6, "misconceptions": ["Children sometimes say 'I can tell it's hot by looking' -- gently redirect to the sense that is actually reliable for that property."] },
+                { "stepId": "recap", "talkingPoints": ["Remind children never to taste unknown objects, even at home."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Which body part do we use for the sense of hearing?", "options": ["Eyes", "Ears", "Nose"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "Which sense would you use to find out if water is warm or cold?", "options": ["Taste", "Touch", "Smell"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Senses", "definition": "The five ways our body finds out about the world: sight, hearing, smell, taste, and touch." },
+              { "term": "Touch", "definition": "The sense that uses our skin to feel things like texture and temperature." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Our Five Senses",
+              "instructions": "Look at each picture and write which sense you would mainly use.",
+              "questions": [
+                { "prompt": "You see a bright orange sunset over the sea. Which sense are you using?", "answer": "Sight" },
+                { "prompt": "You hear waves crashing on the beach. Which sense are you using?", "answer": "Hearing" },
+                { "prompt": "Draw one object and write which sense you would use to find out more about it." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 2 -- Comparing Animals Around Us",
+            "objectives": "Compare familiar animals by how they move and where they live; sort animals into simple groups.",
+            "syllabusRef": "Biology -- Humans and animals",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-animal-groups",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Animals can be grouped",
+                  "conceptId": "animal-groups",
+                  "definition": "Animals can be grouped by things we observe, like how they move (walk, fly, swim, slither) or where they live (on land, in water).",
+                  "example": "A fish swims and lives in water, while a chicken walks and lives on land."
+                },
+                {
+                  "id": "flip-animals",
+                  "type": "flip_card",
+                  "kicker": "Flip to find out",
+                  "title": "Animals near our school",
+                  "cards": [
+                    { "term": "🐔 Chicken", "definition": "Walks on land, has feathers, lays eggs." },
+                    { "term": "🦎 Gecko", "definition": "Walks and climbs walls, lives on land, has scaly skin." },
+                    { "term": "🐟 Fish", "definition": "Swims using fins, lives in water, breathes through gills." },
+                    { "term": "🐱 Cat", "definition": "Walks and runs on land, has fur, is a common pet." }
+                  ]
+                },
+                {
+                  "id": "sort-animals",
+                  "type": "sort_classify",
+                  "kicker": "Sort it out",
+                  "title": "Land or water?",
+                  "categories": ["Lives on land", "Lives in water"],
+                  "items": [
+                    { "id": "chicken", "label": "Chicken", "correctCategory": "Lives on land", "reason": "A chicken walks on land and does not live in water." },
+                    { "id": "gecko", "label": "Gecko", "correctCategory": "Lives on land", "reason": "A gecko walks and climbs on land, such as walls." },
+                    { "id": "cat", "label": "Cat", "correctCategory": "Lives on land", "reason": "A cat walks and runs on land." },
+                    { "id": "fish", "label": "Fish", "correctCategory": "Lives in water", "reason": "A fish swims using its fins and lives in water." }
+                  ],
+                  "testsConceptIds": ["animal-groups"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Animals can be grouped by how they move and where they live.", "Comparing animals means looking closely and noticing what is the same and different."],
+                  "homeworkItems": ["Find one animal near your home and tell a grown-up how it moves and where it lives."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Use animals genuinely familiar to the children's own environment (chickens, geckos, fish, cats) rather than unfamiliar zoo animals, so comparisons are grounded in real first-hand observation.",
+              "steps": [
+                { "stepId": "explain-animal-groups", "talkingPoints": ["Ask children to name animals they have seen that morning before introducing the grouping idea."], "timingMinutes": 6 },
+                { "stepId": "flip-animals", "talkingPoints": ["Ask children to guess the fact on the back before flipping each card."], "timingMinutes": 7 },
+                { "stepId": "sort-animals", "talkingPoints": ["Let children physically move picture cards into two hoops or boxes labelled 'land' and 'water'."], "timingMinutes": 7, "misconceptions": ["Children may sort by size or colour instead of habitat -- refocus the question on 'where does it live?'"] },
+                { "stepId": "recap", "talkingPoints": ["Ask a few children to share the animal they will look for at home."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Which of these animals lives in water?", "options": ["Chicken", "Fish", "Cat"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "A gecko mostly...", "options": ["Swims in water", "Walks and climbs on land", "Flies in the sky"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Habitat", "definition": "The place where an animal usually lives, such as land or water." },
+              { "term": "Compare", "definition": "To look closely at two or more things and notice what is the same and what is different." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Comparing Animals",
+              "instructions": "Look at each animal and answer the questions.",
+              "questions": [
+                { "prompt": "Name one animal that lives on land and one that lives in water." },
+                { "prompt": "Draw an animal you have seen near your home and write where it lives." },
+                { "prompt": "A fish swims using its fins. How does a chicken move?", "answer": "It walks (and can run) using its legs." }
+              ]
+            }
+          }
+        ]
+      },
+      "unit-2": {
+        "topicId": "unit-2",
+        "title": "Growing Plants",
+        "description": "Naming the parts of a plant and finding out what plants need to grow well.",
+        "lessons": [
+          {
+            "title": "Lesson 3 -- Parts of a Plant",
+            "objectives": "Name the main parts of a flowering plant (roots, stem, leaves, flower) and describe what each part does.",
+            "syllabusRef": "Biology -- Plants",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-plant-parts",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Parts of a plant",
+                  "conceptId": "plant-parts",
+                  "definition": "Most flowering plants have four main parts: roots, stem, leaves, and flower -- each part does a different job to help the plant live and grow.",
+                  "example": "The roots hold the plant in the soil and take in water, while the leaves catch sunlight to help the plant make food."
+                },
+                {
+                  "id": "tap-plant-parts",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "What does each part do?",
+                  "cards": [
+                    { "id": "roots", "icon": "🌱", "label": "Roots", "content": "Hold the plant in the ground and take in water and nutrients from the soil." },
+                    { "id": "stem", "icon": "🌿", "label": "Stem", "content": "Holds the plant up and carries water from the roots to the leaves and flower." },
+                    { "id": "leaves", "icon": "🍃", "label": "Leaves", "content": "Catch sunlight, which the plant uses to make its own food." },
+                    { "id": "flower", "icon": "🌸", "label": "Flower", "content": "Can turn into seeds or fruit, which can grow into new plants." }
+                  ]
+                },
+                {
+                  "id": "guess-plant-part",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "Which part is it?",
+                  "cards": [
+                    { "question": "Which part of the plant takes in water from the soil?", "answer": "The roots." },
+                    { "question": "Which part carries water up to the leaves?", "answer": "The stem." },
+                    { "question": "Which part catches sunlight to help make food?", "answer": "The leaves." }
+                  ],
+                  "testsConceptIds": ["plant-parts"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Most flowering plants have roots, a stem, leaves, and a flower.", "Each part of a plant has its own job that helps the whole plant grow."],
+                  "homeworkItems": ["Find a real plant at home or outside and point out its roots, stem, and leaves to a grown-up."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Bring in a real plant with roots still attached (gently pulled from soil, or a potted seedling) so children can see all four parts on one specimen, not just in a diagram.",
+              "steps": [
+                { "stepId": "explain-plant-parts", "talkingPoints": ["Hold up the real plant and point to each part as you name it."], "timingMinutes": 6 },
+                { "stepId": "tap-plant-parts", "talkingPoints": ["Ask children to touch the matching part on the real plant after each card is revealed."], "timingMinutes": 7 },
+                { "stepId": "guess-plant-part", "talkingPoints": ["Encourage children to point at the plant itself when answering, not just say the word."], "timingMinutes": 6 },
+                { "stepId": "recap", "talkingPoints": ["Ask children to draw and label the plant they will look for at home."], "timingMinutes": 6 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Which part of a plant holds it in the soil?", "options": ["Leaves", "Roots", "Flower"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "Which part of a plant catches sunlight?", "options": ["Roots", "Stem", "Leaves"], "correctOptionIndex": 2 }
+            ],
+            "flashcards": [
+              { "term": "Roots", "definition": "The part of a plant that grows underground, holds it in place, and takes in water." },
+              { "term": "Stem", "definition": "The part of a plant that holds it up and carries water to the leaves and flower." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Parts of a Plant",
+              "instructions": "Look at a drawing of a plant and label its parts.",
+              "questions": [
+                { "prompt": "Label the roots, stem, leaves, and flower on your plant drawing." },
+                { "prompt": "Which part of the plant takes in water from the soil?", "answer": "The roots." },
+                { "prompt": "Draw a real plant you have seen and label one part of it." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 4 -- What Plants Need to Grow",
+            "objectives": "Identify what plants need to grow well (water, light, air) and describe how a seed changes as it grows.",
+            "syllabusRef": "Biology -- Plants",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-plant-needs",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "What plants need",
+                  "conceptId": "plant-needs",
+                  "definition": "Plants need water, light, and air to grow well. Without any one of these, a plant will not grow healthy and strong.",
+                  "example": "A seed planted in a dark cupboard with no sunlight will grow pale and weak, even if it has plenty of water."
+                },
+                {
+                  "id": "worked-seed-growth",
+                  "type": "worked_example",
+                  "kicker": "Watch and work out",
+                  "title": "Watching a bean seed grow",
+                  "steps": [
+                    { "label": "Day 1", "detail": "Plant the bean seed in damp soil, in a spot with sunlight." },
+                    { "label": "Day 3-4", "detail": "A small root and shoot begin to appear as the seed takes in water." },
+                    { "label": "Day 7-10", "detail": "The shoot grows taller and small leaves unfold to catch sunlight." },
+                    { "label": "What we noticed", "detail": "The seed changed every day -- we observed it and recorded what we saw." }
+                  ],
+                  "testsConceptIds": ["plant-needs"]
+                },
+                {
+                  "id": "check-plant-needs",
+                  "type": "inline_quiz",
+                  "kicker": "Quick check",
+                  "title": "Does a plant need this?",
+                  "questions": [
+                    { "question": "Does a plant need water to grow well?", "options": ["Yes", "No"], "correctOptionIndex": 0, "feedback": "✓ Water is one of the things a plant needs." },
+                    { "question": "Does a healthy plant need sunlight?", "options": ["Yes", "No"], "correctOptionIndex": 0, "feedback": "✓ Light helps the leaves make food for the plant." }
+                  ]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Plants need water, light, and air to grow well.", "Watching a plant closely over several days is a good way to notice how it changes."],
+                  "homeworkItems": ["Help water a plant at home and check on it again in two days -- what has changed?"]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "If possible, start a real class bean-in-a-jar or seedling as a running observation over the term, so children practise the scientific skill of observing and recording change over time, not just learning a fact.",
+              "steps": [
+                { "stepId": "explain-plant-needs", "talkingPoints": ["Ask children what they think a plant needs before giving the answer."], "timingMinutes": 6 },
+                { "stepId": "worked-seed-growth", "talkingPoints": ["If a class seed jar exists, compare today's real seed to the pictures in this step."], "timingMinutes": 8, "misconceptions": ["Children sometimes think a plant needs soil above all else -- clarify that water, light and air matter even without soil (e.g. seeds sprouting in a wet paper towel)."] },
+                { "stepId": "check-plant-needs", "talkingPoints": ["Ask children to justify their yes/no answer in one sentence."], "timingMinutes": 5 },
+                { "stepId": "recap", "talkingPoints": ["Assign the home watering task and ask children to be ready to describe what changed."], "timingMinutes": 6 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Which of these does a plant need to grow well?", "options": ["Water, light and air", "Only darkness", "Only soil"], "correctOptionIndex": 0 },
+              { "quizType": "exit", "question": "What might happen to a plant kept in a dark cupboard, even with water?", "options": ["It grows perfectly", "It grows pale and weak", "Nothing changes"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Grow", "definition": "To change and get bigger over time, as living things like plants do." },
+              { "term": "Observe", "definition": "To look closely at something and notice details, often over several days." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- What Plants Need",
+              "instructions": "Answer the questions about what plants need to grow.",
+              "questions": [
+                { "prompt": "Name three things a plant needs to grow well.", "answer": "Water, light, and air." },
+                { "prompt": "Draw what a seed might look like on Day 1 and again after it has grown for a week." },
+                { "prompt": "What might happen to a plant if it never gets any sunlight?", "answer": "It would grow pale and weak, even with water." }
+              ]
+            }
+          }
+        ]
+      },
+      "unit-3": {
+        "topicId": "unit-3",
+        "title": "Materials All Around Us",
+        "description": "Describing and grouping everyday materials by their properties, and choosing materials for a job.",
+        "lessons": [
+          {
+            "title": "Lesson 5 -- Grouping Materials by Their Properties",
+            "objectives": "Describe everyday materials using simple properties (hard/soft, rough/smooth, bendy/stiff) and sort objects by material.",
+            "syllabusRef": "Chemistry -- Materials",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-materials",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Materials have properties",
+                  "conceptId": "material-properties",
+                  "definition": "Every object is made from one or more materials, like wood, plastic, metal, or fabric. We describe materials using properties we can feel or see, such as hard, soft, rough, smooth, bendy, or stiff.",
+                  "example": "A metal spoon feels hard and smooth, while a woolly jumper feels soft and bendy."
+                },
+                {
+                  "id": "tap-properties",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Describing properties",
+                  "cards": [
+                    { "id": "hard-soft", "icon": "🪨", "label": "Hard or soft", "content": "Hard materials keep their shape when pressed; soft materials squash easily." },
+                    { "id": "rough-smooth", "icon": "🧻", "label": "Rough or smooth", "content": "Rough materials feel bumpy; smooth materials feel even under your fingers." },
+                    { "id": "bendy-stiff", "icon": "🪵", "label": "Bendy or stiff", "content": "Bendy materials curve easily; stiff materials stay straight and don't bend much." }
+                  ]
+                },
+                {
+                  "id": "sort-materials",
+                  "type": "sort_classify",
+                  "kicker": "Sort it out",
+                  "title": "What is it made of?",
+                  "categories": ["Wood", "Plastic", "Metal", "Fabric"],
+                  "items": [
+                    { "id": "ruler", "label": "Ruler", "correctCategory": "Wood", "reason": "A wooden ruler is stiff and made from wood." },
+                    { "id": "water-bottle", "label": "Water bottle", "correctCategory": "Plastic", "reason": "A water bottle is often made from lightweight, waterproof plastic." },
+                    { "id": "spoon", "label": "Spoon", "correctCategory": "Metal", "reason": "A metal spoon is hard, smooth, and shiny." },
+                    { "id": "t-shirt", "label": "T-shirt", "correctCategory": "Fabric", "reason": "A T-shirt is made from soft, bendy fabric." }
+                  ],
+                  "testsConceptIds": ["material-properties"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Objects are made from materials like wood, plastic, metal, and fabric.", "We describe materials using properties such as hard/soft, rough/smooth, and bendy/stiff."],
+                  "homeworkItems": ["Find three objects at home made from different materials and describe one property of each."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Give small groups a real feely-bag of classroom objects (a ruler, a bottle, a spoon, a piece of fabric) so property words are attached to genuine tactile experience.",
+              "steps": [
+                { "stepId": "explain-materials", "talkingPoints": ["Pass around one object and ask children to describe it before naming any property words."], "timingMinutes": 6 },
+                { "stepId": "tap-properties", "talkingPoints": ["Match each property pair to an object children are currently holding."], "timingMinutes": 7 },
+                { "stepId": "sort-materials", "talkingPoints": ["Let groups physically sort real objects into labelled trays."], "timingMinutes": 8, "misconceptions": ["Children may sort by colour or use rather than material -- refocus on 'what is it made of?'"] },
+                { "stepId": "recap", "talkingPoints": ["Ask a few children to share one object and its property."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "A metal spoon usually feels...", "options": ["Soft and bendy", "Hard and smooth", "Rough and squashy"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "Which material is a T-shirt usually made from?", "options": ["Metal", "Fabric", "Wood"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Material", "definition": "What an object is made from, such as wood, plastic, metal, or fabric." },
+              { "term": "Property", "definition": "A word that describes a material, such as hard, soft, rough, or smooth." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Grouping Materials",
+              "instructions": "Look at each object and answer the questions.",
+              "questions": [
+                { "prompt": "Name one object made of wood and one made of metal." },
+                { "prompt": "Describe a plastic water bottle using two property words.", "answer": "For example: hard and smooth." },
+                { "prompt": "Draw one object from home and write what material it is made from." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 6 -- Choosing the Right Material for a Job",
+            "objectives": "Explain why a material's properties make it suitable (or unsuitable) for a particular use.",
+            "syllabusRef": "Chemistry -- Materials",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-choosing-materials",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "The right material for the job",
+                  "conceptId": "choosing-materials",
+                  "definition": "We choose materials for a job based on their properties. A raincoat needs a waterproof material, and a window needs a see-through material.",
+                  "example": "An umbrella is made from waterproof fabric or plastic, not paper, because paper would tear and let the rain through."
+                },
+                {
+                  "id": "guess-right-material",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "Which material would you choose?",
+                  "cards": [
+                    { "question": "Which material would be best for a rain hat: paper or plastic?", "answer": "Plastic -- it is waterproof, so it keeps the rain out." },
+                    { "question": "Which material would be best for a window: wood or glass?", "answer": "Glass -- it is see-through, so light can pass through it." },
+                    { "question": "Which material would be best for a warm jumper: metal or wool?", "answer": "Wool -- it is soft and keeps in warmth, unlike metal." }
+                  ],
+                  "testsConceptIds": ["choosing-materials"]
+                },
+                {
+                  "id": "survey-rain-hat",
+                  "type": "data_table",
+                  "kicker": "Our class survey",
+                  "title": "Which material did our class choose for a rain hat?",
+                  "columns": ["Material", "Number of children"],
+                  "rows": [
+                    ["Plastic", "18"],
+                    ["Cotton", "5"],
+                    ["Paper", "1"]
+                  ],
+                  "highlightRowIndex": 0
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["We choose materials based on their properties, such as waterproof, see-through, or warm.", "The right material for a job keeps the object working well."],
+                  "homeworkItems": ["Look at an object at home and explain to a grown-up why it is made from that material."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Run a genuine quick class vote (\"paper, cotton, or plastic for a rain hat?\") before revealing the data_table step, so the survey step reflects the children's own real answers.",
+              "steps": [
+                { "stepId": "explain-choosing-materials", "talkingPoints": ["Show two real objects (an umbrella and a paper bag) and ask which would work better in the rain, and why."], "timingMinutes": 6 },
+                { "stepId": "guess-right-material", "talkingPoints": ["Ask children to explain their reasoning, not just choose an answer."], "timingMinutes": 7 },
+                { "stepId": "survey-rain-hat", "talkingPoints": ["Take a real class vote first, then compare the class's actual results to the table."], "timingMinutes": 6 },
+                { "stepId": "recap", "talkingPoints": ["Connect back to the umbrella example from the start of the lesson."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Why is plastic a good material for a rain hat?", "options": ["It is waterproof", "It is see-through", "It is heavy"], "correctOptionIndex": 0 },
+              { "quizType": "exit", "question": "Why is glass a good material for a window?", "options": ["It is soft", "It is see-through", "It is waterproof"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Waterproof", "definition": "A property of a material that stops water from passing through it." },
+              { "term": "Suitable", "definition": "Right or well-matched for a particular job or purpose." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Choosing Materials",
+              "instructions": "Answer the questions about choosing the right material.",
+              "questions": [
+                { "prompt": "Would you use paper or plastic to make an umbrella? Why?", "answer": "Plastic, because it is waterproof and paper would tear in the rain." },
+                { "prompt": "Name one object that needs to be see-through, and the material it is made from.", "answer": "For example: a window, made from glass." },
+                { "prompt": "Draw an object and explain why it is made from its material." }
+              ]
+            }
+          }
+        ]
+      },
+      "unit-4": {
+        "topicId": "unit-4",
+        "title": "Forces, Light and Sky",
+        "description": "Exploring pushes and pulls, and how light, dark and shadows work.",
+        "lessons": [
+          {
+            "title": "Lesson 7 -- Pushes and Pulls",
+            "objectives": "Identify pushes and pulls in everyday actions and describe how they make objects move.",
+            "syllabusRef": "Physics -- Forces",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-forces",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Pushes and pulls",
+                  "conceptId": "pushes-pulls",
+                  "definition": "A push moves something away from you, and a pull moves something towards you. Pushes and pulls can make objects start moving, stop moving, speed up, or change direction.",
+                  "example": "Opening a door by pushing it away from you, or pulling a toy cart towards you on a string."
+                },
+                {
+                  "id": "tap-force-examples",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Is it a push or a pull?",
+                  "cards": [
+                    { "id": "kick-ball", "icon": "⚽", "label": "Kicking a ball", "content": "This is a push -- your foot moves the ball away from you." },
+                    { "id": "open-drawer", "icon": "🗄️", "label": "Opening a drawer", "content": "This is a pull -- you move the drawer towards you." },
+                    { "id": "swing-rope", "icon": "🪢", "label": "Pulling a rope", "content": "This is a pull -- you move the rope towards you." },
+                    { "id": "close-door", "icon": "🚪", "label": "Closing a door by pushing it", "content": "This is a push -- you move the door away from you." }
+                  ]
+                },
+                {
+                  "id": "sort-forces",
+                  "type": "sort_classify",
+                  "kicker": "Sort it out",
+                  "title": "Push or pull?",
+                  "categories": ["Push", "Pull"],
+                  "items": [
+                    { "id": "kick-ball", "label": "Kicking a ball", "correctCategory": "Push", "reason": "Your foot moves the ball away from you." },
+                    { "id": "open-drawer", "label": "Opening a drawer", "correctCategory": "Pull", "reason": "You move the drawer towards you." },
+                    { "id": "pull-rope", "label": "Pulling a rope", "correctCategory": "Pull", "reason": "You move the rope towards you." },
+                    { "id": "push-swing", "label": "Pushing a swing", "correctCategory": "Push", "reason": "You move the swing away from you." }
+                  ],
+                  "testsConceptIds": ["pushes-pulls"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["A push moves something away from you; a pull moves something towards you.", "Pushes and pulls can start, stop, speed up, or change the direction of movement."],
+                  "homeworkItems": ["Find three actions at home that are pushes and three that are pulls."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Let children physically push and pull real classroom objects (a chair, a door, a drawer) during the lesson so the force is felt, not just imagined.",
+              "steps": [
+                { "stepId": "explain-forces", "talkingPoints": ["Demonstrate a real push and a real pull on a classroom object before defining the words."], "timingMinutes": 6 },
+                { "stepId": "tap-force-examples", "talkingPoints": ["Ask children to act out each example physically before revealing the answer."], "timingMinutes": 7 },
+                { "stepId": "sort-forces", "talkingPoints": ["Let children physically act out each action and decide push or pull as a group."], "timingMinutes": 7, "misconceptions": ["Children may confuse direction relative to themselves versus relative to the object -- clarify 'push' and 'pull' are always described from the person's point of view."] },
+                { "stepId": "recap", "talkingPoints": ["Ask children to demonstrate one push and one pull before leaving."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Kicking a ball away from you is an example of a...", "options": ["Push", "Pull", "Neither"], "correctOptionIndex": 0 },
+              { "quizType": "exit", "question": "Opening a drawer towards you is an example of a...", "options": ["Push", "Pull", "Neither"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Push", "definition": "A force that moves an object away from you." },
+              { "term": "Pull", "definition": "A force that moves an object towards you." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Pushes and Pulls",
+              "instructions": "Look at each action and decide if it is a push or a pull.",
+              "questions": [
+                { "prompt": "Is throwing a ball a push or a pull?", "answer": "A push." },
+                { "prompt": "Is pulling a wagon behind you a push or a pull?", "answer": "A pull." },
+                { "prompt": "Draw one push action and one pull action that you do at home." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 8 -- Light, Shadows, and Day and Night",
+            "objectives": "Explain that light comes from a source and that a shadow forms when an object blocks light; describe day and night simply.",
+            "syllabusRef": "Physics and Earth and Space -- Light; day and night",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-light-shadows",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Light and shadows",
+                  "conceptId": "light-shadows",
+                  "definition": "Light comes from a source, like the sun or a torch. A shadow forms when something blocks light from reaching a surface. During the day, sunlight lights up where we live; at night, that same place faces away from the sun, so it is dark.",
+                  "example": "Standing under the midday sun, your body blocks the sunlight and makes a shadow on the ground."
+                },
+                {
+                  "id": "worked-shadow-observation",
+                  "type": "worked_example",
+                  "kicker": "Watch and work out",
+                  "title": "Watching a shadow change during the day",
+                  "steps": [
+                    { "label": "Morning", "detail": "We mark where a stick's shadow falls on the ground." },
+                    { "label": "Midday", "detail": "We check the shadow again -- it has moved and looks shorter." },
+                    { "label": "Afternoon", "detail": "We check once more -- the shadow has moved again and looks longer." },
+                    { "label": "What we noticed", "detail": "The shadow's position and length change during the day as the sun appears to move across the sky." }
+                  ],
+                  "testsConceptIds": ["light-shadows"]
+                },
+                {
+                  "id": "check-light-dark",
+                  "type": "inline_quiz",
+                  "kicker": "Quick check",
+                  "title": "Light, dark, or shadow?",
+                  "questions": [
+                    { "question": "What forms when an object blocks light?", "options": ["A shadow", "A rainbow", "A reflection"], "correctOptionIndex": 0, "feedback": "✓ A shadow forms where light is blocked." },
+                    { "question": "The sun is an example of a...", "options": ["Shadow", "Light source", "Dark place"], "correctOptionIndex": 1, "feedback": "✓ The sun gives out light, so it is a light source." }
+                  ]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Light comes from a source, such as the sun or a torch.", "A shadow forms when an object blocks light from reaching a surface.", "It is daytime where the sun's light reaches us, and night-time where it does not."],
+                  "homeworkItems": ["Notice your own shadow outside on a sunny day and tell a grown-up when it looks longest and shortest."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "If weather and timing allow, take children outside briefly to mark a real shadow, or use a torch and an object indoors to model the same idea safely.",
+              "steps": [
+                { "stepId": "explain-light-shadows", "talkingPoints": ["Shine a torch on an object indoors to show a shadow forming in real time."], "timingMinutes": 6 },
+                { "stepId": "worked-shadow-observation", "talkingPoints": ["If a real outdoor shadow was tracked earlier in the day, compare it directly to this worked example."], "timingMinutes": 8, "misconceptions": ["Children may think the shadow itself moves on its own -- clarify that the sun's position appears to change through the day, which changes the shadow."] },
+                { "stepId": "check-light-dark", "talkingPoints": ["Ask children to point to the light source in the room before answering."], "timingMinutes": 5 },
+                { "stepId": "recap", "talkingPoints": ["Ask children to predict whether their shadow will be longer in the morning or at midday."], "timingMinutes": 6 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "A shadow forms when...", "options": ["An object blocks light", "It rains", "The wind blows"], "correctOptionIndex": 0 },
+              { "quizType": "exit", "question": "Which of these is a source of light?", "options": ["A shadow", "The sun", "The night sky"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Light source", "definition": "Something that gives out its own light, such as the sun or a torch." },
+              { "term": "Shadow", "definition": "A dark shape formed when an object blocks light from reaching a surface." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Light and Shadows",
+              "instructions": "Answer the questions about light and shadows.",
+              "questions": [
+                { "prompt": "Name one thing that is a source of light.", "answer": "For example: the sun, or a torch." },
+                { "prompt": "What forms when an object blocks light from reaching the ground?", "answer": "A shadow." },
+                { "prompt": "Draw yourself standing in the sun and draw your shadow next to you." }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}
