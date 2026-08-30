@@ -1,6 +1,7 @@
 import { ensureSchema, sql } from '@/lib/db';
-import { requireAdmin } from '@/lib/current-staff';
+import { getCurrentStaff } from '@/lib/current-staff';
 import TeachingTabs from '@/components/admin/TeachingTabs';
+import AcademicCalendarGrid from '@/components/admin/AcademicCalendarGrid';
 import AcademicCalendarManager, {
   type AcademicTerm,
   type AcademicCalendarException,
@@ -9,7 +10,8 @@ import AcademicCalendarManager, {
 export const dynamic = 'force-dynamic';
 
 export default async function AcademicCalendarPage() {
-  await requireAdmin();
+  const staff = await getCurrentStaff();
+  const isAdmin = staff.role === 'admin';
   await ensureSchema();
 
   const [terms, exceptions] = await Promise.all([
@@ -23,17 +25,22 @@ export default async function AcademicCalendarPage() {
     <section>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl font-semibold text-ink">Teaching</h1>
+          <h1 className="font-display text-2xl font-semibold text-ink">Academic Calendar</h1>
           <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
             Term dates and holidays: the calendar the Weekly Schedule generates real, dated sessions against.
-            Changes apply immediately: no session is ever generated on a date a holiday or closure covers.
+            {isAdmin && ' Changes apply immediately: no session is ever generated on a date a holiday or closure covers.'}
           </p>
         </div>
         <TeachingTabs active="calendar" />
       </div>
       <div className="mt-6">
-        <AcademicCalendarManager initialTerms={terms} initialExceptions={exceptions} />
+        <AcademicCalendarGrid terms={terms} exceptions={exceptions} />
       </div>
+      {isAdmin && (
+        <div className="mt-10 border-t border-sand-line pt-8">
+          <AcademicCalendarManager initialTerms={terms} initialExceptions={exceptions} />
+        </div>
+      )}
     </section>
   );
 }

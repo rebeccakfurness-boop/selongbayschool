@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ensureSchema } from '@/lib/db';
 import { getCurrentStaff, canAccessClass } from '@/lib/current-staff';
 import { getCurriculumTermsForClasses } from '@/lib/curriculum';
+import TeachingTabs from '@/components/admin/TeachingTabs';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,20 +32,23 @@ export default async function LessonPlanningTermPickerPage({ params }: { params:
 
   return (
     <section>
-      <div>
-        <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">
-          <Link href="/admin/teaching/lesson-planning" className="hover:underline">
-            Lesson Planning &amp; Preparation
-          </Link>{' '}
-          /{' '}
-          <Link href={`/admin/teaching/lesson-planning/${encodeURIComponent(className)}`} className="hover:underline">
-            {className}
-          </Link>{' '}
-          / {subject}
-        </p>
-        <h1 className="mt-1 font-display text-2xl font-semibold text-ink">
-          {className} · {subject}
-        </h1>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">
+            <Link href="/admin/teaching/lesson-planning" className="hover:underline">
+              Lesson Planning &amp; Preparation
+            </Link>{' '}
+            /{' '}
+            <Link href={`/admin/teaching/lesson-planning/${encodeURIComponent(className)}`} className="hover:underline">
+              {className}
+            </Link>{' '}
+            / {subject}
+          </p>
+          <h1 className="mt-1 font-display text-2xl font-semibold text-ink">
+            {className} · {subject}
+          </h1>
+        </div>
+        <TeachingTabs active="lessonPlanning" />
       </div>
 
       {terms.length === 0 ? (

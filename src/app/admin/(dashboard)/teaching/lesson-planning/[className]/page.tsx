@@ -3,6 +3,7 @@ import { ensureSchema } from '@/lib/db';
 import { getCurrentStaff, canAccessClass } from '@/lib/current-staff';
 import { getCurriculumTermsForClasses } from '@/lib/curriculum';
 import { PRIMARY_SUBJECTS, isPrimaryYearLevel } from '@/lib/curriculum-year-levels';
+import TeachingTabs from '@/components/admin/TeachingTabs';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,14 +37,17 @@ export default async function LessonPlanningYearLevelPage({ params }: { params: 
 
   return (
     <section>
-      <div>
-        <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">
-          <Link href="/admin/teaching/lesson-planning" className="hover:underline">
-            Lesson Planning &amp; Preparation
-          </Link>{' '}
-          / {className}
-        </p>
-        <h1 className="mt-1 font-display text-2xl font-semibold text-ink">{className}</h1>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">
+            <Link href="/admin/teaching/lesson-planning" className="hover:underline">
+              Lesson Planning &amp; Preparation
+            </Link>{' '}
+            / {className}
+          </p>
+          <h1 className="mt-1 font-display text-2xl font-semibold text-ink">{className}</h1>
+        </div>
+        <TeachingTabs active="lessonPlanning" />
       </div>
 
       {subjectsToShow.length === 0 ? (

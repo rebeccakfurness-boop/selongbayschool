@@ -1,18 +1,19 @@
 import Link from 'next/link';
 
+/** Worksheets, Curriculum Plans, Lesson Plans and Curriculum Units are archived here: still real,
+ * working pages (nothing about them was removed), just no longer linked from this tab bar so the
+ * four most-used pages stay easy to find. active still accepts their keys so those pages
+ * themselves don't need to change -- they just render this bar with nothing highlighted. */
 export default function TeachingTabs({
   active,
 }: {
-  active: 'lessons' | 'curriculum' | 'curriculumPlans' | 'resources' | 'schedule' | 'calendar' | 'worksheets';
+  active: 'lessons' | 'curriculum' | 'curriculumPlans' | 'lessonPlanning' | 'resources' | 'schedule' | 'calendar' | 'worksheets';
 }) {
   const tabs = [
     { key: 'schedule', href: '/admin/teaching/schedule', label: 'Weekly Schedule' },
-    { key: 'worksheets', href: '/admin/teaching/worksheets', label: 'Worksheets' },
     { key: 'calendar', href: '/admin/teaching/calendar', label: 'Academic Calendar' },
-    { key: 'curriculumPlans', href: '/admin/teaching/curriculum-plans', label: 'Curriculum Plans' },
-    { key: 'lessons', href: '/admin/teaching', label: 'Lesson Plans' },
-    { key: 'curriculum', href: '/admin/teaching/curriculum', label: 'Curriculum Units' },
     { key: 'resources', href: '/admin/teaching/resources', label: 'Resources' },
+    { key: 'lessonPlanning', href: '/admin/teaching/lesson-planning', label: 'Lesson Planning & Preparation' },
   ] as const;
 
   return (

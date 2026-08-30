@@ -11,7 +11,6 @@ const SECTIONS: { href: string; label: string; adminOnly?: boolean }[] = [
   { href: '/admin/import', label: 'Import Data', adminOnly: true },
   { href: '/admin/staff', label: 'Staff', adminOnly: true },
   { href: '/admin/teaching', label: 'Teaching' },
-  { href: '/admin/teaching/lesson-planning', label: 'Lesson Planning & Preparation' },
   { href: '/admin/policies', label: 'School Policies' },
   { href: '/admin/feedback', label: 'Parent Feedback', adminOnly: true },
   { href: '/admin/incidents', label: 'Incident Reports' },
@@ -42,9 +41,9 @@ export default function AdminSidebar({ role }: { role: StaffRole }) {
 
   const sections = SECTIONS.filter((section) => role === 'admin' || !section.adminOnly);
 
-  // Some sections nest inside another (e.g. Lesson Planning & Preparation lives under
-  // /admin/teaching/lesson-planning, itself under Teaching's /admin/teaching) -- a plain
-  // startsWith would light up both. Only the longest (most specific) matching href wins.
+  // A plain startsWith would light up every section whose href is a prefix of the current path
+  // at once, if one section's route ever nests under another's. Only the longest (most specific)
+  // matching href wins.
   const activeHref = sections.reduce<string | null>((best, section) => {
     const matches = section.href === '/admin' ? pathname === '/admin' : (pathname ?? '').startsWith(section.href);
     if (!matches) return best;
