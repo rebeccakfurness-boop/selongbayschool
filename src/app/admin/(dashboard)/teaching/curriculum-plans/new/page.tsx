@@ -43,6 +43,22 @@ export default async function NewCoursePage() {
           ← Back to Curriculum Plans
         </Link>
       </div>
+
+      <div className="mt-4 rounded-md border-2 border-orange-deep bg-orange/15 p-4">
+        <p className="text-sm font-bold text-orange-deep">
+          ⚠️ This uses the Anthropic API and will incur a real cost per generation.
+        </p>
+        <p className="mt-1 text-sm text-orange-deep">
+          Do not use unless you&apos;ve explicitly set up billing and understand the cost. Every course run here
+          calls a paid LLM once per topic, plus once for the syllabus and (if given) the workbook. If you already
+          have a fully written-out course as JSON, use{' '}
+          <Link href="/admin/teaching/curriculum-plans/import" className="font-bold underline">
+            Import a pre-written course
+          </Link>{' '}
+          instead -- it runs the identical pipeline for free.
+        </p>
+      </div>
+
       <div className="mt-6">
         <CourseBuilderForm classOptions={classOptions} subjectsByClass={subjectsByClass} />
       </div>

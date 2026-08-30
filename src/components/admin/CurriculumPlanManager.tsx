@@ -144,12 +144,19 @@ export default function CurriculumPlanManager({
     <div className="flex flex-col gap-6">
       {error && <p className="font-semibold text-orange-deep">{error}</p>}
 
-      <div className="flex justify-end">
+      <div className="flex flex-wrap justify-end gap-2">
+        <Link
+          href="/admin/teaching/curriculum-plans/import"
+          className="rounded-full border-2 border-teal-deep px-4 py-1.5 text-xs font-bold text-teal-deep hover:bg-teal-deep hover:text-white"
+        >
+          📥 Import a pre-written course (free)
+        </Link>
         <Link
           href="/admin/teaching/curriculum-plans/new"
+          title="Uses the Anthropic API -- incurs a real cost per generation"
           className="rounded-full bg-orange px-4 py-1.5 text-xs font-bold text-ink hover:bg-orange-deep hover:text-white"
         >
-          ✨ Generate a new course
+          ✨ Generate a new course (AI, ⚠️ paid)
         </Link>
       </div>
 

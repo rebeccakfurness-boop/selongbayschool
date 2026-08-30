@@ -947,3 +947,294 @@ export const createGenerationJobSchema = z.object({
   workbookPdfUrl: z.string().trim().url().max(2000).nullable().optional(),
 });
 export type CreateGenerationJobInput = z.infer<typeof createGenerationJobSchema>;
+
+// --- Static course import (no LLM call) -----------------------------------------------------
+// Validates a fully pre-authored course JSON against the exact same shape
+// AnthropicContentGenerationProvider produces internally (see src/lib/curriculum-generation/
+// types.ts) -- CurriculumTermContentModule's own {input, content} shape, the one
+// StaticContentGenerationProvider already consumes for the hand-coded content modules under
+// src/lib/curriculum-generation/content/. Importing a file matching this schema runs through
+// generateCurriculumTerm() exactly as a live AnthropicContentGenerationProvider run would
+// (pacing, DB insertion, needs_review gating, docx/PDF worksheet generation) -- it just never
+// calls an LLM, since every field below is already fully written out.
+
+const worksheetQuestionSchema = z.object({
+  prompt: z.string().trim().min(1, 'prompt is required'),
+  marks: z.number().int().positive().optional(),
+  answer: z.string().trim().min(1).optional(),
+});
+const worksheetContentSchema = z.object({
+  title: z.string().trim().min(1, 'title is required'),
+  instructions: z.string().trim().optional(),
+  questions: z.array(worksheetQuestionSchema).min(1, 'questions must have at least one entry'),
+});
+
+const baseStepFields = {
+  id: z.string().trim().min(1, 'id is required'),
+  kicker: z.string().trim().optional(),
+  title: z.string().trim().optional(),
+  lede: z.string().trim().optional(),
+};
+
+const explanationStepSchema = z.object({
+  ...baseStepFields,
+  type: z.literal('explanation'),
+  conceptId: z.string().trim().optional(),
+  definition: z.string().trim().min(1, 'definition is required'),
+  example: z.string().trim().min(1, 'example is required'),
+});
+const flipCardStepSchema = z.object({
+  ...baseStepFields,
+  type: z.literal('flip_card'),
+  cards: z
+    .array(z.object({ term: z.string().trim().min(1), hint: z.string().trim().optional(), definition: z.string().trim().min(1) }))
+    .min(1, 'cards must have at least one entry'),
+  testsConceptIds: z.array(z.string()).optional(),
+});
+const guessRevealStepSchema = z.object({
+  ...baseStepFields,
+  type: z.literal('guess_reveal'),
+  cards: z
+    .array(
+      z.object({
+        question: z.string().trim().min(1),
+        answer: z.string().trim().min(1),
+        tags: z.array(z.object({ label: z.string().trim().min(1), tone: z.enum(['up', 'down', 'neutral']) })).optional(),
+      })
+    )
+    .min(1, 'cards must have at least one entry'),
+  testsConceptIds: z.array(z.string()).optional(),
+});
+const sortClassifyStepSchema = z.object({
+  ...baseStepFields,
+  type: z.literal('sort_classify'),
+  categories: z.array(z.string().trim().min(1)).min(2, 'categories needs at least two entries'),
+  items: z
+    .array(
+      z.object({
+        id: z.string().trim().min(1),
+        label: z.string().trim().min(1),
+        correctCategory: z.string().trim().min(1),
+        reason: z.string().trim().min(1),
+      })
+    )
+    .min(1, 'items must have at least one entry'),
+  testsConceptIds: z.array(z.string()).optional(),
+});
+const tapRevealGridStepSchema = z.object({
+  ...baseStepFields,
+  type: z.literal('tap_reveal_grid'),
+  cards: z
+    .array(z.object({ id: z.string().trim().min(1), icon: z.string().trim().optional(), label: z.string().trim().min(1), content: z.string().trim().min(1) }))
+    .min(1, 'cards must have at least one entry'),
+});
+const workedExampleStepSchema = z.object({
+  ...baseStepFields,
+  type: z.literal('worked_example'),
+  steps: z.array(z.object({ label: z.string().trim().min(1), detail: z.string().trim().min(1) })).min(1, 'steps must have at least one entry'),
+  testsConceptIds: z.array(z.string()).optional(),
+});
+const interactiveCalculatorStepSchema = z.object({
+  ...baseStepFields,
+  type: z.literal('interactive_calculator'),
+  scenarios: z
+    .array(
+      z.object({
+        id: z.string().trim().min(1),
+        label: z.string().trim().min(1),
+        readouts: z.array(z.object({ label: z.string().trim().min(1), value: z.string().trim().min(1) })).min(1),
+      })
+    )
+    .min(1, 'scenarios must have at least one entry'),
+});
+const dataTableStepSchema = z.object({
+  ...baseStepFields,
+  type: z.literal('data_table'),
+  columns: z.array(z.string()).min(1, 'columns must have at least one entry'),
+  rows: z.array(z.array(z.union([z.string(), z.number()]))),
+  highlightRowIndex: z.number().int().nonnegative().optional(),
+});
+const proportionalBarCompareStepSchema = z.object({
+  ...baseStepFields,
+  type: z.literal('proportional_bar_compare'),
+  unit: z.string().trim().optional(),
+  items: z
+    .array(z.object({ label: z.string().trim().min(1), value: z.number(), tone: z.enum(['teal', 'orange', 'lightteal']).optional() }))
+    .min(1, 'items must have at least one entry'),
+});
+const quizRefStepSchema = z.object({
+  ...baseStepFields,
+  type: z.literal('quiz'),
+  quizType: z.enum(['starter', 'exit']),
+});
+const inlineQuizStepSchema = z.object({
+  ...baseStepFields,
+  type: z.literal('inline_quiz'),
+  questions: z
+    .array(
+      z.object({
+        question: z.string().trim().min(1),
+        options: z.array(z.string().trim().min(1)).min(2, 'options needs at least two entries'),
+        correctOptionIndex: z.number().int().nonnegative(),
+        feedback: z.string().trim().min(1),
+      })
+    )
+    .min(1, 'questions must have at least one entry'),
+  testsConceptIds: z.array(z.string()).optional(),
+});
+const recapChecklistStepSchema = z.object({
+  ...baseStepFields,
+  type: z.literal('recap_checklist'),
+  summaryPoints: z.array(z.string().trim().min(1)).min(1, 'summaryPoints must have at least one entry'),
+  homeworkItems: z.array(z.string().trim().min(1)),
+});
+
+const interactiveStepSchema = z.discriminatedUnion('type', [
+  explanationStepSchema,
+  flipCardStepSchema,
+  guessRevealStepSchema,
+  sortClassifyStepSchema,
+  tapRevealGridStepSchema,
+  workedExampleStepSchema,
+  interactiveCalculatorStepSchema,
+  dataTableStepSchema,
+  proportionalBarCompareStepSchema,
+  quizRefStepSchema,
+  inlineQuizStepSchema,
+  recapChecklistStepSchema,
+]);
+
+const teachingScriptSchema = z.object({
+  overview: z.string().trim().min(1, 'overview is required'),
+  steps: z.array(
+    z.object({
+      stepId: z.string().trim().min(1, 'stepId is required'),
+      talkingPoints: z.array(z.string().trim().min(1)).min(1, 'talkingPoints must have at least one entry'),
+      timingMinutes: z.number().positive().optional(),
+      misconceptions: z.array(z.string()).optional(),
+    })
+  ),
+});
+
+const generatedQuizQuestionSchema = z.object({
+  quizType: z.enum(['starter', 'exit']),
+  question: z.string().trim().min(1, 'question is required'),
+  options: z.array(z.string().trim().min(1)).min(2, 'options needs at least two entries').max(6),
+  correctOptionIndex: z.number().int().nonnegative(),
+  hint: z.string().trim().optional(),
+});
+const generatedFlashcardSchema = z.object({
+  term: z.string().trim().min(1, 'term is required'),
+  definition: z.string().trim().min(1, 'definition is required'),
+});
+const calculationCheckSchema = z.object({
+  description: z.string().trim().min(1, 'description is required'),
+  expression: z.string().trim().min(1, 'expression is required'),
+  expectedResult: z.number(),
+});
+
+const generatedLessonSchema = z.object({
+  title: z.string().trim().min(1, 'title is required'),
+  objectives: z.string().trim().min(1, 'objectives is required'),
+  interactiveContent: z.object({ steps: z.array(interactiveStepSchema).min(1, 'interactiveContent.steps must have at least one entry') }),
+  teachingScript: teachingScriptSchema,
+  quizQuestions: z.array(generatedQuizQuestionSchema),
+  flashcards: z.array(generatedFlashcardSchema),
+  calculationChecks: z.array(calculationCheckSchema).optional(),
+  phase: z.enum(LESSON_PHASES).optional(),
+  syllabusRef: z.string().trim().optional(),
+  worksheetContent: worksheetContentSchema.optional(),
+});
+
+interface SyllabusTopicNodeInput {
+  id: string;
+  title: string;
+  description?: string;
+  assessmentObjectives?: string[];
+  subtopics?: SyllabusTopicNodeInput[];
+}
+/** Recursive -- see SyllabusTopicNode in curriculum-generation/types.ts. z.lazy is zod 3's
+ * standard pattern for a self-referencing schema; the explicit z.ZodType<...> annotation is
+ * required alongside it since TypeScript can't infer a recursive type from z.lazy's callback
+ * alone. */
+const syllabusTopicNodeSchema: z.ZodType<SyllabusTopicNodeInput> = z.lazy(() =>
+  z.object({
+    id: z.string().trim().min(1, 'id is required'),
+    title: z.string().trim().min(1, 'title is required'),
+    description: z.string().trim().optional(),
+    assessmentObjectives: z.array(z.string()).optional(),
+    subtopics: z.array(syllabusTopicNodeSchema).optional(),
+  })
+);
+
+const parsedSyllabusSchema = z.object({
+  subject: z.string().trim().min(1, 'subject is required'),
+  frameworkLabel: z.string().trim().optional(),
+  topicTree: z.array(syllabusTopicNodeSchema).min(1, 'topicTree must have at least one top-level topic'),
+  assessmentObjectives: z.array(z.string()),
+  components: z.array(
+    z.object({
+      name: z.string().trim().min(1, 'name is required'),
+      description: z.string().trim().optional(),
+      weightingPercent: z.number().optional(),
+    })
+  ),
+});
+
+const generatedUnitSchema = z.object({
+  topicId: z.string().trim().min(1, 'topicId is required'),
+  title: z.string().trim().min(1, 'title is required'),
+  description: z.string().trim().optional(),
+  lessons: z.array(generatedLessonSchema).min(1, 'lessons must have at least one entry'),
+});
+
+const workbookMasterySignalSchema = z.object({
+  topicId: z.string().trim().min(1),
+  topicTitle: z.string().trim().min(1),
+  evidence: z.string().trim().min(1),
+  confidence: z.enum(['low', 'medium', 'high']),
+});
+
+export const curriculumImportSchema = z
+  .object({
+    input: z.object({
+      className: z.string().trim().min(1, 'input.className is required').max(100),
+      subject: z.string().trim().min(1, 'input.subject is required').max(200),
+      termLabel: z.string().trim().min(1, 'input.termLabel is required').max(200),
+      frameworkLabel: z.string().trim().max(200).nullable().optional(),
+    }),
+    content: z.object({
+      parsedSyllabus: parsedSyllabusSchema,
+      units: z.record(z.string(), generatedUnitSchema),
+      workbookAnalysis: z.object({ masterySignals: z.array(workbookMasterySignalSchema) }).optional(),
+    }),
+  })
+  // Cross-checks content.units against parsedSyllabus.topicTree -- StaticContentGenerationProvider
+  // looks up content.units[topic.id] for every *top-level* topic (see its own comment in
+  // static-provider.ts); catching a missing/mismatched entry here gives a clear, actionable error
+  // instead of a runtime throw partway through generateCurriculumTerm().
+  .superRefine((val, ctx) => {
+    for (const topic of val.content.parsedSyllabus.topicTree) {
+      const unit = val.content.units[topic.id];
+      if (!unit) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `content.units is missing an entry for top-level topic id "${topic.id}" (every parsedSyllabus.topicTree entry needs a matching unit in content.units, keyed by its id).`,
+          path: ['content', 'units', topic.id],
+        });
+      } else if (unit.topicId !== topic.id) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `content.units["${topic.id}"].topicId is "${unit.topicId}" but must match the map key "${topic.id}".`,
+          path: ['content', 'units', topic.id, 'topicId'],
+        });
+      }
+    }
+  });
+export type CurriculumImportInput = z.infer<typeof curriculumImportSchema>;
+
+export const importCourseRequestSchema = z.object({
+  course: curriculumImportSchema,
+  allowUpdatingExistingTerm: z.boolean().optional(),
+});
+export type ImportCourseRequestInput = z.infer<typeof importCourseRequestSchema>;
