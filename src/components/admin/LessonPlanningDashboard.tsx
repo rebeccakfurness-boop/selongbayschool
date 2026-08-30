@@ -126,7 +126,7 @@ export default function LessonPlanningDashboard({
           </h1>
           <p className="mt-1 text-sm text-ink-soft">{term.term_label}{term.framework_label ? ` · ${term.framework_label}` : ''}</p>
         </div>
-        <div className="flex gap-2 print:hidden">
+        <div className="flex flex-wrap items-center gap-2 print:hidden">
           {(['home', 'sequence', 'syllabus'] as const).map((t) => (
             <button
               key={t}
@@ -139,6 +139,16 @@ export default function LessonPlanningDashboard({
               {t === 'home' ? 'Home' : t === 'sequence' ? 'Full sequence' : 'Syllabus map'}
             </button>
           ))}
+          {lessons.some((l) => l.real_worksheet) && (
+            <a
+              href={`/admin/teaching/worksheets/${term.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-sand-line bg-paper px-4 py-1.5 text-sm font-semibold text-ink hover:border-teal"
+            >
+              🖨️ Print all worksheets
+            </a>
+          )}
         </div>
       </div>
 
