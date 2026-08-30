@@ -1,0 +1,634 @@
+{
+  "input": {
+    "className": "Primary 1",
+    "subject": "Global Perspectives",
+    "termLabel": "Term 1 2026/27",
+    "frameworkLabel": "Cambridge Primary"
+  },
+  "content": {
+    "parsedSyllabus": {
+      "subject": "Global Perspectives",
+      "frameworkLabel": "Cambridge Primary Global Perspectives (0838), Stage 1",
+      "assessmentObjectives": [
+        "Research: think of simple questions and find out information about a topic",
+        "Analysis: look at information and notice similarities and differences",
+        "Evaluation: share a simple opinion about information found",
+        "Reflection: think about and talk about what has been learned",
+        "Collaboration: work with others, sharing ideas and listening to different views",
+        "Communication: present findings using pictures, objects or simple words"
+      ],
+      "components": [],
+      "topicTree": [
+        {
+          "id": "unit-1",
+          "title": "All About Me and My Family",
+          "description": "Challenge 1 of Stage 1: Families, friends, community and culture.",
+          "subtopics": [
+            { "id": "1.1", "title": "Asking questions about our families" },
+            { "id": "1.2", "title": "Same and different families" },
+            { "id": "1.3", "title": "Working together and listening to others" },
+            { "id": "1.4", "title": "Sharing what we found out" }
+          ]
+        },
+        {
+          "id": "unit-2",
+          "title": "Looking After Our Environment",
+          "description": "Challenge 2 of Stage 1: Looking after planet Earth.",
+          "subtopics": [
+            { "id": "2.1", "title": "Asking questions about our environment" },
+            { "id": "2.2", "title": "What helps and what harms our environment" },
+            { "id": "2.3", "title": "Working together to help our environment" },
+            { "id": "2.4", "title": "Sharing our ideas to help the planet" }
+          ]
+        }
+      ]
+    },
+    "units": {
+      "unit-1": {
+        "topicId": "unit-1",
+        "title": "All About Me and My Family",
+        "description": "Challenge 1 of Stage 1: Families, friends, community and culture.",
+        "lessons": [
+          {
+            "title": "Lesson 1 -- Asking Questions About Our Families",
+            "objectives": "Think of simple questions to find out about family life; begin to gather information by asking others.",
+            "syllabusRef": "Research",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-questions",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Asking questions to find out",
+                  "conceptId": "asking-questions",
+                  "definition": "Asking a question is how we find out things we don't already know.",
+                  "example": "If I want to know what a friend's family likes to eat together, I could ask: \"What food does your family enjoy?\""
+                },
+                {
+                  "id": "tap-question-words",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Question words",
+                  "cards": [
+                    { "id": "who", "icon": "🙋", "label": "Who?", "content": "Asks about a person. \"Who lives in your house?\"" },
+                    { "id": "what", "icon": "❓", "label": "What?", "content": "Asks about a thing. \"What do you do together on weekends?\"" },
+                    { "id": "where", "icon": "📍", "label": "Where?", "content": "Asks about a place. \"Where does your family like to visit?\"" }
+                  ]
+                },
+                {
+                  "id": "guess-turn-question",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "Turn it into a question",
+                  "cards": [
+                    { "question": "You want to know how many people are in your friend's family. What could you ask?", "answer": "\"Who is in your family?\" or \"How many people live in your house?\"" },
+                    { "question": "You want to know what your friend's family does for fun. What could you ask?", "answer": "\"What does your family like to do together?\"" }
+                  ],
+                  "testsConceptIds": ["asking-questions"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Asking a question is how we find out things we don't already know.", "Who, what and where are useful question words."],
+                  "homeworkItems": ["Ask a family member one \"who\", \"what\" or \"where\" question and remember their answer."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Model asking a real question to one child in front of the class before children practise in pairs -- seeing a live example makes the skill concrete.",
+              "steps": [
+                { "stepId": "explain-questions", "talkingPoints": ["Ask one child a real question about their family and show how the answer gives you new information."], "timingMinutes": 6 },
+                { "stepId": "tap-question-words", "talkingPoints": ["Practise each question word chorally, then have children suggest their own example question for each."], "timingMinutes": 7 },
+                { "stepId": "guess-turn-question", "talkingPoints": ["Let children attempt their own question aloud before revealing the suggested one -- there's more than one right answer here."], "timingMinutes": 7 },
+                { "stepId": "recap", "talkingPoints": ["Pair children up for one minute to practise asking each other a real question."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Asking a question helps us to...", "options": ["Find out something we don't already know", "Tell someone what we already know", "Stay quiet"], "correctOptionIndex": 0 },
+              { "quizType": "exit", "question": "Which question word would you use to ask about a place?", "options": ["Who?", "Where?", "What?"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Question", "definition": "Something we ask to find out information we don't already know." },
+              { "term": "Who", "definition": "A question word used to ask about a person." },
+              { "term": "What", "definition": "A question word used to ask about a thing." },
+              { "term": "Where", "definition": "A question word used to ask about a place." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Asking Questions About Our Families",
+              "instructions": "Ask a family member these questions and write or draw their answers.",
+              "questions": [
+                { "prompt": "Ask: \"Who is in our family?\" Draw everyone you find out about." },
+                { "prompt": "Ask: \"What do we like to do together?\" Draw or write the answer." },
+                { "prompt": "Think of one more question you could ask about your family." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 2 -- Same and Different Families",
+            "objectives": "Look at information about different families and notice things that are the same and things that are different; share a simple opinion.",
+            "syllabusRef": "Analysis / Evaluation",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-same-different",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Same and different",
+                  "conceptId": "same-different",
+                  "definition": "When we look closely at information, we can notice things that are the same between people, and things that are different.",
+                  "example": "Two families might both enjoy eating together (the same), but one family might have grandparents living with them and another might not (different)."
+                },
+                {
+                  "id": "flip-family-facts",
+                  "type": "flip_card",
+                  "kicker": "Tap to flip",
+                  "title": "Family facts to compare",
+                  "cards": [
+                    { "term": "Who lives in your house?", "hint": "Tap to reveal", "definition": "Some families are small, some are big -- and both are wonderful." },
+                    { "term": "What language do you speak at home?", "hint": "Tap to reveal", "definition": "Some families speak one language, some speak more than one." },
+                    { "term": "What do you eat together?", "hint": "Tap to reveal", "definition": "Favourite family foods can be very different from house to house." }
+                  ]
+                },
+                {
+                  "id": "sort-family-facts",
+                  "type": "sort_classify",
+                  "kicker": "Now you try",
+                  "title": "Same as mine, or different?",
+                  "categories": ["Same as mine", "Different from mine"],
+                  "items": [
+                    { "id": "big-family", "label": "A family with grandparents living in the same house.", "correctCategory": "Different from mine", "reason": "Only sort this here if your own family doesn't have grandparents at home -- otherwise it goes in \"Same as mine\"! There's no single right answer -- it depends on your own family." },
+                    { "id": "eat-together", "label": "A family that eats dinner together every night.", "correctCategory": "Same as mine", "reason": "Many families eat together, but the important skill here is comparing to your OWN family honestly, not guessing what's \"correct\"." },
+                    { "id": "two-languages", "label": "A family that speaks two languages at home.", "correctCategory": "Different from mine", "reason": "Again -- sort based on your own real family, not a fixed answer." },
+                    { "id": "celebrate", "label": "A family that celebrates a festival together.", "correctCategory": "Same as mine", "reason": "Compare honestly to your own family's celebrations." }
+                  ],
+                  "testsConceptIds": ["same-different"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Every family has things that are the same as others, and things that are different.", "There is no \"correct\" kind of family -- all families are different and all are valued."],
+                  "homeworkItems": ["Ask a family member one thing they think makes your family special or different."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "This lesson is deliberately open-ended -- the sorting activity has no single correct answer, since it depends on each child's own real family. Emphasise there is no \"right\" kind of family throughout.",
+              "steps": [
+                { "stepId": "explain-same-different", "talkingPoints": ["Use two real, contrasting examples from the class (with permission) to show a genuine same/different comparison."], "timingMinutes": 6 },
+                { "stepId": "flip-family-facts", "talkingPoints": ["Invite a few children to share their own answer to each fact before revealing the card's note."], "timingMinutes": 7 },
+                { "stepId": "sort-family-facts", "talkingPoints": ["Make explicit that children sort based on THEIR OWN family, not a guessed \"correct\" answer -- this is about honest comparison, not getting it right."], "timingMinutes": 8, "misconceptions": ["Children may worry there's a \"correct\" family type to compare against -- reassure repeatedly that all family types are valid and normal."] },
+                { "stepId": "recap", "talkingPoints": ["Close by naming one thing that's the same across every family in the room (e.g. everyone has people who care about them)."], "timingMinutes": 4 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "When we compare two families, we might notice...", "options": ["Only things that are the same", "Only things that are different", "Things that are the same AND things that are different"], "correctOptionIndex": 2 },
+              { "quizType": "exit", "question": "Is there one \"correct\" kind of family?", "options": ["Yes, only one kind is correct", "No -- all families are different, and all are valued"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Same", "definition": "Things that are alike between two people or families." },
+              { "term": "Different", "definition": "Things that are not alike between two people or families." },
+              { "term": "Compare", "definition": "To look at two things and notice what's the same and what's different." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Same and Different Families",
+              "instructions": "Think about your own family for these questions.",
+              "questions": [
+                { "prompt": "Draw one thing about your family that you think might be the same as a friend's family." },
+                { "prompt": "Draw one thing about your family that might be different from a friend's family." },
+                { "prompt": "Tell a grown-up: why is it good that families can be different from each other?" }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 3 -- Working Together and Listening to Others",
+            "objectives": "Work with a partner or small group to share information; listen to someone else's idea, even when it is different from your own.",
+            "syllabusRef": "Collaboration",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-collaboration",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Working together",
+                  "conceptId": "collaboration",
+                  "definition": "Working together means sharing ideas with a partner and listening carefully to their ideas too, even when they are different from your own.",
+                  "example": "If you think your family's favourite food is rice and your partner says theirs is noodles, working together means listening to both ideas, not only sharing your own."
+                },
+                {
+                  "id": "tap-collaboration-tips",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Tips for working together",
+                  "cards": [
+                    { "id": "share", "icon": "🤝", "label": "Share your idea", "content": "Tell your partner what you think, in a clear voice." },
+                    { "id": "listen", "icon": "👂", "label": "Listen to their idea", "content": "Wait quietly and really listen while your partner shares." },
+                    { "id": "different-ok", "icon": "💭", "label": "Different ideas are okay", "content": "Your partner's idea can be different from yours, and that's completely fine." }
+                  ]
+                },
+                {
+                  "id": "guess-collaboration",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "Is this good teamwork?",
+                  "cards": [
+                    { "question": "Your partner shares an idea you don't agree with, so you say \"that's wrong\" and ignore them. Is this good teamwork?", "answer": "No -- a better response is to listen fully, then share your own idea too. Both ideas can be shared." },
+                    { "question": "You listen to your partner's idea, then say \"that's interesting, I thought something different too\" and share yours. Is this good teamwork?", "answer": "Yes! You listened first, then shared your own idea kindly." }
+                  ],
+                  "testsConceptIds": ["collaboration"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Working together means sharing your own idea AND listening to your partner's idea.", "Different ideas are okay -- we don't need to agree on everything."],
+                  "homeworkItems": ["Practise listening carefully while a family member talks, without interrupting."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Pair children up for a short real task (comparing family facts from Lesson 1/2) so the collaboration skill is practised on genuine content, not a hypothetical.",
+              "steps": [
+                { "stepId": "explain-collaboration", "talkingPoints": ["Role-play a bad example (talking over your partner) and a good example (listening then sharing) live."], "timingMinutes": 6 },
+                { "stepId": "tap-collaboration-tips", "talkingPoints": ["Ask children to demonstrate \"listening posture\" (facing your partner, quiet body) before practising."], "timingMinutes": 6 },
+                { "stepId": "guess-collaboration", "talkingPoints": ["Let children spot what's wrong with the bad example in their own words before revealing the answer."], "timingMinutes": 6 },
+                { "stepId": "recap", "talkingPoints": ["Pair children up to share one family fact each and practise listening to their partner's fact too."], "timingMinutes": 7, "misconceptions": ["Children at this age often want to talk at the same time as their partner -- gently remind them of the talking-piece idea from English lessons if useful."] }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Working together means...", "options": ["Only sharing your own idea", "Only listening to others", "Sharing your idea AND listening to others' ideas"], "correctOptionIndex": 2 },
+              { "quizType": "exit", "question": "If your partner has a different idea from you, you should...", "options": ["Say they're wrong and ignore them", "Listen to their idea, then share your own too", "Stop talking to them"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Collaboration", "definition": "Working together with someone, sharing ideas and listening to theirs too." },
+              { "term": "Teamwork", "definition": "Working well together with a partner or group." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Working Together and Listening to Others",
+              "instructions": "Do this worksheet with a partner if possible.",
+              "questions": [
+                { "prompt": "Draw yourself sharing an idea with a partner." },
+                { "prompt": "Draw yourself listening to your partner's idea." },
+                { "prompt": "Tell a grown-up one idea your partner shared that was different from your own." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 4 -- Sharing What We Found Out",
+            "objectives": "Present something learned about family and community to the class using pictures or simple words; say what was interesting about what was learned.",
+            "syllabusRef": "Communication / Reflection",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-presenting",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Sharing what we found out",
+                  "conceptId": "presenting",
+                  "definition": "Presenting means telling other people what you found out, using pictures, objects, or simple words.",
+                  "example": "You could hold up your family drawing and say: \"I found out that my family likes to cook together on weekends.\""
+                },
+                {
+                  "id": "tap-presenting-tips",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Tips for presenting",
+                  "cards": [
+                    { "id": "loud", "icon": "🔊", "label": "Clear voice", "content": "Speak loud and clear so everyone listening can hear you." },
+                    { "id": "show", "icon": "🖼️", "label": "Show your picture", "content": "Hold up your drawing or picture so everyone can see it too." },
+                    { "id": "onefact", "icon": "💡", "label": "Say one clear fact", "content": "Share one thing you found out -- you don't need to say everything at once." }
+                  ]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Presenting means telling others what we found out, using pictures or words.", "A clear voice, showing your picture, and sharing one fact make a good presentation."],
+                  "homeworkItems": ["Practise saying your one family fact out loud at home before presenting it to the class."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "This is a sharing/presenting lesson -- most of the time should be spent on children actually presenting their family drawings from earlier lessons to a partner or small group, not more input.",
+              "steps": [
+                { "stepId": "explain-presenting", "talkingPoints": ["Model presenting your own \"family fact\" example first, using the three tips explicitly."], "timingMinutes": 5 },
+                { "stepId": "tap-presenting-tips", "talkingPoints": ["Have children practise just the \"clear voice\" tip alone first with a partner before combining all three."], "timingMinutes": 6 },
+                { "stepId": "recap", "talkingPoints": ["Give as much time as possible for children to actually present their own family fact/drawing to a partner or small group -- this is the heart of the lesson."], "timingMinutes": 15, "misconceptions": ["Shy children may want to skip presenting altogether -- offer presenting to just one partner as a gentler first step rather than the whole class."] }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "When presenting, it helps to...", "options": ["Whisper so no one hears", "Speak clearly and show your picture", "Hide your picture"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "A good presentation shares...", "options": ["Every single detail you know, very fast", "One clear fact, in a clear voice", "Nothing at all"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Presenting", "definition": "Telling other people what you found out, using pictures, objects or words." },
+              { "term": "Fact", "definition": "A true piece of information you found out." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Sharing What We Found Out",
+              "instructions": "Use your family drawing from earlier lessons to help you present.",
+              "questions": [
+                { "prompt": "Write or draw the one fact about your family you will share with the class." },
+                { "prompt": "Practise saying your fact out loud three times." },
+                { "prompt": "After presenting, draw a smiley face if you felt proud of sharing!" }
+              ]
+            }
+          }
+        ]
+      },
+      "unit-2": {
+        "topicId": "unit-2",
+        "title": "Looking After Our Environment",
+        "description": "Challenge 2 of Stage 1: Looking after planet Earth.",
+        "lessons": [
+          {
+            "title": "Lesson 5 -- Asking Questions About Our Environment",
+            "objectives": "Think of simple questions about the natural environment around us; begin to gather information by looking closely and asking others.",
+            "syllabusRef": "Research",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-environment-questions",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Asking questions about our environment",
+                  "conceptId": "environment-questions",
+                  "definition": "Our environment is everything around us in nature -- the beach, the sea, the trees, the animals. We can ask questions to find out more about it.",
+                  "example": "Walking near the beach, you might ask: \"What lives in the sea near us?\" or \"Why is there rubbish on the sand?\""
+                },
+                {
+                  "id": "tap-environment-questions",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Questions about our environment",
+                  "cards": [
+                    { "id": "animals", "icon": "🐠", "label": "What lives here?", "content": "Asks about the plants and animals in a place, like fish in the sea." },
+                    { "id": "changes", "icon": "🔄", "label": "What has changed?", "content": "Asks whether a place looks different than it used to." },
+                    { "id": "why", "icon": "❓", "label": "Why does this happen?", "content": "Asks the reason behind something we notice, like why rubbish washes up on the beach." }
+                  ]
+                },
+                {
+                  "id": "guess-environment-question",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "What question would you ask?",
+                  "cards": [
+                    { "question": "You notice plastic bags on the beach. What question could you ask?", "answer": "\"Why is there plastic on the beach?\" or \"Where does this rubbish come from?\"" },
+                    { "question": "You see lots of small crabs near the rocks. What question could you ask?", "answer": "\"What do the crabs eat?\" or \"Where do the crabs live?\"" }
+                  ],
+                  "testsConceptIds": ["environment-questions"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Our environment is everything around us in nature.", "We can ask questions like what lives here, what has changed, and why something happens."],
+                  "homeworkItems": ["Look closely at one part of nature near your home (a garden, the beach, a tree) and think of one question about it."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "If possible, take the class outside or to a window looking at nature before asking children to generate their own questions -- real observation grounds the skill.",
+              "steps": [
+                { "stepId": "explain-environment-questions", "talkingPoints": ["Look outside together (or at a photo of the local beach) and ask what children notice before modelling a question."], "timingMinutes": 6 },
+                { "stepId": "tap-environment-questions", "talkingPoints": ["Connect each question type back to something visible near the school if possible."], "timingMinutes": 6 },
+                { "stepId": "guess-environment-question", "talkingPoints": ["Accept multiple valid questions from children, not just the one given as the answer."], "timingMinutes": 7 },
+                { "stepId": "recap", "talkingPoints": ["Have each child name one thing in nature they'd like to know more about."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Our environment means...", "options": ["Only our classroom", "Everything around us in nature", "Only animals"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "\"Why is there rubbish on the beach?\" is an example of a...", "options": ["Answer", "Question", "Fact"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Environment", "definition": "Everything around us in nature -- the beach, the sea, the trees, the animals." },
+              { "term": "Notice", "definition": "To see and pay attention to something." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Asking Questions About Our Environment",
+              "instructions": "Look closely at nature near your home before answering.",
+              "questions": [
+                { "prompt": "Draw one plant or animal you see near your home." },
+                { "prompt": "Write or say one question you have about it." },
+                { "prompt": "Ask a grown-up your question. What did they say?" }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 6 -- What Helps and What Harms Our Environment",
+            "objectives": "Look at information about human actions and sort them into ones that help and ones that harm the environment; share a simple opinion.",
+            "syllabusRef": "Analysis / Evaluation",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-help-harm",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Helping and harming our environment",
+                  "conceptId": "help-harm",
+                  "definition": "Some things people do help our environment stay healthy, and some things harm it.",
+                  "example": "Planting a tree helps the environment. Dropping plastic on the beach harms it."
+                },
+                {
+                  "id": "flip-actions",
+                  "type": "flip_card",
+                  "kicker": "Tap to flip",
+                  "title": "Actions to think about",
+                  "cards": [
+                    { "term": "Planting a tree", "hint": "Tap to reveal", "definition": "Helps -- trees give animals a home and clean the air." },
+                    { "term": "Dropping rubbish on the beach", "hint": "Tap to reveal", "definition": "Harms -- animals can get hurt and the beach becomes dirty." },
+                    { "term": "Picking up litter", "hint": "Tap to reveal", "definition": "Helps -- it keeps the beach clean and safe for animals." }
+                  ]
+                },
+                {
+                  "id": "sort-help-harm",
+                  "type": "sort_classify",
+                  "kicker": "Now you try",
+                  "title": "Helps or harms?",
+                  "categories": ["Helps our environment", "Harms our environment"],
+                  "items": [
+                    { "id": "recycling", "label": "Putting plastic bottles in a recycling bin.", "correctCategory": "Helps our environment", "reason": "Recycling means the plastic can be reused instead of becoming rubbish in nature." },
+                    { "id": "littering", "label": "Throwing a plastic bag onto the sand.", "correctCategory": "Harms our environment", "reason": "Litter can hurt animals and pollutes the beach." },
+                    { "id": "watering", "label": "Watering a young plant so it can grow.", "correctCategory": "Helps our environment", "reason": "Caring for plants helps them grow and support other living things." },
+                    { "id": "burning", "label": "Burning rubbish in an open pile.", "correctCategory": "Harms our environment", "reason": "Burning rubbish can pollute the air that people and animals breathe." }
+                  ],
+                  "testsConceptIds": ["help-harm"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Some actions help our environment, like planting trees and recycling.", "Some actions harm our environment, like littering and burning rubbish."],
+                  "homeworkItems": ["Notice one action at home that helps the environment and tell your class tomorrow."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Use real, local examples throughout (the beach, plastic waste, planting) so the helps/harms distinction connects to the children's actual surroundings.",
+              "steps": [
+                { "stepId": "explain-help-harm", "talkingPoints": ["Show two real or pictured examples (a clean beach and a littered one) and ask children which they'd rather visit, before naming help/harm."], "timingMinutes": 6 },
+                { "stepId": "flip-actions", "talkingPoints": ["Ask children to guess whether each action helps or harms before flipping the card."], "timingMinutes": 6 },
+                { "stepId": "sort-help-harm", "talkingPoints": ["Encourage children to explain WHY each action helps or harms, not just sort it correctly."], "timingMinutes": 8, "misconceptions": ["Children may think an action is automatically \"harmful\" just because it involves something they dislike (e.g. bugs) -- keep the focus on real environmental impact."] },
+                { "stepId": "recap", "talkingPoints": ["Ask children to share one helping action they could try themselves this week."], "timingMinutes": 5 }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Planting a tree is an action that...", "options": ["Harms the environment", "Helps the environment", "Does nothing"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "Throwing a plastic bag onto the sand is an action that...", "options": ["Helps the environment", "Harms the environment", "Does nothing"], "correctOptionIndex": 1 }
+            ],
+            "flashcards": [
+              { "term": "Helps", "definition": "An action that is good for our environment, like planting a tree." },
+              { "term": "Harms", "definition": "An action that is bad for our environment, like littering." },
+              { "term": "Recycling", "definition": "Reusing materials like plastic instead of throwing them away." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- What Helps and What Harms Our Environment",
+              "instructions": "Think about actions you have seen at home, at school, or at the beach.",
+              "questions": [
+                { "prompt": "Draw one action that helps the environment." },
+                { "prompt": "Draw one action that harms the environment." },
+                { "prompt": "Tell a grown-up: which helping action could YOU do this week?" }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 7 -- Working Together to Help Our Environment",
+            "objectives": "Work with a partner or small group to plan one simple action that helps the environment; listen to and combine different ideas.",
+            "syllabusRef": "Collaboration",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-team-plan",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Planning together",
+                  "conceptId": "team-plan",
+                  "definition": "When we plan together, everyone shares an idea, and the group picks or combines ideas to make one plan.",
+                  "example": "One person suggests picking up litter, another suggests planting seeds -- the group might decide to do both!"
+                },
+                {
+                  "id": "tap-plan-steps",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Steps for planning together",
+                  "cards": [
+                    { "id": "share-ideas", "icon": "💡", "label": "Everyone shares an idea", "content": "Each person in the group says one idea for helping the environment." },
+                    { "id": "listen-all", "icon": "👂", "label": "Listen to every idea", "content": "The group listens carefully to all the ideas before choosing." },
+                    { "id": "pick-plan", "icon": "✅", "label": "Pick or combine a plan", "content": "The group agrees on one plan, using one idea or mixing a few together." }
+                  ]
+                },
+                {
+                  "id": "guess-team-plan",
+                  "type": "guess_reveal",
+                  "kicker": "Now you try",
+                  "title": "Good group planning?",
+                  "cards": [
+                    { "question": "One person in the group only wants to do their own idea and won't listen to anyone else's. Is this good group planning?", "answer": "No -- good planning means listening to everyone's ideas, not just your own." },
+                    { "question": "The group listens to three ideas, then agrees to try two of them together. Is this good group planning?", "answer": "Yes! Everyone was heard, and the group combined good ideas." }
+                  ],
+                  "testsConceptIds": ["team-plan"]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Planning together means everyone shares an idea and the group listens to all of them.", "A group can pick one idea or combine a few together."],
+                  "homeworkItems": ["Tell a family member the plan your group agreed on to help the environment."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Put children into small groups of 3-4 to actually plan one real, doable class environmental action (a litter pick, planting seeds, a poster) -- the planning should lead to a genuine follow-up activity.",
+              "steps": [
+                { "stepId": "explain-team-plan", "talkingPoints": ["Give a quick real example of the class combining two ideas for something else earlier in the term, if one exists, to ground the concept."], "timingMinutes": 5 },
+                { "stepId": "tap-plan-steps", "talkingPoints": ["Physically go through the three steps as a whole-class example planning one shared action, before splitting into small groups."], "timingMinutes": 7 },
+                { "stepId": "guess-team-plan", "talkingPoints": ["Role-play the \"won't listen\" example briefly so the contrast is vivid."], "timingMinutes": 6 },
+                { "stepId": "recap", "talkingPoints": ["Give small groups 10 minutes to plan one real class environmental action, then have each group share their plan in one sentence."], "timingMinutes": 12, "misconceptions": ["In small groups, one confident child may dominate the plan -- circulate and prompt quieter children to share their idea directly."] }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Good group planning means...", "options": ["Only one person decides", "Everyone shares an idea and the group listens to all of them", "No one shares any ideas"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "A group can turn several ideas into one plan by...", "options": ["Picking or combining ideas together", "Ignoring everyone except one person", "Refusing to make a plan"], "correctOptionIndex": 0 }
+            ],
+            "flashcards": [
+              { "term": "Plan", "definition": "A decision about what to do, made after sharing and listening to ideas." },
+              { "term": "Combine", "definition": "To put two or more ideas together." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Working Together to Help Our Environment",
+              "instructions": "Think about the plan your group made in class.",
+              "questions": [
+                { "prompt": "Draw the environmental action your group planned." },
+                { "prompt": "Write or say whose idea helped make the plan." },
+                { "prompt": "Tell a grown-up when your group will try the plan." }
+              ]
+            }
+          },
+          {
+            "title": "Lesson 8 -- Sharing Our Ideas to Help the Planet",
+            "objectives": "Present the group's environmental action plan to the class; reflect on what was learned across the Challenge and say what surprised or interested them.",
+            "syllabusRef": "Communication / Reflection",
+            "phase": "content",
+            "interactiveContent": {
+              "steps": [
+                {
+                  "id": "explain-reflection",
+                  "type": "explanation",
+                  "kicker": "New idea",
+                  "title": "Thinking back on what we learned",
+                  "conceptId": "reflection",
+                  "definition": "Reflecting means thinking back over everything we learned and saying what was interesting, surprising, or important to us.",
+                  "example": "You might say: \"I was surprised that even small rubbish can hurt sea animals -- that's why I want to help pick up litter.\""
+                },
+                {
+                  "id": "tap-reflection-sentences",
+                  "type": "tap_reveal_grid",
+                  "kicker": "Tap to explore",
+                  "title": "Sentence starters for reflecting",
+                  "cards": [
+                    { "id": "learned", "icon": "📚", "label": "\"I learned that...\"", "content": "Used to share a new fact you found out." },
+                    { "id": "surprised", "icon": "😮", "label": "\"I was surprised that...\"", "content": "Used to share something you didn't expect." },
+                    { "id": "want", "icon": "🌱", "label": "\"Now I want to...\"", "content": "Used to share an action you'd like to try because of what you learned." }
+                  ]
+                },
+                {
+                  "id": "recap",
+                  "type": "recap_checklist",
+                  "summaryPoints": ["Reflecting means thinking back and sharing what was interesting, surprising, or important.", "Our group plans are one way we turn what we learned into real action."],
+                  "homeworkItems": ["Try your group's environmental action plan at home or with your family, if you can."]
+                }
+              ]
+            },
+            "teachingScript": {
+              "overview": "Most of this lesson should be groups presenting their environmental plan from Lesson 7, followed by a short whole-class reflection using the sentence starters.",
+              "steps": [
+                { "stepId": "explain-reflection", "talkingPoints": ["Model your own reflection sentence about something you learned from the class this week."], "timingMinutes": 4 },
+                { "stepId": "tap-reflection-sentences", "talkingPoints": ["Have children practise each sentence starter with a partner before presenting to the whole class."], "timingMinutes": 6 },
+                { "stepId": "recap", "talkingPoints": ["Give each group 1-2 minutes to present their environmental plan, then invite two or three children to share a reflection sentence."], "timingMinutes": 18, "misconceptions": ["Groups may want to only describe WHAT they'll do, not WHY -- gently prompt them to add one reason."] }
+              ]
+            },
+            "quizQuestions": [
+              { "quizType": "starter", "question": "Reflecting means...", "options": ["Forgetting what we learned", "Thinking back and sharing what was interesting or important", "Only listening to the teacher"], "correctOptionIndex": 1 },
+              { "quizType": "exit", "question": "\"I was surprised that...\" is a sentence starter used for...", "options": ["Sharing something unexpected that you learned", "Asking a question", "Giving an instruction"], "correctOptionIndex": 0 }
+            ],
+            "flashcards": [
+              { "term": "Reflect", "definition": "To think back over what we learned and share what was interesting or important." },
+              { "term": "Surprised", "definition": "Feeling like something happened that you didn't expect." }
+            ],
+            "worksheetContent": {
+              "title": "Worksheet -- Sharing Our Ideas to Help the Planet",
+              "instructions": "Think back over everything we learned in this Challenge.",
+              "questions": [
+                { "prompt": "Finish this sentence: \"I learned that...\"" },
+                { "prompt": "Finish this sentence: \"I was surprised that...\"" },
+                { "prompt": "Finish this sentence: \"Now I want to...\"" }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "allowUpdatingExistingTerm": false
+}
