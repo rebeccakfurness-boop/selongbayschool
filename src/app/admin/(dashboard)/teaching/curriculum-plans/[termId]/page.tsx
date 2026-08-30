@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ensureSchema } from '@/lib/db';
 import { getCurrentStaff, canAccessClass } from '@/lib/current-staff';
 import { getCurriculumTermTree, getSyllabusTopicsForTerm, getAssignableOccurrences } from '@/lib/curriculum';
+import TeachingTabs from '@/components/admin/TeachingTabs';
 import LessonPlanningDashboard from '@/components/admin/LessonPlanningDashboard';
 
 export const dynamic = 'force-dynamic';
@@ -37,7 +38,24 @@ export default async function LessonPlanningDashboardPage({ params }: { params: 
     getAssignableOccurrences(term.class_name, term.subject),
   ]);
 
-  return <LessonPlanningDashboard term={term} syllabusTopics={syllabusTopics} assignableOccurrences={assignableOccurrences} />;
+  return (
+    <>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+        <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">
+          <Link href="/admin/teaching/lesson-planning" className="hover:underline">
+            Lesson Planning &amp; Preparation
+          </Link>{' '}
+          /{' '}
+          <Link href={`/admin/teaching/lesson-planning/${encodeURIComponent(term.class_name)}`} className="hover:underline">
+            {term.class_name}
+          </Link>{' '}
+          / {term.subject}
+        </p>
+        <TeachingTabs active="lessonPlanning" />
+      </div>
+      <LessonPlanningDashboard term={term} syllabusTopics={syllabusTopics} assignableOccurrences={assignableOccurrences} />
+    </>
+  );
 }
 
 function NotFound() {

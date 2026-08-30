@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default function TeachingTabs({
   active,
 }: {
-  active: 'lessons' | 'curriculum' | 'curriculumPlans' | 'lessonPlanning' | 'resources' | 'schedule' | 'calendar' | 'worksheets';
+  active: 'home' | 'lessons' | 'curriculum' | 'curriculumPlans' | 'lessonPlanning' | 'resources' | 'schedule' | 'calendar' | 'worksheets';
 }) {
   const tabs = [
     { key: 'schedule', href: '/admin/teaching/schedule', label: 'Weekly Schedule' },
