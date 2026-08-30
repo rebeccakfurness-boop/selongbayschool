@@ -38,8 +38,25 @@ export interface LessonPlanOption {
   title: string;
 }
 
+export interface CurriculumTermOption {
+  id: number;
+  class_name: string;
+  subject: string;
+}
+
 function formatTime(t: string): string {
   return t.slice(0, 5);
+}
+
+/** Same routing rule as the Lesson Planning & Preparation subject grid (see
+ * teaching/lesson-planning/[className]/page.tsx): straight to the dashboard when there's exactly
+ * one programme for this class/subject, otherwise to the term-picker (which itself handles the
+ * zero-programmes case with a link to create one). */
+function planningHref(className: string, subject: string, terms: CurriculumTermOption[]): string {
+  const matches = terms.filter((t) => t.class_name === className && t.subject === subject);
+  return matches.length === 1
+    ? `/admin/teaching/curriculum-plans/${matches[0].id}`
+    : `/admin/teaching/lesson-planning/${encodeURIComponent(className)}/${encodeURIComponent(subject)}`;
 }
 
 export default function ScheduleManager({
@@ -47,6 +64,7 @@ export default function ScheduleManager({
   classOptions,
   teacherOptions,
   lessonPlanOptions,
+  curriculumTerms,
   role,
   currentAdminUserId,
 }: {
@@ -54,6 +72,7 @@ export default function ScheduleManager({
   classOptions: string[];
   teacherOptions: TeacherOption[];
   lessonPlanOptions: LessonPlanOption[];
+  curriculumTerms: CurriculumTermOption[];
   role: StaffRole;
   currentAdminUserId: number;
 }) {
@@ -231,8 +250,8 @@ export default function ScheduleManager({
     <div className="flex flex-col gap-6">
       {!isAdmin && (
         <p className="rounded-md border border-sand-line bg-sand/20 px-4 py-3 text-sm text-ink-soft">
-          Click a session below to add a lesson plan or Meet link to your own classes. Only admins can change a
-          session&apos;s time, room, or teacher.
+          Click a session below to jump to its lesson planning dashboard, or to add a lesson plan or Meet link to
+          your own classes. Only admins can change a session&apos;s time, room, or teacher.
         </p>
       )}
       {isAdmin && (
@@ -403,6 +422,7 @@ export default function ScheduleManager({
           canEditContent={isAdmin || selectedEntry.teacher_id === currentAdminUserId}
           teacherOptions={teacherOptions}
           lessonPlanOptions={lessonPlanOptions.filter((lp) => lp.class_name === selectedEntry.class_name)}
+          planningHref={planningHref(selectedEntry.class_name, selectedEntry.subject, curriculumTerms)}
           onClose={() => setSelectedEntry(null)}
           onRemove={() => remove(selectedEntry.id)}
           onReschedule={async (patch) => {
@@ -437,6 +457,7 @@ function SessionCellModal({
   canEditContent,
   teacherOptions,
   lessonPlanOptions,
+  planningHref,
   onClose,
   onRemove,
   onReschedule,
@@ -447,6 +468,7 @@ function SessionCellModal({
   canEditContent: boolean;
   teacherOptions: TeacherOption[];
   lessonPlanOptions: LessonPlanOption[];
+  planningHref: string;
   onClose: () => void;
   onRemove: () => void;
   onReschedule: (patch: {
@@ -476,6 +498,12 @@ function SessionCellModal({
           <button type="button" onClick={onClose} aria-label="Close" className="text-ink-soft hover:text-ink">
             ✕
           </button>
+        </div>
+
+        <div className="mt-3">
+          <Button href={planningHref} variant="primary" className="!px-5 !py-2 !text-sm">
+            Open lesson planning →
+          </Button>
         </div>
 
         {isAdmin ? (
