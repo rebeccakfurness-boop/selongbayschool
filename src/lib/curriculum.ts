@@ -681,3 +681,92 @@ export async function getAssignableOccurrences(className: string, subject: strin
     LIMIT 200
   `) as unknown as AssignableOccurrenceRow[];
 }
+
+export interface YearOverviewUnit {
+  title: string;
+  lessonCount: number;
+}
+
+export interface YearOverviewTerm {
+  termId: number;
+  termLabel: string;
+  startDate: string | null;
+  endDate: string | null;
+  units: YearOverviewUnit[];
+}
+
+export interface YearOverviewStrand {
+  title: string;
+  objectiveCount: number;
+}
+
+export interface YearOverview {
+  className: string;
+  subject: string;
+  frameworkLabel: string | null;
+  ongoingCard: OngoingCard | null;
+  terms: YearOverviewTerm[];
+  strands: YearOverviewStrand[];
+}
+
+/** The whole year's shape for one class+subject in one read -- every term's units (with a lesson
+ * count and date range, not the lessons themselves) plus the strand list, for the parent-facing
+ * year-overview one-pager (src/app/admin/(dashboard)/teaching/overview/[className]/[subject]).
+ * Deliberately shallow: a parent-facing exec summary shows unit titles and strand names, never
+ * individual lessons or leaf objective codes -- see that page for the actual layout. Strands are
+ * read from whichever term has any (they're duplicated identically across every term of a subject
+ * -- see real-teaching-import.ts's own comment on why), so a subject with only one term still
+ * gets its full strand list. */
+export async function getYearOverview(className: string, subject: string): Promise<YearOverview | null> {
+  const terms = (await sql`
+    SELECT id, term_label, framework_label, ongoing_card
+    FROM curriculum_terms WHERE class_name = ${className} AND subject = ${subject}
+    ORDER BY term_label
+  `) as unknown as { id: number; term_label: string; framework_label: string | null; ongoing_card: OngoingCard | null }[];
+
+  if (terms.length === 0) return null;
+  const termIds = terms.map((t) => t.id);
+
+  const [unitRows, strandRows] = await Promise.all([
+    sql`
+      SELECT u.term_id, u.title, u.sort_order,
+        (SELECT count(*)::int FROM curriculum_unit_lessons l WHERE l.unit_id = u.id) AS lesson_count,
+        (SELECT min(l.lesson_date)::text FROM curriculum_unit_lessons l WHERE l.unit_id = u.id) AS min_date,
+        (SELECT max(l.lesson_date)::text FROM curriculum_unit_lessons l WHERE l.unit_id = u.id) AS max_date
+      FROM curriculum_term_units u
+      WHERE u.term_id = ANY(${termIds})
+      ORDER BY u.term_id, u.sort_order
+    ` as unknown as Promise<
+      { term_id: number; title: string; sort_order: number; lesson_count: number; min_date: string | null; max_date: string | null }[]
+    >,
+    sql`
+      SELECT p.title, count(c.id)::int AS objective_count
+      FROM curriculum_syllabus_topics p
+      LEFT JOIN curriculum_syllabus_topics c ON c.term_id = p.term_id AND c.parent_ref = p.ref
+      WHERE p.term_id = ${termIds[0]} AND p.parent_ref IS NULL
+      GROUP BY p.title, p.sort_order, p.ref
+      ORDER BY p.sort_order
+    ` as unknown as Promise<{ title: string; objective_count: number }[]>,
+  ]);
+
+  const overviewTerms: YearOverviewTerm[] = terms.map((t) => {
+    const termUnits = unitRows.filter((u) => u.term_id === t.id);
+    const dates = termUnits.flatMap((u) => [u.min_date, u.max_date]).filter((d): d is string => Boolean(d));
+    return {
+      termId: t.id,
+      termLabel: t.term_label,
+      startDate: dates.length ? dates.reduce((a, b) => (a < b ? a : b)) : null,
+      endDate: dates.length ? dates.reduce((a, b) => (a > b ? a : b)) : null,
+      units: termUnits.map((u) => ({ title: u.title, lessonCount: u.lesson_count })),
+    };
+  });
+
+  return {
+    className,
+    subject,
+    frameworkLabel: terms.find((t) => t.framework_label)?.framework_label ?? null,
+    ongoingCard: terms.find((t) => t.ongoing_card)?.ongoing_card ?? null,
+    terms: overviewTerms,
+    strands: strandRows.map((s) => ({ title: s.title, objectiveCount: s.objective_count })),
+  };
+}

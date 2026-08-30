@@ -139,6 +139,14 @@ export default function LessonPlanningDashboard({
               {t === 'home' ? 'Home' : t === 'sequence' ? 'Full sequence' : 'Syllabus map'}
             </button>
           ))}
+          <a
+            href={`/admin/teaching/overview/${encodeURIComponent(term.class_name)}/${encodeURIComponent(term.subject)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-full border border-sand-line bg-paper px-4 py-1.5 text-sm font-semibold text-ink hover:border-teal"
+          >
+            📋 Year overview (PDF)
+          </a>
           {lessons.some((l) => l.real_worksheet) && (
             <a
               href={`/admin/teaching/worksheets/${term.id}`}
