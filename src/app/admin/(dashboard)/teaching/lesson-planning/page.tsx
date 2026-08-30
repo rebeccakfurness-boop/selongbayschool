@@ -3,7 +3,6 @@ import { ensureSchema } from '@/lib/db';
 import { getCurrentStaff, getAssignedClasses } from '@/lib/current-staff';
 import { getAllCurriculumTerms, getCurriculumTermsForClasses } from '@/lib/curriculum';
 import { YEAR_LEVELS } from '@/lib/curriculum-year-levels';
-import TeachingTabs from '@/components/admin/TeachingTabs';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,16 +24,13 @@ export default async function LessonPlanningPage() {
 
   return (
     <section>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="font-display text-2xl font-semibold text-ink">Lesson Planning &amp; Preparation</h1>
-          <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
-            Every year level&apos;s teaching programmes in one place. Pick a year level, then a subject, to open its
-            full lesson-planning dashboard — next lesson, pacing against the real timetable, and the syllabus
-            map, exactly as built in Curriculum Plans.
-          </p>
-        </div>
-        <TeachingTabs active="lessonPlanning" />
+      <div>
+        <h1 className="font-display text-2xl font-semibold text-ink">Lesson Planning &amp; Preparation</h1>
+        <p className="mt-1 max-w-2xl text-[15px] text-ink-soft">
+          Every year level&apos;s teaching programmes in one place. Pick a year level, then a subject, to open its
+          full lesson-planning dashboard — next lesson, pacing against the real timetable, and the syllabus
+          map, exactly as built in Curriculum Plans.
+        </p>
       </div>
 
       {yearLevels.length === 0 ? (

@@ -11,6 +11,7 @@ const SECTIONS: { href: string; label: string; adminOnly?: boolean }[] = [
   { href: '/admin/import', label: 'Import Data', adminOnly: true },
   { href: '/admin/staff', label: 'Staff', adminOnly: true },
   { href: '/admin/teaching', label: 'Teaching' },
+  { href: '/admin/teaching/lesson-planning', label: 'Lesson Planning & Preparation' },
   { href: '/admin/policies', label: 'School Policies' },
   { href: '/admin/feedback', label: 'Parent Feedback', adminOnly: true },
   { href: '/admin/incidents', label: 'Incident Reports' },
@@ -41,6 +42,15 @@ export default function AdminSidebar({ role }: { role: StaffRole }) {
 
   const sections = SECTIONS.filter((section) => role === 'admin' || !section.adminOnly);
 
+  // Some sections nest inside another (e.g. Lesson Planning & Preparation lives under
+  // /admin/teaching/lesson-planning, itself under Teaching's /admin/teaching) -- a plain
+  // startsWith would light up both. Only the longest (most specific) matching href wins.
+  const activeHref = sections.reduce<string | null>((best, section) => {
+    const matches = section.href === '/admin' ? pathname === '/admin' : (pathname ?? '').startsWith(section.href);
+    if (!matches) return best;
+    return !best || section.href.length > best.length ? section.href : best;
+  }, null);
+
   return (
     <div className="flex h-full w-64 flex-shrink-0 flex-col bg-teal-deep">
       <div className="flex justify-center px-6 py-6">
@@ -48,7 +58,7 @@ export default function AdminSidebar({ role }: { role: StaffRole }) {
       </div>
       <nav className="flex flex-1 flex-col gap-1 px-4">
         {sections.map((section) => {
-          const active = section.href === '/admin' ? pathname === '/admin' : (pathname ?? '').startsWith(section.href);
+          const active = section.href === activeHref;
           return (
             <Link
               key={section.href}
