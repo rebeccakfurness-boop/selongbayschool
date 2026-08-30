@@ -44,7 +44,13 @@ async function importOne(path: string): Promise<boolean> {
     frameworkLabel: d.course.input.frameworkLabel || undefined,
     syllabusText: '',
     allowUpdatingExistingTerm: d.allowUpdatingExistingTerm === true,
+    sourceVerified: d.course.sourceVerified,
+    sourceNote: d.course.sourceNote,
   };
+
+  if (d.course.sourceVerified === false) {
+    console.log(`  ⚠ UNVERIFIED SOURCE: ${d.course.sourceNote ?? '(no sourceNote provided)'}`);
+  }
 
   try {
     const provider = new StaticContentGenerationProvider(d.course.content);

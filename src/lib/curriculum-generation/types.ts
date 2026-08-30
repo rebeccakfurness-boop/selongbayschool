@@ -148,6 +148,12 @@ export interface GenerateCurriculumTermInput {
    * rejected unless this is explicitly true -- see generate.ts's own comment on why regenerating
    * over existing content needs an explicit go-ahead rather than silently replacing it. */
   allowUpdatingExistingTerm?: boolean;
+  /** Explicit provenance flag from a static-import course JSON (see curriculumImportSchema) --
+   * false means the topic/strand structure was reconstructed (e.g. from web search) rather than
+   * read from the real official syllabus document. Left undefined by every other caller, which
+   * leaves curriculum_terms.source_verified NULL ("not specified"). */
+  sourceVerified?: boolean;
+  sourceNote?: string;
 }
 
 export interface GenerateCurriculumTermResult {

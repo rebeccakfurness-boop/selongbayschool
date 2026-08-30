@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 25;
+const SCHEMA_VERSION = 26;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1876,6 +1876,14 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE curriculum_terms ADD COLUMN IF NOT EXISTS exam_series TEXT`;
       await sql`ALTER TABLE curriculum_terms ADD COLUMN IF NOT EXISTS syllabus_pdf_url TEXT`;
       await sql`ALTER TABLE curriculum_terms ADD COLUMN IF NOT EXISTS workbook_pdf_url TEXT`;
+
+      // NULL means "not specified" (every hand-authored "New programme" and every pre-existing
+      // term) -- only a static import whose course JSON explicitly declares sourceVerified sets
+      // this to true/false. false is a deliberate, visible flag that a course's topic/strand
+      // structure was reconstructed (e.g. from web search) rather than read from the real official
+      // syllabus document -- see the unverified-source banner in CurriculumPlanManager.
+      await sql`ALTER TABLE curriculum_terms ADD COLUMN IF NOT EXISTS source_verified BOOLEAN`;
+      await sql`ALTER TABLE curriculum_terms ADD COLUMN IF NOT EXISTS source_note TEXT`;
 
       // Real, printable/editable worksheet files -- docx is the primary, mandatory format (most
       // teachers print and mark up a worksheet before class, which a locked PDF doesn't support);

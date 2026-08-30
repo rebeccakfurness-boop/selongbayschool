@@ -209,9 +209,15 @@ export async function generateCurriculumTerm(
   }
 
   const [term] = (await sql`
-    INSERT INTO curriculum_terms (class_name, subject, term_label, framework_label)
-    VALUES (${input.className}, ${input.subject}, ${input.termLabel}, ${input.frameworkLabel ?? parsedSyllabus.frameworkLabel ?? null})
-    ON CONFLICT (class_name, subject, term_label) DO UPDATE SET framework_label = EXCLUDED.framework_label
+    INSERT INTO curriculum_terms (class_name, subject, term_label, framework_label, source_verified, source_note)
+    VALUES (
+      ${input.className}, ${input.subject}, ${input.termLabel}, ${input.frameworkLabel ?? parsedSyllabus.frameworkLabel ?? null},
+      ${input.sourceVerified ?? null}, ${input.sourceNote ?? null}
+    )
+    ON CONFLICT (class_name, subject, term_label) DO UPDATE SET
+      framework_label = EXCLUDED.framework_label,
+      source_verified = EXCLUDED.source_verified,
+      source_note = EXCLUDED.source_note
     RETURNING id
   `) as unknown as { id: number }[];
   const termId = term.id;

@@ -13,6 +13,12 @@ export interface CurriculumTerm {
   exam_series: string | null;
   syllabus_pdf_url: string | null;
   workbook_pdf_url: string | null;
+  /** false means this term's topic/strand structure was explicitly flagged by its importer as
+   * reconstructed (e.g. from web search) rather than read from the real official syllabus
+   * document -- see source_note for the human-readable explanation. null means unspecified
+   * (every hand-authored programme and every term predating this field). */
+  source_verified: boolean | null;
+  source_note: string | null;
 }
 
 export interface CurriculumLessonResource {
@@ -111,7 +117,7 @@ export type LessonProgressStatus = 'not_started' | 'in_progress' | 'completed';
 export async function getCurriculumTermsForClass(className: string | null): Promise<CurriculumTerm[]> {
   if (!className) return [];
   return (await sql`
-    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url
+    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url, source_verified, source_note
     FROM curriculum_terms WHERE class_name = ${className}
     ORDER BY subject, term_label
   `) as unknown as CurriculumTerm[];
@@ -120,7 +126,7 @@ export async function getCurriculumTermsForClass(className: string | null): Prom
 export async function getCurriculumTermsForClasses(classNames: string[]): Promise<CurriculumTerm[]> {
   if (classNames.length === 0) return [];
   return (await sql`
-    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url
+    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url, source_verified, source_note
     FROM curriculum_terms WHERE class_name = ANY(${classNames})
     ORDER BY class_name, subject, term_label
   `) as unknown as CurriculumTerm[];
@@ -132,7 +138,7 @@ export async function getCurriculumTermsForClasses(classNames: string[]): Promis
  * foreign key and a mismatch would otherwise make the programme invisible to everyone. */
 export async function getAllCurriculumTerms(): Promise<CurriculumTerm[]> {
   return (await sql`
-    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url
+    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url, source_verified, source_note
     FROM curriculum_terms
     ORDER BY class_name, subject, term_label
   `) as unknown as CurriculumTerm[];
@@ -148,7 +154,7 @@ export async function getAllCurriculumTerms(): Promise<CurriculumTerm[]> {
  * needs to see (and act on) needs_review lessons. */
 export async function getCurriculumTermTree(termId: number, includeNeedsReview = false): Promise<CurriculumTermTree | null> {
   const [term] = (await sql`
-    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url
+    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url, source_verified, source_note
     FROM curriculum_terms WHERE id = ${termId}
   `) as unknown as CurriculumTerm[];
   if (!term) return null;
@@ -334,6 +340,8 @@ export async function getLessonForOnlineFlow(
       exam_series: null,
       syllabus_pdf_url: null,
       workbook_pdf_url: null,
+      source_verified: null,
+      source_note: null,
     },
   };
 }

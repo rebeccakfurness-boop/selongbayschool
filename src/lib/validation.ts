@@ -1197,6 +1197,14 @@ const workbookMasterySignalSchema = z.object({
 
 export const curriculumImportSchema = z
   .object({
+    // Explicit provenance flag for the topic/strand structure below -- false means it was
+    // reconstructed (e.g. from web search) rather than read from the real official syllabus
+    // document. Optional and defaults to unspecified (curriculum_terms.source_verified stays
+    // NULL) so existing/hand-authored import files aren't required to carry it; when present,
+    // sourceNote should explain the provenance in plain language for a teacher reviewing the
+    // course (see the unverified-source banner in CurriculumPlanManager).
+    sourceVerified: z.boolean().optional(),
+    sourceNote: z.string().trim().max(2000).optional(),
     input: z.object({
       className: z.string().trim().min(1, 'input.className is required').max(100),
       subject: z.string().trim().min(1, 'input.subject is required').max(200),

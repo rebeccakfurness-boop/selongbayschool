@@ -52,6 +52,8 @@ export async function POST(req: NextRequest) {
       syllabusText: '',
       requestedByAdminUserId: staff.adminUserId,
       allowUpdatingExistingTerm: d.allowUpdatingExistingTerm === true,
+      sourceVerified: d.course.sourceVerified,
+      sourceNote: d.course.sourceNote,
     };
 
     const provider = new StaticContentGenerationProvider(d.course.content);

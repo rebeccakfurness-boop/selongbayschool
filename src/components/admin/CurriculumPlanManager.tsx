@@ -88,6 +88,8 @@ export default function CurriculumPlanManager({
         framework_label: frameworkLabel || null,
         exam_board: null,
         exam_series: null,
+        source_verified: null,
+        source_note: null,
         syllabus_pdf_url: null,
         workbook_pdf_url: null,
       };
@@ -199,17 +201,22 @@ export default function CurriculumPlanManager({
       <div className="flex flex-wrap gap-2">
         {terms.map((t) => {
           const unmatched = isAdmin && !classOptions.includes(t.class_name);
+          const unverifiedSource = t.source_verified === false;
+          const titleParts = [
+            unmatched ? "This class doesn't match any class name in use on a Child Card yet" : null,
+            unverifiedSource ? (t.source_note ?? 'This programme has an unverified source — see the warning after selecting it.') : null,
+          ].filter(Boolean);
           return (
             <button
               key={t.id}
               type="button"
               onClick={() => selectTerm(t.id)}
-              title={unmatched ? "This class doesn't match any class name in use on a Child Card yet" : undefined}
+              title={titleParts.length > 0 ? titleParts.join(' — ') : undefined}
               className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
                 selectedTermId === t.id ? 'bg-teal text-white' : 'border border-sand-line bg-paper text-ink hover:border-teal'
-              } ${unmatched ? 'border-orange text-orange-deep' : ''}`}
+              } ${unmatched || unverifiedSource ? 'border-orange text-orange-deep' : ''}`}
             >
-              {unmatched && '⚠ '}
+              {(unmatched || unverifiedSource) && '⚠ '}
               {t.class_name} · {t.subject} · {t.term_label}
             </button>
           );
@@ -305,6 +312,13 @@ function TermEditor({
 
   return (
     <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
+      {term.source_verified === false && (
+        <div role="alert" className="mb-4 rounded-md border-2 border-orange-deep bg-orange/15 px-5 py-4 text-[15px] font-semibold text-orange-deep">
+          ⚠ UNVERIFIED SOURCE — this programme&apos;s topic/strand structure was NOT read from the official
+          syllabus document.
+          {term.source_note && <p className="mt-1 text-sm font-normal text-orange-deep">{term.source_note}</p>}
+        </div>
+      )}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="font-display text-lg font-semibold text-teal-deep">
