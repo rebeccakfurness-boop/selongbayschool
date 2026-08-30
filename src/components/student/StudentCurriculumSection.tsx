@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { CurriculumTerm, CurriculumTermTree, LessonProgressStatus } from '@/lib/curriculum';
-import CurriculumTermBrowser from '@/components/CurriculumTermBrowser';
+import CurriculumDashboardView from '@/components/CurriculumDashboardView';
 
 /** Read-only counterpart to ParentCurriculumSection — no onSetProgress, since students don't set
  * their own progress (only teachers/parents do, per the agreed scope). */
@@ -65,7 +65,7 @@ export default function StudentCurriculumSection({
       )}
       {loading && <p className="text-sm text-ink-soft">Loading…</p>}
       {!loading && termTree && (
-        <CurriculumTermBrowser
+        <CurriculumDashboardView
           term={termTree}
           progress={progress}
           canSetProgress={false}

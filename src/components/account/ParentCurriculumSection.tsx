@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { CurriculumTerm, CurriculumTermTree, LessonProgressStatus } from '@/lib/curriculum';
-import CurriculumTermBrowser from '@/components/CurriculumTermBrowser';
+import CurriculumDashboardView from '@/components/CurriculumDashboardView';
 
 /** Fetches the full term tree client-side once a programme is picked, rather than the server
  * loading every one of a class's programmes up front — a class can have several subjects, each
@@ -75,7 +75,7 @@ export default function ParentCurriculumSection({
       )}
       {loading && <p className="text-sm text-ink-soft">Loading…</p>}
       {!loading && termTree && (
-        <CurriculumTermBrowser
+        <CurriculumDashboardView
           term={termTree}
           progress={progress}
           canSetProgress

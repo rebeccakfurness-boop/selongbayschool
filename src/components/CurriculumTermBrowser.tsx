@@ -128,7 +128,7 @@ export default function CurriculumTermBrowser({ term, progress, canSetProgress, 
   );
 }
 
-function LessonDetailModal({
+export function LessonDetailModal({
   lesson,
   status,
   canSetProgress,
