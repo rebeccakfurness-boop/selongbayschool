@@ -12,11 +12,15 @@ export default async function ClassSchedulePage() {
   await ensureSchema();
   const staff = await getCurrentStaff();
 
-  // Admins pick from the fixed, currently-live class list, not every distinct class_name a child
-  // happens to have on file (which includes years of inconsistent real-world variants -- "G1",
-  // "Kindergarten", "Grade 2", etc.). Teachers keep seeing their own real assignments, whatever
-  // name they were made under, so this never locks a teacher out of their own schedule.
-  const classOptions = staff.role === 'teacher' ? await getAssignedClasses(staff.adminUserId) : [...WEEKLY_SCHEDULE_CLASSES];
+  // Both roles are scoped to the fixed, currently-live class list, not every distinct class_name a
+  // child happens to have on file (which includes years of inconsistent real-world variants --
+  // "G1", "Kindergarten", "Grade 2", etc.). Teachers still only see their own assigned classes --
+  // intersected with the live list, not replaced by it -- so this stays scoped per teacher; it's
+  // just that an assignment under one of those old names no longer shows here.
+  const classOptions =
+    staff.role === 'teacher'
+      ? (await getAssignedClasses(staff.adminUserId)).filter((c) => (WEEKLY_SCHEDULE_CLASSES as readonly string[]).includes(c))
+      : [...WEEKLY_SCHEDULE_CLASSES];
 
   let entries: ClassScheduleRow[] = [];
   if (staff.role === 'teacher') {
