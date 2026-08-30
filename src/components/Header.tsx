@@ -20,7 +20,7 @@ export default function Header() {
   const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null);
 
   return (
-    <header className="sticky top-0 z-50 bg-teal shadow-md">
+    <header className="sticky top-0 z-50 bg-teal shadow-md print:hidden">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 md:px-8">
         <Link href="/" className="flex items-center" onClick={() => setOpen(false)}>
           <Image

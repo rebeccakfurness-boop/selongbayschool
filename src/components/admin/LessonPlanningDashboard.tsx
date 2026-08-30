@@ -126,7 +126,7 @@ export default function LessonPlanningDashboard({
           </h1>
           <p className="mt-1 text-sm text-ink-soft">{term.term_label}{term.framework_label ? ` · ${term.framework_label}` : ''}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 print:hidden">
           {(['home', 'sequence', 'syllabus'] as const).map((t) => (
             <button
               key={t}
@@ -141,6 +141,28 @@ export default function LessonPlanningDashboard({
           ))}
         </div>
       </div>
+
+      {term.source_note && (
+        <p className="mt-4 rounded-md border border-sand-line bg-sand/20 px-4 py-3 text-xs text-ink-soft">
+          <span className="font-bold uppercase tracking-wide">Syllabus source: </span>
+          {term.source_note}
+        </p>
+      )}
+
+      {term.ongoing_card && (
+        <div className="mt-4 rounded-md border border-teal/30 bg-teal/5 p-5">
+          <h2 className="font-display text-base font-semibold text-teal-deep">{term.ongoing_card.title}</h2>
+          <p className="mt-1 text-sm text-ink-soft">{term.ongoing_card.blurb}</p>
+          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+            {term.ongoing_card.items.map((item) => (
+              <li key={item.ref} className="rounded-sm border border-sand-line bg-white px-3 py-2 text-xs">
+                <span className="font-mono font-semibold text-teal-deep">{item.ref}</span>
+                <span className="ml-1.5 text-ink-soft">{item.title}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="mt-6">
         {tab === 'home' && (
@@ -215,6 +237,26 @@ function MaterialButtons({
 }) {
   return (
     <div className="flex flex-wrap gap-2">
+      {lesson.real_plan && (
+        <a
+          href={`/admin/teaching/lesson-plan/${lesson.id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full border border-sand-line bg-paper px-3 py-1.5 text-xs font-semibold text-ink hover:border-teal"
+        >
+          📗 Lesson plan
+        </a>
+      )}
+      {lesson.real_worksheet && (
+        <a
+          href={`/admin/teaching/worksheet/${lesson.id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full border border-sand-line bg-paper px-3 py-1.5 text-xs font-semibold text-ink hover:border-teal"
+        >
+          🖨️ Worksheet
+        </a>
+      )}
       {lesson.teaching_script && (
         <button type="button" onClick={() => onOpenScript(lesson.id)} className="rounded-full border border-sand-line bg-paper px-3 py-1.5 text-xs font-semibold text-ink hover:border-teal">
           📘 Teaching script
@@ -260,9 +302,13 @@ function MaterialButtons({
           🃏 Flashcards ({lesson.flashcards.length})
         </button>
       )}
-      {!hasMaterials(lesson) && !lesson.worksheet_url && !lesson.worksheet_docx_url && !lesson.worksheet_pdf_url && !lesson.teaching_script && (
-        <span className="text-xs text-ink-soft">Materials not generated yet.</span>
-      )}
+      {!hasMaterials(lesson) &&
+        !lesson.worksheet_url &&
+        !lesson.worksheet_docx_url &&
+        !lesson.worksheet_pdf_url &&
+        !lesson.teaching_script &&
+        !lesson.real_plan &&
+        !lesson.real_worksheet && <span className="text-xs text-ink-soft">Materials not generated yet.</span>}
     </div>
   );
 }
@@ -302,7 +348,13 @@ function HomeView({
         </div>
         <StatTile
           label="Next session date"
-          value={nextLesson?.occurrence_date ? formatDate(nextLesson.occurrence_date) : '—'}
+          value={
+            nextLesson?.occurrence_date
+              ? formatDate(nextLesson.occurrence_date)
+              : nextLesson?.lesson_date
+                ? formatDate(nextLesson.lesson_date)
+                : '—'
+          }
           foot={nextLesson ? `${PHASE_LABELS[nextLesson.phase]}${nextLesson.syllabus_ref ? ` · ${nextLesson.syllabus_ref}` : ''}` : ''}
         />
         <StatTile label="Flagged for re-teach" value={String(reteachList.length)} foot={reteachList.length ? reteachList.map((l) => `#${lessons.indexOf(l) + 1}`).join(', ') : 'None right now'} />
@@ -500,7 +552,11 @@ function OccurrencePicker({
   if (!editing) {
     return (
       <button type="button" onClick={() => setEditing(true)} className="whitespace-nowrap hover:text-teal-deep hover:underline">
-        {lesson.occurrence_date ? formatDate(lesson.occurrence_date) : 'Not scheduled'}
+        {lesson.occurrence_date
+          ? formatDate(lesson.occurrence_date)
+          : lesson.lesson_date
+            ? `${formatDate(lesson.lesson_date)} (scheme of work)`
+            : 'Not scheduled'}
       </button>
     );
   }

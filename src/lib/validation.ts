@@ -1408,3 +1408,112 @@ export const classCurriculumImportSchema = z
     }
   });
 export type ClassCurriculumImportInput = z.infer<typeof classCurriculumImportSchema>;
+
+// --- Real, pre-authored teaching export (export/<group>/<class>.json -- see
+// class-curriculum/real-teaching-import.ts). Unlike classCurriculumImportSchema above (a compact
+// spec this app schedules and derives plans/worksheets from), every lesson here already carries
+// its own real date, full plan and worksheet -- this schema just validates the shape is what the
+// importer expects, with no scheduling logic of its own. ---
+
+const realTeachingObjectiveSchema = z.object({
+  ref: z.string().trim().min(1),
+  title: z.string().trim().min(1),
+});
+
+const realTeachingResourceSchema = z.object({
+  title: z.string().trim().min(1),
+  url: z.string().trim().min(1),
+});
+
+const realTeachingCurriculumSchema = z.object({
+  code: z.string().trim(),
+  title: z.string().trim().min(1),
+  stage: z.string().trim(),
+  framework: z.string().trim().optional(),
+  note: z.string().trim().min(1, 'curriculum.note is required -- it is the honest provenance line and must be rendered, never dropped'),
+  strands: z
+    .array(
+      z.object({
+        title: z.string().trim().min(1),
+        objectives: z.array(realTeachingObjectiveSchema),
+      })
+    )
+    .min(1),
+});
+
+const realTeachingOngoingSchema = z.object({
+  title: z.string().trim().min(1),
+  blurb: z.string().trim().min(1),
+  items: z.array(realTeachingObjectiveSchema),
+});
+
+const realTeachingUnitSchema = z.object({
+  title: z.string().trim().min(1),
+  short: z.string().trim().optional(),
+  strand: z.string().trim().min(1),
+  refs: z.array(z.string().trim()).optional(),
+  vocabulary: z.string().trim().optional(),
+  materials: z.string().trim().optional(),
+});
+
+const realTeachingPlanSchema = z.object({
+  objectives: z.array(realTeachingObjectiveSchema).optional().default([]),
+  focus: z.string().trim().optional().default(''),
+  prior: z.string().trim().optional().default(''),
+  next: z.string().trim().optional().default(''),
+  intro: z.string().trim().optional().default(''),
+  main: z.array(z.string()).optional().default([]),
+  plenary: z.string().trim().optional().default(''),
+  look_for: z.string().trim().optional().default(''),
+  resources: z.array(z.string()).optional().default([]),
+  vocabulary: z.string().trim().optional().default(''),
+  notes: z.string().trim().optional().default(''),
+  timings: z.array(z.string()).optional().default([]),
+});
+
+const realTeachingWorksheetSchema = z.object({
+  tasks: z.array(
+    z.object({
+      heading: z.string().trim().min(1),
+      instruction: z.string().trim().optional().default(''),
+      /** Trusted HTML fragment from the source's own export -- see the column comment on
+       * curriculum_unit_lessons.real_worksheet in db.ts for the "no scripts, no external
+       * references" guarantee this relies on. */
+      body: z.string(),
+    })
+  ),
+  objectives: z.string().trim().optional().default(''),
+});
+
+const realTeachingLessonSchema = z.object({
+  lesson: z.number().int().positive(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'date must be YYYY-MM-DD'),
+  weekday: z.string().trim(),
+  term: z.string().trim().min(1),
+  unit: z.string().trim().min(1),
+  strand: z.string().trim().min(1),
+  phase: z.enum(['content', 'practice', 'review', 'assessment', 'project']),
+  refs: z.array(z.string().trim()).optional().default([]),
+  title: z.string().trim().min(1),
+  notes: z.string().trim().optional().default(''),
+  plan: realTeachingPlanSchema,
+  worksheet: realTeachingWorksheetSchema,
+});
+
+export const realTeachingExportSchema = z.object({
+  group: z.string().trim().min(1),
+  groupLabel: z.string().trim().min(1),
+  stage: z.string().trim(),
+  slug: z.string().trim().min(1),
+  title: z.string().trim().min(1),
+  short: z.string().trim().min(1),
+  code: z.string().trim(),
+  periods: z.string().trim(),
+  driveFolder: z.string().trim().optional(),
+  resources: z.array(realTeachingResourceSchema).optional().default([]),
+  curriculum: realTeachingCurriculumSchema,
+  ongoing: realTeachingOngoingSchema.nullish(),
+  units: z.array(realTeachingUnitSchema).optional().default([]),
+  lessons: z.array(realTeachingLessonSchema).min(1, 'a class export needs at least one lesson'),
+});
+export type RealTeachingExportInput = z.infer<typeof realTeachingExportSchema>;

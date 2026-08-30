@@ -33,7 +33,7 @@ export default function Footer() {
   const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(siteConfig.contact.mapQuery)}&output=embed`;
 
   return (
-    <footer className="bg-teal-deep text-white">
+    <footer className="bg-teal-deep text-white print:hidden">
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-3 md:px-8">
         <div>
           <Image src="/images/logo-full.png" alt={siteConfig.name} width={378} height={299} className="h-20 w-auto" />

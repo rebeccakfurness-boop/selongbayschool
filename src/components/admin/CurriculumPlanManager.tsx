@@ -92,6 +92,7 @@ export default function CurriculumPlanManager({
         source_note: null,
         syllabus_pdf_url: null,
         workbook_pdf_url: null,
+        ongoing_card: null,
       };
       setTerms((prev) => [...prev, newTerm]);
       setSubject('');

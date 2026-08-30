@@ -51,7 +51,7 @@ export default function AdminSidebar({ role }: { role: StaffRole }) {
   }, null);
 
   return (
-    <div className="flex h-full w-64 flex-shrink-0 flex-col bg-teal-deep">
+    <div className="flex h-full w-64 flex-shrink-0 flex-col bg-teal-deep print:hidden">
       <div className="flex justify-center px-6 py-6">
         <Image src="/images/logo-full.png" alt="Selong Bay School" width={378} height={299} className="h-14 w-auto" />
       </div>

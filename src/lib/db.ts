@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 26;
+const SCHEMA_VERSION = 27;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1939,6 +1939,35 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_curriculum_generation_jobs_class ON curriculum_generation_jobs (class_name, subject)`;
+
+      // --- Real, pre-authored teaching export (see class-curriculum/real-teaching-import.ts) ---
+      // A lesson imported from a real, already-dated scheme of work (not the generation engine's
+      // AI/template output) carries its own fixed calendar date, full free-text lesson plan, and
+      // printable worksheet with real HTML task markup -- three things no existing column can hold:
+      // lesson_date is independent of occurrence_id/occurrence_date (that pair only exists once a
+      // lesson is pinned to a live, generated class_schedule session; this date is the source
+      // scheme of work's own fixed pacing, always present for one of these lessons regardless of
+      // whether it's ever assigned to a real session). real_plan holds the whole authored plan
+      // object (focus/prior/next/intro/main/plenary/look_for/resources/vocabulary/timings) verbatim
+      // -- deliberately not spread across new columns, since nothing here needs to be queried
+      // individually. real_worksheet holds { tasks: [{heading, instruction, body}], objectives } --
+      // body is a trusted HTML fragment (ruled lines, answer boxes, tables; no scripts, no external
+      // references -- see the source's own SCHEMA.md guarantee) meant to be rendered with
+      // dangerouslySetInnerHTML, entirely separate from worksheet_content/worksheet_docx_url/
+      // worksheet_pdf_url above (that trio is the generation engine's own structured-source ->
+      // rendered-file pipeline; a lesson imported this way never has those set). All three stay
+      // null for every lesson from every other import/generation path.
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS lesson_date DATE`;
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS real_plan JSONB`;
+      await sql`ALTER TABLE curriculum_unit_lessons ADD COLUMN IF NOT EXISTS real_worksheet JSONB`;
+
+      // A cross-cutting card (e.g. Cambridge Mathematics' "Thinking and Working Mathematically") a
+      // real export can carry once per class/subject, developed through every unit rather than
+      // taught on its own -- copied onto every term row created for that class/subject (the same
+      // "whole-subject data duplicated per term" call as the syllabus map below, since this app's
+      // programmes are per-term but the card applies across the whole year). Null for every term
+      // that isn't from that import path.
+      await sql`ALTER TABLE curriculum_terms ADD COLUMN IF NOT EXISTS ongoing_card JSONB`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

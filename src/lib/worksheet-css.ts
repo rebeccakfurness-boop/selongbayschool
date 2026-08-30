@@ -1,0 +1,97 @@
+/** The `ws-*` classes real_worksheet.tasks[].body HTML fragments are written against -- ported
+ * near-verbatim from the source export's export/styles/worksheet.css (see
+ * class-curriculum/real-teaching-import.ts), with its CSS custom properties re-pointed at this
+ * site's own palette/type tokens instead of redefining them. Rendered inline via a plain <style>
+ * tag on the worksheet print page (src/app/admin/(dashboard)/teaching/worksheet/[lessonId]) --
+ * body itself is a trusted fragment (see that column's comment in db.ts), never escaped input, so
+ * a plain <style> child is exactly as safe as importing a stylesheet would be. */
+export const WORKSHEET_CSS = `
+  .ws { --series-blue: #007c83; --text-secondary: #3f5559; --text-muted: #5c7175; --sand: #dad0bc;
+    --baseline: #c9bda3; --grid: #dad0bc; --font-display: var(--font-telex), serif;
+    max-width: 840px; margin: 0 auto; color: #17282b; }
+  .ws-head { display:flex; justify-content:space-between; align-items:flex-end; gap:16px;
+    border-bottom:2px solid var(--series-blue); padding-bottom:12px; margin-bottom:6px; flex-wrap:wrap; }
+  .ws-head h1 { font-family:var(--font-display); font-size:21px; margin:4px 0 0; }
+  .ws-meta { font-size:12px; color:var(--text-secondary); }
+  .ws-name { display:flex; gap:22px; font-size:12px; color:var(--text-secondary); margin:14px 0 22px; }
+  .ws-name span { flex:1; border-bottom:1px solid var(--baseline); padding-bottom:3px; }
+  .ws-task { margin-bottom: 26px; break-inside: avoid; }
+  .ws-task h2 { font-family:var(--font-display); font-size:15px; margin:0 0 2px; }
+  .ws-task .ws-inst { font-size:13px; color:var(--text-secondary); margin-bottom:10px; }
+  .ws-line { border-bottom:1px solid var(--baseline); height:30px; }
+  .ws-lab { font-size:12px; color:var(--text-muted); margin:8px 0 2px; }
+  .ws-boxes { display:flex; gap:8px; flex-wrap:wrap; margin:6px 0; }
+  .ws-boxes.wide { gap:26px; }
+  .ws-box { width:26px; height:26px; border:1.5px solid var(--baseline); border-radius:5px; display:inline-block; }
+  .ws-box.big { width:36px; height:36px; }
+  .ws-namebox { width:90px; border-bottom:1px solid var(--baseline); height:24px; display:inline-block; }
+  .ws-draw { border:1.5px dashed var(--baseline); border-radius:10px; }
+  .ws-dots { font-size:19px; letter-spacing:5px; color:var(--series-blue); }
+  .ws-count { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .ws-objs { flex:1; }
+  .ws-eq { font-size:15px; color:var(--text-secondary); }
+  .ws-sums { display:grid; grid-template-columns:repeat(2,1fr); gap:12px 26px; }
+  .ws-sum { display:flex; align-items:center; gap:10px; font-size:17px; font-variant-numeric:tabular-nums; }
+  .ws-ticks { display:grid; gap:8px; }
+  .ws-tick { display:flex; align-items:center; gap:10px; font-size:13px; }
+  .ws-cb { width:19px; height:19px; border:1.5px solid var(--baseline); border-radius:4px; flex:none; }
+  .ws-cols { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .ws-col { border:1.5px solid var(--baseline); border-radius:10px; overflow:hidden; }
+  .ws-colh { background:var(--sand); font-size:12px; font-weight:600; padding:6px 10px; }
+  .ws-colbody { height:120px; }
+  .ws-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .ws-table th { background:var(--sand); text-align:left; padding:7px 9px; font-size:12px;
+    border:1px solid var(--baseline); }
+  .ws-table td { border:1px solid var(--baseline); height:30px; padding:4px 9px; }
+  .ws-trace { font-family:var(--font-display); font-size:40px; letter-spacing:16px;
+    color:var(--grid); -webkit-text-stroke:1px var(--baseline); }
+  .ws-pattern { font-size:26px; letter-spacing:3px; color:var(--grid); margin-bottom:6px; }
+  .ws-grid { display:grid; gap:3px; max-width:330px; }
+  .ws-cell { aspect-ratio:1; border:1px solid var(--baseline); border-radius:3px; }
+  .ws-story { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+  .ws-scene { border:1.5px solid var(--baseline); border-radius:10px; height:135px; position:relative; }
+  .ws-scenel { position:absolute; top:0; left:0; right:0; background:var(--sand); font-size:11px;
+    font-weight:600; padding:4px 8px; border-radius:8px 8px 0 0; }
+  .ws-drawn, .ws-drawsum { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+  .ws-drawnbox { border:1.5px solid var(--baseline); border-radius:10px; padding:8px; }
+  .ws-num { font-family:var(--font-display); font-size:22px; font-weight:700; color:var(--series-blue); }
+  .ws-drawnarea { display:block; height:74px; }
+  .ws-drawnarea.small { height:60px; }
+  .ws-drawsumbox { border:1.5px solid var(--baseline); border-radius:10px; padding:8px; }
+  .ws-q { font-size:16px; display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+  .ws-track { display:flex; gap:5px; flex-wrap:wrap; }
+  .ws-tcell { width:34px; height:34px; border:1.5px solid var(--baseline); border-radius:5px;
+    display:grid; place-items:center; font-size:15px; font-variant-numeric:tabular-nums; }
+  .ws-tcell.wide { width:auto; min-width:88px; font-size:12px; padding:0 8px; }
+  .ws-shapes { display:flex; gap:26px; align-items:center; margin-bottom:8px; flex-wrap:wrap; }
+  .ws-shapes span { display:inline-block; border:1.5px solid var(--baseline); }
+  .s-circle { width:54px; height:54px; border-radius:50%; }
+  .s-square { width:54px; height:54px; }
+  .s-rect { width:74px; height:44px; }
+  .s-tri { width:0; height:0; border:none !important; border-left:30px solid transparent !important;
+    border-right:30px solid transparent !important; border-bottom:52px solid var(--grid) !important; }
+  .s-half { width:54px; height:54px; background:linear-gradient(90deg,var(--grid) 50%,transparent 50%); }
+  .s-halfbad { width:54px; height:54px; background:linear-gradient(90deg,var(--grid) 30%,transparent 30%); }
+  .ws-rhyme { display:flex; align-items:center; gap:14px; margin-bottom:10px; font-size:16px; }
+  .ws-beats { display:flex; gap:9px; flex-wrap:wrap; }
+  .ws-beat { width:24px; height:24px; border-radius:50%; border:1.5px solid var(--baseline); }
+  .ws-clocks { display:flex; gap:22px; flex-wrap:wrap; }
+  .ws-clock { text-align:center; }
+  .ws-clockface { display:block; width:80px; height:80px; border:2px solid var(--baseline); border-radius:50%; }
+  .ws-clocklab { font-size:12px; color:var(--text-secondary); }
+  .ws-swatches { display:flex; gap:12px; margin-bottom:6px; }
+  .ws-swatch { width:56px; height:44px; border:1.5px solid var(--baseline); border-radius:7px; }
+  .ws-compare { display:grid; gap:7px; margin-bottom:14px; }
+  .ws-bar { height:20px; background:var(--grid); border:1.5px solid var(--baseline); border-radius:5px; }
+  .ws-step { display:flex; align-items:center; gap:12px; margin-bottom:11px; }
+  .ws-stepline { flex:1; border-bottom:1px solid var(--baseline); height:26px; }
+  .ws-sb { margin-bottom:9px; display:flex; align-items:center; gap:14px; }
+  .ws-sbw { font-family:var(--font-display); font-size:19px; min-width:64px; color:var(--series-blue); }
+  .ws-hint { font-size:11.5px; color:var(--text-muted); font-style:italic; margin-top:6px; }
+  .ws-foot { border-top:1px solid var(--grid); margin-top:26px; padding-top:10px;
+    font-size:11px; color:var(--text-muted); display:flex; justify-content:space-between; gap:12px; }
+  @page { size: A4; margin: 16mm; }
+  @media print {
+    .ws-task { page-break-inside: avoid; }
+  }
+`;

@@ -1,6 +1,15 @@
 import { sql } from '@/lib/db';
 import type { InteractiveLessonContent, TeachingScript, VideoSource } from '@/lib/interactive-content-types';
 
+/** A cross-cutting theme a real teaching export can carry once per class/subject (e.g. Cambridge
+ * Mathematics' "Thinking and Working Mathematically") -- developed through every unit rather than
+ * taught as its own lesson. See CurriculumTerm.ongoing_card. */
+export interface OngoingCard {
+  title: string;
+  blurb: string;
+  items: { ref: string; title: string }[];
+}
+
 export interface CurriculumTerm {
   id: number;
   class_name: string;
@@ -19,6 +28,7 @@ export interface CurriculumTerm {
    * (every hand-authored programme and every term predating this field). */
   source_verified: boolean | null;
   source_note: string | null;
+  ongoing_card: OngoingCard | null;
 }
 
 export interface CurriculumLessonResource {
@@ -56,6 +66,32 @@ export interface CurriculumFlashcard {
   definition: string;
 }
 
+/** A real, already-authored lesson plan from a pre-dated scheme of work (see
+ * class-curriculum/real-teaching-import.ts) -- distinct from teaching_script, which is the
+ * generation engine's own AI/template output. main/timings/resources are ordered arrays;
+ * timings[0..2] line up with intro/main-as-a-block/plenary in that order. */
+export interface RealLessonPlan {
+  objectives: { ref: string; title: string }[];
+  focus: string;
+  prior: string;
+  next: string;
+  intro: string;
+  main: string[];
+  plenary: string;
+  look_for: string;
+  resources: string[];
+  vocabulary: string;
+  notes: string;
+  timings: string[];
+}
+
+/** A real, printable worksheet from the same source -- task.body is a trusted HTML fragment (see
+ * CurriculumLesson.real_worksheet's column comment in db.ts), never AI output. */
+export interface RealWorksheet {
+  tasks: { heading: string; instruction: string; body: string }[];
+  objectives: string;
+}
+
 export interface CurriculumLesson {
   id: number;
   unit_id: number;
@@ -64,6 +100,12 @@ export interface CurriculumLesson {
   objectives: string | null;
   worksheet_url: string | null;
   worksheet_title: string | null;
+  /** The lesson's fixed date from a real, pre-dated scheme of work -- see real_plan below.
+   * Independent of occurrence_date (which only exists once a lesson is pinned to a live, generated
+   * class_schedule session); null for every lesson from every other import/generation path. */
+  lesson_date: string | null;
+  real_plan: RealLessonPlan | null;
+  real_worksheet: RealWorksheet | null;
   /** A real, generated .docx (primary, mandatory format -- printable/editable) and PDF (secondary
    * preview) rendered from worksheet_content by ./curriculum-generation/worksheet-files.ts.
    * Independent of worksheet_url/worksheet_title above, which stay a teacher-pasted link to any
@@ -154,7 +196,7 @@ export async function getAllCurriculumTerms(): Promise<CurriculumTerm[]> {
  * needs to see (and act on) needs_review lessons. */
 export async function getCurriculumTermTree(termId: number, includeNeedsReview = false): Promise<CurriculumTermTree | null> {
   const [term] = (await sql`
-    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url, source_verified, source_note
+    SELECT id, class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url, source_verified, source_note, ongoing_card
     FROM curriculum_terms WHERE id = ${termId}
   `) as unknown as CurriculumTerm[];
   if (!term) return null;
@@ -173,7 +215,7 @@ export async function getCurriculumTermTree(termId: number, includeNeedsReview =
                  l.worksheet_docx_url, l.worksheet_pdf_url,
                  l.video_url, l.video_title, l.video_source, l.equipment_note, l.interactive_content, l.teaching_script,
                  l.review_status, l.phase, l.syllabus_ref, l.occurrence_id, l.taught, l.taught_at::text,
-                 l.flagged_for_reteach,
+                 l.flagged_for_reteach, l.lesson_date::text, l.real_plan, l.real_worksheet,
                  CASE WHEN o.is_cancelled THEN NULL ELSE o.occurrence_date::text END AS occurrence_date,
                  CASE WHEN o.is_cancelled THEN NULL ELSE o.starts_at::text END AS occurrence_starts_at
           FROM curriculum_unit_lessons l
@@ -312,10 +354,14 @@ export async function getLessonForOnlineFlow(
     phase: row.phase,
     syllabus_ref: row.syllabus_ref,
     occurrence_id: row.occurrence_id,
-    // Not joined here -- the online flow never displays a lesson's real-world date, only the
-    // planning dashboard does (see getCurriculumTermTree, which does join it).
+    // Not joined here -- the online flow never displays a lesson's real-world date, plan or
+    // worksheet, only the planning dashboard and the print routes do (see getCurriculumTermTree
+    // and getLessonPrintContext, which do select them).
     occurrence_date: null,
     occurrence_starts_at: null,
+    lesson_date: null,
+    real_plan: null,
+    real_worksheet: null,
     taught: row.taught,
     taught_at: row.taught_at,
     flagged_for_reteach: row.flagged_for_reteach,
@@ -342,7 +388,58 @@ export async function getLessonForOnlineFlow(
       workbook_pdf_url: null,
       source_verified: null,
       source_note: null,
+      ongoing_card: null,
     },
+  };
+}
+
+/** Minimal lookup for the print-only lesson-plan/worksheet routes (src/app/admin/(dashboard)/
+ * teaching/lesson-plan/[lessonId] and .../worksheet/[lessonId]) -- just enough to render a real,
+ * pre-authored plan or worksheet and gate access by class, not a full CurriculumLesson/term (those
+ * routes show nothing else about the programme). Not review_status-gated: staff previewing a
+ * needs_review lesson's plan/worksheet before publishing it is the normal case here, same as the
+ * planning dashboard itself (see getCurriculumTermTree's includeNeedsReview). */
+export async function getLessonPrintContext(lessonId: number): Promise<{
+  id: number;
+  title: string;
+  lessonDate: string | null;
+  realPlan: RealLessonPlan | null;
+  realWorksheet: RealWorksheet | null;
+  syllabusRef: string | null;
+  className: string;
+  subject: string;
+  termLabel: string;
+} | null> {
+  const rows = (await sql`
+    SELECT l.id, l.title, l.lesson_date::text AS lesson_date, l.real_plan, l.real_worksheet, l.syllabus_ref,
+           t.class_name, t.subject, t.term_label
+    FROM curriculum_unit_lessons l
+    JOIN curriculum_term_units u ON u.id = l.unit_id
+    JOIN curriculum_terms t ON t.id = u.term_id
+    WHERE l.id = ${lessonId}
+  `) as unknown as {
+    id: number;
+    title: string;
+    lesson_date: string | null;
+    real_plan: RealLessonPlan | null;
+    real_worksheet: RealWorksheet | null;
+    syllabus_ref: string | null;
+    class_name: string;
+    subject: string;
+    term_label: string;
+  }[];
+  const row = rows[0];
+  if (!row) return null;
+  return {
+    id: row.id,
+    title: row.title,
+    lessonDate: row.lesson_date,
+    realPlan: row.real_plan,
+    realWorksheet: row.real_worksheet,
+    syllabusRef: row.syllabus_ref,
+    className: row.class_name,
+    subject: row.subject,
+    termLabel: row.term_label,
   };
 }
 
