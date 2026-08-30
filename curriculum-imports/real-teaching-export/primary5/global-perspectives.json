@@ -1,0 +1,3387 @@
+{
+ "group": "primary5",
+ "groupLabel": "Primary 5",
+ "stage": "Stage 5",
+ "slug": "global-perspectives",
+ "title": "Cambridge Primary Global Perspectives",
+ "short": "Global Perspectives",
+ "code": "0838",
+ "periods": "1 period a week (Friday)",
+ "driveFolder": "",
+ "resources": [],
+ "curriculum": {
+  "code": "0838",
+  "title": "Cambridge Primary Global Perspectives",
+  "stage": "Stage 5",
+  "framework": "0838 Progression Grid v1.0",
+  "note": "There is <strong>no</strong> Global Perspectives folder for this year group on Google Drive. The objectives below are taken verbatim from the <em>Stages 5 and 6</em> column of the <em>0838 Primary Global Perspectives Progression Grid</em>, which is in the Primary 1 folder and covers every stage. Cambridge sets one objective for Stages 5 and 6 together, so Primary 5 and Primary 6 work towards the same objectives; the challenge topics here are deliberately different so the two years do not repeat, and the expectation is that Primary 6 meets them with more independence.",
+  "strands": [
+   {
+    "title": "Analysis",
+    "objectives": [
+     {
+      "ref": "56A.01",
+      "title": "Identify some key points from different perspectives on the same issue within a source"
+     },
+     {
+      "ref": "56A.02",
+      "title": "Find and interpret simple patterns in graphical or numerical data"
+     },
+     {
+      "ref": "56A.03",
+      "title": "Talk about simple causes of a local issue and consequences on others"
+     },
+     {
+      "ref": "56A.04",
+      "title": "Suggest and justify an action to make a positive difference to a local issue"
+     }
+    ]
+   },
+   {
+    "title": "Collaboration",
+    "objectives": [
+     {
+      "ref": "56Cl.01",
+      "title": "Work positively with team members, contributing useful ideas and helping to solve problems to improve team work or to achieve a shared outcome"
+     },
+     {
+      "ref": "56Cl.02",
+      "title": "The team plans and divides tasks fairly to achieve a shared outcome, considering the skills of team members and the time available, and manages disagreements"
+     }
+    ]
+   },
+   {
+    "title": "Communication",
+    "objectives": [
+     {
+      "ref": "56Cm.01",
+      "title": "Present information clearly with an appropriate structure and with some reference to sources where appropriate"
+     },
+     {
+      "ref": "56Cm.02",
+      "title": "Listen to ideas and information about an issue and ask questions relevant to the issue"
+     }
+    ]
+   },
+   {
+    "title": "Evaluation",
+    "objectives": [
+     {
+      "ref": "56E.01",
+      "title": "Discuss a source, considering the author or purpose, and use this to comment on its strengths and limitations"
+     },
+     {
+      "ref": "56E.02",
+      "title": "Discuss own opinion about another's perspective, identifying points you agree or disagree with"
+     }
+    ]
+   },
+   {
+    "title": "Reflection",
+    "objectives": [
+     {
+      "ref": "56Rf.01",
+      "title": "Discuss the impact of personal contribution on teamwork"
+     },
+     {
+      "ref": "56Rf.02",
+      "title": "Identify benefits and challenges of working together to achieve a shared outcome"
+     },
+     {
+      "ref": "56Rf.03",
+      "title": "Discuss ways that personal ideas may have been influenced by new information or the ideas of others"
+     },
+     {
+      "ref": "56Rf.04",
+      "title": "Identify skills learned or improved during an activity"
+     }
+    ]
+   },
+   {
+    "title": "Research",
+    "objectives": [
+     {
+      "ref": "56Rs.01",
+      "title": "Begin to construct research questions with support"
+     },
+     {
+      "ref": "56Rs.02",
+      "title": "Identify sources and locate relevant information and answers to questions within them"
+     },
+     {
+      "ref": "56Rs.03",
+      "title": "Conduct investigations, using interviews or questionnaires to test a prediction or begin to answer a research question"
+     },
+     {
+      "ref": "56Rs.04",
+      "title": "Select, organise and record relevant information from sources and findings from primary research, using an appropriate method"
+     }
+    ]
+   }
+  ]
+ },
+ "ongoing": null,
+ "units": [
+  {
+   "title": "Challenge 1: Culture and identity",
+   "short": "culture and identity",
+   "strand": "Global Perspectives",
+   "refs": [
+    "56Rf.03"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Challenge 2: Trade, money and where things come from",
+   "short": "trade",
+   "strand": "Global Perspectives",
+   "refs": [
+    "56Rf.03"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Challenge 3: Land, water and air",
+   "short": "land, water and air",
+   "strand": "Global Perspectives",
+   "refs": [
+    "56Rf.03"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Challenge 4: The digital world",
+   "short": "digital world",
+   "strand": "Global Perspectives",
+   "refs": [
+    "56Rf.03"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Challenge 5: Education and learning for everyone",
+   "short": "education",
+   "strand": "Global Perspectives",
+   "refs": [
+    "56Rf.03"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  }
+ ],
+ "lessons": [
+  {
+   "lesson": 1,
+   "date": "2026-07-31",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Culture and identity",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56A.01"
+   ],
+   "title": "Key points from different perspectives in one source",
+   "notes": "",
+   "plan": {
+    "lesson": 1,
+    "title": "Key points from different perspectives in one source",
+    "date": "2026-07-31",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Culture and identity",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56A.01",
+      "title": "Identify some key points from different perspectives on the same issue within a source"
+     }
+    ],
+    "focus": "Key points from different perspectives in one source",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 2: Beginning to construct our research questions",
+    "intro": "Read one short source together and ask who is speaking in it.",
+    "main": [
+     "Model pulling out the key points of one perspective and marking them in the text.",
+     "Learners find a second perspective in the same source and mark it too.",
+     "Learners set the two side by side in a table, in the author's own terms.",
+     "Discuss why two people can look at the same issue and see different things."
+    ],
+    "plenary": "Each learner states one perspective that is not their own, fairly.",
+    "look_for": "Representing a perspective accurately, even when disagreeing with it.",
+    "resources": [
+     "a source with more than one voice in it",
+     "two-column recording sheet"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56A.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-001/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-001/worksheet.html"
+   }
+  },
+  {
+   "lesson": 2,
+   "date": "2026-08-07",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Culture and identity",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Rs.01"
+   ],
+   "title": "Beginning to construct our research questions",
+   "notes": "",
+   "plan": {
+    "lesson": 2,
+    "title": "Beginning to construct our research questions",
+    "date": "2026-08-07",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Culture and identity",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Rs.01",
+      "title": "Begin to construct research questions with support"
+     }
+    ],
+    "focus": "Beginning to construct our research questions",
+    "prior": "Lesson 1: Key points from different perspectives in one source",
+    "next": "Lesson 3: Identifying sources and finding answers in them",
+    "intro": "Show a question that is too big to answer and one that is answerable.",
+    "main": [
+     "Agree what makes a research question answerable: scope, time, and access.",
+     "Learners draft three questions about the issue, with support.",
+     "Learners test each question: could we actually answer it here, this term?",
+     "Learners choose one, refine it, and write down what evidence would answer it."
+    ],
+    "plenary": "Two questions read aloud; the class says which is more answerable, and why.",
+    "look_for": "Questions narrow enough to answer with the sources and time we have.",
+    "resources": [
+     "question cards",
+     "planning sheets"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-002/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-002/worksheet.html"
+   }
+  },
+  {
+   "lesson": 3,
+   "date": "2026-08-14",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Culture and identity",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Rs.02"
+   ],
+   "title": "Identifying sources and finding answers in them",
+   "notes": "",
+   "plan": {
+    "lesson": 3,
+    "title": "Identifying sources and finding answers in them",
+    "date": "2026-08-14",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Culture and identity",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Rs.02",
+      "title": "Identify sources and locate relevant information and answers to questions within them"
+     }
+    ],
+    "focus": "Identifying sources and finding answers in them",
+    "prior": "Lesson 2: Beginning to construct our research questions",
+    "next": "Lesson 4: Who wrote this, and why: strengths and limitations",
+    "intro": "Show two sources on the same issue that disagree. Which do we trust, and why?",
+    "main": [
+     "Establish the questions we ask of any source: who made it, when, and why.",
+     "Learners work through a source, noting the author and the purpose.",
+     "Learners name one strength and one limitation of it, with evidence.",
+     "Learners locate the specific information that answers their research question."
+    ],
+    "plenary": "One source judged aloud by a pair; the class adds to their reasoning.",
+    "look_for": "Judging a source by author and purpose, not only by whether they agree with it.",
+    "resources": [
+     "two or three contrasting sources",
+     "source evaluation sheet"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.02"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-003/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-003/worksheet.html"
+   }
+  },
+  {
+   "lesson": 4,
+   "date": "2026-08-21",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Culture and identity",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56E.01"
+   ],
+   "title": "Who wrote this, and why: strengths and limitations",
+   "notes": "",
+   "plan": {
+    "lesson": 4,
+    "title": "Who wrote this, and why: strengths and limitations",
+    "date": "2026-08-21",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Culture and identity",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56E.01",
+      "title": "Discuss a source, considering the author or purpose, and use this to comment on its strengths and limitations"
+     }
+    ],
+    "focus": "Who wrote this, and why: strengths and limitations",
+    "prior": "Lesson 3: Identifying sources and finding answers in them",
+    "next": "Lesson 5: Selecting, organising and recording what we found",
+    "intro": "Show two sources on the same issue that disagree. Which do we trust, and why?",
+    "main": [
+     "Establish the questions we ask of any source: who made it, when, and why.",
+     "Learners work through a source, noting the author and the purpose.",
+     "Learners name one strength and one limitation of it, with evidence.",
+     "Learners locate the specific information that answers their research question."
+    ],
+    "plenary": "One source judged aloud by a pair; the class adds to their reasoning.",
+    "look_for": "Judging a source by author and purpose, not only by whether they agree with it.",
+    "resources": [
+     "two or three contrasting sources",
+     "source evaluation sheet"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56E.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-004/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-004/worksheet.html"
+   }
+  },
+  {
+   "lesson": 5,
+   "date": "2026-08-28",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Culture and identity",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Rs.04"
+   ],
+   "title": "Selecting, organising and recording what we found",
+   "notes": "",
+   "plan": {
+    "lesson": 5,
+    "title": "Selecting, organising and recording what we found",
+    "date": "2026-08-28",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Culture and identity",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Rs.04",
+      "title": "Select, organise and record relevant information from sources and findings from primary research, using an appropriate method"
+     }
+    ],
+    "focus": "Selecting, organising and recording what we found",
+    "prior": "Lesson 4: Who wrote this, and why: strengths and limitations",
+    "next": "Lesson 6: Planning and dividing the tasks fairly",
+    "intro": "Show a table of raw responses. What can we not yet see in it?",
+    "main": [
+     "Agree which representation suits this data and why the others do not.",
+     "Learners organise and record the information using that method.",
+     "Learners describe the pattern they can see, in a full sentence.",
+     "Learners say what the data does not tell us as well as what it does."
+    ],
+    "plenary": "One pattern stated aloud; the class checks it against the data.",
+    "look_for": "A pattern described from the data, and honesty about the gaps.",
+    "resources": [
+     "squared paper",
+     "the collected responses",
+     "graphic organisers"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.04"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-005/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-005/worksheet.html"
+   }
+  },
+  {
+   "lesson": 6,
+   "date": "2026-09-04",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Culture and identity",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "56Cl.02",
+    "56Cl.01"
+   ],
+   "title": "Planning and dividing the tasks fairly",
+   "notes": "",
+   "plan": {
+    "lesson": 6,
+    "title": "Planning and dividing the tasks fairly",
+    "date": "2026-09-04",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Culture and identity",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "56Cl.02",
+      "title": "The team plans and divides tasks fairly to achieve a shared outcome, considering the skills of team members and the time available, and manages disagreements"
+     },
+     {
+      "ref": "56Cl.01",
+      "title": "Work positively with team members, contributing useful ideas and helping to solve problems to improve team work or to achieve a shared outcome"
+     }
+    ],
+    "focus": "Planning and dividing the tasks fairly",
+    "prior": "Lesson 5: Selecting, organising and recording what we found",
+    "next": "Lesson 7: Presenting clearly, with reference to our sources",
+    "intro": "Name the shared outcome and the time we have. Both, before anything else.",
+    "main": [
+     "Teams list every task the outcome needs, then estimate how long each will take.",
+     "Teams divide the tasks by what each member is good at, and write it down.",
+     "Teams agree in advance how they will settle a disagreement.",
+     "Teams work, and record any change they had to make to the plan."
+    ],
+    "plenary": "Each team reports whether the plan survived contact with the work.",
+    "look_for": "A fair division based on skills and time, and disagreements handled, not avoided.",
+    "resources": [
+     "team planning sheets",
+     "timer",
+     "project materials"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Cl.02, 56Cl.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-006/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-006/worksheet.html"
+   }
+  },
+  {
+   "lesson": 7,
+   "date": "2026-09-11",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Culture and identity",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Cm.01",
+    "56Rf.01"
+   ],
+   "title": "Presenting clearly, with reference to our sources",
+   "notes": "",
+   "plan": {
+    "lesson": 7,
+    "title": "Presenting clearly, with reference to our sources",
+    "date": "2026-09-11",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Culture and identity",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Cm.01",
+      "title": "Present information clearly with an appropriate structure and with some reference to sources where appropriate"
+     },
+     {
+      "ref": "56Rf.01",
+      "title": "Discuss the impact of personal contribution on teamwork"
+     }
+    ],
+    "focus": "Presenting clearly, with reference to our sources",
+    "prior": "Lesson 6: Planning and dividing the tasks fairly",
+    "next": "Lesson 8: Review and consolidate: culture and identity",
+    "intro": "Show two sources on the same issue that disagree. Which do we trust, and why?",
+    "main": [
+     "Establish the questions we ask of any source: who made it, when, and why.",
+     "Learners work through a source, noting the author and the purpose.",
+     "Learners name one strength and one limitation of it, with evidence.",
+     "Learners locate the specific information that answers their research question."
+    ],
+    "plenary": "One source judged aloud by a pair; the class adds to their reasoning.",
+    "look_for": "Judging a source by author and purpose, not only by whether they agree with it.",
+    "resources": [
+     "two or three contrasting sources",
+     "source evaluation sheet"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Cm.01, 56Rf.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-007/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-007/worksheet.html"
+   }
+  },
+  {
+   "lesson": 8,
+   "date": "2026-09-18",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Culture and identity",
+   "strand": "Global Perspectives",
+   "phase": "review",
+   "refs": [
+    "56Rf.03"
+   ],
+   "title": "Review and consolidate: culture and identity",
+   "notes": "",
+   "plan": {
+    "lesson": 8,
+    "title": "Review and consolidate: culture and identity",
+    "date": "2026-09-18",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Culture and identity",
+    "phase": "review",
+    "objectives": [
+     {
+      "ref": "56Rf.03",
+      "title": "Discuss ways that personal ideas may have been influenced by new information or the ideas of others"
+     }
+    ],
+    "focus": "Review and consolidate: culture and identity",
+    "prior": "Lesson 7: Presenting clearly, with reference to our sources",
+    "next": "Last lesson of this unit.",
+    "intro": "Ask the class which parts of this unit they would want more time on.",
+    "main": [
+     "Revisit the two ideas the class found hardest, briefly and precisely.",
+     "Learners work through a mixed set drawing on the whole unit.",
+     "Learners mark their own work and list what they still need.",
+     "Pair learners who are secure with those who are not, for one question each."
+    ],
+    "plenary": "Each learner writes one thing they can now do that they could not at the start.",
+    "look_for": "Which objectives still need revisiting before the unit closes.",
+    "resources": [
+     "work from earlier in the unit",
+     "mixed review tasks"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Self-assessment",
+      "instruction": "Rate yourself honestly on each objective in this unit.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Objective</th><th>Secure</th><th>Nearly</th><th>Needs more work</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "2. Show what you know",
+      "instruction": "Answer a question from each part of the unit.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. The hardest part",
+      "instruction": "Which part was hardest? Write what you would ask your teacher.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. Next",
+      "instruction": "What do you want to get better at before the next unit?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rf.03"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-008/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-008/worksheet.html"
+   }
+  },
+  {
+   "lesson": 9,
+   "date": "2026-09-25",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Trade, money and where things come from",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56A.01"
+   ],
+   "title": "Different perspectives on where our things come from",
+   "notes": "",
+   "plan": {
+    "lesson": 9,
+    "title": "Different perspectives on where our things come from",
+    "date": "2026-09-25",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Trade, money and where things come from",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56A.01",
+      "title": "Identify some key points from different perspectives on the same issue within a source"
+     }
+    ],
+    "focus": "Different perspectives on where our things come from",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 10: Constructing questions and making a prediction",
+    "intro": "Read one short source together and ask who is speaking in it.",
+    "main": [
+     "Model pulling out the key points of one perspective and marking them in the text.",
+     "Learners find a second perspective in the same source and mark it too.",
+     "Learners set the two side by side in a table, in the author's own terms.",
+     "Discuss why two people can look at the same issue and see different things."
+    ],
+    "plenary": "Each learner states one perspective that is not their own, fairly.",
+    "look_for": "Representing a perspective accurately, even when disagreeing with it.",
+    "resources": [
+     "a source with more than one voice in it",
+     "two-column recording sheet"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56A.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-009/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-009/worksheet.html"
+   }
+  },
+  {
+   "lesson": 10,
+   "date": "2026-10-02",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Trade, money and where things come from",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Rs.01"
+   ],
+   "title": "Constructing questions and making a prediction",
+   "notes": "",
+   "plan": {
+    "lesson": 10,
+    "title": "Constructing questions and making a prediction",
+    "date": "2026-10-02",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Trade, money and where things come from",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Rs.01",
+      "title": "Begin to construct research questions with support"
+     }
+    ],
+    "focus": "Constructing questions and making a prediction",
+    "prior": "Lesson 9: Different perspectives on where our things come from",
+    "next": "Lesson 11: A questionnaire to test our prediction",
+    "intro": "Show a question that is too big to answer and one that is answerable.",
+    "main": [
+     "Agree what makes a research question answerable: scope, time, and access.",
+     "Learners draft three questions about the issue, with support.",
+     "Learners test each question: could we actually answer it here, this term?",
+     "Learners choose one, refine it, and write down what evidence would answer it."
+    ],
+    "plenary": "Two questions read aloud; the class says which is more answerable, and why.",
+    "look_for": "Questions narrow enough to answer with the sources and time we have.",
+    "resources": [
+     "question cards",
+     "planning sheets"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-010/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-010/worksheet.html"
+   }
+  },
+  {
+   "lesson": 11,
+   "date": "2026-10-16",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Trade, money and where things come from",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "56Rs.03"
+   ],
+   "title": "A questionnaire to test our prediction",
+   "notes": "",
+   "plan": {
+    "lesson": 11,
+    "title": "A questionnaire to test our prediction",
+    "date": "2026-10-16",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Trade, money and where things come from",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "56Rs.03",
+      "title": "Conduct investigations, using interviews or questionnaires to test a prediction or begin to answer a research question"
+     }
+    ],
+    "focus": "A questionnaire to test our prediction",
+    "prior": "Lesson 10: Constructing questions and making a prediction",
+    "next": "Lesson 12: Recording our findings using an appropriate method",
+    "intro": "Show a question that is too big to answer and one that is answerable.",
+    "main": [
+     "Agree what makes a research question answerable: scope, time, and access.",
+     "Learners draft three questions about the issue, with support.",
+     "Learners test each question: could we actually answer it here, this term?",
+     "Learners choose one, refine it, and write down what evidence would answer it."
+    ],
+    "plenary": "Two questions read aloud; the class says which is more answerable, and why.",
+    "look_for": "Questions narrow enough to answer with the sources and time we have.",
+    "resources": [
+     "question cards",
+     "planning sheets"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.03"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-011/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-011/worksheet.html"
+   }
+  },
+  {
+   "lesson": 12,
+   "date": "2026-10-23",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Trade, money and where things come from",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Rs.04"
+   ],
+   "title": "Recording our findings using an appropriate method",
+   "notes": "",
+   "plan": {
+    "lesson": 12,
+    "title": "Recording our findings using an appropriate method",
+    "date": "2026-10-23",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Trade, money and where things come from",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Rs.04",
+      "title": "Select, organise and record relevant information from sources and findings from primary research, using an appropriate method"
+     }
+    ],
+    "focus": "Recording our findings using an appropriate method",
+    "prior": "Lesson 11: A questionnaire to test our prediction",
+    "next": "Lesson 13: Finding and interpreting patterns in our data",
+    "intro": "Show a table of raw responses. What can we not yet see in it?",
+    "main": [
+     "Agree which representation suits this data and why the others do not.",
+     "Learners organise and record the information using that method.",
+     "Learners describe the pattern they can see, in a full sentence.",
+     "Learners say what the data does not tell us as well as what it does."
+    ],
+    "plenary": "One pattern stated aloud; the class checks it against the data.",
+    "look_for": "A pattern described from the data, and honesty about the gaps.",
+    "resources": [
+     "squared paper",
+     "the collected responses",
+     "graphic organisers"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.04"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-012/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-012/worksheet.html"
+   }
+  },
+  {
+   "lesson": 13,
+   "date": "2026-10-30",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Trade, money and where things come from",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56A.02"
+   ],
+   "title": "Finding and interpreting patterns in our data",
+   "notes": "",
+   "plan": {
+    "lesson": 13,
+    "title": "Finding and interpreting patterns in our data",
+    "date": "2026-10-30",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Trade, money and where things come from",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56A.02",
+      "title": "Find and interpret simple patterns in graphical or numerical data"
+     }
+    ],
+    "focus": "Finding and interpreting patterns in our data",
+    "prior": "Lesson 12: Recording our findings using an appropriate method",
+    "next": "Lesson 14: Contributing useful ideas and solving a team problem",
+    "intro": "Show a table of raw responses. What can we not yet see in it?",
+    "main": [
+     "Agree which representation suits this data and why the others do not.",
+     "Learners organise and record the information using that method.",
+     "Learners describe the pattern they can see, in a full sentence.",
+     "Learners say what the data does not tell us as well as what it does."
+    ],
+    "plenary": "One pattern stated aloud; the class checks it against the data.",
+    "look_for": "A pattern described from the data, and honesty about the gaps.",
+    "resources": [
+     "squared paper",
+     "the collected responses",
+     "graphic organisers"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56A.02"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-013/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-013/worksheet.html"
+   }
+  },
+  {
+   "lesson": 14,
+   "date": "2026-11-06",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Trade, money and where things come from",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "56Cl.01"
+   ],
+   "title": "Contributing useful ideas and solving a team problem",
+   "notes": "",
+   "plan": {
+    "lesson": 14,
+    "title": "Contributing useful ideas and solving a team problem",
+    "date": "2026-11-06",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Trade, money and where things come from",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "56Cl.01",
+      "title": "Work positively with team members, contributing useful ideas and helping to solve problems to improve team work or to achieve a shared outcome"
+     }
+    ],
+    "focus": "Contributing useful ideas and solving a team problem",
+    "prior": "Lesson 13: Finding and interpreting patterns in our data",
+    "next": "Lesson 15: Listening, asking relevant questions, and what teamwork gave us",
+    "intro": "Name the shared outcome and the time we have. Both, before anything else.",
+    "main": [
+     "Teams list every task the outcome needs, then estimate how long each will take.",
+     "Teams divide the tasks by what each member is good at, and write it down.",
+     "Teams agree in advance how they will settle a disagreement.",
+     "Teams work, and record any change they had to make to the plan."
+    ],
+    "plenary": "Each team reports whether the plan survived contact with the work.",
+    "look_for": "A fair division based on skills and time, and disagreements handled, not avoided.",
+    "resources": [
+     "team planning sheets",
+     "timer",
+     "project materials"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Cl.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-014/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-014/worksheet.html"
+   }
+  },
+  {
+   "lesson": 15,
+   "date": "2026-11-13",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Trade, money and where things come from",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Cm.02",
+    "56Rf.02"
+   ],
+   "title": "Listening, asking relevant questions, and what teamwork gave us",
+   "notes": "",
+   "plan": {
+    "lesson": 15,
+    "title": "Listening, asking relevant questions, and what teamwork gave us",
+    "date": "2026-11-13",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Trade, money and where things come from",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Cm.02",
+      "title": "Listen to ideas and information about an issue and ask questions relevant to the issue"
+     },
+     {
+      "ref": "56Rf.02",
+      "title": "Identify benefits and challenges of working together to achieve a shared outcome"
+     }
+    ],
+    "focus": "Listening, asking relevant questions, and what teamwork gave us",
+    "prior": "Lesson 14: Contributing useful ideas and solving a team problem",
+    "next": "Lesson 16: Review and consolidate: trade",
+    "intro": "Name the shared outcome and the time we have. Both, before anything else.",
+    "main": [
+     "Teams list every task the outcome needs, then estimate how long each will take.",
+     "Teams divide the tasks by what each member is good at, and write it down.",
+     "Teams agree in advance how they will settle a disagreement.",
+     "Teams work, and record any change they had to make to the plan."
+    ],
+    "plenary": "Each team reports whether the plan survived contact with the work.",
+    "look_for": "A fair division based on skills and time, and disagreements handled, not avoided.",
+    "resources": [
+     "team planning sheets",
+     "timer",
+     "project materials"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Cm.02, 56Rf.02"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-015/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-015/worksheet.html"
+   }
+  },
+  {
+   "lesson": 16,
+   "date": "2026-11-20",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Trade, money and where things come from",
+   "strand": "Global Perspectives",
+   "phase": "review",
+   "refs": [
+    "56Rf.03"
+   ],
+   "title": "Review and consolidate: trade",
+   "notes": "",
+   "plan": {
+    "lesson": 16,
+    "title": "Review and consolidate: trade",
+    "date": "2026-11-20",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Trade, money and where things come from",
+    "phase": "review",
+    "objectives": [
+     {
+      "ref": "56Rf.03",
+      "title": "Discuss ways that personal ideas may have been influenced by new information or the ideas of others"
+     }
+    ],
+    "focus": "Review and consolidate: trade",
+    "prior": "Lesson 15: Listening, asking relevant questions, and what teamwork gave us",
+    "next": "Last lesson of this unit.",
+    "intro": "Ask the class which parts of this unit they would want more time on.",
+    "main": [
+     "Revisit the two ideas the class found hardest, briefly and precisely.",
+     "Learners work through a mixed set drawing on the whole unit.",
+     "Learners mark their own work and list what they still need.",
+     "Pair learners who are secure with those who are not, for one question each."
+    ],
+    "plenary": "Each learner writes one thing they can now do that they could not at the start.",
+    "look_for": "Which objectives still need revisiting before the unit closes.",
+    "resources": [
+     "work from earlier in the unit",
+     "mixed review tasks"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Self-assessment",
+      "instruction": "Rate yourself honestly on each objective in this unit.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Objective</th><th>Secure</th><th>Nearly</th><th>Needs more work</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "2. Show what you know",
+      "instruction": "Answer a question from each part of the unit.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. The hardest part",
+      "instruction": "Which part was hardest? Write what you would ask your teacher.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. Next",
+      "instruction": "What do you want to get better at before the next unit?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rf.03"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-016/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-016/worksheet.html"
+   }
+  },
+  {
+   "lesson": 17,
+   "date": "2026-11-27",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 3: Land, water and air",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56A.01"
+   ],
+   "title": "Perspectives on a local land or water issue",
+   "notes": "",
+   "plan": {
+    "lesson": 17,
+    "title": "Perspectives on a local land or water issue",
+    "date": "2026-11-27",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 3: Land, water and air",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56A.01",
+      "title": "Identify some key points from different perspectives on the same issue within a source"
+     }
+    ],
+    "focus": "Perspectives on a local land or water issue",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 18: Causes of a local issue and its consequences on others",
+    "intro": "Read one short source together and ask who is speaking in it.",
+    "main": [
+     "Model pulling out the key points of one perspective and marking them in the text.",
+     "Learners find a second perspective in the same source and mark it too.",
+     "Learners set the two side by side in a table, in the author's own terms.",
+     "Discuss why two people can look at the same issue and see different things."
+    ],
+    "plenary": "Each learner states one perspective that is not their own, fairly.",
+    "look_for": "Representing a perspective accurately, even when disagreeing with it.",
+    "resources": [
+     "a source with more than one voice in it",
+     "two-column recording sheet"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56A.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-017/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-017/worksheet.html"
+   }
+  },
+  {
+   "lesson": 18,
+   "date": "2026-12-04",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 3: Land, water and air",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56A.03"
+   ],
+   "title": "Causes of a local issue and its consequences on others",
+   "notes": "",
+   "plan": {
+    "lesson": 18,
+    "title": "Causes of a local issue and its consequences on others",
+    "date": "2026-12-04",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 3: Land, water and air",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56A.03",
+      "title": "Talk about simple causes of a local issue and consequences on others"
+     }
+    ],
+    "focus": "Causes of a local issue and its consequences on others",
+    "prior": "Lesson 17: Perspectives on a local land or water issue",
+    "next": "Lesson 19: An investigation with measurements and observations",
+    "intro": "Tell a short story about someone's choice and what happened next.",
+    "main": [
+     "Talk about what happened because of that choice.",
+     "Learners think of a choice they make and what happens because of it.",
+     "Collect the class's ideas as a simple cause-and-effect display."
+    ],
+    "plenary": "Each learner finishes 'If I..., then...'.",
+    "look_for": "Connecting an action to what follows from it.",
+    "resources": [
+     "story or scenario cards",
+     "large sheet for the display"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56A.03"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-018/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-018/worksheet.html"
+   }
+  },
+  {
+   "lesson": 19,
+   "date": "2026-12-11",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 3: Land, water and air",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "56Rs.03"
+   ],
+   "title": "An investigation with measurements and observations",
+   "notes": "",
+   "plan": {
+    "lesson": 19,
+    "title": "An investigation with measurements and observations",
+    "date": "2026-12-11",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 3: Land, water and air",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "56Rs.03",
+      "title": "Conduct investigations, using interviews or questionnaires to test a prediction or begin to answer a research question"
+     }
+    ],
+    "focus": "An investigation with measurements and observations",
+    "prior": "Lesson 18: Causes of a local issue and its consequences on others",
+    "next": "Lesson 20: Recording our results and looking for a pattern",
+    "intro": "Agree exactly what we want to find out before we write a single question.",
+    "main": [
+     "Draft the questions together, avoiding ones that lead the answer.",
+     "Agree who we will ask, how many, and how we will record what they say.",
+     "Learners carry out the interviews or the questionnaire.",
+     "Learners bring the responses back and tally them straight away."
+    ],
+    "plenary": "Did anything surprise us? Did any question not work?",
+    "look_for": "Questions that do not lead the answer, and responses recorded faithfully.",
+    "resources": [
+     "questionnaire sheets",
+     "clipboards",
+     "tally sheets"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.03"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-019/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-019/worksheet.html"
+   }
+  },
+  {
+   "lesson": 20,
+   "date": "2027-01-15",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 3: Land, water and air",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Rs.04",
+    "56A.02"
+   ],
+   "title": "Recording our results and looking for a pattern",
+   "notes": "",
+   "plan": {
+    "lesson": 20,
+    "title": "Recording our results and looking for a pattern",
+    "date": "2027-01-15",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 3: Land, water and air",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Rs.04",
+      "title": "Select, organise and record relevant information from sources and findings from primary research, using an appropriate method"
+     },
+     {
+      "ref": "56A.02",
+      "title": "Find and interpret simple patterns in graphical or numerical data"
+     }
+    ],
+    "focus": "Recording our results and looking for a pattern",
+    "prior": "Lesson 19: An investigation with measurements and observations",
+    "next": "Lesson 21: Suggesting and justifying an action for our own place",
+    "intro": "Show a table of raw responses. What can we not yet see in it?",
+    "main": [
+     "Agree which representation suits this data and why the others do not.",
+     "Learners organise and record the information using that method.",
+     "Learners describe the pattern they can see, in a full sentence.",
+     "Learners say what the data does not tell us as well as what it does."
+    ],
+    "plenary": "One pattern stated aloud; the class checks it against the data.",
+    "look_for": "A pattern described from the data, and honesty about the gaps.",
+    "resources": [
+     "squared paper",
+     "the collected responses",
+     "graphic organisers"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.04, 56A.02"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-020/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-020/worksheet.html"
+   }
+  },
+  {
+   "lesson": 21,
+   "date": "2027-01-22",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 3: Land, water and air",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56A.04"
+   ],
+   "title": "Suggesting and justifying an action for our own place",
+   "notes": "",
+   "plan": {
+    "lesson": 21,
+    "title": "Suggesting and justifying an action for our own place",
+    "date": "2027-01-22",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 3: Land, water and air",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56A.04",
+      "title": "Suggest and justify an action to make a positive difference to a local issue"
+     }
+    ],
+    "focus": "Suggesting and justifying an action for our own place",
+    "prior": "Lesson 20: Recording our results and looking for a pattern",
+    "next": "Lesson 22: Where I agree and disagree with another perspective",
+    "intro": "Ask what each learner thought at the start of this challenge, in one sentence.",
+    "main": [
+     "Model changing your mind out loud, and naming what changed it.",
+     "Learners write what they think now and what moved them: information, or a person.",
+     "Learners name one skill they used better this time than last time.",
+     "Learners agree one action they could realistically take, and justify it."
+    ],
+    "plenary": "Two learners say what they would do differently in the next challenge.",
+    "look_for": "Reflection that names a cause, and an action that is genuinely possible here.",
+    "resources": [
+     "reflection journals",
+     "the work from this challenge"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56A.04"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-021/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-021/worksheet.html"
+   }
+  },
+  {
+   "lesson": 22,
+   "date": "2027-01-29",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 3: Land, water and air",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56E.02"
+   ],
+   "title": "Where I agree and disagree with another perspective",
+   "notes": "",
+   "plan": {
+    "lesson": 22,
+    "title": "Where I agree and disagree with another perspective",
+    "date": "2027-01-29",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 3: Land, water and air",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56E.02",
+      "title": "Discuss own opinion about another's perspective, identifying points you agree or disagree with"
+     }
+    ],
+    "focus": "Where I agree and disagree with another perspective",
+    "prior": "Lesson 21: Suggesting and justifying an action for our own place",
+    "next": "Lesson 23: Dividing the tasks, and the skills I improved",
+    "intro": "Ask what each learner thought at the start of this challenge, in one sentence.",
+    "main": [
+     "Model changing your mind out loud, and naming what changed it.",
+     "Learners write what they think now and what moved them: information, or a person.",
+     "Learners name one skill they used better this time than last time.",
+     "Learners agree one action they could realistically take, and justify it."
+    ],
+    "plenary": "Two learners say what they would do differently in the next challenge.",
+    "look_for": "Reflection that names a cause, and an action that is genuinely possible here.",
+    "resources": [
+     "reflection journals",
+     "the work from this challenge"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56E.02"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-022/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-022/worksheet.html"
+   }
+  },
+  {
+   "lesson": 23,
+   "date": "2027-02-05",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 3: Land, water and air",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "56Cl.02",
+    "56Rf.04"
+   ],
+   "title": "Dividing the tasks, and the skills I improved",
+   "notes": "",
+   "plan": {
+    "lesson": 23,
+    "title": "Dividing the tasks, and the skills I improved",
+    "date": "2027-02-05",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 3: Land, water and air",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "56Cl.02",
+      "title": "The team plans and divides tasks fairly to achieve a shared outcome, considering the skills of team members and the time available, and manages disagreements"
+     },
+     {
+      "ref": "56Rf.04",
+      "title": "Identify skills learned or improved during an activity"
+     }
+    ],
+    "focus": "Dividing the tasks, and the skills I improved",
+    "prior": "Lesson 22: Where I agree and disagree with another perspective",
+    "next": "Lesson 24: Review and consolidate: land, water and air",
+    "intro": "Name the shared outcome and the time we have. Both, before anything else.",
+    "main": [
+     "Teams list every task the outcome needs, then estimate how long each will take.",
+     "Teams divide the tasks by what each member is good at, and write it down.",
+     "Teams agree in advance how they will settle a disagreement.",
+     "Teams work, and record any change they had to make to the plan."
+    ],
+    "plenary": "Each team reports whether the plan survived contact with the work.",
+    "look_for": "A fair division based on skills and time, and disagreements handled, not avoided.",
+    "resources": [
+     "team planning sheets",
+     "timer",
+     "project materials"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Cl.02, 56Rf.04"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-023/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-023/worksheet.html"
+   }
+  },
+  {
+   "lesson": 24,
+   "date": "2027-02-12",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 3: Land, water and air",
+   "strand": "Global Perspectives",
+   "phase": "review",
+   "refs": [
+    "56Rf.03"
+   ],
+   "title": "Review and consolidate: land, water and air",
+   "notes": "",
+   "plan": {
+    "lesson": 24,
+    "title": "Review and consolidate: land, water and air",
+    "date": "2027-02-12",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 3: Land, water and air",
+    "phase": "review",
+    "objectives": [
+     {
+      "ref": "56Rf.03",
+      "title": "Discuss ways that personal ideas may have been influenced by new information or the ideas of others"
+     }
+    ],
+    "focus": "Review and consolidate: land, water and air",
+    "prior": "Lesson 23: Dividing the tasks, and the skills I improved",
+    "next": "Last lesson of this unit.",
+    "intro": "Ask the class which parts of this unit they would want more time on.",
+    "main": [
+     "Revisit the two ideas the class found hardest, briefly and precisely.",
+     "Learners work through a mixed set drawing on the whole unit.",
+     "Learners mark their own work and list what they still need.",
+     "Pair learners who are secure with those who are not, for one question each."
+    ],
+    "plenary": "Each learner writes one thing they can now do that they could not at the start.",
+    "look_for": "Which objectives still need revisiting before the unit closes.",
+    "resources": [
+     "work from earlier in the unit",
+     "mixed review tasks"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Self-assessment",
+      "instruction": "Rate yourself honestly on each objective in this unit.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Objective</th><th>Secure</th><th>Nearly</th><th>Needs more work</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "2. Show what you know",
+      "instruction": "Answer a question from each part of the unit.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. The hardest part",
+      "instruction": "Which part was hardest? Write what you would ask your teacher.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. Next",
+      "instruction": "What do you want to get better at before the next unit?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rf.03"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-024/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-024/worksheet.html"
+   }
+  },
+  {
+   "lesson": 25,
+   "date": "2027-02-19",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 4: The digital world",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56A.01"
+   ],
+   "title": "Different perspectives on life online",
+   "notes": "",
+   "plan": {
+    "lesson": 25,
+    "title": "Different perspectives on life online",
+    "date": "2027-02-19",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 4: The digital world",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56A.01",
+      "title": "Identify some key points from different perspectives on the same issue within a source"
+     }
+    ],
+    "focus": "Different perspectives on life online",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 26: Constructing research questions with support",
+    "intro": "Read one short source together and ask who is speaking in it.",
+    "main": [
+     "Model pulling out the key points of one perspective and marking them in the text.",
+     "Learners find a second perspective in the same source and mark it too.",
+     "Learners set the two side by side in a table, in the author's own terms.",
+     "Discuss why two people can look at the same issue and see different things."
+    ],
+    "plenary": "Each learner states one perspective that is not their own, fairly.",
+    "look_for": "Representing a perspective accurately, even when disagreeing with it.",
+    "resources": [
+     "a source with more than one voice in it",
+     "two-column recording sheet"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56A.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-025/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-025/worksheet.html"
+   }
+  },
+  {
+   "lesson": 26,
+   "date": "2027-02-26",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 4: The digital world",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Rs.01"
+   ],
+   "title": "Constructing research questions with support",
+   "notes": "",
+   "plan": {
+    "lesson": 26,
+    "title": "Constructing research questions with support",
+    "date": "2027-02-26",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 4: The digital world",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Rs.01",
+      "title": "Begin to construct research questions with support"
+     }
+    ],
+    "focus": "Constructing research questions with support",
+    "prior": "Lesson 25: Different perspectives on life online",
+    "next": "Lesson 27: Identifying good sources and locating information",
+    "intro": "Show a question that is too big to answer and one that is answerable.",
+    "main": [
+     "Agree what makes a research question answerable: scope, time, and access.",
+     "Learners draft three questions about the issue, with support.",
+     "Learners test each question: could we actually answer it here, this term?",
+     "Learners choose one, refine it, and write down what evidence would answer it."
+    ],
+    "plenary": "Two questions read aloud; the class says which is more answerable, and why.",
+    "look_for": "Questions narrow enough to answer with the sources and time we have.",
+    "resources": [
+     "question cards",
+     "planning sheets"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-026/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-026/worksheet.html"
+   }
+  },
+  {
+   "lesson": 27,
+   "date": "2027-03-05",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 4: The digital world",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Rs.02"
+   ],
+   "title": "Identifying good sources and locating information",
+   "notes": "",
+   "plan": {
+    "lesson": 27,
+    "title": "Identifying good sources and locating information",
+    "date": "2027-03-05",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 4: The digital world",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Rs.02",
+      "title": "Identify sources and locate relevant information and answers to questions within them"
+     }
+    ],
+    "focus": "Identifying good sources and locating information",
+    "prior": "Lesson 26: Constructing research questions with support",
+    "next": "Lesson 28: Judging a source by its author and purpose",
+    "intro": "Show two sources on the same issue that disagree. Which do we trust, and why?",
+    "main": [
+     "Establish the questions we ask of any source: who made it, when, and why.",
+     "Learners work through a source, noting the author and the purpose.",
+     "Learners name one strength and one limitation of it, with evidence.",
+     "Learners locate the specific information that answers their research question."
+    ],
+    "plenary": "One source judged aloud by a pair; the class adds to their reasoning.",
+    "look_for": "Judging a source by author and purpose, not only by whether they agree with it.",
+    "resources": [
+     "two or three contrasting sources",
+     "source evaluation sheet"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.02"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-027/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-027/worksheet.html"
+   }
+  },
+  {
+   "lesson": 28,
+   "date": "2027-04-02",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 4: The digital world",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56E.01"
+   ],
+   "title": "Judging a source by its author and purpose",
+   "notes": "",
+   "plan": {
+    "lesson": 28,
+    "title": "Judging a source by its author and purpose",
+    "date": "2027-04-02",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 4: The digital world",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56E.01",
+      "title": "Discuss a source, considering the author or purpose, and use this to comment on its strengths and limitations"
+     }
+    ],
+    "focus": "Judging a source by its author and purpose",
+    "prior": "Lesson 27: Identifying good sources and locating information",
+    "next": "Lesson 29: Causes and consequences of how we use technology here",
+    "intro": "Show two sources on the same issue that disagree. Which do we trust, and why?",
+    "main": [
+     "Establish the questions we ask of any source: who made it, when, and why.",
+     "Learners work through a source, noting the author and the purpose.",
+     "Learners name one strength and one limitation of it, with evidence.",
+     "Learners locate the specific information that answers their research question."
+    ],
+    "plenary": "One source judged aloud by a pair; the class adds to their reasoning.",
+    "look_for": "Judging a source by author and purpose, not only by whether they agree with it.",
+    "resources": [
+     "two or three contrasting sources",
+     "source evaluation sheet"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56E.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-028/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-028/worksheet.html"
+   }
+  },
+  {
+   "lesson": 29,
+   "date": "2027-04-09",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 4: The digital world",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56A.03"
+   ],
+   "title": "Causes and consequences of how we use technology here",
+   "notes": "",
+   "plan": {
+    "lesson": 29,
+    "title": "Causes and consequences of how we use technology here",
+    "date": "2027-04-09",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 4: The digital world",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56A.03",
+      "title": "Talk about simple causes of a local issue and consequences on others"
+     }
+    ],
+    "focus": "Causes and consequences of how we use technology here",
+    "prior": "Lesson 28: Judging a source by its author and purpose",
+    "next": "Lesson 30: Working as a team and managing a disagreement",
+    "intro": "Tell a short story about someone's choice and what happened next.",
+    "main": [
+     "Talk about what happened because of that choice.",
+     "Learners think of a choice they make and what happens because of it.",
+     "Collect the class's ideas as a simple cause-and-effect display."
+    ],
+    "plenary": "Each learner finishes 'If I..., then...'.",
+    "look_for": "Connecting an action to what follows from it.",
+    "resources": [
+     "story or scenario cards",
+     "large sheet for the display"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56A.03"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-029/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-029/worksheet.html"
+   }
+  },
+  {
+   "lesson": 30,
+   "date": "2027-04-16",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 4: The digital world",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "56Cl.01",
+    "56Cl.02"
+   ],
+   "title": "Working as a team and managing a disagreement",
+   "notes": "",
+   "plan": {
+    "lesson": 30,
+    "title": "Working as a team and managing a disagreement",
+    "date": "2027-04-16",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 4: The digital world",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "56Cl.01",
+      "title": "Work positively with team members, contributing useful ideas and helping to solve problems to improve team work or to achieve a shared outcome"
+     },
+     {
+      "ref": "56Cl.02",
+      "title": "The team plans and divides tasks fairly to achieve a shared outcome, considering the skills of team members and the time available, and manages disagreements"
+     }
+    ],
+    "focus": "Working as a team and managing a disagreement",
+    "prior": "Lesson 29: Causes and consequences of how we use technology here",
+    "next": "Lesson 31: Presenting with a clear structure and named sources",
+    "intro": "Name the shared outcome and the time we have. Both, before anything else.",
+    "main": [
+     "Teams list every task the outcome needs, then estimate how long each will take.",
+     "Teams divide the tasks by what each member is good at, and write it down.",
+     "Teams agree in advance how they will settle a disagreement.",
+     "Teams work, and record any change they had to make to the plan."
+    ],
+    "plenary": "Each team reports whether the plan survived contact with the work.",
+    "look_for": "A fair division based on skills and time, and disagreements handled, not avoided.",
+    "resources": [
+     "team planning sheets",
+     "timer",
+     "project materials"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Cl.01, 56Cl.02"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-030/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-030/worksheet.html"
+   }
+  },
+  {
+   "lesson": 31,
+   "date": "2027-04-23",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 4: The digital world",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Cm.01"
+   ],
+   "title": "Presenting with a clear structure and named sources",
+   "notes": "",
+   "plan": {
+    "lesson": 31,
+    "title": "Presenting with a clear structure and named sources",
+    "date": "2027-04-23",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 4: The digital world",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Cm.01",
+      "title": "Present information clearly with an appropriate structure and with some reference to sources where appropriate"
+     }
+    ],
+    "focus": "Presenting with a clear structure and named sources",
+    "prior": "Lesson 30: Working as a team and managing a disagreement",
+    "next": "Lesson 32: Review and consolidate: digital world",
+    "intro": "Show two sources on the same issue that disagree. Which do we trust, and why?",
+    "main": [
+     "Establish the questions we ask of any source: who made it, when, and why.",
+     "Learners work through a source, noting the author and the purpose.",
+     "Learners name one strength and one limitation of it, with evidence.",
+     "Learners locate the specific information that answers their research question."
+    ],
+    "plenary": "One source judged aloud by a pair; the class adds to their reasoning.",
+    "look_for": "Judging a source by author and purpose, not only by whether they agree with it.",
+    "resources": [
+     "two or three contrasting sources",
+     "source evaluation sheet"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Cm.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-031/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-031/worksheet.html"
+   }
+  },
+  {
+   "lesson": 32,
+   "date": "2027-04-30",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 4: The digital world",
+   "strand": "Global Perspectives",
+   "phase": "review",
+   "refs": [
+    "56Rf.03"
+   ],
+   "title": "Review and consolidate: digital world",
+   "notes": "",
+   "plan": {
+    "lesson": 32,
+    "title": "Review and consolidate: digital world",
+    "date": "2027-04-30",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 4: The digital world",
+    "phase": "review",
+    "objectives": [
+     {
+      "ref": "56Rf.03",
+      "title": "Discuss ways that personal ideas may have been influenced by new information or the ideas of others"
+     }
+    ],
+    "focus": "Review and consolidate: digital world",
+    "prior": "Lesson 31: Presenting with a clear structure and named sources",
+    "next": "Last lesson of this unit.",
+    "intro": "Ask the class which parts of this unit they would want more time on.",
+    "main": [
+     "Revisit the two ideas the class found hardest, briefly and precisely.",
+     "Learners work through a mixed set drawing on the whole unit.",
+     "Learners mark their own work and list what they still need.",
+     "Pair learners who are secure with those who are not, for one question each."
+    ],
+    "plenary": "Each learner writes one thing they can now do that they could not at the start.",
+    "look_for": "Which objectives still need revisiting before the unit closes.",
+    "resources": [
+     "work from earlier in the unit",
+     "mixed review tasks"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Self-assessment",
+      "instruction": "Rate yourself honestly on each objective in this unit.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Objective</th><th>Secure</th><th>Nearly</th><th>Needs more work</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "2. Show what you know",
+      "instruction": "Answer a question from each part of the unit.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. The hardest part",
+      "instruction": "Which part was hardest? Write what you would ask your teacher.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. Next",
+      "instruction": "What do you want to get better at before the next unit?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rf.03"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-032/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-032/worksheet.html"
+   }
+  },
+  {
+   "lesson": 33,
+   "date": "2027-05-07",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Education and learning for everyone",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56A.01"
+   ],
+   "title": "Key points from different perspectives on schooling",
+   "notes": "",
+   "plan": {
+    "lesson": 33,
+    "title": "Key points from different perspectives on schooling",
+    "date": "2027-05-07",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Education and learning for everyone",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56A.01",
+      "title": "Identify some key points from different perspectives on the same issue within a source"
+     }
+    ],
+    "focus": "Key points from different perspectives on schooling",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 34: Constructing our questions about learning here",
+    "intro": "Read one short source together and ask who is speaking in it.",
+    "main": [
+     "Model pulling out the key points of one perspective and marking them in the text.",
+     "Learners find a second perspective in the same source and mark it too.",
+     "Learners set the two side by side in a table, in the author's own terms.",
+     "Discuss why two people can look at the same issue and see different things."
+    ],
+    "plenary": "Each learner states one perspective that is not their own, fairly.",
+    "look_for": "Representing a perspective accurately, even when disagreeing with it.",
+    "resources": [
+     "a source with more than one voice in it",
+     "two-column recording sheet"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56A.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-033/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-033/worksheet.html"
+   }
+  },
+  {
+   "lesson": 34,
+   "date": "2027-05-14",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Education and learning for everyone",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Rs.01"
+   ],
+   "title": "Constructing our questions about learning here",
+   "notes": "",
+   "plan": {
+    "lesson": 34,
+    "title": "Constructing our questions about learning here",
+    "date": "2027-05-14",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Education and learning for everyone",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Rs.01",
+      "title": "Begin to construct research questions with support"
+     }
+    ],
+    "focus": "Constructing our questions about learning here",
+    "prior": "Lesson 33: Key points from different perspectives on schooling",
+    "next": "Lesson 35: Interviews to begin answering our research question",
+    "intro": "Show a question that is too big to answer and one that is answerable.",
+    "main": [
+     "Agree what makes a research question answerable: scope, time, and access.",
+     "Learners draft three questions about the issue, with support.",
+     "Learners test each question: could we actually answer it here, this term?",
+     "Learners choose one, refine it, and write down what evidence would answer it."
+    ],
+    "plenary": "Two questions read aloud; the class says which is more answerable, and why.",
+    "look_for": "Questions narrow enough to answer with the sources and time we have.",
+    "resources": [
+     "question cards",
+     "planning sheets"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.01"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-034/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-034/worksheet.html"
+   }
+  },
+  {
+   "lesson": 35,
+   "date": "2027-05-21",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Education and learning for everyone",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Rs.03"
+   ],
+   "title": "Interviews to begin answering our research question",
+   "notes": "",
+   "plan": {
+    "lesson": 35,
+    "title": "Interviews to begin answering our research question",
+    "date": "2027-05-21",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Education and learning for everyone",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Rs.03",
+      "title": "Conduct investigations, using interviews or questionnaires to test a prediction or begin to answer a research question"
+     }
+    ],
+    "focus": "Interviews to begin answering our research question",
+    "prior": "Lesson 34: Constructing our questions about learning here",
+    "next": "Lesson 36: Selecting and organising what people told us",
+    "intro": "Show a question that is too big to answer and one that is answerable.",
+    "main": [
+     "Agree what makes a research question answerable: scope, time, and access.",
+     "Learners draft three questions about the issue, with support.",
+     "Learners test each question: could we actually answer it here, this term?",
+     "Learners choose one, refine it, and write down what evidence would answer it."
+    ],
+    "plenary": "Two questions read aloud; the class says which is more answerable, and why.",
+    "look_for": "Questions narrow enough to answer with the sources and time we have.",
+    "resources": [
+     "question cards",
+     "planning sheets"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.03"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-035/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-035/worksheet.html"
+   }
+  },
+  {
+   "lesson": 36,
+   "date": "2027-05-28",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Education and learning for everyone",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Rs.04"
+   ],
+   "title": "Selecting and organising what people told us",
+   "notes": "",
+   "plan": {
+    "lesson": 36,
+    "title": "Selecting and organising what people told us",
+    "date": "2027-05-28",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Education and learning for everyone",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Rs.04",
+      "title": "Select, organise and record relevant information from sources and findings from primary research, using an appropriate method"
+     }
+    ],
+    "focus": "Selecting and organising what people told us",
+    "prior": "Lesson 35: Interviews to begin answering our research question",
+    "next": "Lesson 37: Suggesting and justifying an action for our school",
+    "intro": "Show a table of raw responses. What can we not yet see in it?",
+    "main": [
+     "Agree which representation suits this data and why the others do not.",
+     "Learners organise and record the information using that method.",
+     "Learners describe the pattern they can see, in a full sentence.",
+     "Learners say what the data does not tell us as well as what it does."
+    ],
+    "plenary": "One pattern stated aloud; the class checks it against the data.",
+    "look_for": "A pattern described from the data, and honesty about the gaps.",
+    "resources": [
+     "squared paper",
+     "the collected responses",
+     "graphic organisers"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Rs.04"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-036/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-036/worksheet.html"
+   }
+  },
+  {
+   "lesson": 37,
+   "date": "2027-06-04",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Education and learning for everyone",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56A.04"
+   ],
+   "title": "Suggesting and justifying an action for our school",
+   "notes": "",
+   "plan": {
+    "lesson": 37,
+    "title": "Suggesting and justifying an action for our school",
+    "date": "2027-06-04",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Education and learning for everyone",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56A.04",
+      "title": "Suggest and justify an action to make a positive difference to a local issue"
+     }
+    ],
+    "focus": "Suggesting and justifying an action for our school",
+    "prior": "Lesson 36: Selecting and organising what people told us",
+    "next": "Lesson 38: My opinion on another's perspective, and our team plan",
+    "intro": "Ask what each learner thought at the start of this challenge, in one sentence.",
+    "main": [
+     "Model changing your mind out loud, and naming what changed it.",
+     "Learners write what they think now and what moved them: information, or a person.",
+     "Learners name one skill they used better this time than last time.",
+     "Learners agree one action they could realistically take, and justify it."
+    ],
+    "plenary": "Two learners say what they would do differently in the next challenge.",
+    "look_for": "Reflection that names a cause, and an action that is genuinely possible here.",
+    "resources": [
+     "reflection journals",
+     "the work from this challenge"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56A.04"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-037/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-037/worksheet.html"
+   }
+  },
+  {
+   "lesson": 38,
+   "date": "2027-06-11",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Education and learning for everyone",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "56E.02",
+    "56Cl.02"
+   ],
+   "title": "My opinion on another's perspective, and our team plan",
+   "notes": "",
+   "plan": {
+    "lesson": 38,
+    "title": "My opinion on another's perspective, and our team plan",
+    "date": "2027-06-11",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Education and learning for everyone",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "56E.02",
+      "title": "Discuss own opinion about another's perspective, identifying points you agree or disagree with"
+     },
+     {
+      "ref": "56Cl.02",
+      "title": "The team plans and divides tasks fairly to achieve a shared outcome, considering the skills of team members and the time available, and manages disagreements"
+     }
+    ],
+    "focus": "My opinion on another's perspective, and our team plan",
+    "prior": "Lesson 37: Suggesting and justifying an action for our school",
+    "next": "Lesson 39: Asking relevant questions, and how my ideas changed",
+    "intro": "Name the shared outcome and the time we have. Both, before anything else.",
+    "main": [
+     "Teams list every task the outcome needs, then estimate how long each will take.",
+     "Teams divide the tasks by what each member is good at, and write it down.",
+     "Teams agree in advance how they will settle a disagreement.",
+     "Teams work, and record any change they had to make to the plan."
+    ],
+    "plenary": "Each team reports whether the plan survived contact with the work.",
+    "look_for": "A fair division based on skills and time, and disagreements handled, not avoided.",
+    "resources": [
+     "team planning sheets",
+     "timer",
+     "project materials"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56E.02, 56Cl.02"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-038/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-038/worksheet.html"
+   }
+  },
+  {
+   "lesson": 39,
+   "date": "2027-06-18",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Education and learning for everyone",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "56Cm.02",
+    "56Rf.03"
+   ],
+   "title": "Asking relevant questions, and how my ideas changed",
+   "notes": "",
+   "plan": {
+    "lesson": 39,
+    "title": "Asking relevant questions, and how my ideas changed",
+    "date": "2027-06-18",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Education and learning for everyone",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "56Cm.02",
+      "title": "Listen to ideas and information about an issue and ask questions relevant to the issue"
+     },
+     {
+      "ref": "56Rf.03",
+      "title": "Discuss ways that personal ideas may have been influenced by new information or the ideas of others"
+     }
+    ],
+    "focus": "Asking relevant questions, and how my ideas changed",
+    "prior": "Lesson 38: My opinion on another's perspective, and our team plan",
+    "next": "Last lesson of this unit.",
+    "intro": "Agree what our audience needs and how long we have to give it to them.",
+    "main": [
+     "Model an opening that says what the talk is about and where the evidence came from.",
+     "Groups structure their presentation: point, evidence, source.",
+     "Groups rehearse once and take one piece of feedback.",
+     "Groups present while the rest listen with one question each to ask."
+    ],
+    "plenary": "Every listener asks their question. Every speaker answers one.",
+    "look_for": "Clear structure, sources named, and questions that are actually about the issue.",
+    "resources": [
+     "presentation materials",
+     "listening prompt cards"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Two perspectives",
+      "instruction": "Set out the two perspectives fairly, in the author's own terms.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 1</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">Perspective 2</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "2. The source",
+      "instruction": "Who made it, when, and why? One strength and one limitation.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Author or purpose</th><th>Strength</th><th>Limitation</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "3. What I found",
+      "instruction": "Record the relevant information and where it came from.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Information</th><th>Source</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table>"
+     },
+     {
+      "heading": "4. What I think now",
+      "instruction": "What do you think, and what changed your mind?",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-lab\">What changed my mind</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "56Cm.02, 56Rf.03"
+   },
+   "paths": {
+    "guide": "lessons/primary5/global-perspectives/lesson-039/guide.html",
+    "worksheet": "lessons/primary5/global-perspectives/lesson-039/worksheet.html"
+   }
+  }
+ ]
+}

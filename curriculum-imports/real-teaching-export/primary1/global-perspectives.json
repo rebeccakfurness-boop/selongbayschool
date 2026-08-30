@@ -1,0 +1,3346 @@
+{
+ "group": "primary1",
+ "groupLabel": "Primary 1",
+ "stage": "Stage 1",
+ "slug": "global-perspectives",
+ "title": "Cambridge Primary Global Perspectives",
+ "short": "Global Perspectives",
+ "code": "0838",
+ "periods": "1 period a week (Friday)",
+ "driveFolder": "https://drive.google.com/drive/folders/1hyer_sJRaPpGYh5AjrjdEsmO_IrSPDUj",
+ "resources": [
+  {
+   "title": "0838 Primary Global Perspectives Progression Grid",
+   "url": "https://drive.google.com/file/d/1YPh1n9Fn81X2TBqrXk_X9uRL-AMiJ6m_/view"
+  },
+  {
+   "title": "Cambridge Primary Global Perspectives Teacher Guide (0838)",
+   "url": "https://drive.google.com/file/d/1tMxgH60js8shsVud3y36f3V1_Nc8zW7l/view"
+  },
+  {
+   "title": "Cambridge Global Perspectives 5 (reference)",
+   "url": "https://drive.google.com/file/d/1ze9NZorvROG5U5TvJ4Y-VEteA6f6KQg5/view"
+  }
+ ],
+ "curriculum": {
+  "code": "0838",
+  "title": "Cambridge Primary Global Perspectives",
+  "stage": "Stage 1",
+  "framework": "0838 Progression Grid v1.0",
+  "note": "Objectives are taken verbatim from the <em>0838 Primary Global Perspectives Progression Grid</em> in this class folder. The five challenge topics are chosen by the school; the skills they develop are fixed by the framework.",
+  "strands": [
+   {
+    "title": "Analysis",
+    "objectives": [
+     {
+      "ref": "1A.01",
+      "title": "Say something known about an issue"
+     },
+     {
+      "ref": "1A.02",
+      "title": "Talk about information recorded in pictograms or graphic organisers"
+     },
+     {
+      "ref": "1A.03",
+      "title": "Talk about simple, personal consequences of own actions"
+     },
+     {
+      "ref": "1A.04",
+      "title": "Choose a possible solution to an issue from a range of actions given"
+     }
+    ]
+   },
+   {
+    "title": "Collaboration",
+    "objectives": [
+     {
+      "ref": "1Cl.01",
+      "title": "Work positively with others, sharing resources while working independently or with others"
+     }
+    ]
+   },
+   {
+    "title": "Communication",
+    "objectives": [
+     {
+      "ref": "1Cm.01",
+      "title": "Answer questions with relevant information about a given issue"
+     },
+     {
+      "ref": "1Cm.02",
+      "title": "Listen to others in class discussions and respond with simple questions"
+     }
+    ]
+   },
+   {
+    "title": "Evaluation",
+    "objectives": [
+     {
+      "ref": "1E.01",
+      "title": "Select a source relevant to a given issue and explain reasons for choice"
+     },
+     {
+      "ref": "1E.02",
+      "title": "State an opinion about a given issue"
+     }
+    ]
+   },
+   {
+    "title": "Reflection",
+    "objectives": [
+     {
+      "ref": "1Rf.01",
+      "title": "Identify personal contribution in the form of an action intended to help achieve a shared outcome"
+     },
+     {
+      "ref": "1Rf.02",
+      "title": "Identify an action that someone else contributed to achieve a shared outcome"
+     },
+     {
+      "ref": "1Rf.03",
+      "title": "Talk about what has been learned during an activity with support"
+     },
+     {
+      "ref": "1Rf.04",
+      "title": "Talk about something liked in a particular activity"
+     }
+    ]
+   },
+   {
+    "title": "Research",
+    "objectives": [
+     {
+      "ref": "1Rs.01",
+      "title": "Ask basic questions about a given issue"
+     },
+     {
+      "ref": "1Rs.02",
+      "title": "Talk about information on a given issue in sources provided"
+     },
+     {
+      "ref": "1Rs.03",
+      "title": "Begin to participate in simple investigations and ask basic questions to find information and opinions"
+     },
+     {
+      "ref": "1Rs.04",
+      "title": "Record information on a given issue in pictograms or simple graphic organisers"
+     }
+    ]
+   }
+  ]
+ },
+ "ongoing": null,
+ "units": [
+  {
+   "title": "Challenge 1: Me, my family and my school",
+   "short": "me, my family and my school",
+   "strand": "Global Perspectives",
+   "refs": [
+    "1Rf.03"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Challenge 2: Keeping healthy",
+   "short": "keeping healthy",
+   "strand": "Global Perspectives",
+   "refs": [
+    "1Rf.03"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Challenge 3: Looking after our environment",
+   "short": "our environment",
+   "strand": "Global Perspectives",
+   "refs": [
+    "1Rf.03"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Challenge 4: Water and where it comes from",
+   "short": "water",
+   "strand": "Global Perspectives",
+   "refs": [
+    "1Rf.03"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Challenge 5: Animals and where they live",
+   "short": "animals and habitats",
+   "strand": "Global Perspectives",
+   "refs": [
+    "1Rf.03"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  }
+ ],
+ "lessons": [
+  {
+   "lesson": 1,
+   "date": "2026-07-31",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Me, my family and my school",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1A.01"
+   ],
+   "title": "What do we already know about our school?",
+   "notes": "",
+   "plan": {
+    "lesson": 1,
+    "title": "What do we already know about our school?",
+    "date": "2026-07-31",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Me, my family and my school",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1A.01",
+      "title": "Say something known about an issue"
+     }
+    ],
+    "focus": "What do we already know about our school?",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 2: Asking questions about our school",
+    "intro": "Introduce the issue with a picture or a short story.",
+    "main": [
+     "Learners say one thing they already know about it.",
+     "Collect everything the class says on a big sheet.",
+     "Group the ideas together with the class."
+    ],
+    "plenary": "Read back the class's list. What do we still want to find out?",
+    "look_for": "Whether each learner can say something they know about the issue.",
+    "resources": [
+     "stimulus picture or story",
+     "large sheet of paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1A.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-001/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-001/worksheet.html"
+   }
+  },
+  {
+   "lesson": 2,
+   "date": "2026-08-07",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Me, my family and my school",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.01"
+   ],
+   "title": "Asking questions about our school",
+   "notes": "",
+   "plan": {
+    "lesson": 2,
+    "title": "Asking questions about our school",
+    "date": "2026-08-07",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Me, my family and my school",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.01",
+      "title": "Ask basic questions about a given issue"
+     }
+    ],
+    "focus": "Asking questions about our school",
+    "prior": "Lesson 1: What do we already know about our school?",
+    "next": "Lesson 3: Looking at our sources, and choosing one that helps",
+    "intro": "Recap what we already know about the issue.",
+    "main": [
+     "Model asking a question about the issue.",
+     "Learners think of their own question and say it to a partner.",
+     "Collect the questions and choose a few to investigate."
+    ],
+    "plenary": "Read the class's questions back and choose the best ones together.",
+    "look_for": "Asking a question, rather than making a statement.",
+    "resources": [
+     "question prompt cards",
+     "large sheet of paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-002/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-002/worksheet.html"
+   }
+  },
+  {
+   "lesson": 3,
+   "date": "2026-08-14",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Me, my family and my school",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.02",
+    "1E.01"
+   ],
+   "title": "Looking at our sources, and choosing one that helps",
+   "notes": "",
+   "plan": {
+    "lesson": 3,
+    "title": "Looking at our sources, and choosing one that helps",
+    "date": "2026-08-14",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Me, my family and my school",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.02",
+      "title": "Talk about information on a given issue in sources provided"
+     },
+     {
+      "ref": "1E.01",
+      "title": "Select a source relevant to a given issue and explain reasons for choice"
+     }
+    ],
+    "focus": "Looking at our sources, and choosing one that helps",
+    "prior": "Lesson 2: Asking questions about our school",
+    "next": "Lesson 4: Recording what we found in a pictogram",
+    "intro": "Show two sources about the issue. Which will help us more?",
+    "main": [
+     "Look at the sources together and talk about what each one tells us.",
+     "Learners choose the source they think helps most and say why.",
+     "Learners find one piece of information in their chosen source."
+    ],
+    "plenary": "Each learner says which source they chose and gives a reason.",
+    "look_for": "Giving a reason for the choice, not just picking one.",
+    "resources": [
+     "two or three simple sources",
+     "pictures and short texts"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.02, 1E.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-003/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-003/worksheet.html"
+   }
+  },
+  {
+   "lesson": 4,
+   "date": "2026-08-21",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Me, my family and my school",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.04"
+   ],
+   "title": "Recording what we found in a pictogram",
+   "notes": "",
+   "plan": {
+    "lesson": 4,
+    "title": "Recording what we found in a pictogram",
+    "date": "2026-08-21",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Me, my family and my school",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.04",
+      "title": "Record information on a given issue in pictograms or simple graphic organisers"
+     }
+    ],
+    "focus": "Recording what we found in a pictogram",
+    "prior": "Lesson 3: Looking at our sources, and choosing one that helps",
+    "next": "Lesson 5: Talking about what our pictogram shows",
+    "intro": "Look at the information we collected.",
+    "main": [
+     "Model recording it as a pictogram or graphic organiser.",
+     "Learners make their own with support.",
+     "Talk about what the record shows."
+    ],
+    "plenary": "What does our pictogram tell us about the issue?",
+    "look_for": "Talking about the information, not just making the picture.",
+    "resources": [
+     "pictogram templates",
+     "stickers or squares",
+     "glue"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.04"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-004/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-004/worksheet.html"
+   }
+  },
+  {
+   "lesson": 5,
+   "date": "2026-08-28",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Me, my family and my school",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1A.02"
+   ],
+   "title": "Talking about what our pictogram shows",
+   "notes": "",
+   "plan": {
+    "lesson": 5,
+    "title": "Talking about what our pictogram shows",
+    "date": "2026-08-28",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Me, my family and my school",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1A.02",
+      "title": "Talk about information recorded in pictograms or graphic organisers"
+     }
+    ],
+    "focus": "Talking about what our pictogram shows",
+    "prior": "Lesson 4: Recording what we found in a pictogram",
+    "next": "Lesson 6: Working together to make a class display",
+    "intro": "Look at the information we collected.",
+    "main": [
+     "Model recording it as a pictogram or graphic organiser.",
+     "Learners make their own with support.",
+     "Talk about what the record shows."
+    ],
+    "plenary": "What does our pictogram tell us about the issue?",
+    "look_for": "Talking about the information, not just making the picture.",
+    "resources": [
+     "pictogram templates",
+     "stickers or squares",
+     "glue"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1A.02"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-005/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-005/worksheet.html"
+   }
+  },
+  {
+   "lesson": 6,
+   "date": "2026-09-04",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Me, my family and my school",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "1Cl.01"
+   ],
+   "title": "Working together to make a class display",
+   "notes": "",
+   "plan": {
+    "lesson": 6,
+    "title": "Working together to make a class display",
+    "date": "2026-09-04",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Me, my family and my school",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "1Cl.01",
+      "title": "Work positively with others, sharing resources while working independently or with others"
+     }
+    ],
+    "focus": "Working together to make a class display",
+    "prior": "Lesson 5: Talking about what our pictogram shows",
+    "next": "Lesson 7: Telling the class about our work, and what I liked",
+    "intro": "Agree what the team is making and who is doing what.",
+    "main": [
+     "Learners work in their teams on the shared outcome.",
+     "Remind them to share the resources and take turns.",
+     "Check in with each team and help them solve problems."
+    ],
+    "plenary": "Each team shows what they have done so far.",
+    "look_for": "Working positively with others and sharing resources.",
+    "resources": [
+     "materials for the shared outcome",
+     "glue and scissors"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Cl.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-006/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-006/worksheet.html"
+   }
+  },
+  {
+   "lesson": 7,
+   "date": "2026-09-11",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Me, my family and my school",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Cm.01",
+    "1Rf.04"
+   ],
+   "title": "Telling the class about our work, and what I liked",
+   "notes": "",
+   "plan": {
+    "lesson": 7,
+    "title": "Telling the class about our work, and what I liked",
+    "date": "2026-09-11",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Me, my family and my school",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Cm.01",
+      "title": "Answer questions with relevant information about a given issue"
+     },
+     {
+      "ref": "1Rf.04",
+      "title": "Talk about something liked in a particular activity"
+     }
+    ],
+    "focus": "Telling the class about our work, and what I liked",
+    "prior": "Lesson 6: Working together to make a class display",
+    "next": "Lesson 8: Review and consolidate: me, my family and my school",
+    "intro": "Remind the class how we listen: looking, quiet, ready with a question.",
+    "main": [
+     "Each group presents their work to the class.",
+     "The class asks one simple question after each presentation.",
+     "Groups answer using what they found out."
+    ],
+    "plenary": "What was the most interesting thing we heard today?",
+    "look_for": "Answering with relevant information, and asking simple questions.",
+    "resources": [
+     "the groups' finished work"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Cm.01, 1Rf.04"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-007/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-007/worksheet.html"
+   }
+  },
+  {
+   "lesson": 8,
+   "date": "2026-09-18",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 1: Me, my family and my school",
+   "strand": "Global Perspectives",
+   "phase": "review",
+   "refs": [
+    "1Rf.03"
+   ],
+   "title": "Review and consolidate: me, my family and my school",
+   "notes": "",
+   "plan": {
+    "lesson": 8,
+    "title": "Review and consolidate: me, my family and my school",
+    "date": "2026-09-18",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 1: Me, my family and my school",
+    "phase": "review",
+    "objectives": [
+     {
+      "ref": "1Rf.03",
+      "title": "Talk about what has been learned during an activity with support"
+     }
+    ],
+    "focus": "Review and consolidate: me, my family and my school",
+    "prior": "Lesson 7: Telling the class about our work, and what I liked",
+    "next": "Last lesson of this unit.",
+    "intro": "Ask the class what they remember from this unit.",
+    "main": [
+     "Revisit the two ideas the class found hardest.",
+     "Learners work through a mixed set of tasks from across the unit.",
+     "Pair learners who are secure with those who are not."
+    ],
+    "plenary": "Each learner says one thing they can now do that they could not at the start.",
+    "look_for": "Which objectives still need revisiting before moving on.",
+    "resources": [
+     "work from earlier in the unit",
+     "mixed task cards"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I can do",
+      "instruction": "Tick what you can do on your own.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this on my own</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this with a little help</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I want to practise this again</div></div>"
+     },
+     {
+      "heading": "2. Show what you know",
+      "instruction": "Have a go at these.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. Draw it",
+      "instruction": "Draw one thing you learned in this unit.",
+      "body": "<div class=\"ws-draw\" style=\"height:140px\"></div>"
+     },
+     {
+      "heading": "4. Next time",
+      "instruction": "What do you want to get better at?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rf.03"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-008/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-008/worksheet.html"
+   }
+  },
+  {
+   "lesson": 9,
+   "date": "2026-09-25",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Keeping healthy",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1A.01"
+   ],
+   "title": "What do we know about staying healthy?",
+   "notes": "",
+   "plan": {
+    "lesson": 9,
+    "title": "What do we know about staying healthy?",
+    "date": "2026-09-25",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Keeping healthy",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1A.01",
+      "title": "Say something known about an issue"
+     }
+    ],
+    "focus": "What do we know about staying healthy?",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 10: Asking questions about food and exercise",
+    "intro": "Introduce the issue with a picture or a short story.",
+    "main": [
+     "Learners say one thing they already know about it.",
+     "Collect everything the class says on a big sheet.",
+     "Group the ideas together with the class."
+    ],
+    "plenary": "Read back the class's list. What do we still want to find out?",
+    "look_for": "Whether each learner can say something they know about the issue.",
+    "resources": [
+     "stimulus picture or story",
+     "large sheet of paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1A.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-009/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-009/worksheet.html"
+   }
+  },
+  {
+   "lesson": 10,
+   "date": "2026-10-02",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Keeping healthy",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.01"
+   ],
+   "title": "Asking questions about food and exercise",
+   "notes": "",
+   "plan": {
+    "lesson": 10,
+    "title": "Asking questions about food and exercise",
+    "date": "2026-10-02",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Keeping healthy",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.01",
+      "title": "Ask basic questions about a given issue"
+     }
+    ],
+    "focus": "Asking questions about food and exercise",
+    "prior": "Lesson 9: What do we know about staying healthy?",
+    "next": "Lesson 11: A class survey: our favourite healthy food",
+    "intro": "Recap what we already know about the issue.",
+    "main": [
+     "Model asking a question about the issue.",
+     "Learners think of their own question and say it to a partner.",
+     "Collect the questions and choose a few to investigate."
+    ],
+    "plenary": "Read the class's questions back and choose the best ones together.",
+    "look_for": "Asking a question, rather than making a statement.",
+    "resources": [
+     "question prompt cards",
+     "large sheet of paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-010/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-010/worksheet.html"
+   }
+  },
+  {
+   "lesson": 11,
+   "date": "2026-10-16",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Keeping healthy",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.03"
+   ],
+   "title": "A class survey: our favourite healthy food",
+   "notes": "",
+   "plan": {
+    "lesson": 11,
+    "title": "A class survey: our favourite healthy food",
+    "date": "2026-10-16",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Keeping healthy",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.03",
+      "title": "Begin to participate in simple investigations and ask basic questions to find information and opinions"
+     }
+    ],
+    "focus": "A class survey: our favourite healthy food",
+    "prior": "Lesson 10: Asking questions about food and exercise",
+    "next": "Lesson 12: Recording our survey in a pictogram",
+    "intro": "Agree what we are going to find out and how we will ask.",
+    "main": [
+     "Practise asking the question politely, in pairs.",
+     "Carry out the survey around the class or the school.",
+     "Bring the answers back and put them together."
+    ],
+    "plenary": "How many answers did we collect? What did most people say?",
+    "look_for": "Taking part and asking the question clearly.",
+    "resources": [
+     "tally sheets",
+     "clipboards"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.03"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-011/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-011/worksheet.html"
+   }
+  },
+  {
+   "lesson": 12,
+   "date": "2026-10-23",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Keeping healthy",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.04"
+   ],
+   "title": "Recording our survey in a pictogram",
+   "notes": "",
+   "plan": {
+    "lesson": 12,
+    "title": "Recording our survey in a pictogram",
+    "date": "2026-10-23",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Keeping healthy",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.04",
+      "title": "Record information on a given issue in pictograms or simple graphic organisers"
+     }
+    ],
+    "focus": "Recording our survey in a pictogram",
+    "prior": "Lesson 11: A class survey: our favourite healthy food",
+    "next": "Lesson 13: What happens when we make healthy choices?",
+    "intro": "Agree what we are going to find out and how we will ask.",
+    "main": [
+     "Practise asking the question politely, in pairs.",
+     "Carry out the survey around the class or the school.",
+     "Bring the answers back and put them together."
+    ],
+    "plenary": "How many answers did we collect? What did most people say?",
+    "look_for": "Taking part and asking the question clearly.",
+    "resources": [
+     "tally sheets",
+     "clipboards"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.04"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-012/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-012/worksheet.html"
+   }
+  },
+  {
+   "lesson": 13,
+   "date": "2026-10-30",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Keeping healthy",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1A.03"
+   ],
+   "title": "What happens when we make healthy choices?",
+   "notes": "",
+   "plan": {
+    "lesson": 13,
+    "title": "What happens when we make healthy choices?",
+    "date": "2026-10-30",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Keeping healthy",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1A.03",
+      "title": "Talk about simple, personal consequences of own actions"
+     }
+    ],
+    "focus": "What happens when we make healthy choices?",
+    "prior": "Lesson 12: Recording our survey in a pictogram",
+    "next": "Lesson 14: Making a healthy-choices poster together",
+    "intro": "Tell a short story about someone's choice and what happened next.",
+    "main": [
+     "Talk about what happened because of that choice.",
+     "Learners think of a choice they make and what happens because of it.",
+     "Collect the class's ideas as a simple cause-and-effect display."
+    ],
+    "plenary": "Each learner finishes 'If I..., then...'.",
+    "look_for": "Connecting an action to what follows from it.",
+    "resources": [
+     "story or scenario cards",
+     "large sheet for the display"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1A.03"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-013/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-013/worksheet.html"
+   }
+  },
+  {
+   "lesson": 14,
+   "date": "2026-11-06",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Keeping healthy",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "1Cl.01"
+   ],
+   "title": "Making a healthy-choices poster together",
+   "notes": "",
+   "plan": {
+    "lesson": 14,
+    "title": "Making a healthy-choices poster together",
+    "date": "2026-11-06",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Keeping healthy",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "1Cl.01",
+      "title": "Work positively with others, sharing resources while working independently or with others"
+     }
+    ],
+    "focus": "Making a healthy-choices poster together",
+    "prior": "Lesson 13: What happens when we make healthy choices?",
+    "next": "Lesson 15: Listening to each other and asking questions",
+    "intro": "Agree what the team is making and who is doing what.",
+    "main": [
+     "Learners work in their teams on the shared outcome.",
+     "Remind them to share the resources and take turns.",
+     "Check in with each team and help them solve problems."
+    ],
+    "plenary": "Each team shows what they have done so far.",
+    "look_for": "Working positively with others and sharing resources.",
+    "resources": [
+     "materials for the shared outcome",
+     "glue and scissors"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Cl.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-014/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-014/worksheet.html"
+   }
+  },
+  {
+   "lesson": 15,
+   "date": "2026-11-13",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Keeping healthy",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Cm.02"
+   ],
+   "title": "Listening to each other and asking questions",
+   "notes": "",
+   "plan": {
+    "lesson": 15,
+    "title": "Listening to each other and asking questions",
+    "date": "2026-11-13",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Keeping healthy",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Cm.02",
+      "title": "Listen to others in class discussions and respond with simple questions"
+     }
+    ],
+    "focus": "Listening to each other and asking questions",
+    "prior": "Lesson 14: Making a healthy-choices poster together",
+    "next": "Lesson 16: Review and consolidate: keeping healthy",
+    "intro": "Recap what we already know about the issue.",
+    "main": [
+     "Model asking a question about the issue.",
+     "Learners think of their own question and say it to a partner.",
+     "Collect the questions and choose a few to investigate."
+    ],
+    "plenary": "Read the class's questions back and choose the best ones together.",
+    "look_for": "Asking a question, rather than making a statement.",
+    "resources": [
+     "question prompt cards",
+     "large sheet of paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Cm.02"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-015/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-015/worksheet.html"
+   }
+  },
+  {
+   "lesson": 16,
+   "date": "2026-11-20",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 2: Keeping healthy",
+   "strand": "Global Perspectives",
+   "phase": "review",
+   "refs": [
+    "1Rf.03"
+   ],
+   "title": "Review and consolidate: keeping healthy",
+   "notes": "",
+   "plan": {
+    "lesson": 16,
+    "title": "Review and consolidate: keeping healthy",
+    "date": "2026-11-20",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 2: Keeping healthy",
+    "phase": "review",
+    "objectives": [
+     {
+      "ref": "1Rf.03",
+      "title": "Talk about what has been learned during an activity with support"
+     }
+    ],
+    "focus": "Review and consolidate: keeping healthy",
+    "prior": "Lesson 15: Listening to each other and asking questions",
+    "next": "Last lesson of this unit.",
+    "intro": "Ask the class what they remember from this unit.",
+    "main": [
+     "Revisit the two ideas the class found hardest.",
+     "Learners work through a mixed set of tasks from across the unit.",
+     "Pair learners who are secure with those who are not."
+    ],
+    "plenary": "Each learner says one thing they can now do that they could not at the start.",
+    "look_for": "Which objectives still need revisiting before moving on.",
+    "resources": [
+     "work from earlier in the unit",
+     "mixed task cards"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I can do",
+      "instruction": "Tick what you can do on your own.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this on my own</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this with a little help</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I want to practise this again</div></div>"
+     },
+     {
+      "heading": "2. Show what you know",
+      "instruction": "Have a go at these.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. Draw it",
+      "instruction": "Draw one thing you learned in this unit.",
+      "body": "<div class=\"ws-draw\" style=\"height:140px\"></div>"
+     },
+     {
+      "heading": "4. Next time",
+      "instruction": "What do you want to get better at?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rf.03"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-016/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-016/worksheet.html"
+   }
+  },
+  {
+   "lesson": 17,
+   "date": "2026-11-27",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 3: Looking after our environment",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1A.01"
+   ],
+   "title": "What do we know about litter and waste?",
+   "notes": "",
+   "plan": {
+    "lesson": 17,
+    "title": "What do we know about litter and waste?",
+    "date": "2026-11-27",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 3: Looking after our environment",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1A.01",
+      "title": "Say something known about an issue"
+     }
+    ],
+    "focus": "What do we know about litter and waste?",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 18: Asking questions about our school grounds",
+    "intro": "Introduce the issue with a picture or a short story.",
+    "main": [
+     "Learners say one thing they already know about it.",
+     "Collect everything the class says on a big sheet.",
+     "Group the ideas together with the class."
+    ],
+    "plenary": "Read back the class's list. What do we still want to find out?",
+    "look_for": "Whether each learner can say something they know about the issue.",
+    "resources": [
+     "stimulus picture or story",
+     "large sheet of paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1A.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-017/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-017/worksheet.html"
+   }
+  },
+  {
+   "lesson": 18,
+   "date": "2026-12-04",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 3: Looking after our environment",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.01"
+   ],
+   "title": "Asking questions about our school grounds",
+   "notes": "",
+   "plan": {
+    "lesson": 18,
+    "title": "Asking questions about our school grounds",
+    "date": "2026-12-04",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 3: Looking after our environment",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.01",
+      "title": "Ask basic questions about a given issue"
+     }
+    ],
+    "focus": "Asking questions about our school grounds",
+    "prior": "Lesson 17: What do we know about litter and waste?",
+    "next": "Lesson 19: A litter survey around school",
+    "intro": "Recap what we already know about the issue.",
+    "main": [
+     "Model asking a question about the issue.",
+     "Learners think of their own question and say it to a partner.",
+     "Collect the questions and choose a few to investigate."
+    ],
+    "plenary": "Read the class's questions back and choose the best ones together.",
+    "look_for": "Asking a question, rather than making a statement.",
+    "resources": [
+     "question prompt cards",
+     "large sheet of paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-018/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-018/worksheet.html"
+   }
+  },
+  {
+   "lesson": 19,
+   "date": "2026-12-11",
+   "weekday": "Friday",
+   "term": "Term 1",
+   "unit": "Challenge 3: Looking after our environment",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "1Rs.03"
+   ],
+   "title": "A litter survey around school",
+   "notes": "",
+   "plan": {
+    "lesson": 19,
+    "title": "A litter survey around school",
+    "date": "2026-12-11",
+    "weekday": "Friday",
+    "term": "Term 1",
+    "unit": "Challenge 3: Looking after our environment",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "1Rs.03",
+      "title": "Begin to participate in simple investigations and ask basic questions to find information and opinions"
+     }
+    ],
+    "focus": "A litter survey around school",
+    "prior": "Lesson 18: Asking questions about our school grounds",
+    "next": "Lesson 20: Recording what we found, and reading our chart",
+    "intro": "Agree what we are going to find out and how we will ask.",
+    "main": [
+     "Practise asking the question politely, in pairs.",
+     "Carry out the survey around the class or the school.",
+     "Bring the answers back and put them together."
+    ],
+    "plenary": "How many answers did we collect? What did most people say?",
+    "look_for": "Taking part and asking the question clearly.",
+    "resources": [
+     "tally sheets",
+     "clipboards"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.03"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-019/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-019/worksheet.html"
+   }
+  },
+  {
+   "lesson": 20,
+   "date": "2027-01-15",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 3: Looking after our environment",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.04",
+    "1A.02"
+   ],
+   "title": "Recording what we found, and reading our chart",
+   "notes": "",
+   "plan": {
+    "lesson": 20,
+    "title": "Recording what we found, and reading our chart",
+    "date": "2027-01-15",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 3: Looking after our environment",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.04",
+      "title": "Record information on a given issue in pictograms or simple graphic organisers"
+     },
+     {
+      "ref": "1A.02",
+      "title": "Talk about information recorded in pictograms or graphic organisers"
+     }
+    ],
+    "focus": "Recording what we found, and reading our chart",
+    "prior": "Lesson 19: A litter survey around school",
+    "next": "Lesson 21: Choosing an action we could take",
+    "intro": "Look at the information we collected.",
+    "main": [
+     "Model recording it as a pictogram or graphic organiser.",
+     "Learners make their own with support.",
+     "Talk about what the record shows."
+    ],
+    "plenary": "What does our pictogram tell us about the issue?",
+    "look_for": "Talking about the information, not just making the picture.",
+    "resources": [
+     "pictogram templates",
+     "stickers or squares",
+     "glue"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.04, 1A.02"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-020/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-020/worksheet.html"
+   }
+  },
+  {
+   "lesson": 21,
+   "date": "2027-01-22",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 3: Looking after our environment",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1A.04"
+   ],
+   "title": "Choosing an action we could take",
+   "notes": "",
+   "plan": {
+    "lesson": 21,
+    "title": "Choosing an action we could take",
+    "date": "2027-01-22",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 3: Looking after our environment",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1A.04",
+      "title": "Choose a possible solution to an issue from a range of actions given"
+     }
+    ],
+    "focus": "Choosing an action we could take",
+    "prior": "Lesson 20: Recording what we found, and reading our chart",
+    "next": "Lesson 22: My opinion about looking after our school",
+    "intro": "Remind the class what we found out about the issue.",
+    "main": [
+     "Offer three or four possible actions the class could take.",
+     "Learners talk in pairs about which they would choose and why.",
+     "Vote as a class and agree on one action.",
+     "Plan how we will do it."
+    ],
+    "plenary": "Say the class's chosen action out loud together.",
+    "look_for": "Choosing from the options given and giving a reason.",
+    "resources": [
+     "action cards",
+     "voting chart"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1A.04"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-021/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-021/worksheet.html"
+   }
+  },
+  {
+   "lesson": 22,
+   "date": "2027-01-29",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 3: Looking after our environment",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1E.02"
+   ],
+   "title": "My opinion about looking after our school",
+   "notes": "",
+   "plan": {
+    "lesson": 22,
+    "title": "My opinion about looking after our school",
+    "date": "2027-01-29",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 3: Looking after our environment",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1E.02",
+      "title": "State an opinion about a given issue"
+     }
+    ],
+    "focus": "My opinion about looking after our school",
+    "prior": "Lesson 21: Choosing an action we could take",
+    "next": "Lesson 23: Our clean-up plan, and what someone else did to help",
+    "intro": "Look back at the work the class has done in this challenge.",
+    "main": [
+     "Learners say one thing they did to help the team.",
+     "Learners say one thing someone else did that helped.",
+     "Learners say what they liked best about the challenge."
+    ],
+    "plenary": "Collect the class's reflections on a shared sheet.",
+    "look_for": "Naming a specific action rather than a general 'I helped'.",
+    "resources": [
+     "reflection prompt cards"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1E.02"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-022/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-022/worksheet.html"
+   }
+  },
+  {
+   "lesson": 23,
+   "date": "2027-02-05",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 3: Looking after our environment",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "1Cl.01",
+    "1Rf.02"
+   ],
+   "title": "Our clean-up plan, and what someone else did to help",
+   "notes": "",
+   "plan": {
+    "lesson": 23,
+    "title": "Our clean-up plan, and what someone else did to help",
+    "date": "2027-02-05",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 3: Looking after our environment",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "1Cl.01",
+      "title": "Work positively with others, sharing resources while working independently or with others"
+     },
+     {
+      "ref": "1Rf.02",
+      "title": "Identify an action that someone else contributed to achieve a shared outcome"
+     }
+    ],
+    "focus": "Our clean-up plan, and what someone else did to help",
+    "prior": "Lesson 22: My opinion about looking after our school",
+    "next": "Lesson 24: Review and consolidate: our environment",
+    "intro": "Agree what the team is making and who is doing what.",
+    "main": [
+     "Learners work in their teams on the shared outcome.",
+     "Remind them to share the resources and take turns.",
+     "Check in with each team and help them solve problems."
+    ],
+    "plenary": "Each team shows what they have done so far.",
+    "look_for": "Working positively with others and sharing resources.",
+    "resources": [
+     "materials for the shared outcome",
+     "glue and scissors"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Cl.01, 1Rf.02"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-023/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-023/worksheet.html"
+   }
+  },
+  {
+   "lesson": 24,
+   "date": "2027-02-12",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 3: Looking after our environment",
+   "strand": "Global Perspectives",
+   "phase": "review",
+   "refs": [
+    "1Rf.03"
+   ],
+   "title": "Review and consolidate: our environment",
+   "notes": "",
+   "plan": {
+    "lesson": 24,
+    "title": "Review and consolidate: our environment",
+    "date": "2027-02-12",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 3: Looking after our environment",
+    "phase": "review",
+    "objectives": [
+     {
+      "ref": "1Rf.03",
+      "title": "Talk about what has been learned during an activity with support"
+     }
+    ],
+    "focus": "Review and consolidate: our environment",
+    "prior": "Lesson 23: Our clean-up plan, and what someone else did to help",
+    "next": "Last lesson of this unit.",
+    "intro": "Ask the class what they remember from this unit.",
+    "main": [
+     "Revisit the two ideas the class found hardest.",
+     "Learners work through a mixed set of tasks from across the unit.",
+     "Pair learners who are secure with those who are not."
+    ],
+    "plenary": "Each learner says one thing they can now do that they could not at the start.",
+    "look_for": "Which objectives still need revisiting before moving on.",
+    "resources": [
+     "work from earlier in the unit",
+     "mixed task cards"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I can do",
+      "instruction": "Tick what you can do on your own.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this on my own</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this with a little help</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I want to practise this again</div></div>"
+     },
+     {
+      "heading": "2. Show what you know",
+      "instruction": "Have a go at these.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. Draw it",
+      "instruction": "Draw one thing you learned in this unit.",
+      "body": "<div class=\"ws-draw\" style=\"height:140px\"></div>"
+     },
+     {
+      "heading": "4. Next time",
+      "instruction": "What do you want to get better at?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rf.03"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-024/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-024/worksheet.html"
+   }
+  },
+  {
+   "lesson": 25,
+   "date": "2027-02-19",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 4: Water and where it comes from",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1A.01"
+   ],
+   "title": "What do we know about water?",
+   "notes": "",
+   "plan": {
+    "lesson": 25,
+    "title": "What do we know about water?",
+    "date": "2027-02-19",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 4: Water and where it comes from",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1A.01",
+      "title": "Say something known about an issue"
+     }
+    ],
+    "focus": "What do we know about water?",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 26: Asking questions about how we use water",
+    "intro": "Introduce the issue with a picture or a short story.",
+    "main": [
+     "Learners say one thing they already know about it.",
+     "Collect everything the class says on a big sheet.",
+     "Group the ideas together with the class."
+    ],
+    "plenary": "Read back the class's list. What do we still want to find out?",
+    "look_for": "Whether each learner can say something they know about the issue.",
+    "resources": [
+     "stimulus picture or story",
+     "large sheet of paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1A.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-025/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-025/worksheet.html"
+   }
+  },
+  {
+   "lesson": 26,
+   "date": "2027-02-26",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 4: Water and where it comes from",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.01"
+   ],
+   "title": "Asking questions about how we use water",
+   "notes": "",
+   "plan": {
+    "lesson": 26,
+    "title": "Asking questions about how we use water",
+    "date": "2027-02-26",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 4: Water and where it comes from",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.01",
+      "title": "Ask basic questions about a given issue"
+     }
+    ],
+    "focus": "Asking questions about how we use water",
+    "prior": "Lesson 25: What do we know about water?",
+    "next": "Lesson 27: Finding out from our sources, and choosing the most useful",
+    "intro": "Recap what we already know about the issue.",
+    "main": [
+     "Model asking a question about the issue.",
+     "Learners think of their own question and say it to a partner.",
+     "Collect the questions and choose a few to investigate."
+    ],
+    "plenary": "Read the class's questions back and choose the best ones together.",
+    "look_for": "Asking a question, rather than making a statement.",
+    "resources": [
+     "question prompt cards",
+     "large sheet of paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-026/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-026/worksheet.html"
+   }
+  },
+  {
+   "lesson": 27,
+   "date": "2027-03-05",
+   "weekday": "Friday",
+   "term": "Term 2",
+   "unit": "Challenge 4: Water and where it comes from",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.02",
+    "1E.01"
+   ],
+   "title": "Finding out from our sources, and choosing the most useful",
+   "notes": "",
+   "plan": {
+    "lesson": 27,
+    "title": "Finding out from our sources, and choosing the most useful",
+    "date": "2027-03-05",
+    "weekday": "Friday",
+    "term": "Term 2",
+    "unit": "Challenge 4: Water and where it comes from",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.02",
+      "title": "Talk about information on a given issue in sources provided"
+     },
+     {
+      "ref": "1E.01",
+      "title": "Select a source relevant to a given issue and explain reasons for choice"
+     }
+    ],
+    "focus": "Finding out from our sources, and choosing the most useful",
+    "prior": "Lesson 26: Asking questions about how we use water",
+    "next": "Lesson 28: Counting how we use water in one day",
+    "intro": "Show two sources about the issue. Which will help us more?",
+    "main": [
+     "Look at the sources together and talk about what each one tells us.",
+     "Learners choose the source they think helps most and say why.",
+     "Learners find one piece of information in their chosen source."
+    ],
+    "plenary": "Each learner says which source they chose and gives a reason.",
+    "look_for": "Giving a reason for the choice, not just picking one.",
+    "resources": [
+     "two or three simple sources",
+     "pictures and short texts"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.02, 1E.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-027/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-027/worksheet.html"
+   }
+  },
+  {
+   "lesson": 28,
+   "date": "2027-04-02",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 4: Water and where it comes from",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.03"
+   ],
+   "title": "Counting how we use water in one day",
+   "notes": "",
+   "plan": {
+    "lesson": 28,
+    "title": "Counting how we use water in one day",
+    "date": "2027-04-02",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 4: Water and where it comes from",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.03",
+      "title": "Begin to participate in simple investigations and ask basic questions to find information and opinions"
+     }
+    ],
+    "focus": "Counting how we use water in one day",
+    "prior": "Lesson 27: Finding out from our sources, and choosing the most useful",
+    "next": "Lesson 29: Choosing a way to save water",
+    "intro": "Agree what we are going to find out and how we will ask.",
+    "main": [
+     "Practise asking the question politely, in pairs.",
+     "Carry out the survey around the class or the school.",
+     "Bring the answers back and put them together."
+    ],
+    "plenary": "How many answers did we collect? What did most people say?",
+    "look_for": "Taking part and asking the question clearly.",
+    "resources": [
+     "tally sheets",
+     "clipboards"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.03"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-028/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-028/worksheet.html"
+   }
+  },
+  {
+   "lesson": 29,
+   "date": "2027-04-09",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 4: Water and where it comes from",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1A.04"
+   ],
+   "title": "Choosing a way to save water",
+   "notes": "",
+   "plan": {
+    "lesson": 29,
+    "title": "Choosing a way to save water",
+    "date": "2027-04-09",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 4: Water and where it comes from",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1A.04",
+      "title": "Choose a possible solution to an issue from a range of actions given"
+     }
+    ],
+    "focus": "Choosing a way to save water",
+    "prior": "Lesson 28: Counting how we use water in one day",
+    "next": "Lesson 30: Making a water-saving reminder for school",
+    "intro": "Remind the class what we found out about the issue.",
+    "main": [
+     "Offer three or four possible actions the class could take.",
+     "Learners talk in pairs about which they would choose and why.",
+     "Vote as a class and agree on one action.",
+     "Plan how we will do it."
+    ],
+    "plenary": "Say the class's chosen action out loud together.",
+    "look_for": "Choosing from the options given and giving a reason.",
+    "resources": [
+     "action cards",
+     "voting chart"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1A.04"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-029/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-029/worksheet.html"
+   }
+  },
+  {
+   "lesson": 30,
+   "date": "2027-04-16",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 4: Water and where it comes from",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "1Cl.01"
+   ],
+   "title": "Making a water-saving reminder for school",
+   "notes": "",
+   "plan": {
+    "lesson": 30,
+    "title": "Making a water-saving reminder for school",
+    "date": "2027-04-16",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 4: Water and where it comes from",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "1Cl.01",
+      "title": "Work positively with others, sharing resources while working independently or with others"
+     }
+    ],
+    "focus": "Making a water-saving reminder for school",
+    "prior": "Lesson 29: Choosing a way to save water",
+    "next": "Lesson 31: Answering questions about our work, and what I did to help",
+    "intro": "Remind the class what we found out about the issue.",
+    "main": [
+     "Offer three or four possible actions the class could take.",
+     "Learners talk in pairs about which they would choose and why.",
+     "Vote as a class and agree on one action.",
+     "Plan how we will do it."
+    ],
+    "plenary": "Say the class's chosen action out loud together.",
+    "look_for": "Choosing from the options given and giving a reason.",
+    "resources": [
+     "action cards",
+     "voting chart"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Cl.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-030/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-030/worksheet.html"
+   }
+  },
+  {
+   "lesson": 31,
+   "date": "2027-04-23",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 4: Water and where it comes from",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Cm.01",
+    "1Rf.01"
+   ],
+   "title": "Answering questions about our work, and what I did to help",
+   "notes": "",
+   "plan": {
+    "lesson": 31,
+    "title": "Answering questions about our work, and what I did to help",
+    "date": "2027-04-23",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 4: Water and where it comes from",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Cm.01",
+      "title": "Answer questions with relevant information about a given issue"
+     },
+     {
+      "ref": "1Rf.01",
+      "title": "Identify personal contribution in the form of an action intended to help achieve a shared outcome"
+     }
+    ],
+    "focus": "Answering questions about our work, and what I did to help",
+    "prior": "Lesson 30: Making a water-saving reminder for school",
+    "next": "Lesson 32: Review and consolidate: water",
+    "intro": "Recap what we already know about the issue.",
+    "main": [
+     "Model asking a question about the issue.",
+     "Learners think of their own question and say it to a partner.",
+     "Collect the questions and choose a few to investigate."
+    ],
+    "plenary": "Read the class's questions back and choose the best ones together.",
+    "look_for": "Asking a question, rather than making a statement.",
+    "resources": [
+     "question prompt cards",
+     "large sheet of paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Cm.01, 1Rf.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-031/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-031/worksheet.html"
+   }
+  },
+  {
+   "lesson": 32,
+   "date": "2027-04-30",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 4: Water and where it comes from",
+   "strand": "Global Perspectives",
+   "phase": "review",
+   "refs": [
+    "1Rf.03"
+   ],
+   "title": "Review and consolidate: water",
+   "notes": "",
+   "plan": {
+    "lesson": 32,
+    "title": "Review and consolidate: water",
+    "date": "2027-04-30",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 4: Water and where it comes from",
+    "phase": "review",
+    "objectives": [
+     {
+      "ref": "1Rf.03",
+      "title": "Talk about what has been learned during an activity with support"
+     }
+    ],
+    "focus": "Review and consolidate: water",
+    "prior": "Lesson 31: Answering questions about our work, and what I did to help",
+    "next": "Last lesson of this unit.",
+    "intro": "Ask the class what they remember from this unit.",
+    "main": [
+     "Revisit the two ideas the class found hardest.",
+     "Learners work through a mixed set of tasks from across the unit.",
+     "Pair learners who are secure with those who are not."
+    ],
+    "plenary": "Each learner says one thing they can now do that they could not at the start.",
+    "look_for": "Which objectives still need revisiting before moving on.",
+    "resources": [
+     "work from earlier in the unit",
+     "mixed task cards"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I can do",
+      "instruction": "Tick what you can do on your own.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this on my own</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this with a little help</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I want to practise this again</div></div>"
+     },
+     {
+      "heading": "2. Show what you know",
+      "instruction": "Have a go at these.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. Draw it",
+      "instruction": "Draw one thing you learned in this unit.",
+      "body": "<div class=\"ws-draw\" style=\"height:140px\"></div>"
+     },
+     {
+      "heading": "4. Next time",
+      "instruction": "What do you want to get better at?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rf.03"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-032/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-032/worksheet.html"
+   }
+  },
+  {
+   "lesson": 33,
+   "date": "2027-05-07",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Animals and where they live",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1A.01"
+   ],
+   "title": "What do we know about where animals live?",
+   "notes": "",
+   "plan": {
+    "lesson": 33,
+    "title": "What do we know about where animals live?",
+    "date": "2027-05-07",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Animals and where they live",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1A.01",
+      "title": "Say something known about an issue"
+     }
+    ],
+    "focus": "What do we know about where animals live?",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 34: Asking questions about animals near us",
+    "intro": "Introduce the issue with a picture or a short story.",
+    "main": [
+     "Learners say one thing they already know about it.",
+     "Collect everything the class says on a big sheet.",
+     "Group the ideas together with the class."
+    ],
+    "plenary": "Read back the class's list. What do we still want to find out?",
+    "look_for": "Whether each learner can say something they know about the issue.",
+    "resources": [
+     "stimulus picture or story",
+     "large sheet of paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1A.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-033/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-033/worksheet.html"
+   }
+  },
+  {
+   "lesson": 34,
+   "date": "2027-05-14",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Animals and where they live",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.01"
+   ],
+   "title": "Asking questions about animals near us",
+   "notes": "",
+   "plan": {
+    "lesson": 34,
+    "title": "Asking questions about animals near us",
+    "date": "2027-05-14",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Animals and where they live",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.01",
+      "title": "Ask basic questions about a given issue"
+     }
+    ],
+    "focus": "Asking questions about animals near us",
+    "prior": "Lesson 33: What do we know about where animals live?",
+    "next": "Lesson 35: Using books and pictures to find out",
+    "intro": "Recap what we already know about the issue.",
+    "main": [
+     "Model asking a question about the issue.",
+     "Learners think of their own question and say it to a partner.",
+     "Collect the questions and choose a few to investigate."
+    ],
+    "plenary": "Read the class's questions back and choose the best ones together.",
+    "look_for": "Asking a question, rather than making a statement.",
+    "resources": [
+     "question prompt cards",
+     "large sheet of paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-034/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-034/worksheet.html"
+   }
+  },
+  {
+   "lesson": 35,
+   "date": "2027-05-21",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Animals and where they live",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.02"
+   ],
+   "title": "Using books and pictures to find out",
+   "notes": "",
+   "plan": {
+    "lesson": 35,
+    "title": "Using books and pictures to find out",
+    "date": "2027-05-21",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Animals and where they live",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.02",
+      "title": "Talk about information on a given issue in sources provided"
+     }
+    ],
+    "focus": "Using books and pictures to find out",
+    "prior": "Lesson 34: Asking questions about animals near us",
+    "next": "Lesson 36: Recording animals we found in a graphic organiser",
+    "intro": "Show two sources about the issue. Which will help us more?",
+    "main": [
+     "Look at the sources together and talk about what each one tells us.",
+     "Learners choose the source they think helps most and say why.",
+     "Learners find one piece of information in their chosen source."
+    ],
+    "plenary": "Each learner says which source they chose and gives a reason.",
+    "look_for": "Giving a reason for the choice, not just picking one.",
+    "resources": [
+     "two or three simple sources",
+     "pictures and short texts"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.02"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-035/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-035/worksheet.html"
+   }
+  },
+  {
+   "lesson": 36,
+   "date": "2027-05-28",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Animals and where they live",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Rs.04"
+   ],
+   "title": "Recording animals we found in a graphic organiser",
+   "notes": "",
+   "plan": {
+    "lesson": 36,
+    "title": "Recording animals we found in a graphic organiser",
+    "date": "2027-05-28",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Animals and where they live",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Rs.04",
+      "title": "Record information on a given issue in pictograms or simple graphic organisers"
+     }
+    ],
+    "focus": "Recording animals we found in a graphic organiser",
+    "prior": "Lesson 35: Using books and pictures to find out",
+    "next": "Lesson 37: How our actions affect the animals near us",
+    "intro": "Look at the information we collected.",
+    "main": [
+     "Model recording it as a pictogram or graphic organiser.",
+     "Learners make their own with support.",
+     "Talk about what the record shows."
+    ],
+    "plenary": "What does our pictogram tell us about the issue?",
+    "look_for": "Talking about the information, not just making the picture.",
+    "resources": [
+     "pictogram templates",
+     "stickers or squares",
+     "glue"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Rs.04"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-036/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-036/worksheet.html"
+   }
+  },
+  {
+   "lesson": 37,
+   "date": "2027-06-04",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Animals and where they live",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1A.03"
+   ],
+   "title": "How our actions affect the animals near us",
+   "notes": "",
+   "plan": {
+    "lesson": 37,
+    "title": "How our actions affect the animals near us",
+    "date": "2027-06-04",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Animals and where they live",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1A.03",
+      "title": "Talk about simple, personal consequences of own actions"
+     }
+    ],
+    "focus": "How our actions affect the animals near us",
+    "prior": "Lesson 36: Recording animals we found in a graphic organiser",
+    "next": "Lesson 38: Working together on our habitat model",
+    "intro": "Tell a short story about someone's choice and what happened next.",
+    "main": [
+     "Talk about what happened because of that choice.",
+     "Learners think of a choice they make and what happens because of it.",
+     "Collect the class's ideas as a simple cause-and-effect display."
+    ],
+    "plenary": "Each learner finishes 'If I..., then...'.",
+    "look_for": "Connecting an action to what follows from it.",
+    "resources": [
+     "story or scenario cards",
+     "large sheet for the display"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1A.03"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-037/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-037/worksheet.html"
+   }
+  },
+  {
+   "lesson": 38,
+   "date": "2027-06-11",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Animals and where they live",
+   "strand": "Global Perspectives",
+   "phase": "project",
+   "refs": [
+    "1Cl.01"
+   ],
+   "title": "Working together on our habitat model",
+   "notes": "",
+   "plan": {
+    "lesson": 38,
+    "title": "Working together on our habitat model",
+    "date": "2027-06-11",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Animals and where they live",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "1Cl.01",
+      "title": "Work positively with others, sharing resources while working independently or with others"
+     }
+    ],
+    "focus": "Working together on our habitat model",
+    "prior": "Lesson 37: How our actions affect the animals near us",
+    "next": "Lesson 39: Presenting our habitat, and looking back at our year",
+    "intro": "Agree what the team is making and who is doing what.",
+    "main": [
+     "Learners work in their teams on the shared outcome.",
+     "Remind them to share the resources and take turns.",
+     "Check in with each team and help them solve problems."
+    ],
+    "plenary": "Each team shows what they have done so far.",
+    "look_for": "Working positively with others and sharing resources.",
+    "resources": [
+     "materials for the shared outcome",
+     "glue and scissors"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Cl.01"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-038/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-038/worksheet.html"
+   }
+  },
+  {
+   "lesson": 39,
+   "date": "2027-06-18",
+   "weekday": "Friday",
+   "term": "Term 3",
+   "unit": "Challenge 5: Animals and where they live",
+   "strand": "Global Perspectives",
+   "phase": "content",
+   "refs": [
+    "1Cm.01",
+    "1Rf.03"
+   ],
+   "title": "Presenting our habitat, and looking back at our year",
+   "notes": "",
+   "plan": {
+    "lesson": 39,
+    "title": "Presenting our habitat, and looking back at our year",
+    "date": "2027-06-18",
+    "weekday": "Friday",
+    "term": "Term 3",
+    "unit": "Challenge 5: Animals and where they live",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1Cm.01",
+      "title": "Answer questions with relevant information about a given issue"
+     },
+     {
+      "ref": "1Rf.03",
+      "title": "Talk about what has been learned during an activity with support"
+     }
+    ],
+    "focus": "Presenting our habitat, and looking back at our year",
+    "prior": "Lesson 38: Working together on our habitat model",
+    "next": "Last lesson of this unit.",
+    "intro": "Remind the class how we listen: looking, quiet, ready with a question.",
+    "main": [
+     "Each group presents their work to the class.",
+     "The class asks one simple question after each presentation.",
+     "Groups answer using what they found out."
+    ],
+    "plenary": "What was the most interesting thing we heard today?",
+    "look_for": "Answering with relevant information, and asking simple questions.",
+    "resources": [
+     "the groups' finished work"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I know",
+      "instruction": "Write or draw one thing you already know.",
+      "body": "<div class=\"ws-draw\" style=\"height:100px\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "2. My question",
+      "instruction": "Write a question you want to ask.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. What I found out",
+      "instruction": "Record what you found.",
+      "body": "<div class=\"ws-grid\" style=\"grid-template-columns:repeat(6,1fr)\"><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span><span class=\"ws-cell\"></span></div>"
+     },
+     {
+      "heading": "4. What I think",
+      "instruction": "Finish the sentences.",
+      "body": "<div class=\"ws-lab\">I think</div><div class=\"ws-line\"></div><div class=\"ws-lab\">because</div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1Cm.01, 1Rf.03"
+   },
+   "paths": {
+    "guide": "lessons/primary1/global-perspectives/lesson-039/guide.html",
+    "worksheet": "lessons/primary1/global-perspectives/lesson-039/worksheet.html"
+   }
+  }
+ ]
+}

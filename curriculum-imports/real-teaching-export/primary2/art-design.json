@@ -1,0 +1,3595 @@
+{
+ "group": "primary2",
+ "groupLabel": "Primary 2",
+ "stage": "Stage 2",
+ "slug": "art-design",
+ "title": "Cambridge Primary Art & Design",
+ "short": "Art & Design",
+ "code": "0067",
+ "periods": "1 period a week (Wednesday)",
+ "driveFolder": "https://drive.google.com/drive/folders/1Qww2Xb68w8XplFZ0Km0IqNe190FWwKjo",
+ "resources": [
+  {
+   "title": "0067 Art & Design Stage 2 Scheme of Work (Cambridge)",
+   "url": "https://drive.google.com/file/d/1n4HFhUXyq81VvNpjVwZohJYPA2jU3Du1/view"
+  }
+ ],
+ "curriculum": {
+  "code": "0067",
+  "title": "Cambridge Primary Art & Design",
+  "stage": "Stage 2",
+  "framework": "Curriculum framework published 2019",
+  "note": "Objectives, the three units and the vocabulary and materials for each are taken from the <em>Cambridge Primary Art &amp; Design (0067) Stage 2 Scheme of Work</em> in this class folder. Cambridge suggests 10 hours per unit; this plan spreads the three units evenly across the year at one lesson a week.",
+  "strands": [
+   {
+    "title": "Experiencing",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "E.02",
+      "title": "Explore media, materials, tools, technologies and processes"
+     },
+     {
+      "ref": "E.03",
+      "title": "Gather and record experiences and visual information"
+     }
+    ]
+   },
+   {
+    "title": "Making",
+    "objectives": [
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     },
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     }
+    ]
+   },
+   {
+    "title": "Reflecting",
+    "objectives": [
+     {
+      "ref": "R.01",
+      "title": "Celebrate artistic experiences and learning"
+     },
+     {
+      "ref": "R.02",
+      "title": "Analyse, critique and connect own and others' work as part of the artistic process"
+     }
+    ]
+   },
+   {
+    "title": "Thinking and Working Artistically",
+    "objectives": [
+     {
+      "ref": "TWA.01",
+      "title": "Generate, develop, create, innovate and communicate ideas by using and connecting the artistic processes of experiencing, making and reflecting"
+     },
+     {
+      "ref": "TWA.02",
+      "title": "Embrace challenges and opportunities, working with growing independence"
+     },
+     {
+      "ref": "TWA.03",
+      "title": "Review and refine own work"
+     }
+    ]
+   }
+  ]
+ },
+ "ongoing": null,
+ "units": [
+  {
+   "title": "Unit 2.1: Stories",
+   "short": "stories",
+   "strand": "Art & Design",
+   "refs": [
+    "TWA.02"
+   ],
+   "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+   "materials": "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+  },
+  {
+   "title": "Unit 2.2: Sounds",
+   "short": "sounds",
+   "strand": "Art & Design",
+   "refs": [
+    "TWA.02"
+   ],
+   "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+   "materials": "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+  },
+  {
+   "title": "Unit 2.3: Places",
+   "short": "places",
+   "strand": "Art & Design",
+   "refs": [
+    "TWA.02"
+   ],
+   "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+   "materials": "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+  }
+ ],
+ "lessons": [
+  {
+   "lesson": 1,
+   "date": "2026-07-29",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.01",
+    "E.03"
+   ],
+   "title": "Stories in the news: what is happening in this photograph?",
+   "notes": "",
+   "plan": {
+    "lesson": 1,
+    "title": "Stories in the news: what is happening in this photograph?",
+    "date": "2026-07-29",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "E.03",
+      "title": "Gather and record experiences and visual information"
+     }
+    ],
+    "focus": "Stories in the news: what is happening in this photograph?",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 2: Storytelling in artwork from the past",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.01, E.03"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-001/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-001/worksheet.html"
+   }
+  },
+  {
+   "lesson": 2,
+   "date": "2026-08-05",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.01",
+    "R.02"
+   ],
+   "title": "Storytelling in artwork from the past",
+   "notes": "",
+   "plan": {
+    "lesson": 2,
+    "title": "Storytelling in artwork from the past",
+    "date": "2026-08-05",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "R.02",
+      "title": "Analyse, critique and connect own and others' work as part of the artistic process"
+     }
+    ],
+    "focus": "Storytelling in artwork from the past",
+    "prior": "Lesson 1: Stories in the news: what is happening in this photograph?",
+    "next": "Lesson 3: Composition and layout: how a poster works",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.01, R.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-002/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-002/worksheet.html"
+   }
+  },
+  {
+   "lesson": 3,
+   "date": "2026-08-12",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.02",
+    "M.02"
+   ],
+   "title": "Composition and layout: how a poster works",
+   "notes": "",
+   "plan": {
+    "lesson": 3,
+    "title": "Composition and layout: how a poster works",
+    "date": "2026-08-12",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.02",
+      "title": "Explore media, materials, tools, technologies and processes"
+     },
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     }
+    ],
+    "focus": "Composition and layout: how a poster works",
+    "prior": "Lesson 2: Storytelling in artwork from the past",
+    "next": "Lesson 4: Designing our own poster",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.02, M.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-003/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-003/worksheet.html"
+   }
+  },
+  {
+   "lesson": 4,
+   "date": "2026-08-19",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "M.01",
+    "M.02"
+   ],
+   "title": "Designing our own poster",
+   "notes": "",
+   "plan": {
+    "lesson": 4,
+    "title": "Designing our own poster",
+    "date": "2026-08-19",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     },
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     }
+    ],
+    "focus": "Designing our own poster",
+    "prior": "Lesson 3: Composition and layout: how a poster works",
+    "next": "Lesson 5: Narrative: putting a storyboard in the right order",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.01, M.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-004/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-004/worksheet.html"
+   }
+  },
+  {
+   "lesson": 5,
+   "date": "2026-08-26",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.02",
+    "TWA.01"
+   ],
+   "title": "Narrative: putting a storyboard in the right order",
+   "notes": "",
+   "plan": {
+    "lesson": 5,
+    "title": "Narrative: putting a storyboard in the right order",
+    "date": "2026-08-26",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.02",
+      "title": "Explore media, materials, tools, technologies and processes"
+     },
+     {
+      "ref": "TWA.01",
+      "title": "Generate, develop, create, innovate and communicate ideas by using and connecting the artistic processes of experiencing, making and reflecting"
+     }
+    ],
+    "focus": "Narrative: putting a storyboard in the right order",
+    "prior": "Lesson 4: Designing our own poster",
+    "next": "Lesson 6: Close-ups and establishing shots",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.02, TWA.01"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-005/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-005/worksheet.html"
+   }
+  },
+  {
+   "lesson": 6,
+   "date": "2026-09-02",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.03",
+    "M.02"
+   ],
+   "title": "Close-ups and establishing shots",
+   "notes": "",
+   "plan": {
+    "lesson": 6,
+    "title": "Close-ups and establishing shots",
+    "date": "2026-09-02",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.03",
+      "title": "Gather and record experiences and visual information"
+     },
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     }
+    ],
+    "focus": "Close-ups and establishing shots",
+    "prior": "Lesson 5: Narrative: putting a storyboard in the right order",
+    "next": "Lesson 7: Our storyboard of everyday life",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.03, M.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-006/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-006/worksheet.html"
+   }
+  },
+  {
+   "lesson": 7,
+   "date": "2026-09-09",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "M.01",
+    "TWA.01"
+   ],
+   "title": "Our storyboard of everyday life",
+   "notes": "",
+   "plan": {
+    "lesson": 7,
+    "title": "Our storyboard of everyday life",
+    "date": "2026-09-09",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     },
+     {
+      "ref": "TWA.01",
+      "title": "Generate, develop, create, innovate and communicate ideas by using and connecting the artistic processes of experiencing, making and reflecting"
+     }
+    ],
+    "focus": "Our storyboard of everyday life",
+    "prior": "Lesson 6: Close-ups and establishing shots",
+    "next": "Lesson 8: Photographing our storyboard frames",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.01, TWA.01"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-007/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-007/worksheet.html"
+   }
+  },
+  {
+   "lesson": 8,
+   "date": "2026-09-16",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "M.02",
+    "E.03"
+   ],
+   "title": "Photographing our storyboard frames",
+   "notes": "",
+   "plan": {
+    "lesson": 8,
+    "title": "Photographing our storyboard frames",
+    "date": "2026-09-16",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     },
+     {
+      "ref": "E.03",
+      "title": "Gather and record experiences and visual information"
+     }
+    ],
+    "focus": "Photographing our storyboard frames",
+    "prior": "Lesson 7: Our storyboard of everyday life",
+    "next": "Lesson 9: Storytelling together: the four-part drawing game",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.02, E.03"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-008/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-008/worksheet.html"
+   }
+  },
+  {
+   "lesson": 9,
+   "date": "2026-09-23",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "TWA.01",
+    "TWA.02"
+   ],
+   "title": "Storytelling together: the four-part drawing game",
+   "notes": "",
+   "plan": {
+    "lesson": 9,
+    "title": "Storytelling together: the four-part drawing game",
+    "date": "2026-09-23",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "TWA.01",
+      "title": "Generate, develop, create, innovate and communicate ideas by using and connecting the artistic processes of experiencing, making and reflecting"
+     },
+     {
+      "ref": "TWA.02",
+      "title": "Embrace challenges and opportunities, working with growing independence"
+     }
+    ],
+    "focus": "Storytelling together: the four-part drawing game",
+    "prior": "Lesson 8: Photographing our storyboard frames",
+    "next": "Lesson 10: Illustrated short stories for young children",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "TWA.01, TWA.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-009/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-009/worksheet.html"
+   }
+  },
+  {
+   "lesson": 10,
+   "date": "2026-09-30",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.01",
+    "M.01"
+   ],
+   "title": "Illustrated short stories for young children",
+   "notes": "",
+   "plan": {
+    "lesson": 10,
+    "title": "Illustrated short stories for young children",
+    "date": "2026-09-30",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     }
+    ],
+    "focus": "Illustrated short stories for young children",
+    "prior": "Lesson 9: Storytelling together: the four-part drawing game",
+    "next": "Lesson 11: Making our illustrated story",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.01, M.01"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-010/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-010/worksheet.html"
+   }
+  },
+  {
+   "lesson": 11,
+   "date": "2026-10-14",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "M.01",
+    "M.02"
+   ],
+   "title": "Making our illustrated story",
+   "notes": "",
+   "plan": {
+    "lesson": 11,
+    "title": "Making our illustrated story",
+    "date": "2026-10-14",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     },
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     }
+    ],
+    "focus": "Making our illustrated story",
+    "prior": "Lesson 10: Illustrated short stories for young children",
+    "next": "Lesson 12: Sharing our stories and celebrating the work",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.01, M.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-011/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-011/worksheet.html"
+   }
+  },
+  {
+   "lesson": 12,
+   "date": "2026-10-21",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "R.01",
+    "TWA.03"
+   ],
+   "title": "Sharing our stories and celebrating the work",
+   "notes": "",
+   "plan": {
+    "lesson": 12,
+    "title": "Sharing our stories and celebrating the work",
+    "date": "2026-10-21",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "R.01",
+      "title": "Celebrate artistic experiences and learning"
+     },
+     {
+      "ref": "TWA.03",
+      "title": "Review and refine own work"
+     }
+    ],
+    "focus": "Sharing our stories and celebrating the work",
+    "prior": "Lesson 11: Making our illustrated story",
+    "next": "Lesson 13: Review and consolidate: stories",
+    "intro": "Set up the work together so everyone can see it.",
+    "main": [
+     "Learners walk round and look at all the work.",
+     "Each learner says one positive thing about someone else's piece.",
+     "Learners write or say one thing they did well and one to improve."
+    ],
+    "plenary": "Photograph the display for everyone's visual journal.",
+    "look_for": "Giving specific, kind feedback rather than just 'I like it'.",
+    "resources": [
+     "display space",
+     "camera",
+     "visual journals",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "R.01, TWA.03"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-012/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-012/worksheet.html"
+   }
+  },
+  {
+   "lesson": 13,
+   "date": "2026-10-28",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "review",
+   "refs": [
+    "TWA.02"
+   ],
+   "title": "Review and consolidate: stories",
+   "notes": "",
+   "plan": {
+    "lesson": 13,
+    "title": "Review and consolidate: stories",
+    "date": "2026-10-28",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "review",
+    "objectives": [
+     {
+      "ref": "TWA.02",
+      "title": "Embrace challenges and opportunities, working with growing independence"
+     }
+    ],
+    "focus": "Review and consolidate: stories",
+    "prior": "Lesson 12: Sharing our stories and celebrating the work",
+    "next": "Lesson 14: End-of-unit check: stories",
+    "intro": "Set up the work together so everyone can see it.",
+    "main": [
+     "Learners walk round and look at all the work.",
+     "Each learner says one positive thing about someone else's piece.",
+     "Learners write or say one thing they did well and one to improve."
+    ],
+    "plenary": "Photograph the display for everyone's visual journal.",
+    "look_for": "Giving specific, kind feedback rather than just 'I like it'.",
+    "resources": [
+     "display space",
+     "camera",
+     "visual journals",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I can do",
+      "instruction": "Tick what you can do on your own.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this on my own</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this with a little help</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I want to practise this again</div></div>"
+     },
+     {
+      "heading": "2. Show what you know",
+      "instruction": "Have a go at these.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. Draw it",
+      "instruction": "Draw one thing you learned in this unit.",
+      "body": "<div class=\"ws-draw\" style=\"height:140px\"></div>"
+     },
+     {
+      "heading": "4. Next time",
+      "instruction": "What do you want to get better at?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "TWA.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-013/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-013/worksheet.html"
+   }
+  },
+  {
+   "lesson": 14,
+   "date": "2026-11-04",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.1: Stories",
+   "strand": "Art & Design",
+   "phase": "assessment",
+   "refs": [
+    "TWA.02"
+   ],
+   "title": "End-of-unit check: stories",
+   "notes": "",
+   "plan": {
+    "lesson": 14,
+    "title": "End-of-unit check: stories",
+    "date": "2026-11-04",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.1: Stories",
+    "phase": "assessment",
+    "objectives": [
+     {
+      "ref": "TWA.02",
+      "title": "Embrace challenges and opportunities, working with growing independence"
+     }
+    ],
+    "focus": "End-of-unit check: stories",
+    "prior": "Lesson 13: Review and consolidate: stories",
+    "next": "Last lesson of this unit.",
+    "intro": "Explain that today is a chance to show what everyone has learned.",
+    "main": [
+     "Learners work through the end-of-unit tasks independently.",
+     "Observe rather than help; note who is secure on each objective.",
+     "Read questions aloud for learners who need it."
+    ],
+    "plenary": "Mark together and celebrate what the class can now do.",
+    "look_for": "Evidence against each objective in this unit, recorded for your records.",
+    "resources": [
+     "end-of-unit tasks",
+     "class record sheet",
+     "newspapers and magazines to cut up, pencils and charcoal, crayons and felt-tip pens, paints and brushes, digital cameras, picture editing software, scissors and glue, visual journals"
+    ],
+    "vocabulary": "storytelling, photography, graphic design, poster, storyboarding, composition, illustration, layout, frames, templates, fonts, close-ups, establishing shots",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I can do",
+      "instruction": "Tick what you can do on your own.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this on my own</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this with a little help</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I want to practise this again</div></div>"
+     },
+     {
+      "heading": "2. Show what you know",
+      "instruction": "Have a go at these.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. Draw it",
+      "instruction": "Draw one thing you learned in this unit.",
+      "body": "<div class=\"ws-draw\" style=\"height:140px\"></div>"
+     },
+     {
+      "heading": "4. Next time",
+      "instruction": "What do you want to get better at?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "TWA.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-014/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-014/worksheet.html"
+   }
+  },
+  {
+   "lesson": 15,
+   "date": "2026-11-11",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.01",
+    "E.02"
+   ],
+   "title": "Sound waves: seeing what we hear",
+   "notes": "",
+   "plan": {
+    "lesson": 15,
+    "title": "Sound waves: seeing what we hear",
+    "date": "2026-11-11",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "E.02",
+      "title": "Explore media, materials, tools, technologies and processes"
+     }
+    ],
+    "focus": "Sound waves: seeing what we hear",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 16: Colour and texture in painting: tints and tones",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.01, E.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-015/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-015/worksheet.html"
+   }
+  },
+  {
+   "lesson": 16,
+   "date": "2026-11-18",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.02",
+    "M.01"
+   ],
+   "title": "Colour and texture in painting: tints and tones",
+   "notes": "",
+   "plan": {
+    "lesson": 16,
+    "title": "Colour and texture in painting: tints and tones",
+    "date": "2026-11-18",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.02",
+      "title": "Explore media, materials, tools, technologies and processes"
+     },
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     }
+    ],
+    "focus": "Colour and texture in painting: tints and tones",
+    "prior": "Lesson 15: Sound waves: seeing what we hear",
+    "next": "Lesson 17: Recreating a sound visually",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.02, M.01"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-016/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-016/worksheet.html"
+   }
+  },
+  {
+   "lesson": 17,
+   "date": "2026-11-25",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "M.01",
+    "TWA.01"
+   ],
+   "title": "Recreating a sound visually",
+   "notes": "",
+   "plan": {
+    "lesson": 17,
+    "title": "Recreating a sound visually",
+    "date": "2026-11-25",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     },
+     {
+      "ref": "TWA.01",
+      "title": "Generate, develop, create, innovate and communicate ideas by using and connecting the artistic processes of experiencing, making and reflecting"
+     }
+    ],
+    "focus": "Recreating a sound visually",
+    "prior": "Lesson 16: Colour and texture in painting: tints and tones",
+    "next": "Lesson 18: Wax relief and sand painting",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.01, TWA.01"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-017/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-017/worksheet.html"
+   }
+  },
+  {
+   "lesson": 18,
+   "date": "2026-12-02",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "M.01",
+    "M.02"
+   ],
+   "title": "Wax relief and sand painting",
+   "notes": "",
+   "plan": {
+    "lesson": 18,
+    "title": "Wax relief and sand painting",
+    "date": "2026-12-02",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     },
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     }
+    ],
+    "focus": "Wax relief and sand painting",
+    "prior": "Lesson 17: Recreating a sound visually",
+    "next": "Lesson 19: The creations of sound artists",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.01, M.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-018/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-018/worksheet.html"
+   }
+  },
+  {
+   "lesson": 19,
+   "date": "2026-12-09",
+   "weekday": "Wednesday",
+   "term": "Term 1",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.01",
+    "R.02"
+   ],
+   "title": "The creations of sound artists",
+   "notes": "",
+   "plan": {
+    "lesson": 19,
+    "title": "The creations of sound artists",
+    "date": "2026-12-09",
+    "weekday": "Wednesday",
+    "term": "Term 1",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "R.02",
+      "title": "Analyse, critique and connect own and others' work as part of the artistic process"
+     }
+    ],
+    "focus": "The creations of sound artists",
+    "prior": "Lesson 18: Wax relief and sand painting",
+    "next": "Lesson 20: Designing our wind chimes",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.01, R.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-019/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-019/worksheet.html"
+   }
+  },
+  {
+   "lesson": 20,
+   "date": "2027-01-13",
+   "weekday": "Wednesday",
+   "term": "Term 2",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "M.02",
+    "TWA.02"
+   ],
+   "title": "Designing our wind chimes",
+   "notes": "",
+   "plan": {
+    "lesson": 20,
+    "title": "Designing our wind chimes",
+    "date": "2027-01-13",
+    "weekday": "Wednesday",
+    "term": "Term 2",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     },
+     {
+      "ref": "TWA.02",
+      "title": "Embrace challenges and opportunities, working with growing independence"
+     }
+    ],
+    "focus": "Designing our wind chimes",
+    "prior": "Lesson 19: The creations of sound artists",
+    "next": "Lesson 21: Making and decorating our wind chimes",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.02, TWA.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-020/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-020/worksheet.html"
+   }
+  },
+  {
+   "lesson": 21,
+   "date": "2027-01-20",
+   "weekday": "Wednesday",
+   "term": "Term 2",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "M.01",
+    "M.02"
+   ],
+   "title": "Making and decorating our wind chimes",
+   "notes": "",
+   "plan": {
+    "lesson": 21,
+    "title": "Making and decorating our wind chimes",
+    "date": "2027-01-20",
+    "weekday": "Wednesday",
+    "term": "Term 2",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     },
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     }
+    ],
+    "focus": "Making and decorating our wind chimes",
+    "prior": "Lesson 20: Designing our wind chimes",
+    "next": "Lesson 22: Making a simple musical instrument",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.01, M.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-021/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-021/worksheet.html"
+   }
+  },
+  {
+   "lesson": 22,
+   "date": "2027-01-27",
+   "weekday": "Wednesday",
+   "term": "Term 2",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "M.01",
+    "M.02"
+   ],
+   "title": "Making a simple musical instrument",
+   "notes": "",
+   "plan": {
+    "lesson": 22,
+    "title": "Making a simple musical instrument",
+    "date": "2027-01-27",
+    "weekday": "Wednesday",
+    "term": "Term 2",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     },
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     }
+    ],
+    "focus": "Making a simple musical instrument",
+    "prior": "Lesson 21: Making and decorating our wind chimes",
+    "next": "Lesson 23: Art and music in traditional ceremonies",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.01, M.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-022/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-022/worksheet.html"
+   }
+  },
+  {
+   "lesson": 23,
+   "date": "2027-02-03",
+   "weekday": "Wednesday",
+   "term": "Term 2",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.01",
+    "R.02"
+   ],
+   "title": "Art and music in traditional ceremonies",
+   "notes": "",
+   "plan": {
+    "lesson": 23,
+    "title": "Art and music in traditional ceremonies",
+    "date": "2027-02-03",
+    "weekday": "Wednesday",
+    "term": "Term 2",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "R.02",
+      "title": "Analyse, critique and connect own and others' work as part of the artistic process"
+     }
+    ],
+    "focus": "Art and music in traditional ceremonies",
+    "prior": "Lesson 22: Making a simple musical instrument",
+    "next": "Lesson 24: Art and music in the theatre: set and costume",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.01, R.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-023/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-023/worksheet.html"
+   }
+  },
+  {
+   "lesson": 24,
+   "date": "2027-02-10",
+   "weekday": "Wednesday",
+   "term": "Term 2",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.01",
+    "E.03"
+   ],
+   "title": "Art and music in the theatre: set and costume",
+   "notes": "",
+   "plan": {
+    "lesson": 24,
+    "title": "Art and music in the theatre: set and costume",
+    "date": "2027-02-10",
+    "weekday": "Wednesday",
+    "term": "Term 2",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "E.03",
+      "title": "Gather and record experiences and visual information"
+     }
+    ],
+    "focus": "Art and music in the theatre: set and costume",
+    "prior": "Lesson 23: Art and music in traditional ceremonies",
+    "next": "Lesson 25: Using design skills in the theatre",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.01, E.03"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-024/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-024/worksheet.html"
+   }
+  },
+  {
+   "lesson": 25,
+   "date": "2027-02-17",
+   "weekday": "Wednesday",
+   "term": "Term 2",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "M.02",
+    "TWA.01"
+   ],
+   "title": "Using design skills in the theatre",
+   "notes": "",
+   "plan": {
+    "lesson": 25,
+    "title": "Using design skills in the theatre",
+    "date": "2027-02-17",
+    "weekday": "Wednesday",
+    "term": "Term 2",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     },
+     {
+      "ref": "TWA.01",
+      "title": "Generate, develop, create, innovate and communicate ideas by using and connecting the artistic processes of experiencing, making and reflecting"
+     }
+    ],
+    "focus": "Using design skills in the theatre",
+    "prior": "Lesson 24: Art and music in the theatre: set and costume",
+    "next": "Lesson 26: Our sound and vision exhibition",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.02, TWA.01"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-025/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-025/worksheet.html"
+   }
+  },
+  {
+   "lesson": 26,
+   "date": "2027-02-24",
+   "weekday": "Wednesday",
+   "term": "Term 2",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "R.01",
+    "TWA.03"
+   ],
+   "title": "Our sound and vision exhibition",
+   "notes": "",
+   "plan": {
+    "lesson": 26,
+    "title": "Our sound and vision exhibition",
+    "date": "2027-02-24",
+    "weekday": "Wednesday",
+    "term": "Term 2",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "R.01",
+      "title": "Celebrate artistic experiences and learning"
+     },
+     {
+      "ref": "TWA.03",
+      "title": "Review and refine own work"
+     }
+    ],
+    "focus": "Our sound and vision exhibition",
+    "prior": "Lesson 25: Using design skills in the theatre",
+    "next": "Lesson 27: Review and consolidate: sounds",
+    "intro": "Set up the work together so everyone can see it.",
+    "main": [
+     "Learners walk round and look at all the work.",
+     "Each learner says one positive thing about someone else's piece.",
+     "Learners write or say one thing they did well and one to improve."
+    ],
+    "plenary": "Photograph the display for everyone's visual journal.",
+    "look_for": "Giving specific, kind feedback rather than just 'I like it'.",
+    "resources": [
+     "display space",
+     "camera",
+     "visual journals",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "R.01, TWA.03"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-026/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-026/worksheet.html"
+   }
+  },
+  {
+   "lesson": 27,
+   "date": "2027-03-03",
+   "weekday": "Wednesday",
+   "term": "Term 2",
+   "unit": "Unit 2.2: Sounds",
+   "strand": "Art & Design",
+   "phase": "review",
+   "refs": [
+    "TWA.02"
+   ],
+   "title": "Review and consolidate: sounds",
+   "notes": "",
+   "plan": {
+    "lesson": 27,
+    "title": "Review and consolidate: sounds",
+    "date": "2027-03-03",
+    "weekday": "Wednesday",
+    "term": "Term 2",
+    "unit": "Unit 2.2: Sounds",
+    "phase": "review",
+    "objectives": [
+     {
+      "ref": "TWA.02",
+      "title": "Embrace challenges and opportunities, working with growing independence"
+     }
+    ],
+    "focus": "Review and consolidate: sounds",
+    "prior": "Lesson 26: Our sound and vision exhibition",
+    "next": "Last lesson of this unit.",
+    "intro": "Set up the work together so everyone can see it.",
+    "main": [
+     "Learners walk round and look at all the work.",
+     "Each learner says one positive thing about someone else's piece.",
+     "Learners write or say one thing they did well and one to improve."
+    ],
+    "plenary": "Photograph the display for everyone's visual journal.",
+    "look_for": "Giving specific, kind feedback rather than just 'I like it'.",
+    "resources": [
+     "display space",
+     "camera",
+     "visual journals",
+     "percussion instruments, a globe or world map, card, coloured pencils and felt-tips, watercolours and paints, wax crayons, clay, shells, feathers, beads and glitter, coloured sand, cameras, visual journals"
+    ],
+    "vocabulary": "vibrations, sound waves, frequency, amplitude, pitch, rhythm, improvisation, composition, monochrome, tints, tones, wax relief, sand painting, sound artist, costume designer, set designer",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I can do",
+      "instruction": "Tick what you can do on your own.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this on my own</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this with a little help</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I want to practise this again</div></div>"
+     },
+     {
+      "heading": "2. Show what you know",
+      "instruction": "Have a go at these.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. Draw it",
+      "instruction": "Draw one thing you learned in this unit.",
+      "body": "<div class=\"ws-draw\" style=\"height:140px\"></div>"
+     },
+     {
+      "heading": "4. Next time",
+      "instruction": "What do you want to get better at?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "TWA.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-027/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-027/worksheet.html"
+   }
+  },
+  {
+   "lesson": 28,
+   "date": "2027-03-24",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.01",
+    "E.03"
+   ],
+   "title": "Environments and dwellings around the world",
+   "notes": "",
+   "plan": {
+    "lesson": 28,
+    "title": "Environments and dwellings around the world",
+    "date": "2027-03-24",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "E.03",
+      "title": "Gather and record experiences and visual information"
+     }
+    ],
+    "focus": "Environments and dwellings around the world",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 29: Architect-designed buildings",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.01, E.03"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-028/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-028/worksheet.html"
+   }
+  },
+  {
+   "lesson": 29,
+   "date": "2027-03-31",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.01",
+    "R.02"
+   ],
+   "title": "Architect-designed buildings",
+   "notes": "",
+   "plan": {
+    "lesson": 29,
+    "title": "Architect-designed buildings",
+    "date": "2027-03-31",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "R.02",
+      "title": "Analyse, critique and connect own and others' work as part of the artistic process"
+     }
+    ],
+    "focus": "Architect-designed buildings",
+    "prior": "Lesson 28: Environments and dwellings around the world",
+    "next": "Lesson 30: Sketching the buildings around us",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.01, R.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-029/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-029/worksheet.html"
+   }
+  },
+  {
+   "lesson": 30,
+   "date": "2027-04-07",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.03",
+    "M.01"
+   ],
+   "title": "Sketching the buildings around us",
+   "notes": "",
+   "plan": {
+    "lesson": 30,
+    "title": "Sketching the buildings around us",
+    "date": "2027-04-07",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.03",
+      "title": "Gather and record experiences and visual information"
+     },
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     }
+    ],
+    "focus": "Sketching the buildings around us",
+    "prior": "Lesson 29: Architect-designed buildings",
+    "next": "Lesson 31: Our own architectural design",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.03, M.01"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-030/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-030/worksheet.html"
+   }
+  },
+  {
+   "lesson": 31,
+   "date": "2027-04-14",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "M.02",
+    "TWA.01"
+   ],
+   "title": "Our own architectural design",
+   "notes": "",
+   "plan": {
+    "lesson": 31,
+    "title": "Our own architectural design",
+    "date": "2027-04-14",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     },
+     {
+      "ref": "TWA.01",
+      "title": "Generate, develop, create, innovate and communicate ideas by using and connecting the artistic processes of experiencing, making and reflecting"
+     }
+    ],
+    "focus": "Our own architectural design",
+    "prior": "Lesson 30: Sketching the buildings around us",
+    "next": "Lesson 32: Planning our mini-city as a team",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.02, TWA.01"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-031/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-031/worksheet.html"
+   }
+  },
+  {
+   "lesson": 32,
+   "date": "2027-04-21",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "TWA.01",
+    "TWA.02"
+   ],
+   "title": "Planning our mini-city as a team",
+   "notes": "",
+   "plan": {
+    "lesson": 32,
+    "title": "Planning our mini-city as a team",
+    "date": "2027-04-21",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "TWA.01",
+      "title": "Generate, develop, create, innovate and communicate ideas by using and connecting the artistic processes of experiencing, making and reflecting"
+     },
+     {
+      "ref": "TWA.02",
+      "title": "Embrace challenges and opportunities, working with growing independence"
+     }
+    ],
+    "focus": "Planning our mini-city as a team",
+    "prior": "Lesson 31: Our own architectural design",
+    "next": "Lesson 33: Building our mini-city",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "TWA.01, TWA.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-032/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-032/worksheet.html"
+   }
+  },
+  {
+   "lesson": 33,
+   "date": "2027-04-28",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "M.01",
+    "M.02"
+   ],
+   "title": "Building our mini-city",
+   "notes": "",
+   "plan": {
+    "lesson": 33,
+    "title": "Building our mini-city",
+    "date": "2027-04-28",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     },
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     }
+    ],
+    "focus": "Building our mini-city",
+    "prior": "Lesson 32: Planning our mini-city as a team",
+    "next": "Lesson 34: Pointillism: colour made of dots",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.01, M.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-033/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-033/worksheet.html"
+   }
+  },
+  {
+   "lesson": 34,
+   "date": "2027-05-05",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.01",
+    "E.02"
+   ],
+   "title": "Pointillism: colour made of dots",
+   "notes": "",
+   "plan": {
+    "lesson": 34,
+    "title": "Pointillism: colour made of dots",
+    "date": "2027-05-05",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "E.02",
+      "title": "Explore media, materials, tools, technologies and processes"
+     }
+    ],
+    "focus": "Pointillism: colour made of dots",
+    "prior": "Lesson 33: Building our mini-city",
+    "next": "Lesson 35: Experimenting with pointillism to create a tree",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.01, E.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-034/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-034/worksheet.html"
+   }
+  },
+  {
+   "lesson": 35,
+   "date": "2027-05-12",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "M.01",
+    "M.02"
+   ],
+   "title": "Experimenting with pointillism to create a tree",
+   "notes": "",
+   "plan": {
+    "lesson": 35,
+    "title": "Experimenting with pointillism to create a tree",
+    "date": "2027-05-12",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     },
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     }
+    ],
+    "focus": "Experimenting with pointillism to create a tree",
+    "prior": "Lesson 34: Pointillism: colour made of dots",
+    "next": "Lesson 36: Tea time: looking, smelling and tasting as inspiration",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.01, M.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-035/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-035/worksheet.html"
+   }
+  },
+  {
+   "lesson": 36,
+   "date": "2027-05-19",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.01",
+    "E.02"
+   ],
+   "title": "Tea time: looking, smelling and tasting as inspiration",
+   "notes": "",
+   "plan": {
+    "lesson": 36,
+    "title": "Tea time: looking, smelling and tasting as inspiration",
+    "date": "2027-05-19",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "E.02",
+      "title": "Explore media, materials, tools, technologies and processes"
+     }
+    ],
+    "focus": "Tea time: looking, smelling and tasting as inspiration",
+    "prior": "Lesson 35: Experimenting with pointillism to create a tree",
+    "next": "Lesson 37: How ideas spread from place to place",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.01, E.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-036/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-036/worksheet.html"
+   }
+  },
+  {
+   "lesson": 37,
+   "date": "2027-05-26",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "content",
+   "refs": [
+    "E.01",
+    "R.02"
+   ],
+   "title": "How ideas spread from place to place",
+   "notes": "",
+   "plan": {
+    "lesson": 37,
+    "title": "How ideas spread from place to place",
+    "date": "2027-05-26",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "E.01",
+      "title": "Encounter, sense, experiment with and respond to a wide range of sources, including from a range of art from different times and cultures"
+     },
+     {
+      "ref": "R.02",
+      "title": "Analyse, critique and connect own and others' work as part of the artistic process"
+     }
+    ],
+    "focus": "How ideas spread from place to place",
+    "prior": "Lesson 36: Tea time: looking, smelling and tasting as inspiration",
+    "next": "Lesson 38: Designing and making a tea bowl from clay",
+    "intro": "Warm-up drawing in visual journals to loosen up hands.",
+    "main": [
+     "Show and discuss the images together, using the questions to prompt talk.",
+     "Learners describe what they can see using the language of art.",
+     "Learners sketch or note the ideas they like best in their visual journals."
+    ],
+    "plenary": "Each learner shows the journal page and says which work inspired them.",
+    "look_for": "Use of art vocabulary and willingness to say what they think.",
+    "resources": [
+     "images to display",
+     "visual journals",
+     "pencils",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "E.01, R.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-037/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-037/worksheet.html"
+   }
+  },
+  {
+   "lesson": 38,
+   "date": "2027-06-02",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "M.01",
+    "M.02"
+   ],
+   "title": "Designing and making a tea bowl from clay",
+   "notes": "",
+   "plan": {
+    "lesson": 38,
+    "title": "Designing and making a tea bowl from clay",
+    "date": "2027-06-02",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "M.01",
+      "title": "Learn to use a range of media, materials, tools, technologies and processes with increasing skill, independence and confidence"
+     },
+     {
+      "ref": "M.02",
+      "title": "Select appropriate media, materials, tools, technologies and processes for a purpose"
+     }
+    ],
+    "focus": "Designing and making a tea bowl from clay",
+    "prior": "Lesson 37: How ideas spread from place to place",
+    "next": "Lesson 39: Our end-of-year exhibition",
+    "intro": "Recap the technique and remind the class of safe, tidy working.",
+    "main": [
+     "Demonstrate the technique step by step.",
+     "Learners work on the piece, choosing their own media.",
+     "Circulate, encourage experiment, and suggest alternatives.",
+     "Learners store developmental work in their visual journals."
+    ],
+    "plenary": "Learners look at each other's work and name one thing they might try next time.",
+    "look_for": "Growing independence in choosing and handling media.",
+    "resources": [
+     "media and tools for the technique",
+     "visual journals",
+     "covers for tables",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "M.01, M.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-038/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-038/worksheet.html"
+   }
+  },
+  {
+   "lesson": 39,
+   "date": "2027-06-09",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "project",
+   "refs": [
+    "R.01",
+    "TWA.01"
+   ],
+   "title": "Our end-of-year exhibition",
+   "notes": "",
+   "plan": {
+    "lesson": 39,
+    "title": "Our end-of-year exhibition",
+    "date": "2027-06-09",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "R.01",
+      "title": "Celebrate artistic experiences and learning"
+     },
+     {
+      "ref": "TWA.01",
+      "title": "Generate, develop, create, innovate and communicate ideas by using and connecting the artistic processes of experiencing, making and reflecting"
+     }
+    ],
+    "focus": "Our end-of-year exhibition",
+    "prior": "Lesson 38: Designing and making a tea bowl from clay",
+    "next": "Lesson 40: Review and consolidate: places",
+    "intro": "Set up the work together so everyone can see it.",
+    "main": [
+     "Learners walk round and look at all the work.",
+     "Each learner says one positive thing about someone else's piece.",
+     "Learners write or say one thing they did well and one to improve."
+    ],
+    "plenary": "Photograph the display for everyone's visual journal.",
+    "look_for": "Giving specific, kind feedback rather than just 'I like it'.",
+    "resources": [
+     "display space",
+     "camera",
+     "visual journals",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Warm up",
+      "instruction": "Fill the box with the marks you are practising.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+     },
+     {
+      "heading": "2. Look and sketch",
+      "instruction": "Sketch what you can see.",
+      "body": "<div class=\"ws-draw\" style=\"height:180px\"></div>"
+     },
+     {
+      "heading": "3. My colours",
+      "instruction": "Colour the swatches you mixed. Write their names.",
+      "body": "<div class=\"ws-swatches\"><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span><span class=\"ws-swatch\"></span></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. My idea",
+      "instruction": "What will you make next? Draw and write.",
+      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "R.01, TWA.01"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-039/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-039/worksheet.html"
+   }
+  },
+  {
+   "lesson": 40,
+   "date": "2027-06-16",
+   "weekday": "Wednesday",
+   "term": "Term 3",
+   "unit": "Unit 2.3: Places",
+   "strand": "Art & Design",
+   "phase": "review",
+   "refs": [
+    "TWA.02"
+   ],
+   "title": "Review and consolidate: places",
+   "notes": "",
+   "plan": {
+    "lesson": 40,
+    "title": "Review and consolidate: places",
+    "date": "2027-06-16",
+    "weekday": "Wednesday",
+    "term": "Term 3",
+    "unit": "Unit 2.3: Places",
+    "phase": "review",
+    "objectives": [
+     {
+      "ref": "TWA.02",
+      "title": "Embrace challenges and opportunities, working with growing independence"
+     }
+    ],
+    "focus": "Review and consolidate: places",
+    "prior": "Lesson 39: Our end-of-year exhibition",
+    "next": "Last lesson of this unit.",
+    "intro": "Set up the work together so everyone can see it.",
+    "main": [
+     "Learners walk round and look at all the work.",
+     "Each learner says one positive thing about someone else's piece.",
+     "Learners write or say one thing they did well and one to improve."
+    ],
+    "plenary": "Photograph the display for everyone's visual journal.",
+    "look_for": "Giving specific, kind feedback rather than just 'I like it'.",
+    "resources": [
+     "display space",
+     "camera",
+     "visual journals",
+     "a globe or world map, paper and thin card, pencils and felt-tips, dowelling and lollipop sticks, recycled materials, bubble wrap, textiles, air dry clay and clay tools, watercolour and acrylic paint, string, scissors, visual journals"
+    ],
+    "vocabulary": "urban environment, natural environment, architecture, inhabitants, facade, construction materials, sketch, landscape painting, pointillism, optical mixing, montage, frieze, clay work, inspiration, brief, clients",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. What I can do",
+      "instruction": "Tick what you can do on your own.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this on my own</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I can do this with a little help</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>I want to practise this again</div></div>"
+     },
+     {
+      "heading": "2. Show what you know",
+      "instruction": "Have a go at these.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "3. Draw it",
+      "instruction": "Draw one thing you learned in this unit.",
+      "body": "<div class=\"ws-draw\" style=\"height:140px\"></div>"
+     },
+     {
+      "heading": "4. Next time",
+      "instruction": "What do you want to get better at?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "TWA.02"
+   },
+   "paths": {
+    "guide": "lessons/primary2/art-design/lesson-040/guide.html",
+    "worksheet": "lessons/primary2/art-design/lesson-040/worksheet.html"
+   }
+  }
+ ]
+}

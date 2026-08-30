@@ -1,0 +1,371 @@
+{
+ "school": "Selong Bay School",
+ "academicYear": "26/27",
+ "calendar": {
+  "academic_year": "26/27",
+  "school": "Selong Bay School",
+  "year_start": "2026-07-27",
+  "year_end": "2027-06-18",
+  "terms": [
+   {
+    "name": "Term 1",
+    "start": "2026-07-27",
+    "end": "2026-12-11"
+   },
+   {
+    "name": "Term 2",
+    "start": "2027-01-11",
+    "end": "2027-03-05"
+   },
+   {
+    "name": "Term 3",
+    "start": "2027-03-22",
+    "end": "2027-06-18"
+   }
+  ],
+  "school_holidays": [
+   {
+    "start": "2026-10-05",
+    "end": "2026-10-11",
+    "label": "Mid-term break"
+   },
+   {
+    "start": "2026-12-14",
+    "end": "2027-01-10",
+    "label": "Winter break"
+   },
+   {
+    "start": "2027-03-08",
+    "end": "2027-03-21",
+    "label": "Spring break"
+   },
+   {
+    "start": "2027-06-21",
+    "end": "2027-06-30",
+    "label": "End of year"
+   }
+  ],
+  "public_holidays": [
+   {
+    "date": "2026-08-17",
+    "label": "Public holiday"
+   },
+   {
+    "date": "2026-08-25",
+    "label": "Public holiday"
+   },
+   {
+    "date": "2027-03-26",
+    "label": "Public holiday"
+   },
+   {
+    "date": "2027-05-01",
+    "label": "Labour Day"
+   },
+   {
+    "date": "2027-05-06",
+    "label": "Public holiday"
+   },
+   {
+    "date": "2027-05-20",
+    "label": "Public holiday"
+   },
+   {
+    "date": "2027-06-01",
+    "label": "Public holiday"
+   },
+   {
+    "date": "2027-06-06",
+    "label": "Public holiday"
+   }
+  ]
+ },
+ "totalLessons": 3137,
+ "groups": [
+  {
+   "group": "primary1",
+   "label": "Primary 1",
+   "stage": "Stage 1",
+   "classes": [
+    {
+     "slug": "english",
+     "short": "English",
+     "code": "0844",
+     "title": "Cambridge Primary English",
+     "periods": "5 periods a week",
+     "lessons": 194,
+     "file": "primary1/english.json"
+    },
+    {
+     "slug": "mathematics",
+     "short": "Mathematics",
+     "code": "0096",
+     "title": "Cambridge Primary Mathematics",
+     "periods": "5 periods a week",
+     "lessons": 194,
+     "file": "primary1/mathematics.json"
+    },
+    {
+     "slug": "science",
+     "short": "Science",
+     "code": "0097",
+     "title": "Cambridge Primary Science",
+     "periods": "2 periods a week (Tuesday and Thursday)",
+     "lessons": 76,
+     "file": "primary1/science.json"
+    },
+    {
+     "slug": "global-perspectives",
+     "short": "Global Perspectives",
+     "code": "0838",
+     "title": "Cambridge Primary Global Perspectives",
+     "periods": "1 period a week (Friday)",
+     "lessons": 39,
+     "file": "primary1/global-perspectives.json"
+    },
+    {
+     "slug": "computing",
+     "short": "Computing",
+     "code": "0059",
+     "title": "Cambridge Primary Computing",
+     "periods": "1 period a week (Monday)",
+     "lessons": 39,
+     "file": "primary1/computing.json"
+    },
+    {
+     "slug": "art-design",
+     "short": "Art & Design",
+     "code": "0067",
+     "title": "Cambridge Primary Art & Design",
+     "periods": "1 period a week (Wednesday)",
+     "lessons": 40,
+     "file": "primary1/art-design.json"
+    }
+   ]
+  },
+  {
+   "group": "primary2",
+   "label": "Primary 2",
+   "stage": "Stage 2",
+   "classes": [
+    {
+     "slug": "english",
+     "short": "English",
+     "code": "0844",
+     "title": "Cambridge Primary English",
+     "periods": "5 periods a week",
+     "lessons": 194,
+     "file": "primary2/english.json"
+    },
+    {
+     "slug": "mathematics",
+     "short": "Mathematics",
+     "code": "0096",
+     "title": "Cambridge Primary Mathematics",
+     "periods": "5 periods a week",
+     "lessons": 194,
+     "file": "primary2/mathematics.json"
+    },
+    {
+     "slug": "science",
+     "short": "Science",
+     "code": "0097",
+     "title": "Cambridge Primary Science",
+     "periods": "2 periods a week (Tuesday and Thursday)",
+     "lessons": 76,
+     "file": "primary2/science.json"
+    },
+    {
+     "slug": "global-perspectives",
+     "short": "Global Perspectives",
+     "code": "0838",
+     "title": "Cambridge Primary Global Perspectives",
+     "periods": "1 period a week (Friday)",
+     "lessons": 39,
+     "file": "primary2/global-perspectives.json"
+    },
+    {
+     "slug": "art-design",
+     "short": "Art & Design",
+     "code": "0067",
+     "title": "Cambridge Primary Art & Design",
+     "periods": "1 period a week (Wednesday)",
+     "lessons": 40,
+     "file": "primary2/art-design.json"
+    }
+   ]
+  },
+  {
+   "group": "primary3",
+   "label": "Primary 3",
+   "stage": "Stage 3",
+   "classes": [
+    {
+     "slug": "english",
+     "short": "English",
+     "code": "0844",
+     "title": "Cambridge Primary English",
+     "periods": "5 periods a week",
+     "lessons": 194,
+     "file": "primary3/english.json"
+    },
+    {
+     "slug": "mathematics",
+     "short": "Mathematics",
+     "code": "0096",
+     "title": "Cambridge Primary Mathematics",
+     "periods": "5 periods a week",
+     "lessons": 194,
+     "file": "primary3/mathematics.json"
+    },
+    {
+     "slug": "science",
+     "short": "Science",
+     "code": "0097",
+     "title": "Cambridge Primary Science",
+     "periods": "2 periods a week (Tuesday and Thursday)",
+     "lessons": 76,
+     "file": "primary3/science.json"
+    },
+    {
+     "slug": "global-perspectives",
+     "short": "Global Perspectives",
+     "code": "0838",
+     "title": "Cambridge Primary Global Perspectives",
+     "periods": "1 period a week (Friday)",
+     "lessons": 39,
+     "file": "primary3/global-perspectives.json"
+    }
+   ]
+  },
+  {
+   "group": "primary4",
+   "label": "Primary 4",
+   "stage": "Stage 4",
+   "classes": [
+    {
+     "slug": "english",
+     "short": "English",
+     "code": "0844",
+     "title": "Cambridge Primary English",
+     "periods": "5 periods a week",
+     "lessons": 194,
+     "file": "primary4/english.json"
+    },
+    {
+     "slug": "mathematics",
+     "short": "Mathematics",
+     "code": "0096",
+     "title": "Cambridge Primary Mathematics",
+     "periods": "5 periods a week",
+     "lessons": 194,
+     "file": "primary4/mathematics.json"
+    },
+    {
+     "slug": "science",
+     "short": "Science",
+     "code": "0097",
+     "title": "Cambridge Primary Science",
+     "periods": "2 periods a week (Tuesday and Thursday)",
+     "lessons": 76,
+     "file": "primary4/science.json"
+    },
+    {
+     "slug": "global-perspectives",
+     "short": "Global Perspectives",
+     "code": "0838",
+     "title": "Cambridge Primary Global Perspectives",
+     "periods": "1 period a week (Friday)",
+     "lessons": 39,
+     "file": "primary4/global-perspectives.json"
+    }
+   ]
+  },
+  {
+   "group": "primary5",
+   "label": "Primary 5",
+   "stage": "Stage 5",
+   "classes": [
+    {
+     "slug": "english",
+     "short": "English",
+     "code": "0844",
+     "title": "Cambridge Primary English",
+     "periods": "5 periods a week",
+     "lessons": 194,
+     "file": "primary5/english.json"
+    },
+    {
+     "slug": "mathematics",
+     "short": "Mathematics",
+     "code": "0096",
+     "title": "Cambridge Primary Mathematics",
+     "periods": "5 periods a week",
+     "lessons": 194,
+     "file": "primary5/mathematics.json"
+    },
+    {
+     "slug": "science",
+     "short": "Science",
+     "code": "0097",
+     "title": "Cambridge Primary Science",
+     "periods": "2 periods a week (Tuesday and Thursday)",
+     "lessons": 76,
+     "file": "primary5/science.json"
+    },
+    {
+     "slug": "global-perspectives",
+     "short": "Global Perspectives",
+     "code": "0838",
+     "title": "Cambridge Primary Global Perspectives",
+     "periods": "1 period a week (Friday)",
+     "lessons": 39,
+     "file": "primary5/global-perspectives.json"
+    }
+   ]
+  },
+  {
+   "group": "primary6",
+   "label": "Primary 6",
+   "stage": "Stage 6",
+   "classes": [
+    {
+     "slug": "english",
+     "short": "English",
+     "code": "0844",
+     "title": "Cambridge Primary English",
+     "periods": "5 periods a week",
+     "lessons": 194,
+     "file": "primary6/english.json"
+    },
+    {
+     "slug": "mathematics",
+     "short": "Mathematics",
+     "code": "0096",
+     "title": "Cambridge Primary Mathematics",
+     "periods": "5 periods a week",
+     "lessons": 194,
+     "file": "primary6/mathematics.json"
+    },
+    {
+     "slug": "science",
+     "short": "Science",
+     "code": "0097",
+     "title": "Cambridge Primary Science",
+     "periods": "2 periods a week (Tuesday and Thursday)",
+     "lessons": 76,
+     "file": "primary6/science.json"
+    },
+    {
+     "slug": "global-perspectives",
+     "short": "Global Perspectives",
+     "code": "0838",
+     "title": "Cambridge Primary Global Perspectives",
+     "periods": "1 period a week (Friday)",
+     "lessons": 39,
+     "file": "primary6/global-perspectives.json"
+    }
+   ]
+  }
+ ]
+}

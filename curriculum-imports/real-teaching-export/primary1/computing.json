@@ -1,0 +1,3287 @@
+{
+ "group": "primary1",
+ "groupLabel": "Primary 1",
+ "stage": "Stage 1",
+ "slug": "computing",
+ "title": "Cambridge Primary Computing",
+ "short": "Computing",
+ "code": "0059",
+ "periods": "1 period a week (Monday)",
+ "driveFolder": "https://drive.google.com/drive/folders/16rbkPq0pkDI_uxlak1JsIZqVGSJjQH30",
+ "resources": [
+  {
+   "title": "Computing resource pack (43217_qp)",
+   "url": "https://drive.google.com/file/d/1H0J75nt4TcpmPINJR0APIHtdzFfhQNPG/view"
+  }
+ ],
+ "curriculum": {
+  "code": "0059",
+  "title": "Cambridge Primary Computing",
+  "stage": "Stage 1",
+  "framework": "Cambridge Primary Computing curriculum framework (0059)",
+  "note": "The Computing framework is <strong>not</strong> in this class folder on Google Drive, so this map works at strand level. The five strand names and the syllabus code 0059 are the published Cambridge ones; only the individual objective numbers are missing. Add the Stage 1 framework and those can be attached lesson by lesson. Unit 5 assumes a floor robot or a block-coding app; substitute unplugged activities if neither is available.",
+  "strands": [
+   {
+    "title": "Computing strands",
+    "objectives": [
+     {
+      "ref": "1CT",
+      "title": "Computational Thinking: recognising and continuing patterns, putting steps in order, breaking a task into steps, and writing and debugging simple algorithms"
+     },
+     {
+      "ref": "1PR",
+      "title": "Programming: giving a sequence of commands to a floor robot or on-screen character, predicting what will happen, testing and correcting"
+     },
+     {
+      "ref": "1MD",
+      "title": "Managing Data: sorting and grouping objects, collecting simple data from the class and presenting it as a chart"
+     },
+     {
+      "ref": "1NW",
+      "title": "Networks and Digital Communication: what the internet is for, keeping personal information private, being kind online and knowing who to ask for help"
+     },
+     {
+      "ref": "1CS",
+      "title": "Computer Systems: naming the parts of a computer, using a mouse and keyboard, opening programs, creating digital work and saving it"
+     }
+    ]
+   }
+  ]
+ },
+ "ongoing": {
+  "title": "The five Computing strands",
+  "blurb": "Cambridge runs the same five strands through every primary stage, so each one is met again and again with more independence. Every unit below sits in one of them.",
+  "items": [
+   {
+    "ref": "Computational Thinking",
+    "title": "Creating and presenting solutions to problems using algorithms, logic and precision"
+   },
+   {
+    "ref": "Programming",
+    "title": "Understanding the common constructs of programming languages, and what computer scientists contribute"
+   },
+   {
+    "ref": "Managing Data",
+    "title": "How computers store and analyse data on an ever-increasing scale"
+   },
+   {
+    "ref": "Networks and Digital Communication",
+    "title": "How computers communicate over networks, through hardware and data transfer protocols"
+   },
+   {
+    "ref": "Computer Systems",
+    "title": "That computers follow precise instructions to process input, make decisions and produce results"
+   }
+  ]
+ },
+ "units": [
+  {
+   "title": "Unit 1: Getting started with computers",
+   "short": "using a computer",
+   "strand": "Computing",
+   "refs": [
+    "1CS"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Unit 2: Staying safe online",
+   "short": "staying safe online",
+   "strand": "Computing",
+   "refs": [
+    "1NW"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Unit 3: Patterns and sequences",
+   "short": "patterns and sequences",
+   "strand": "Computing",
+   "refs": [
+    "1CT"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Unit 4: Algorithms: giving instructions",
+   "short": "algorithms",
+   "strand": "Computing",
+   "refs": [
+    "1CT"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Unit 5: Programming a robot",
+   "short": "programming",
+   "strand": "Computing",
+   "refs": [
+    "1PR"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Unit 6: Collecting and sorting data",
+   "short": "data",
+   "strand": "Computing",
+   "refs": [
+    "1MD"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  },
+  {
+   "title": "Unit 7: Creating digital work",
+   "short": "creating digital work",
+   "strand": "Computing",
+   "refs": [
+    "1CS",
+    "1NW"
+   ],
+   "vocabulary": "",
+   "materials": ""
+  }
+ ],
+ "lessons": [
+  {
+   "lesson": 1,
+   "date": "2026-07-27",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 1: Getting started with computers",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CS"
+   ],
+   "title": "Computers around us",
+   "notes": "",
+   "plan": {
+    "lesson": 1,
+    "title": "Computers around us",
+    "date": "2026-07-27",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 1: Getting started with computers",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CS",
+      "title": "Computer Systems: naming the parts of a computer, using a mouse and keyboard, opening programs, creating digital work and saving it"
+     }
+    ],
+    "focus": "Computers around us",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 2: Parts of a computer: screen, keyboard, mouse",
+    "intro": "Name the parts of the computer together.",
+    "main": [
+     "Demonstrate the skill on the big screen.",
+     "Learners practise at their own device.",
+     "Support learners who are new to the mouse or keyboard.",
+     "Remind them how to save and find their work."
+    ],
+    "plenary": "Learners show a partner what they made.",
+    "look_for": "Confidence with the mouse or trackpad, and saving work.",
+    "resources": [
+     "computers or tablets",
+     "headphones if needed"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CS"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-001/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-001/worksheet.html"
+   }
+  },
+  {
+   "lesson": 2,
+   "date": "2026-08-03",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 1: Getting started with computers",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CS"
+   ],
+   "title": "Parts of a computer: screen, keyboard, mouse",
+   "notes": "",
+   "plan": {
+    "lesson": 2,
+    "title": "Parts of a computer: screen, keyboard, mouse",
+    "date": "2026-08-03",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 1: Getting started with computers",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CS",
+      "title": "Computer Systems: naming the parts of a computer, using a mouse and keyboard, opening programs, creating digital work and saving it"
+     }
+    ],
+    "focus": "Parts of a computer: screen, keyboard, mouse",
+    "prior": "Lesson 1: Computers around us",
+    "next": "Lesson 3: Using a mouse, trackpad and keyboard",
+    "intro": "Talk about the technology we use at home and at school.",
+    "main": [
+     "Share a simple scenario and ask the class what they would do.",
+     "Draw out who they could ask for help.",
+     "Learners draw or write their own rule for staying safe."
+    ],
+    "plenary": "Agree three class rules and put them on the wall.",
+    "look_for": "Knowing what is private and who to tell if something worries them.",
+    "resources": [
+     "scenario cards",
+     "paper for class rules"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Safe or not?",
+      "instruction": "Tick the safe choices.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Telling a grown-up if something worries me</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Sharing my password with a friend</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Being kind in a message</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Keeping my name and address private</div></div>"
+     },
+     {
+      "heading": "2. Who can help me?",
+      "instruction": "Draw two people you could ask for help.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">At school</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">At home</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "3. My rule",
+      "instruction": "Write one rule for our class.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CS"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-002/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-002/worksheet.html"
+   }
+  },
+  {
+   "lesson": 3,
+   "date": "2026-08-10",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 1: Getting started with computers",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CS"
+   ],
+   "title": "Using a mouse, trackpad and keyboard",
+   "notes": "",
+   "plan": {
+    "lesson": 3,
+    "title": "Using a mouse, trackpad and keyboard",
+    "date": "2026-08-10",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 1: Getting started with computers",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CS",
+      "title": "Computer Systems: naming the parts of a computer, using a mouse and keyboard, opening programs, creating digital work and saving it"
+     }
+    ],
+    "focus": "Using a mouse, trackpad and keyboard",
+    "prior": "Lesson 2: Parts of a computer: screen, keyboard, mouse",
+    "next": "Lesson 4: Opening and closing a program",
+    "intro": "Name the parts of the computer together.",
+    "main": [
+     "Demonstrate the skill on the big screen.",
+     "Learners practise at their own device.",
+     "Support learners who are new to the mouse or keyboard.",
+     "Remind them how to save and find their work."
+    ],
+    "plenary": "Learners show a partner what they made.",
+    "look_for": "Confidence with the mouse or trackpad, and saving work.",
+    "resources": [
+     "computers or tablets",
+     "headphones if needed"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CS"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-003/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-003/worksheet.html"
+   }
+  },
+  {
+   "lesson": 4,
+   "date": "2026-08-24",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 1: Getting started with computers",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CS"
+   ],
+   "title": "Opening and closing a program",
+   "notes": "",
+   "plan": {
+    "lesson": 4,
+    "title": "Opening and closing a program",
+    "date": "2026-08-24",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 1: Getting started with computers",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CS",
+      "title": "Computer Systems: naming the parts of a computer, using a mouse and keyboard, opening programs, creating digital work and saving it"
+     }
+    ],
+    "focus": "Opening and closing a program",
+    "prior": "Lesson 3: Using a mouse, trackpad and keyboard",
+    "next": "Lesson 5: Looking after our equipment",
+    "intro": "Recap the commands we know and what each one does.",
+    "main": [
+     "Model programming a short sequence and predicting what will happen.",
+     "Learners plan their route on paper before pressing any buttons.",
+     "Learners program, test and correct in pairs.",
+     "Ask what they changed when it did not work."
+    ],
+    "plenary": "One pair demonstrates their program to the class.",
+    "look_for": "Predicting before running, and debugging rather than starting over.",
+    "resources": [
+     "floor robots or block-coding app",
+     "route mats",
+     "planning paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CS"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-004/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-004/worksheet.html"
+   }
+  },
+  {
+   "lesson": 5,
+   "date": "2026-08-31",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 1: Getting started with computers",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CS"
+   ],
+   "title": "Looking after our equipment",
+   "notes": "",
+   "plan": {
+    "lesson": 5,
+    "title": "Looking after our equipment",
+    "date": "2026-08-31",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 1: Getting started with computers",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CS",
+      "title": "Computer Systems: naming the parts of a computer, using a mouse and keyboard, opening programs, creating digital work and saving it"
+     }
+    ],
+    "focus": "Looking after our equipment",
+    "prior": "Lesson 4: Opening and closing a program",
+    "next": "Last lesson of this unit.",
+    "intro": "Ask what the class already knows about this.",
+    "main": [
+     "Introduce the idea with a demonstration or a discussion.",
+     "Learners try it themselves, in pairs where devices are shared.",
+     "Draw out the rule or the skill together."
+    ],
+    "plenary": "Each pair says one thing they learned.",
+    "look_for": "Confidence with the skill and care with the equipment.",
+    "resources": [
+     "computers or tablets",
+     "discussion prompts"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CS"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-005/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-005/worksheet.html"
+   }
+  },
+  {
+   "lesson": 6,
+   "date": "2026-09-07",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 2: Staying safe online",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1NW"
+   ],
+   "title": "What is the internet for?",
+   "notes": "",
+   "plan": {
+    "lesson": 6,
+    "title": "What is the internet for?",
+    "date": "2026-09-07",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 2: Staying safe online",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1NW",
+      "title": "Networks and Digital Communication: what the internet is for, keeping personal information private, being kind online and knowing who to ask for help"
+     }
+    ],
+    "focus": "What is the internet for?",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 7: Things that are private about me",
+    "intro": "Ask what the class already knows about this.",
+    "main": [
+     "Introduce the idea with a demonstration or a discussion.",
+     "Learners try it themselves, in pairs where devices are shared.",
+     "Draw out the rule or the skill together."
+    ],
+    "plenary": "Each pair says one thing they learned.",
+    "look_for": "Confidence with the skill and care with the equipment.",
+    "resources": [
+     "computers or tablets",
+     "discussion prompts"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Safe or not?",
+      "instruction": "Tick the safe choices.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Telling a grown-up if something worries me</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Sharing my password with a friend</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Being kind in a message</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Keeping my name and address private</div></div>"
+     },
+     {
+      "heading": "2. Who can help me?",
+      "instruction": "Draw two people you could ask for help.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">At school</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">At home</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "3. My rule",
+      "instruction": "Write one rule for our class.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1NW"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-006/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-006/worksheet.html"
+   }
+  },
+  {
+   "lesson": 7,
+   "date": "2026-09-14",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 2: Staying safe online",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1NW"
+   ],
+   "title": "Things that are private about me",
+   "notes": "",
+   "plan": {
+    "lesson": 7,
+    "title": "Things that are private about me",
+    "date": "2026-09-14",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 2: Staying safe online",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1NW",
+      "title": "Networks and Digital Communication: what the internet is for, keeping personal information private, being kind online and knowing who to ask for help"
+     }
+    ],
+    "focus": "Things that are private about me",
+    "prior": "Lesson 6: What is the internet for?",
+    "next": "Lesson 8: Who can help if something worries me online?",
+    "intro": "Talk about the technology we use at home and at school.",
+    "main": [
+     "Share a simple scenario and ask the class what they would do.",
+     "Draw out who they could ask for help.",
+     "Learners draw or write their own rule for staying safe."
+    ],
+    "plenary": "Agree three class rules and put them on the wall.",
+    "look_for": "Knowing what is private and who to tell if something worries them.",
+    "resources": [
+     "scenario cards",
+     "paper for class rules"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Safe or not?",
+      "instruction": "Tick the safe choices.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Telling a grown-up if something worries me</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Sharing my password with a friend</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Being kind in a message</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Keeping my name and address private</div></div>"
+     },
+     {
+      "heading": "2. Who can help me?",
+      "instruction": "Draw two people you could ask for help.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">At school</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">At home</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "3. My rule",
+      "instruction": "Write one rule for our class.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1NW"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-007/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-007/worksheet.html"
+   }
+  },
+  {
+   "lesson": 8,
+   "date": "2026-09-21",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 2: Staying safe online",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1NW"
+   ],
+   "title": "Who can help if something worries me online?",
+   "notes": "",
+   "plan": {
+    "lesson": 8,
+    "title": "Who can help if something worries me online?",
+    "date": "2026-09-21",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 2: Staying safe online",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1NW",
+      "title": "Networks and Digital Communication: what the internet is for, keeping personal information private, being kind online and knowing who to ask for help"
+     }
+    ],
+    "focus": "Who can help if something worries me online?",
+    "prior": "Lesson 7: Things that are private about me",
+    "next": "Lesson 9: Being kind when we use technology",
+    "intro": "Talk about the technology we use at home and at school.",
+    "main": [
+     "Share a simple scenario and ask the class what they would do.",
+     "Draw out who they could ask for help.",
+     "Learners draw or write their own rule for staying safe."
+    ],
+    "plenary": "Agree three class rules and put them on the wall.",
+    "look_for": "Knowing what is private and who to tell if something worries them.",
+    "resources": [
+     "scenario cards",
+     "paper for class rules"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Safe or not?",
+      "instruction": "Tick the safe choices.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Telling a grown-up if something worries me</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Sharing my password with a friend</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Being kind in a message</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Keeping my name and address private</div></div>"
+     },
+     {
+      "heading": "2. Who can help me?",
+      "instruction": "Draw two people you could ask for help.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">At school</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">At home</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "3. My rule",
+      "instruction": "Write one rule for our class.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1NW"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-008/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-008/worksheet.html"
+   }
+  },
+  {
+   "lesson": 9,
+   "date": "2026-09-28",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 2: Staying safe online",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1NW"
+   ],
+   "title": "Being kind when we use technology",
+   "notes": "",
+   "plan": {
+    "lesson": 9,
+    "title": "Being kind when we use technology",
+    "date": "2026-09-28",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 2: Staying safe online",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1NW",
+      "title": "Networks and Digital Communication: what the internet is for, keeping personal information private, being kind online and knowing who to ask for help"
+     }
+    ],
+    "focus": "Being kind when we use technology",
+    "prior": "Lesson 8: Who can help if something worries me online?",
+    "next": "Lesson 10: Sensible screen time",
+    "intro": "Talk about the technology we use at home and at school.",
+    "main": [
+     "Share a simple scenario and ask the class what they would do.",
+     "Draw out who they could ask for help.",
+     "Learners draw or write their own rule for staying safe."
+    ],
+    "plenary": "Agree three class rules and put them on the wall.",
+    "look_for": "Knowing what is private and who to tell if something worries them.",
+    "resources": [
+     "scenario cards",
+     "paper for class rules"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Safe or not?",
+      "instruction": "Tick the safe choices.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Telling a grown-up if something worries me</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Sharing my password with a friend</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Being kind in a message</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Keeping my name and address private</div></div>"
+     },
+     {
+      "heading": "2. Who can help me?",
+      "instruction": "Draw two people you could ask for help.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">At school</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">At home</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "3. My rule",
+      "instruction": "Write one rule for our class.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1NW"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-009/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-009/worksheet.html"
+   }
+  },
+  {
+   "lesson": 10,
+   "date": "2026-10-12",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 2: Staying safe online",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1NW"
+   ],
+   "title": "Sensible screen time",
+   "notes": "",
+   "plan": {
+    "lesson": 10,
+    "title": "Sensible screen time",
+    "date": "2026-10-12",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 2: Staying safe online",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1NW",
+      "title": "Networks and Digital Communication: what the internet is for, keeping personal information private, being kind online and knowing who to ask for help"
+     }
+    ],
+    "focus": "Sensible screen time",
+    "prior": "Lesson 9: Being kind when we use technology",
+    "next": "Last lesson of this unit.",
+    "intro": "Talk about the technology we use at home and at school.",
+    "main": [
+     "Share a simple scenario and ask the class what they would do.",
+     "Draw out who they could ask for help.",
+     "Learners draw or write their own rule for staying safe."
+    ],
+    "plenary": "Agree three class rules and put them on the wall.",
+    "look_for": "Knowing what is private and who to tell if something worries them.",
+    "resources": [
+     "scenario cards",
+     "paper for class rules"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Safe or not?",
+      "instruction": "Tick the safe choices.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Telling a grown-up if something worries me</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Sharing my password with a friend</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Being kind in a message</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Keeping my name and address private</div></div>"
+     },
+     {
+      "heading": "2. Who can help me?",
+      "instruction": "Draw two people you could ask for help.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">At school</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">At home</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "3. My rule",
+      "instruction": "Write one rule for our class.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1NW"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-010/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-010/worksheet.html"
+   }
+  },
+  {
+   "lesson": 11,
+   "date": "2026-10-19",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 3: Patterns and sequences",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CT"
+   ],
+   "title": "Spotting patterns around us",
+   "notes": "",
+   "plan": {
+    "lesson": 11,
+    "title": "Spotting patterns around us",
+    "date": "2026-10-19",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 3: Patterns and sequences",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CT",
+      "title": "Computational Thinking: recognising and continuing patterns, putting steps in order, breaking a task into steps, and writing and debugging simple algorithms"
+     }
+    ],
+    "focus": "Spotting patterns around us",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 12: Continuing a pattern",
+    "intro": "Play a quick follow-my-instructions game as a class.",
+    "main": [
+     "Model giving a clear set of instructions in the right order.",
+     "Learners give instructions to a partner, who follows them exactly.",
+     "Talk about what happens when an instruction is missing or in the wrong order.",
+     "Learners record their instructions as pictures or words."
+    ],
+    "plenary": "Follow one pair's instructions exactly. Do they work?",
+    "look_for": "Instructions that are clear, in order, and complete.",
+    "resources": [
+     "instruction cards",
+     "floor mat or route",
+     "paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CT"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-011/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-011/worksheet.html"
+   }
+  },
+  {
+   "lesson": 12,
+   "date": "2026-10-26",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 3: Patterns and sequences",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CT"
+   ],
+   "title": "Continuing a pattern",
+   "notes": "",
+   "plan": {
+    "lesson": 12,
+    "title": "Continuing a pattern",
+    "date": "2026-10-26",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 3: Patterns and sequences",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CT",
+      "title": "Computational Thinking: recognising and continuing patterns, putting steps in order, breaking a task into steps, and writing and debugging simple algorithms"
+     }
+    ],
+    "focus": "Continuing a pattern",
+    "prior": "Lesson 11: Spotting patterns around us",
+    "next": "Lesson 13: Putting steps in the right order, and what happens if we don't",
+    "intro": "Play a quick follow-my-instructions game as a class.",
+    "main": [
+     "Model giving a clear set of instructions in the right order.",
+     "Learners give instructions to a partner, who follows them exactly.",
+     "Talk about what happens when an instruction is missing or in the wrong order.",
+     "Learners record their instructions as pictures or words."
+    ],
+    "plenary": "Follow one pair's instructions exactly. Do they work?",
+    "look_for": "Instructions that are clear, in order, and complete.",
+    "resources": [
+     "instruction cards",
+     "floor mat or route",
+     "paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CT"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-012/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-012/worksheet.html"
+   }
+  },
+  {
+   "lesson": 13,
+   "date": "2026-11-02",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 3: Patterns and sequences",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CT"
+   ],
+   "title": "Putting steps in the right order, and what happens if we don't",
+   "notes": "",
+   "plan": {
+    "lesson": 13,
+    "title": "Putting steps in the right order, and what happens if we don't",
+    "date": "2026-11-02",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 3: Patterns and sequences",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CT",
+      "title": "Computational Thinking: recognising and continuing patterns, putting steps in order, breaking a task into steps, and writing and debugging simple algorithms"
+     }
+    ],
+    "focus": "Putting steps in the right order, and what happens if we don't",
+    "prior": "Lesson 12: Continuing a pattern",
+    "next": "Lesson 14: Breaking a job into small steps",
+    "intro": "Play a quick follow-my-instructions game as a class.",
+    "main": [
+     "Model giving a clear set of instructions in the right order.",
+     "Learners give instructions to a partner, who follows them exactly.",
+     "Talk about what happens when an instruction is missing or in the wrong order.",
+     "Learners record their instructions as pictures or words."
+    ],
+    "plenary": "Follow one pair's instructions exactly. Do they work?",
+    "look_for": "Instructions that are clear, in order, and complete.",
+    "resources": [
+     "instruction cards",
+     "floor mat or route",
+     "paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CT"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-013/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-013/worksheet.html"
+   }
+  },
+  {
+   "lesson": 14,
+   "date": "2026-11-09",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 3: Patterns and sequences",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CT"
+   ],
+   "title": "Breaking a job into small steps",
+   "notes": "",
+   "plan": {
+    "lesson": 14,
+    "title": "Breaking a job into small steps",
+    "date": "2026-11-09",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 3: Patterns and sequences",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CT",
+      "title": "Computational Thinking: recognising and continuing patterns, putting steps in order, breaking a task into steps, and writing and debugging simple algorithms"
+     }
+    ],
+    "focus": "Breaking a job into small steps",
+    "prior": "Lesson 13: Putting steps in the right order, and what happens if we don't",
+    "next": "Lesson 15: Finding what is the same and what is different",
+    "intro": "Play a quick follow-my-instructions game as a class.",
+    "main": [
+     "Model giving a clear set of instructions in the right order.",
+     "Learners give instructions to a partner, who follows them exactly.",
+     "Talk about what happens when an instruction is missing or in the wrong order.",
+     "Learners record their instructions as pictures or words."
+    ],
+    "plenary": "Follow one pair's instructions exactly. Do they work?",
+    "look_for": "Instructions that are clear, in order, and complete.",
+    "resources": [
+     "instruction cards",
+     "floor mat or route",
+     "paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CT"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-014/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-014/worksheet.html"
+   }
+  },
+  {
+   "lesson": 15,
+   "date": "2026-11-16",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 3: Patterns and sequences",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CT"
+   ],
+   "title": "Finding what is the same and what is different",
+   "notes": "",
+   "plan": {
+    "lesson": 15,
+    "title": "Finding what is the same and what is different",
+    "date": "2026-11-16",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 3: Patterns and sequences",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CT",
+      "title": "Computational Thinking: recognising and continuing patterns, putting steps in order, breaking a task into steps, and writing and debugging simple algorithms"
+     }
+    ],
+    "focus": "Finding what is the same and what is different",
+    "prior": "Lesson 14: Breaking a job into small steps",
+    "next": "Last lesson of this unit.",
+    "intro": "Ask what the class already knows about this.",
+    "main": [
+     "Introduce the idea with a demonstration or a discussion.",
+     "Learners try it themselves, in pairs where devices are shared.",
+     "Draw out the rule or the skill together."
+    ],
+    "plenary": "Each pair says one thing they learned.",
+    "look_for": "Confidence with the skill and care with the equipment.",
+    "resources": [
+     "computers or tablets",
+     "discussion prompts"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CT"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-015/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-015/worksheet.html"
+   }
+  },
+  {
+   "lesson": 16,
+   "date": "2026-11-23",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 4: Algorithms: giving instructions",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CT"
+   ],
+   "title": "What is an algorithm?",
+   "notes": "",
+   "plan": {
+    "lesson": 16,
+    "title": "What is an algorithm?",
+    "date": "2026-11-23",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 4: Algorithms: giving instructions",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CT",
+      "title": "Computational Thinking: recognising and continuing patterns, putting steps in order, breaking a task into steps, and writing and debugging simple algorithms"
+     }
+    ],
+    "focus": "What is an algorithm?",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 17: Giving clear instructions to a partner",
+    "intro": "Play a quick follow-my-instructions game as a class.",
+    "main": [
+     "Model giving a clear set of instructions in the right order.",
+     "Learners give instructions to a partner, who follows them exactly.",
+     "Talk about what happens when an instruction is missing or in the wrong order.",
+     "Learners record their instructions as pictures or words."
+    ],
+    "plenary": "Follow one pair's instructions exactly. Do they work?",
+    "look_for": "Instructions that are clear, in order, and complete.",
+    "resources": [
+     "instruction cards",
+     "floor mat or route",
+     "paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CT"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-016/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-016/worksheet.html"
+   }
+  },
+  {
+   "lesson": 17,
+   "date": "2026-11-30",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 4: Algorithms: giving instructions",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CT"
+   ],
+   "title": "Giving clear instructions to a partner",
+   "notes": "",
+   "plan": {
+    "lesson": 17,
+    "title": "Giving clear instructions to a partner",
+    "date": "2026-11-30",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 4: Algorithms: giving instructions",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CT",
+      "title": "Computational Thinking: recognising and continuing patterns, putting steps in order, breaking a task into steps, and writing and debugging simple algorithms"
+     }
+    ],
+    "focus": "Giving clear instructions to a partner",
+    "prior": "Lesson 16: What is an algorithm?",
+    "next": "Lesson 18: Instructions for getting around the classroom",
+    "intro": "Play a quick follow-my-instructions game as a class.",
+    "main": [
+     "Model giving a clear set of instructions in the right order.",
+     "Learners give instructions to a partner, who follows them exactly.",
+     "Talk about what happens when an instruction is missing or in the wrong order.",
+     "Learners record their instructions as pictures or words."
+    ],
+    "plenary": "Follow one pair's instructions exactly. Do they work?",
+    "look_for": "Instructions that are clear, in order, and complete.",
+    "resources": [
+     "instruction cards",
+     "floor mat or route",
+     "paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CT"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-017/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-017/worksheet.html"
+   }
+  },
+  {
+   "lesson": 18,
+   "date": "2026-12-07",
+   "weekday": "Monday",
+   "term": "Term 1",
+   "unit": "Unit 4: Algorithms: giving instructions",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CT"
+   ],
+   "title": "Instructions for getting around the classroom",
+   "notes": "",
+   "plan": {
+    "lesson": 18,
+    "title": "Instructions for getting around the classroom",
+    "date": "2026-12-07",
+    "weekday": "Monday",
+    "term": "Term 1",
+    "unit": "Unit 4: Algorithms: giving instructions",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CT",
+      "title": "Computational Thinking: recognising and continuing patterns, putting steps in order, breaking a task into steps, and writing and debugging simple algorithms"
+     }
+    ],
+    "focus": "Instructions for getting around the classroom",
+    "prior": "Lesson 17: Giving clear instructions to a partner",
+    "next": "Lesson 19: Following an algorithm exactly",
+    "intro": "Play a quick follow-my-instructions game as a class.",
+    "main": [
+     "Model giving a clear set of instructions in the right order.",
+     "Learners give instructions to a partner, who follows them exactly.",
+     "Talk about what happens when an instruction is missing or in the wrong order.",
+     "Learners record their instructions as pictures or words."
+    ],
+    "plenary": "Follow one pair's instructions exactly. Do they work?",
+    "look_for": "Instructions that are clear, in order, and complete.",
+    "resources": [
+     "instruction cards",
+     "floor mat or route",
+     "paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CT"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-018/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-018/worksheet.html"
+   }
+  },
+  {
+   "lesson": 19,
+   "date": "2027-01-11",
+   "weekday": "Monday",
+   "term": "Term 2",
+   "unit": "Unit 4: Algorithms: giving instructions",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CT"
+   ],
+   "title": "Following an algorithm exactly",
+   "notes": "",
+   "plan": {
+    "lesson": 19,
+    "title": "Following an algorithm exactly",
+    "date": "2027-01-11",
+    "weekday": "Monday",
+    "term": "Term 2",
+    "unit": "Unit 4: Algorithms: giving instructions",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CT",
+      "title": "Computational Thinking: recognising and continuing patterns, putting steps in order, breaking a task into steps, and writing and debugging simple algorithms"
+     }
+    ],
+    "focus": "Following an algorithm exactly",
+    "prior": "Lesson 18: Instructions for getting around the classroom",
+    "next": "Lesson 20: Finding the mistake in an algorithm",
+    "intro": "Play a quick follow-my-instructions game as a class.",
+    "main": [
+     "Model giving a clear set of instructions in the right order.",
+     "Learners give instructions to a partner, who follows them exactly.",
+     "Talk about what happens when an instruction is missing or in the wrong order.",
+     "Learners record their instructions as pictures or words."
+    ],
+    "plenary": "Follow one pair's instructions exactly. Do they work?",
+    "look_for": "Instructions that are clear, in order, and complete.",
+    "resources": [
+     "instruction cards",
+     "floor mat or route",
+     "paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CT"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-019/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-019/worksheet.html"
+   }
+  },
+  {
+   "lesson": 20,
+   "date": "2027-01-18",
+   "weekday": "Monday",
+   "term": "Term 2",
+   "unit": "Unit 4: Algorithms: giving instructions",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CT"
+   ],
+   "title": "Finding the mistake in an algorithm",
+   "notes": "",
+   "plan": {
+    "lesson": 20,
+    "title": "Finding the mistake in an algorithm",
+    "date": "2027-01-18",
+    "weekday": "Monday",
+    "term": "Term 2",
+    "unit": "Unit 4: Algorithms: giving instructions",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CT",
+      "title": "Computational Thinking: recognising and continuing patterns, putting steps in order, breaking a task into steps, and writing and debugging simple algorithms"
+     }
+    ],
+    "focus": "Finding the mistake in an algorithm",
+    "prior": "Lesson 19: Following an algorithm exactly",
+    "next": "Lesson 21: Writing our own algorithm",
+    "intro": "Play a quick follow-my-instructions game as a class.",
+    "main": [
+     "Model giving a clear set of instructions in the right order.",
+     "Learners give instructions to a partner, who follows them exactly.",
+     "Talk about what happens when an instruction is missing or in the wrong order.",
+     "Learners record their instructions as pictures or words."
+    ],
+    "plenary": "Follow one pair's instructions exactly. Do they work?",
+    "look_for": "Instructions that are clear, in order, and complete.",
+    "resources": [
+     "instruction cards",
+     "floor mat or route",
+     "paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CT"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-020/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-020/worksheet.html"
+   }
+  },
+  {
+   "lesson": 21,
+   "date": "2027-01-25",
+   "weekday": "Monday",
+   "term": "Term 2",
+   "unit": "Unit 4: Algorithms: giving instructions",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CT"
+   ],
+   "title": "Writing our own algorithm",
+   "notes": "",
+   "plan": {
+    "lesson": 21,
+    "title": "Writing our own algorithm",
+    "date": "2027-01-25",
+    "weekday": "Monday",
+    "term": "Term 2",
+    "unit": "Unit 4: Algorithms: giving instructions",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CT",
+      "title": "Computational Thinking: recognising and continuing patterns, putting steps in order, breaking a task into steps, and writing and debugging simple algorithms"
+     }
+    ],
+    "focus": "Writing our own algorithm",
+    "prior": "Lesson 20: Finding the mistake in an algorithm",
+    "next": "Last lesson of this unit.",
+    "intro": "Play a quick follow-my-instructions game as a class.",
+    "main": [
+     "Model giving a clear set of instructions in the right order.",
+     "Learners give instructions to a partner, who follows them exactly.",
+     "Talk about what happens when an instruction is missing or in the wrong order.",
+     "Learners record their instructions as pictures or words."
+    ],
+    "plenary": "Follow one pair's instructions exactly. Do they work?",
+    "look_for": "Instructions that are clear, in order, and complete.",
+    "resources": [
+     "instruction cards",
+     "floor mat or route",
+     "paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CT"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-021/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-021/worksheet.html"
+   }
+  },
+  {
+   "lesson": 22,
+   "date": "2027-02-01",
+   "weekday": "Monday",
+   "term": "Term 2",
+   "unit": "Unit 5: Programming a robot",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1PR"
+   ],
+   "title": "Meeting our floor robot",
+   "notes": "",
+   "plan": {
+    "lesson": 22,
+    "title": "Meeting our floor robot",
+    "date": "2027-02-01",
+    "weekday": "Monday",
+    "term": "Term 2",
+    "unit": "Unit 5: Programming a robot",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1PR",
+      "title": "Programming: giving a sequence of commands to a floor robot or on-screen character, predicting what will happen, testing and correcting"
+     }
+    ],
+    "focus": "Meeting our floor robot",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 23: Making the robot move forwards and backwards",
+    "intro": "Recap the commands we know and what each one does.",
+    "main": [
+     "Model programming a short sequence and predicting what will happen.",
+     "Learners plan their route on paper before pressing any buttons.",
+     "Learners program, test and correct in pairs.",
+     "Ask what they changed when it did not work."
+    ],
+    "plenary": "One pair demonstrates their program to the class.",
+    "look_for": "Predicting before running, and debugging rather than starting over.",
+    "resources": [
+     "floor robots or block-coding app",
+     "route mats",
+     "planning paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1PR"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-022/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-022/worksheet.html"
+   }
+  },
+  {
+   "lesson": 23,
+   "date": "2027-02-08",
+   "weekday": "Monday",
+   "term": "Term 2",
+   "unit": "Unit 5: Programming a robot",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1PR"
+   ],
+   "title": "Making the robot move forwards and backwards",
+   "notes": "",
+   "plan": {
+    "lesson": 23,
+    "title": "Making the robot move forwards and backwards",
+    "date": "2027-02-08",
+    "weekday": "Monday",
+    "term": "Term 2",
+    "unit": "Unit 5: Programming a robot",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1PR",
+      "title": "Programming: giving a sequence of commands to a floor robot or on-screen character, predicting what will happen, testing and correcting"
+     }
+    ],
+    "focus": "Making the robot move forwards and backwards",
+    "prior": "Lesson 22: Meeting our floor robot",
+    "next": "Lesson 24: Turning the robot",
+    "intro": "Recap the commands we know and what each one does.",
+    "main": [
+     "Model programming a short sequence and predicting what will happen.",
+     "Learners plan their route on paper before pressing any buttons.",
+     "Learners program, test and correct in pairs.",
+     "Ask what they changed when it did not work."
+    ],
+    "plenary": "One pair demonstrates their program to the class.",
+    "look_for": "Predicting before running, and debugging rather than starting over.",
+    "resources": [
+     "floor robots or block-coding app",
+     "route mats",
+     "planning paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1PR"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-023/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-023/worksheet.html"
+   }
+  },
+  {
+   "lesson": 24,
+   "date": "2027-02-15",
+   "weekday": "Monday",
+   "term": "Term 2",
+   "unit": "Unit 5: Programming a robot",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1PR"
+   ],
+   "title": "Turning the robot",
+   "notes": "",
+   "plan": {
+    "lesson": 24,
+    "title": "Turning the robot",
+    "date": "2027-02-15",
+    "weekday": "Monday",
+    "term": "Term 2",
+    "unit": "Unit 5: Programming a robot",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1PR",
+      "title": "Programming: giving a sequence of commands to a floor robot or on-screen character, predicting what will happen, testing and correcting"
+     }
+    ],
+    "focus": "Turning the robot",
+    "prior": "Lesson 23: Making the robot move forwards and backwards",
+    "next": "Lesson 25: Planning a route before we press go",
+    "intro": "Recap the commands we know and what each one does.",
+    "main": [
+     "Model programming a short sequence and predicting what will happen.",
+     "Learners plan their route on paper before pressing any buttons.",
+     "Learners program, test and correct in pairs.",
+     "Ask what they changed when it did not work."
+    ],
+    "plenary": "One pair demonstrates their program to the class.",
+    "look_for": "Predicting before running, and debugging rather than starting over.",
+    "resources": [
+     "floor robots or block-coding app",
+     "route mats",
+     "planning paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1PR"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-024/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-024/worksheet.html"
+   }
+  },
+  {
+   "lesson": 25,
+   "date": "2027-02-22",
+   "weekday": "Monday",
+   "term": "Term 2",
+   "unit": "Unit 5: Programming a robot",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1PR"
+   ],
+   "title": "Planning a route before we press go",
+   "notes": "",
+   "plan": {
+    "lesson": 25,
+    "title": "Planning a route before we press go",
+    "date": "2027-02-22",
+    "weekday": "Monday",
+    "term": "Term 2",
+    "unit": "Unit 5: Programming a robot",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1PR",
+      "title": "Programming: giving a sequence of commands to a floor robot or on-screen character, predicting what will happen, testing and correcting"
+     }
+    ],
+    "focus": "Planning a route before we press go",
+    "prior": "Lesson 24: Turning the robot",
+    "next": "Lesson 26: Programming a longer sequence",
+    "intro": "Recap the commands we know and what each one does.",
+    "main": [
+     "Model programming a short sequence and predicting what will happen.",
+     "Learners plan their route on paper before pressing any buttons.",
+     "Learners program, test and correct in pairs.",
+     "Ask what they changed when it did not work."
+    ],
+    "plenary": "One pair demonstrates their program to the class.",
+    "look_for": "Predicting before running, and debugging rather than starting over.",
+    "resources": [
+     "floor robots or block-coding app",
+     "route mats",
+     "planning paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1PR"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-025/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-025/worksheet.html"
+   }
+  },
+  {
+   "lesson": 26,
+   "date": "2027-03-01",
+   "weekday": "Monday",
+   "term": "Term 2",
+   "unit": "Unit 5: Programming a robot",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1PR"
+   ],
+   "title": "Programming a longer sequence",
+   "notes": "",
+   "plan": {
+    "lesson": 26,
+    "title": "Programming a longer sequence",
+    "date": "2027-03-01",
+    "weekday": "Monday",
+    "term": "Term 2",
+    "unit": "Unit 5: Programming a robot",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1PR",
+      "title": "Programming: giving a sequence of commands to a floor robot or on-screen character, predicting what will happen, testing and correcting"
+     }
+    ],
+    "focus": "Programming a longer sequence",
+    "prior": "Lesson 25: Planning a route before we press go",
+    "next": "Lesson 27: Testing our program and fixing it",
+    "intro": "Recap the commands we know and what each one does.",
+    "main": [
+     "Model programming a short sequence and predicting what will happen.",
+     "Learners plan their route on paper before pressing any buttons.",
+     "Learners program, test and correct in pairs.",
+     "Ask what they changed when it did not work."
+    ],
+    "plenary": "One pair demonstrates their program to the class.",
+    "look_for": "Predicting before running, and debugging rather than starting over.",
+    "resources": [
+     "floor robots or block-coding app",
+     "route mats",
+     "planning paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1PR"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-026/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-026/worksheet.html"
+   }
+  },
+  {
+   "lesson": 27,
+   "date": "2027-03-22",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 5: Programming a robot",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1PR"
+   ],
+   "title": "Testing our program and fixing it",
+   "notes": "",
+   "plan": {
+    "lesson": 27,
+    "title": "Testing our program and fixing it",
+    "date": "2027-03-22",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 5: Programming a robot",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1PR",
+      "title": "Programming: giving a sequence of commands to a floor robot or on-screen character, predicting what will happen, testing and correcting"
+     }
+    ],
+    "focus": "Testing our program and fixing it",
+    "prior": "Lesson 26: Programming a longer sequence",
+    "next": "Lesson 28: Block coding on screen: making a character move and repeat",
+    "intro": "Recap the commands we know and what each one does.",
+    "main": [
+     "Model programming a short sequence and predicting what will happen.",
+     "Learners plan their route on paper before pressing any buttons.",
+     "Learners program, test and correct in pairs.",
+     "Ask what they changed when it did not work."
+    ],
+    "plenary": "One pair demonstrates their program to the class.",
+    "look_for": "Predicting before running, and debugging rather than starting over.",
+    "resources": [
+     "floor robots or block-coding app",
+     "route mats",
+     "planning paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1PR"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-027/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-027/worksheet.html"
+   }
+  },
+  {
+   "lesson": 28,
+   "date": "2027-03-29",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 5: Programming a robot",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1PR"
+   ],
+   "title": "Block coding on screen: making a character move and repeat",
+   "notes": "",
+   "plan": {
+    "lesson": 28,
+    "title": "Block coding on screen: making a character move and repeat",
+    "date": "2027-03-29",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 5: Programming a robot",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1PR",
+      "title": "Programming: giving a sequence of commands to a floor robot or on-screen character, predicting what will happen, testing and correcting"
+     }
+    ],
+    "focus": "Block coding on screen: making a character move and repeat",
+    "prior": "Lesson 27: Testing our program and fixing it",
+    "next": "Lesson 29: Our own mini program",
+    "intro": "Recap the commands we know and what each one does.",
+    "main": [
+     "Model programming a short sequence and predicting what will happen.",
+     "Learners plan their route on paper before pressing any buttons.",
+     "Learners program, test and correct in pairs.",
+     "Ask what they changed when it did not work."
+    ],
+    "plenary": "One pair demonstrates their program to the class.",
+    "look_for": "Predicting before running, and debugging rather than starting over.",
+    "resources": [
+     "floor robots or block-coding app",
+     "route mats",
+     "planning paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Safe or not?",
+      "instruction": "Tick the safe choices.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Telling a grown-up if something worries me</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Sharing my password with a friend</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Being kind in a message</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>Keeping my name and address private</div></div>"
+     },
+     {
+      "heading": "2. Who can help me?",
+      "instruction": "Draw two people you could ask for help.",
+      "body": "<div class=\"ws-cols\"><div class=\"ws-col\"><div class=\"ws-colh\">At school</div><div class=\"ws-colbody\"></div></div><div class=\"ws-col\"><div class=\"ws-colh\">At home</div><div class=\"ws-colbody\"></div></div></div>"
+     },
+     {
+      "heading": "3. My rule",
+      "instruction": "Write one rule for our class.",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1PR"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-028/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-028/worksheet.html"
+   }
+  },
+  {
+   "lesson": 29,
+   "date": "2027-04-05",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 5: Programming a robot",
+   "strand": "Computing",
+   "phase": "project",
+   "refs": [
+    "1PR"
+   ],
+   "title": "Our own mini program",
+   "notes": "",
+   "plan": {
+    "lesson": 29,
+    "title": "Our own mini program",
+    "date": "2027-04-05",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 5: Programming a robot",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "1PR",
+      "title": "Programming: giving a sequence of commands to a floor robot or on-screen character, predicting what will happen, testing and correcting"
+     }
+    ],
+    "focus": "Our own mini program",
+    "prior": "Lesson 28: Block coding on screen: making a character move and repeat",
+    "next": "Last lesson of this unit.",
+    "intro": "Recap the commands we know and what each one does.",
+    "main": [
+     "Model programming a short sequence and predicting what will happen.",
+     "Learners plan their route on paper before pressing any buttons.",
+     "Learners program, test and correct in pairs.",
+     "Ask what they changed when it did not work."
+    ],
+    "plenary": "One pair demonstrates their program to the class.",
+    "look_for": "Predicting before running, and debugging rather than starting over.",
+    "resources": [
+     "floor robots or block-coding app",
+     "route mats",
+     "planning paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1PR"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-029/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-029/worksheet.html"
+   }
+  },
+  {
+   "lesson": 30,
+   "date": "2027-04-12",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 6: Collecting and sorting data",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1MD"
+   ],
+   "title": "Sorting objects into groups",
+   "notes": "",
+   "plan": {
+    "lesson": 30,
+    "title": "Sorting objects into groups",
+    "date": "2027-04-12",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 6: Collecting and sorting data",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1MD",
+      "title": "Managing Data: sorting and grouping objects, collecting simple data from the class and presenting it as a chart"
+     }
+    ],
+    "focus": "Sorting objects into groups",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 31: Different ways to sort the same things",
+    "intro": "Ask the question the class is going to answer.",
+    "main": [
+     "Sort the objects or answers together as a class.",
+     "Learners collect answers from each other.",
+     "Model making a simple chart on screen and learners have a turn."
+    ],
+    "plenary": "Read the chart together. Which group has most?",
+    "look_for": "Sorting by a rule and reading the chart back.",
+    "resources": [
+     "objects to sort",
+     "computers or tablets",
+     "charting software"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1MD"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-030/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-030/worksheet.html"
+   }
+  },
+  {
+   "lesson": 31,
+   "date": "2027-04-19",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 6: Collecting and sorting data",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1MD"
+   ],
+   "title": "Different ways to sort the same things",
+   "notes": "",
+   "plan": {
+    "lesson": 31,
+    "title": "Different ways to sort the same things",
+    "date": "2027-04-19",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 6: Collecting and sorting data",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1MD",
+      "title": "Managing Data: sorting and grouping objects, collecting simple data from the class and presenting it as a chart"
+     }
+    ],
+    "focus": "Different ways to sort the same things",
+    "prior": "Lesson 30: Sorting objects into groups",
+    "next": "Lesson 32: Collecting answers from our class",
+    "intro": "Ask the question the class is going to answer.",
+    "main": [
+     "Sort the objects or answers together as a class.",
+     "Learners collect answers from each other.",
+     "Model making a simple chart on screen and learners have a turn."
+    ],
+    "plenary": "Read the chart together. Which group has most?",
+    "look_for": "Sorting by a rule and reading the chart back.",
+    "resources": [
+     "objects to sort",
+     "computers or tablets",
+     "charting software"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1MD"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-031/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-031/worksheet.html"
+   }
+  },
+  {
+   "lesson": 32,
+   "date": "2027-04-26",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 6: Collecting and sorting data",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1MD"
+   ],
+   "title": "Collecting answers from our class",
+   "notes": "",
+   "plan": {
+    "lesson": 32,
+    "title": "Collecting answers from our class",
+    "date": "2027-04-26",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 6: Collecting and sorting data",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1MD",
+      "title": "Managing Data: sorting and grouping objects, collecting simple data from the class and presenting it as a chart"
+     }
+    ],
+    "focus": "Collecting answers from our class",
+    "prior": "Lesson 31: Different ways to sort the same things",
+    "next": "Lesson 33: Making a simple chart on the computer",
+    "intro": "Ask the question the class is going to answer.",
+    "main": [
+     "Sort the objects or answers together as a class.",
+     "Learners collect answers from each other.",
+     "Model making a simple chart on screen and learners have a turn."
+    ],
+    "plenary": "Read the chart together. Which group has most?",
+    "look_for": "Sorting by a rule and reading the chart back.",
+    "resources": [
+     "objects to sort",
+     "computers or tablets",
+     "charting software"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1MD"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-032/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-032/worksheet.html"
+   }
+  },
+  {
+   "lesson": 33,
+   "date": "2027-05-03",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 6: Collecting and sorting data",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1MD"
+   ],
+   "title": "Making a simple chart on the computer",
+   "notes": "",
+   "plan": {
+    "lesson": 33,
+    "title": "Making a simple chart on the computer",
+    "date": "2027-05-03",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 6: Collecting and sorting data",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1MD",
+      "title": "Managing Data: sorting and grouping objects, collecting simple data from the class and presenting it as a chart"
+     }
+    ],
+    "focus": "Making a simple chart on the computer",
+    "prior": "Lesson 32: Collecting answers from our class",
+    "next": "Lesson 34: Reading our chart: which group has most?",
+    "intro": "Ask the question the class is going to answer.",
+    "main": [
+     "Sort the objects or answers together as a class.",
+     "Learners collect answers from each other.",
+     "Model making a simple chart on screen and learners have a turn."
+    ],
+    "plenary": "Read the chart together. Which group has most?",
+    "look_for": "Sorting by a rule and reading the chart back.",
+    "resources": [
+     "objects to sort",
+     "computers or tablets",
+     "charting software"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1MD"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-033/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-033/worksheet.html"
+   }
+  },
+  {
+   "lesson": 34,
+   "date": "2027-05-10",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 6: Collecting and sorting data",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1MD"
+   ],
+   "title": "Reading our chart: which group has most?",
+   "notes": "",
+   "plan": {
+    "lesson": 34,
+    "title": "Reading our chart: which group has most?",
+    "date": "2027-05-10",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 6: Collecting and sorting data",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1MD",
+      "title": "Managing Data: sorting and grouping objects, collecting simple data from the class and presenting it as a chart"
+     }
+    ],
+    "focus": "Reading our chart: which group has most?",
+    "prior": "Lesson 33: Making a simple chart on the computer",
+    "next": "Last lesson of this unit.",
+    "intro": "Ask the question the class is going to answer.",
+    "main": [
+     "Sort the objects or answers together as a class.",
+     "Learners collect answers from each other.",
+     "Model making a simple chart on screen and learners have a turn."
+    ],
+    "plenary": "Read the chart together. Which group has most?",
+    "look_for": "Sorting by a rule and reading the chart back.",
+    "resources": [
+     "objects to sort",
+     "computers or tablets",
+     "charting software"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1MD"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-034/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-034/worksheet.html"
+   }
+  },
+  {
+   "lesson": 35,
+   "date": "2027-05-17",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 7: Creating digital work",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CS"
+   ],
+   "title": "Drawing a picture with a paint program",
+   "notes": "",
+   "plan": {
+    "lesson": 35,
+    "title": "Drawing a picture with a paint program",
+    "date": "2027-05-17",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 7: Creating digital work",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CS",
+      "title": "Computer Systems: naming the parts of a computer, using a mouse and keyboard, opening programs, creating digital work and saving it"
+     }
+    ],
+    "focus": "Drawing a picture with a paint program",
+    "prior": "First lesson of this unit. Draw on what learners already know.",
+    "next": "Lesson 36: Typing our name and a short sentence",
+    "intro": "Recap the commands we know and what each one does.",
+    "main": [
+     "Model programming a short sequence and predicting what will happen.",
+     "Learners plan their route on paper before pressing any buttons.",
+     "Learners program, test and correct in pairs.",
+     "Ask what they changed when it did not work."
+    ],
+    "plenary": "One pair demonstrates their program to the class.",
+    "look_for": "Predicting before running, and debugging rather than starting over.",
+    "resources": [
+     "floor robots or block-coding app",
+     "route mats",
+     "planning paper"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CS"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-035/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-035/worksheet.html"
+   }
+  },
+  {
+   "lesson": 36,
+   "date": "2027-05-24",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 7: Creating digital work",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CS"
+   ],
+   "title": "Typing our name and a short sentence",
+   "notes": "",
+   "plan": {
+    "lesson": 36,
+    "title": "Typing our name and a short sentence",
+    "date": "2027-05-24",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 7: Creating digital work",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CS",
+      "title": "Computer Systems: naming the parts of a computer, using a mouse and keyboard, opening programs, creating digital work and saving it"
+     }
+    ],
+    "focus": "Typing our name and a short sentence",
+    "prior": "Lesson 35: Drawing a picture with a paint program",
+    "next": "Lesson 37: Saving our work and finding it again",
+    "intro": "Name the parts of the computer together.",
+    "main": [
+     "Demonstrate the skill on the big screen.",
+     "Learners practise at their own device.",
+     "Support learners who are new to the mouse or keyboard.",
+     "Remind them how to save and find their work."
+    ],
+    "plenary": "Learners show a partner what they made.",
+    "look_for": "Confidence with the mouse or trackpad, and saving work.",
+    "resources": [
+     "computers or tablets",
+     "headphones if needed"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CS"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-036/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-036/worksheet.html"
+   }
+  },
+  {
+   "lesson": 37,
+   "date": "2027-05-31",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 7: Creating digital work",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CS"
+   ],
+   "title": "Saving our work and finding it again",
+   "notes": "",
+   "plan": {
+    "lesson": 37,
+    "title": "Saving our work and finding it again",
+    "date": "2027-05-31",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 7: Creating digital work",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CS",
+      "title": "Computer Systems: naming the parts of a computer, using a mouse and keyboard, opening programs, creating digital work and saving it"
+     }
+    ],
+    "focus": "Saving our work and finding it again",
+    "prior": "Lesson 36: Typing our name and a short sentence",
+    "next": "Lesson 38: Adding a picture to our writing",
+    "intro": "Name the parts of the computer together.",
+    "main": [
+     "Demonstrate the skill on the big screen.",
+     "Learners practise at their own device.",
+     "Support learners who are new to the mouse or keyboard.",
+     "Remind them how to save and find their work."
+    ],
+    "plenary": "Learners show a partner what they made.",
+    "look_for": "Confidence with the mouse or trackpad, and saving work.",
+    "resources": [
+     "computers or tablets",
+     "headphones if needed"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CS"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-037/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-037/worksheet.html"
+   }
+  },
+  {
+   "lesson": 38,
+   "date": "2027-06-07",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 7: Creating digital work",
+   "strand": "Computing",
+   "phase": "content",
+   "refs": [
+    "1CS"
+   ],
+   "title": "Adding a picture to our writing",
+   "notes": "",
+   "plan": {
+    "lesson": 38,
+    "title": "Adding a picture to our writing",
+    "date": "2027-06-07",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 7: Creating digital work",
+    "phase": "content",
+    "objectives": [
+     {
+      "ref": "1CS",
+      "title": "Computer Systems: naming the parts of a computer, using a mouse and keyboard, opening programs, creating digital work and saving it"
+     }
+    ],
+    "focus": "Adding a picture to our writing",
+    "prior": "Lesson 37: Saving our work and finding it again",
+    "next": "Lesson 39: Sharing our digital work with the class",
+    "intro": "Ask what the class already knows about this.",
+    "main": [
+     "Introduce the idea with a demonstration or a discussion.",
+     "Learners try it themselves, in pairs where devices are shared.",
+     "Draw out the rule or the skill together."
+    ],
+    "plenary": "Each pair says one thing they learned.",
+    "look_for": "Confidence with the skill and care with the equipment.",
+    "resources": [
+     "computers or tablets",
+     "discussion prompts"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1CS"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-038/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-038/worksheet.html"
+   }
+  },
+  {
+   "lesson": 39,
+   "date": "2027-06-14",
+   "weekday": "Monday",
+   "term": "Term 3",
+   "unit": "Unit 7: Creating digital work",
+   "strand": "Computing",
+   "phase": "project",
+   "refs": [
+    "1NW"
+   ],
+   "title": "Sharing our digital work with the class",
+   "notes": "",
+   "plan": {
+    "lesson": 39,
+    "title": "Sharing our digital work with the class",
+    "date": "2027-06-14",
+    "weekday": "Monday",
+    "term": "Term 3",
+    "unit": "Unit 7: Creating digital work",
+    "phase": "project",
+    "objectives": [
+     {
+      "ref": "1NW",
+      "title": "Networks and Digital Communication: what the internet is for, keeping personal information private, being kind online and knowing who to ask for help"
+     }
+    ],
+    "focus": "Sharing our digital work with the class",
+    "prior": "Lesson 38: Adding a picture to our writing",
+    "next": "Last lesson of this unit.",
+    "intro": "Name the parts of the computer together.",
+    "main": [
+     "Demonstrate the skill on the big screen.",
+     "Learners practise at their own device.",
+     "Support learners who are new to the mouse or keyboard.",
+     "Remind them how to save and find their work."
+    ],
+    "plenary": "Learners show a partner what they made.",
+    "look_for": "Confidence with the mouse or trackpad, and saving work.",
+    "resources": [
+     "computers or tablets",
+     "headphones if needed"
+    ],
+    "vocabulary": "",
+    "notes": "",
+    "timings": [
+     "10 min",
+     "25 min",
+     "10 min"
+    ]
+   },
+   "worksheet": {
+    "tasks": [
+     {
+      "heading": "1. Put them in order",
+      "instruction": "Number the steps 1, 2, 3, 4.",
+      "body": "<div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div><div class=\"ws-step\"><span class=\"ws-box big\"></span><span class=\"ws-stepline\"></span></div>"
+     },
+     {
+      "heading": "2. My algorithm",
+      "instruction": "Write or draw your instructions in order.",
+      "body": "<div class=\"ws-story\"><div class=\"ws-scene\"><div class=\"ws-scenel\">First</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Next</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Then</div></div><div class=\"ws-scene\"><div class=\"ws-scenel\">Last</div></div></div>"
+     },
+     {
+      "heading": "3. Test it",
+      "instruction": "Did it work? Tick one.",
+      "body": "<div class=\"ws-ticks\"><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It worked</div><div class=\"ws-tick\"><span class=\"ws-cb\"></span>It did not work</div></div>"
+     },
+     {
+      "heading": "4. Fix it",
+      "instruction": "What would you change?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     }
+    ],
+    "objectives": "1NW"
+   },
+   "paths": {
+    "guide": "lessons/primary1/computing/lesson-039/guide.html",
+    "worksheet": "lessons/primary1/computing/lesson-039/worksheet.html"
+   }
+  }
+ ]
+}
