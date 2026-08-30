@@ -18,7 +18,8 @@
     "db:backfill-worksheet-files": "tsx --env-file-if-exists=.env.local scripts/backfill-worksheet-files.ts",
     "db:import-course": "tsx --env-file-if-exists=.env.local scripts/import-course-json.ts",
     "db:import-class-curriculum": "tsx --env-file-if-exists=.env.local scripts/import-class-curriculum.ts",
-    "db:import-real-teaching": "tsx --env-file-if-exists=.env.local scripts/import-real-teaching-export.ts"
+    "db:import-real-teaching": "tsx --env-file-if-exists=.env.local scripts/import-real-teaching-export.ts",
+    "db:cleanup-superseded-terms": "tsx --env-file-if-exists=.env.local scripts/cleanup-superseded-terms.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0",
