@@ -11,9 +11,13 @@ export default async function LessonPlanningPage() {
   const staff = await getCurrentStaff();
   const isAdmin = staff.role === 'admin';
 
+  // Always in YEAR_LEVELS' own Primary 1 -> Secondary 11 order, not whatever order the DB
+  // happens to return a teacher's assignments in.
   const yearLevels = isAdmin
     ? [...YEAR_LEVELS]
-    : (await getAssignedClasses(staff.adminUserId)).filter((c) => (YEAR_LEVELS as readonly string[]).includes(c));
+    : (await getAssignedClasses(staff.adminUserId))
+        .filter((c) => (YEAR_LEVELS as readonly string[]).includes(c))
+        .sort((a, b) => YEAR_LEVELS.indexOf(a as (typeof YEAR_LEVELS)[number]) - YEAR_LEVELS.indexOf(b as (typeof YEAR_LEVELS)[number]));
 
   const terms = isAdmin ? await getAllCurriculumTerms() : await getCurriculumTermsForClasses(yearLevels);
   const subjectsByYearLevel = new Map<string, Set<string>>();
