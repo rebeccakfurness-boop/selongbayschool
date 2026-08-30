@@ -1246,3 +1246,165 @@ export const importCourseRequestSchema = z.object({
   allowUpdatingExistingTerm: z.boolean().optional(),
 });
 export type ImportCourseRequestInput = z.infer<typeof importCourseRequestSchema>;
+
+// ---------------------------------------------------------------------------
+// Class-curriculum import format -- a compact, human-authorable per-class/subject
+// input (see DASHBOARDSPEC.md's data/<class>.json) that a school can write directly
+// against real Cambridge syllabus refs, without hand-writing every lesson's full
+// interactive_content/teaching_script/worksheetContent the way curriculumImportSchema
+// requires. src/lib/curriculum-generation/class-curriculum/ turns one of these into the
+// same fully-authored shape (scheduling, lesson-plan derivation, worksheet derivation),
+// which then runs through the same generateCurriculumTerm() pipeline every other import
+// path uses. Field names and shape intentionally match the spec document exactly.
+const WEEKDAY_ABBR = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
+export type WeekdayAbbr = (typeof WEEKDAY_ABBR)[number];
+
+export const classCurriculumLessonPhase = ['content', 'practice', 'review', 'assessment', 'project'] as const;
+export type ClassCurriculumLessonPhase = (typeof classCurriculumLessonPhase)[number];
+
+const classCurriculumResourceSchema = z.object({
+  title: z.string().trim().min(1),
+  url: z.string().trim().min(1),
+});
+
+const classCurriculumObjectiveSchema = z.object({
+  ref: z.string().trim().min(1, 'ref is required'),
+  title: z.string().trim().min(1, 'title is required'),
+});
+
+const classCurriculumStrandDefSchema = z.object({
+  title: z.string().trim().min(1),
+  objectives: z.array(classCurriculumObjectiveSchema).min(1, 'a curriculum strand needs at least one objective'),
+});
+
+const classCurriculumMapSchema = z.object({
+  code: z.string().trim(),
+  title: z.string().trim().min(1),
+  stage: z.string().trim().min(1),
+  framework: z.string().trim().min(1),
+  note: z.string().trim().optional(),
+  strands: z.array(classCurriculumStrandDefSchema).min(1, 'curriculum.strands must have at least one entry'),
+});
+
+const classCurriculumOngoingSchema = z.object({
+  title: z.string().trim().min(1),
+  blurb: z.string().trim().optional(),
+  items: z.array(classCurriculumObjectiveSchema),
+});
+
+const classCurriculumSequenceItemSchema = z.object({
+  title: z.string().trim().min(1),
+  phase: z.enum(classCurriculumLessonPhase).optional(),
+  refs: z.array(z.string().trim().min(1)).optional(),
+  codes: z.array(z.string().trim().min(1)).optional(),
+  notes: z.string().trim().optional(),
+});
+
+const classCurriculumStrandSchema = z.object({
+  title: z.string().trim().min(1),
+  days: z.array(z.enum(WEEKDAY_ABBR)).min(1, 'a strand needs at least one teaching day'),
+  /** Omitted for a normal unit-based strand. 'sequence' takes `sequence` below instead of
+   * pulling from top-level units -- for a weekly-repeating strand like phonics that isn't
+   * organised into discrete units at all. */
+  kind: z.literal('sequence').optional(),
+  sequence: z.array(classCurriculumSequenceItemSchema).optional(),
+  refs: z.array(z.string().trim().min(1)).optional(),
+});
+
+const classCurriculumLessonSchema = z.object({
+  title: z.string().trim().min(1, 'lesson title is required'),
+  refs: z.array(z.string().trim().min(1)).optional(),
+  codes: z.array(z.string().trim().min(1)).optional(),
+  phase: z.enum(classCurriculumLessonPhase).optional(),
+  notes: z.string().trim().optional(),
+});
+
+const classCurriculumUnitSchema = z.object({
+  title: z.string().trim().min(1, 'unit title is required'),
+  short: z.string().trim().min(1, 'unit short name is required'),
+  strand: z.string().trim().min(1, 'unit.strand is required'),
+  weight: z.number().positive('unit.weight must be a positive number'),
+  refs: z.array(z.string().trim().min(1)).optional(),
+  /** Required only when the file's allocation is 'by-term' -- see the top-level superRefine. */
+  term: z.string().trim().min(1).optional(),
+  vocabulary: z.string().trim().optional(),
+  materials: z.string().trim().optional(),
+  practice: z.array(z.string().trim().min(1)).optional(),
+  lessons: z.array(classCurriculumLessonSchema).min(1, 'a unit needs at least one authored lesson'),
+});
+
+export const classCurriculumImportSchema = z
+  .object({
+    title: z.string().trim().min(1, 'title is required'),
+    /** May be "" when the syllabus code is unknown. */
+    code: z.string().trim(),
+    short: z.string().trim().min(1, 'short is required'),
+    periods_text: z.string().trim().min(1, 'periods_text is required'),
+    allocation: z.enum(['continuous', 'by-term']),
+    drive_folder: z.string().trim().optional(),
+    resources: z.array(classCurriculumResourceSchema).optional(),
+    curriculum: classCurriculumMapSchema,
+    ongoing: classCurriculumOngoingSchema.optional(),
+    strands: z.array(classCurriculumStrandSchema).min(1, 'strands must have at least one entry'),
+    units: z.array(classCurriculumUnitSchema),
+  })
+  .superRefine((val, ctx) => {
+    const allRefs = new Set(val.curriculum.strands.flatMap((s) => s.objectives.map((o) => o.ref)));
+    const strandTitles = new Set(val.strands.map((s) => s.title));
+
+    for (const [i, unit] of val.units.entries()) {
+      if (!strandTitles.has(unit.strand)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `units[${i}].strand "${unit.strand}" does not match any strands[].title.`,
+          path: ['units', i, 'strand'],
+        });
+      }
+      if (val.allocation === 'by-term' && !unit.term) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `units[${i}] ("${unit.title}") is missing "term" -- required when allocation is "by-term".`,
+          path: ['units', i, 'term'],
+        });
+      }
+      for (const ref of unit.refs ?? []) {
+        if (!allRefs.has(ref)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `units[${i}].refs references "${ref}", which is not in curriculum.strands[].objectives[].ref.`,
+            path: ['units', i, 'refs'],
+          });
+        }
+      }
+      for (const [j, lesson] of unit.lessons.entries()) {
+        for (const ref of lesson.refs ?? []) {
+          if (!allRefs.has(ref)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `units[${i}].lessons[${j}] ("${lesson.title}") references ref "${ref}", which is not in curriculum.strands[].objectives[].ref.`,
+              path: ['units', i, 'lessons', j, 'refs'],
+            });
+          }
+        }
+      }
+    }
+
+    for (const [i, strand] of val.strands.entries()) {
+      if (strand.kind === 'sequence') {
+        if (!strand.sequence || strand.sequence.length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `strands[${i}] ("${strand.title}") has kind "sequence" but no sequence items.`,
+            path: ['strands', i, 'sequence'],
+          });
+        }
+      } else if (!val.units.some((u) => u.strand === strand.title)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `strands[${i}] ("${strand.title}") has no matching units[].strand entry and is not kind "sequence" -- it would never be scheduled.`,
+          path: ['strands', i],
+        });
+      }
+    }
+  });
+export type ClassCurriculumImportInput = z.infer<typeof classCurriculumImportSchema>;
