@@ -15,6 +15,24 @@ export const DAY_LABELS: Record<DayOfWeek, string> = {
   sunday: 'Sunday',
 };
 
+/** The classes actually live on the site right now -- what an admin can pick from when adding a
+ * new Weekly Schedule slot, instead of every distinct class_name a child happens to have (which
+ * includes years of inconsistent real-world variants: "G1", "Kindergarten", "Grade 2", etc.).
+ * Distinct from YEAR_LEVELS in curriculum-year-levels.ts (Lesson Planning & Preparation's tile
+ * list): Early Years has no curriculum content, so it belongs here but not there. */
+export const WEEKLY_SCHEDULE_CLASSES = [
+  'Early Years',
+  'Primary 1',
+  'Primary 2',
+  'Primary 3',
+  'Primary 4',
+  'Primary 5',
+  'Primary 6',
+  'Secondary 7',
+  'Secondary 8',
+  'Secondary 9',
+] as const;
+
 /** One row of a seed timetable (see class-schedule-seed.ts) — no id/class_name, since those are
  * supplied by whatever is importing it (class_name is the seed data's object key). */
 export interface ClassScheduleSeedEntry {

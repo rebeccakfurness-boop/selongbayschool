@@ -263,12 +263,18 @@ export default function ScheduleManager({
           </p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Field label="Class" htmlFor="cs-class" required>
-              <TextInput id="cs-class" list="cs-class-options" required value={className} onChange={(e) => setClassName(e.target.value)} />
-              <datalist id="cs-class-options">
+              <select
+                id="cs-class"
+                required
+                value={className}
+                onChange={(e) => setClassName(e.target.value)}
+                className="w-full rounded-sm border border-sand-line bg-white px-3 py-2 text-sm"
+              >
+                <option value="">Select a class…</option>
                 {classOptions.map((c) => (
-                  <option key={c} value={c} />
+                  <option key={c} value={c}>{c}</option>
                 ))}
-              </datalist>
+              </select>
             </Field>
             <Field label="Subject" htmlFor="cs-subject" required>
               <TextInput id="cs-subject" required value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="e.g. Maths" />

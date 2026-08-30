@@ -1,6 +1,6 @@
 import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff, getAssignedClasses } from '@/lib/current-staff';
-import { getWeeklyScheduleForClasses, getWeeklyScheduleForClass, type ClassScheduleRow } from '@/lib/class-schedule';
+import { getWeeklyScheduleForClasses, getWeeklyScheduleForClass, WEEKLY_SCHEDULE_CLASSES, type ClassScheduleRow } from '@/lib/class-schedule';
 import { getCurriculumTermsForClasses } from '@/lib/curriculum';
 import TeachingTabs from '@/components/admin/TeachingTabs';
 import ScheduleManager, { type TeacherOption, type LessonPlanOption } from '@/components/admin/ScheduleManager';
@@ -12,10 +12,11 @@ export default async function ClassSchedulePage() {
   await ensureSchema();
   const staff = await getCurrentStaff();
 
-  const classOptions =
-    staff.role === 'teacher'
-      ? await getAssignedClasses(staff.adminUserId)
-      : ((await sql`SELECT DISTINCT class_name FROM children WHERE class_name IS NOT NULL ORDER BY class_name`) as unknown as { class_name: string }[]).map((r) => r.class_name);
+  // Admins pick from the fixed, currently-live class list, not every distinct class_name a child
+  // happens to have on file (which includes years of inconsistent real-world variants -- "G1",
+  // "Kindergarten", "Grade 2", etc.). Teachers keep seeing their own real assignments, whatever
+  // name they were made under, so this never locks a teacher out of their own schedule.
+  const classOptions = staff.role === 'teacher' ? await getAssignedClasses(staff.adminUserId) : [...WEEKLY_SCHEDULE_CLASSES];
 
   let entries: ClassScheduleRow[] = [];
   if (staff.role === 'teacher') {
