@@ -4782,20 +4782,19 @@
     "focus": "How we see colour",
     "prior": "Lesson 54: Refraction, and why things look bent",
     "next": "Lesson 56: Talking and recording: light and sound",
-    "intro": "Show the real thing or a large picture. What can we see?",
+    "intro": "Darken the room and show the effect first. Then ask what caused it.",
     "main": [
-     "Name the parts together and label them on a big diagram.",
-     "Talk about what each part is for.",
-     "Learners look closely at their own specimen with a hand lens.",
-     "Learners draw and label what they can see."
+     "Model the idea with a ray diagram or a vibration model.",
+     "Learners investigate practically, changing one thing at a time.",
+     "Learners draw the ray diagram for what they observed.",
+     "Explain a surprising everyday example using today's idea."
     ],
-    "plenary": "Point to a part. The class names it and says what it does.",
-    "look_for": "Careful looking, correct naming, and labels in the right places.",
+    "plenary": "One everyday example on the board, explained by the class.",
+    "look_for": "Ray diagrams drawn with straight lines and arrows, and evidence-based explanation.",
     "resources": [
-     "real specimens",
-     "hand lenses",
-     "large labelled diagram",
-     "drawing paper"
+     "torches, mirrors and lenses",
+     "tuning forks and instruments",
+     "ray diagram sheets"
     ],
     "vocabulary": "",
     "notes": "",

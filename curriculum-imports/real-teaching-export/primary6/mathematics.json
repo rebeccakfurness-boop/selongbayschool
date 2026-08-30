@@ -1293,24 +1293,24 @@
    "worksheet": {
     "tasks": [
      {
-      "heading": "1. Read and write",
-      "instruction": "Write each number in words, then say it to your partner.",
-      "body": "<div class=\"ws-sum\">8,786,033</div><div class=\"ws-line\"></div><div class=\"ws-sum\">9,091,269</div><div class=\"ws-line\"></div><div class=\"ws-sum\">946,646</div><div class=\"ws-line\"></div>"
+      "heading": "1. Simplify or expand",
+      "instruction": "Show every line of working. Do not jump to the answer.",
+      "body": "<div class=\"ws-sum\">10(x + 10) &minus; 2(x &minus; 12) = <span class=\"ws-box big\"></span></div><div class=\"ws-sum\">8(x + 7) &minus; 9(x &minus; 8) = <span class=\"ws-box big\"></span></div><div class=\"ws-sum\">2(x + 9) &minus; 11(x &minus; 2) = <span class=\"ws-box big\"></span></div><div class=\"ws-sum\">12(x + 10) &minus; 7(x &minus; 2) = <span class=\"ws-box big\"></span></div>"
      },
      {
-      "heading": "2. Compare and order",
-      "instruction": "Put these in order, smallest first. Then write two of your own.",
-      "body": "<div class=\"ws-sum\">6,831,333 &nbsp; 5,627,473 &nbsp; 7,920,651 &nbsp; 6,764,188</div><div class=\"ws-line\"></div><div class=\"ws-sum\">305,078 &nbsp; 7,819,426 &nbsp; 130,087 &nbsp; 8,795,488</div><div class=\"ws-line\"></div>"
+      "heading": "2. Solve",
+      "instruction": "Solve each equation. Write the operation you used beside each line.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Equation</th><th>Working</th><th>x =</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
      },
      {
-      "heading": "3. Round it",
-      "instruction": "Round each number to the nearest 10, 100, 1000 and 10 000.",
-      "body": "<table class=\"ws-table\"><thead><tr><th>Number</th><th>Nearest 10</th><th>Nearest 100</th><th>Nearest 1000</th><th>Nearest 10 000</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>"
-     },
-     {
-      "heading": "4. Explain",
-      "instruction": "Two learners rounded the same number and disagreed. Who is right, and why?",
+      "heading": "3. Check your answer",
+      "instruction": "Substitute your answer back into the original. Does it balance?",
       "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+     },
+     {
+      "heading": "4. Find the error",
+      "instruction": "This solution has one invalid step. Find it and name the rule it breaks.",
+      "body": "<div class=\"ws-hint\">Teacher: put a worked solution with one wrong step on the board.</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
      }
     ],
     "objectives": "6Nc"
@@ -3392,24 +3392,24 @@
    "worksheet": {
     "tasks": [
      {
-      "heading": "1. The same amount, three ways",
-      "instruction": "Complete the table.",
-      "body": "<table class=\"ws-table\"><thead><tr><th>Fraction</th><th>Decimal</th><th>Percentage</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
+      "heading": "1. Simplify or expand",
+      "instruction": "Show every line of working. Do not jump to the answer.",
+      "body": "<div class=\"ws-sum\">5(x + 9) &minus; 8(x &minus; 12) = <span class=\"ws-box big\"></span></div><div class=\"ws-sum\">2(x + 10) &minus; 12(x &minus; 12) = <span class=\"ws-box big\"></span></div><div class=\"ws-sum\">5(x + 2) &minus; 3(x &minus; 2) = <span class=\"ws-box big\"></span></div><div class=\"ws-sum\">5(x + 4) &minus; 7(x &minus; 3) = <span class=\"ws-box big\"></span></div>"
      },
      {
-      "heading": "2. Calculate",
-      "instruction": "Work these out. Show your method.",
-      "body": "<div class=\"ws-sum\">2/3 + 1/9 = <span class=\"ws-box big\"></span></div><div class=\"ws-sum\">2/6 + 2/24 = <span class=\"ws-box big\"></span></div><div class=\"ws-sum\">1/2 + 1/4 = <span class=\"ws-box big\"></span></div><div class=\"ws-sum\">20% of 100 = <span class=\"ws-box big\"></span></div><div class=\"ws-sum\">10% of 200 = <span class=\"ws-box big\"></span></div><div class=\"ws-sum\">10% of 380 = <span class=\"ws-box big\"></span></div>"
+      "heading": "2. Solve",
+      "instruction": "Solve each equation. Write the operation you used beside each line.",
+      "body": "<table class=\"ws-table\"><thead><tr><th>Equation</th><th>Working</th><th>x =</th></tr></thead><tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody></table>"
      },
      {
-      "heading": "3. Draw the bar model",
-      "instruction": "Draw a bar model for one of the questions above.",
-      "body": "<div class=\"ws-draw\" style=\"height:110px\"></div>"
+      "heading": "3. Check your answer",
+      "instruction": "Substitute your answer back into the original. Does it balance?",
+      "body": "<div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
      },
      {
-      "heading": "4. In a real context",
-      "instruction": "Answer, and say whether your answer is sensible.",
-      "body": "<div class=\"ws-hint\">Teacher: give a shopping, recipe or measurement problem for today's focus.</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
+      "heading": "4. Find the error",
+      "instruction": "This solution has one invalid step. Find it and name the rule it breaks.",
+      "body": "<div class=\"ws-hint\">Teacher: put a worked solution with one wrong step on the board.</div><div class=\"ws-line\"></div><div class=\"ws-line\"></div><div class=\"ws-line\"></div>"
      }
     ],
     "objectives": "6Ni, 6TWM"

@@ -80,7 +80,7 @@
    }
   ]
  },
- "totalLessons": 3137,
+ "totalLessons": 4535,
  "groups": [
   {
    "group": "primary1",
@@ -364,6 +364,135 @@
      "periods": "1 period a week (Friday)",
      "lessons": 39,
      "file": "primary6/global-perspectives.json"
+    }
+   ]
+  },
+  {
+   "group": "secondary7",
+   "label": "Secondary 7",
+   "stage": "Stage 7",
+   "classes": [
+    {
+     "slug": "english",
+     "short": "English",
+     "code": "1111",
+     "title": "Cambridge Lower Secondary English",
+     "periods": "4 periods a week (unit work Monday to Wednesday, language and grammar Thursday)",
+     "lessons": 155,
+     "file": "secondary7/english.json"
+    },
+    {
+     "slug": "mathematics",
+     "short": "Mathematics",
+     "code": "1112",
+     "title": "Cambridge Lower Secondary Mathematics",
+     "periods": "4 periods a week (Monday, Tuesday, Wednesday and Friday)",
+     "lessons": 156,
+     "file": "secondary7/mathematics.json"
+    },
+    {
+     "slug": "science",
+     "short": "Science",
+     "code": "1113",
+     "title": "Cambridge Lower Secondary Science",
+     "periods": "3 periods a week (Tuesday, Wednesday and Thursday)",
+     "lessons": 116,
+     "file": "secondary7/science.json"
+    },
+    {
+     "slug": "global-perspectives",
+     "short": "Global Perspectives",
+     "code": "1129",
+     "title": "Cambridge Lower Secondary Global Perspectives",
+     "periods": "1 period a week (Friday)",
+     "lessons": 39,
+     "file": "secondary7/global-perspectives.json"
+    }
+   ]
+  },
+  {
+   "group": "secondary8",
+   "label": "Secondary 8",
+   "stage": "Stage 8",
+   "classes": [
+    {
+     "slug": "english",
+     "short": "English",
+     "code": "1111",
+     "title": "Cambridge Lower Secondary English",
+     "periods": "4 periods a week (unit work Monday to Wednesday, language and grammar Thursday)",
+     "lessons": 155,
+     "file": "secondary8/english.json"
+    },
+    {
+     "slug": "mathematics",
+     "short": "Mathematics",
+     "code": "1112",
+     "title": "Cambridge Lower Secondary Mathematics",
+     "periods": "4 periods a week (Monday, Tuesday, Wednesday and Friday)",
+     "lessons": 156,
+     "file": "secondary8/mathematics.json"
+    },
+    {
+     "slug": "science",
+     "short": "Science",
+     "code": "1113",
+     "title": "Cambridge Lower Secondary Science",
+     "periods": "3 periods a week (Tuesday, Wednesday and Thursday)",
+     "lessons": 116,
+     "file": "secondary8/science.json"
+    },
+    {
+     "slug": "global-perspectives",
+     "short": "Global Perspectives",
+     "code": "1129",
+     "title": "Cambridge Lower Secondary Global Perspectives",
+     "periods": "1 period a week (Friday)",
+     "lessons": 39,
+     "file": "secondary8/global-perspectives.json"
+    }
+   ]
+  },
+  {
+   "group": "secondary9",
+   "label": "Secondary 9",
+   "stage": "Stage 9",
+   "classes": [
+    {
+     "slug": "english",
+     "short": "English",
+     "code": "1111",
+     "title": "Cambridge Lower Secondary English",
+     "periods": "4 periods a week (unit work Monday to Wednesday, language and grammar Thursday)",
+     "lessons": 155,
+     "file": "secondary9/english.json"
+    },
+    {
+     "slug": "mathematics",
+     "short": "Mathematics",
+     "code": "1112",
+     "title": "Cambridge Lower Secondary Mathematics",
+     "periods": "4 periods a week (Monday, Tuesday, Wednesday and Friday)",
+     "lessons": 156,
+     "file": "secondary9/mathematics.json"
+    },
+    {
+     "slug": "science",
+     "short": "Science",
+     "code": "1113",
+     "title": "Cambridge Lower Secondary Science",
+     "periods": "3 periods a week (Tuesday, Wednesday and Thursday)",
+     "lessons": 116,
+     "file": "secondary9/science.json"
+    },
+    {
+     "slug": "global-perspectives",
+     "short": "Global Perspectives",
+     "code": "1129",
+     "title": "Cambridge Lower Secondary Global Perspectives",
+     "periods": "1 period a week (Friday)",
+     "lessons": 39,
+     "file": "secondary9/global-perspectives.json"
     }
    ]
   }
