@@ -1,5 +1,6 @@
 import { ensureSchema, sql } from '@/lib/db';
 import { requireAdmin } from '@/lib/current-staff';
+import { WEEKLY_SCHEDULE_CLASSES } from '@/lib/class-schedule';
 import StaffManager, { type StaffRow } from '@/components/admin/StaffManager';
 
 export const dynamic = 'force-dynamic';
@@ -21,9 +22,14 @@ export default async function StaffPage() {
     ORDER BY au.is_active DESC, au.role, au.email
   `) as unknown as StaffRow[];
 
-  const classOptions = ((await sql`
+  // The 10 live classes are always assignable, even before any child is actually enrolled under
+  // that exact name -- a class should be staffable ahead of having students in it. Real
+  // class_name variants already on children (the school's messy historical naming) are still
+  // offered too, so an existing assignment under one of those isn't suddenly impossible to redo.
+  const childClassNames = ((await sql`
     SELECT DISTINCT class_name FROM children WHERE class_name IS NOT NULL ORDER BY class_name
   `) as unknown as { class_name: string }[]).map((r) => r.class_name);
+  const classOptions = [...new Set([...WEEKLY_SCHEDULE_CLASSES, ...childClassNames])].sort();
 
   return (
     <section>
