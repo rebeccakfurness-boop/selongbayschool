@@ -62,9 +62,20 @@ export interface RealImportResult {
  * into one boolean would soften exactly the nuance requirement #1 in the source's own
  * INTEGRATION.md says must never be softened. source_note carries the note text verbatim instead.
  *
- * Every lesson lands as review_status = 'needs_review', same as every other import path in this
- * app -- nothing here is visible to a parent or student until a teacher publishes it. */
-export async function importRealTeachingExport(data: RealTeachingExportInput, className: string): Promise<RealImportResult> {
+ * Every lesson lands as review_status = 'needs_review' by default, same as every other import
+ * path in this app -- nothing here is visible to a parent or student until a teacher publishes
+ * it. Pass options.publish: true to land every lesson as 'published' immediately instead: unlike
+ * the AI-generation paths this convention exists to guard against, this content was already
+ * written and checked by a person before export, and at 3000+ lessons a one-by-one review click
+ * per lesson (the only publish path CurriculumPlanManager's review UI currently offers) is not a
+ * realistic ask of a teacher -- so this is an explicit, informed opt-in per import run (see
+ * scripts/import-real-teaching-export.ts's own --publish flag), not this app's default. */
+export async function importRealTeachingExport(
+  data: RealTeachingExportInput,
+  className: string,
+  options: { publish?: boolean } = {}
+): Promise<RealImportResult> {
+  const reviewStatus = options.publish ? 'published' : 'needs_review';
   const subject = data.short;
   const frameworkLabel = `${data.curriculum.title}${data.curriculum.code ? ` (${data.curriculum.code})` : ''}, ${data.curriculum.stage}`;
   const ongoingCardJson = data.ongoing ? JSON.stringify(data.ongoing) : null;
@@ -137,7 +148,7 @@ export async function importRealTeachingExport(data: RealTeachingExportInput, cl
             (unit_id, sort_order, title, objectives, review_status, phase, syllabus_ref, lesson_date, real_plan, real_worksheet)
           VALUES (
             ${unitRow.id}, ${lessonSortOrder}, ${lesson.title}, ${objectivesTextFor(lesson)},
-            'needs_review', ${PHASE_MAP[lesson.phase]}, ${lesson.refs.join(', ') || null},
+            ${reviewStatus}, ${PHASE_MAP[lesson.phase]}, ${lesson.refs.join(', ') || null},
             ${lesson.date}, ${JSON.stringify(lesson.plan)}::jsonb, ${JSON.stringify(lesson.worksheet)}::jsonb
           )
         `;

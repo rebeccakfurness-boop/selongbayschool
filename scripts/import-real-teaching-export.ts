@@ -13,13 +13,19 @@ import { importRealTeachingExport } from '../src/lib/curriculum-generation/class
  *
  * Usage:
  *   npm run db:import-real-teaching -- <path-to-export-dir> [options]
- *   e.g. npm run db:import-real-teaching -- ../primary1-teaching/export
+ *   e.g. npm run db:import-real-teaching -- curriculum-imports/real-teaching-export
  *
  * Options:
  *   --dry-run          Validate every file and report what would be imported, without touching
  *                        the database (no DATABASE_URL needed for this mode).
  *   --only <group>            Import only this group, e.g. --only primary1
  *   --only <group>/<slug>     Import only this one class, e.g. --only primary1/mathematics
+ *   --publish           Land every imported lesson as review_status = 'published' immediately,
+ *                        instead of the default 'needs_review'. This content was written and
+ *                        checked by a person before export, unlike the AI-generation paths that
+ *                        default exists to guard -- and reviewing 3000+ lessons one at a time
+ *                        through the admin UI is not realistic. Pass this only once you're
+ *                        confident the export itself is right; there's no bulk un-publish.
  *
  * manifest.json's own "group" -> "groupLabel" mapping (primary1 -> "Primary 1", etc.) is used
  * directly as this app's class_name, and each class's "short" field (English, Mathematics, ...)
@@ -47,10 +53,11 @@ async function main() {
   const onlyIndex = args.indexOf('--only');
   const only = onlyIndex >= 0 ? args[onlyIndex + 1] : undefined;
   const dryRun = flags.has('--dry-run');
+  const publish = flags.has('--publish');
 
   const [exportDir] = positionals;
   if (!exportDir) {
-    console.error('Usage: npm run db:import-real-teaching -- <path-to-export-dir> [--dry-run] [--only <group>[/<slug>]]');
+    console.error('Usage: npm run db:import-real-teaching -- <path-to-export-dir> [--dry-run] [--publish] [--only <group>[/<slug>]]');
     process.exit(1);
   }
 
@@ -75,7 +82,11 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`${dryRun ? 'DRY RUN: validating' : 'Importing'} ${jobs.length} class file(s)${only ? ` (--only ${only})` : ''}.\n`);
+  console.log(
+    `${dryRun ? 'DRY RUN: validating' : 'Importing'} ${jobs.length} class file(s)${only ? ` (--only ${only})` : ''}${
+      !dryRun && publish ? ' -- publishing immediately (--publish)' : ''
+    }.\n`
+  );
 
   if (!dryRun) await ensureSchema();
 
@@ -110,7 +121,7 @@ async function main() {
     }
 
     try {
-      const result = await importRealTeachingExport(data, job.className);
+      const result = await importRealTeachingExport(data, job.className, { publish });
       console.log(`${job.className} / ${result.subject}:`);
       for (const t of result.terms) {
         console.log(`  ${t.termLabel} (term id ${t.termId}): ${t.unitsCreated} units, ${t.lessonsCreated} lessons`);
@@ -125,7 +136,11 @@ async function main() {
   console.log('');
   console.log(`Done. ${jobs.length - failures}/${jobs.length} class file(s) ${dryRun ? 'validated' : 'imported'} OK. ${totalLessons} lessons total.`);
   if (!dryRun) {
-    console.log('Every lesson above is saved as review_status = needs_review. Publish from the admin authoring page once reviewed.');
+    console.log(
+      publish
+        ? 'Every lesson above is saved as review_status = published (--publish was passed).'
+        : 'Every lesson above is saved as review_status = needs_review. Publish from the admin authoring page once reviewed, or re-run with --publish.'
+    );
   }
   if (failures > 0) process.exit(1);
 }
