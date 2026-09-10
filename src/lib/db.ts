@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 27;
+const SCHEMA_VERSION = 28;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -893,6 +893,13 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`ALTER TABLE enrolment_submissions ADD COLUMN IF NOT EXISTS shuttle_service BOOLEAN NOT NULL DEFAULT false`;
+
+      // Set once the submission's automatic (or a later manual retry of the) Family Board linking
+      // actually succeeds -- see linkEnrolmentToFamily in enrolments.ts. Null means "never linked":
+      // either the automatic attempt inside submitEnrolment threw (logged, not surfaced anywhere
+      // before this column existed) or nobody has retried it yet. Lets the Enrolments admin list
+      // show this directly instead of it being a silent, invisible failure mode.
+      await sql`ALTER TABLE enrolment_submissions ADD COLUMN IF NOT EXISTS linked_child_id BIGINT REFERENCES children(id) ON DELETE SET NULL`;
 
       // One family card (children row) can accumulate several of these over time — a March enquiry
       // and a June enrolment form aren't the same event, so this is an append-only log rather than a

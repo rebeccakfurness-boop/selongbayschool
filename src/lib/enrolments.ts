@@ -13,6 +13,75 @@ export interface SubmitEnrolmentResult {
   replySent: boolean;
 }
 
+/** Loads one enrolment_submissions row back into the same shape submitEnrolment's caller
+ * originally posted, so linkEnrolmentToFamily can re-run the exact same linking pipeline the
+ * initial submission attempted -- used for the admin "Link to Family Board" retry action. */
+async function loadEnrolmentAsInput(submissionId: number): Promise<EnrolmentInput & { id: number }> {
+  const rows = (await sql`
+    SELECT id, student_name, student_dob::text, previous_school, previous_grade, siblings_attending,
+      start_date::text, enrolment_length, enrolment_length_other,
+      kitas_status, kitas_notes, passport_number, passport_nationality, passport_expiry::text,
+      photography_consent, medical_conditions, allergies,
+      lunch_option, lunch_other_notes, shuttle_service,
+      emergency_contact_name, emergency_contact_phone, authorized_pickup,
+      parent_name, parent_email, parent_whatsapp
+    FROM enrolment_submissions WHERE id = ${submissionId}
+  `) as unknown as Record<string, unknown>[];
+  const row = rows[0];
+  if (!row) throw new Error(`No enrolment_submissions row with id ${submissionId}`);
+
+  return {
+    id: submissionId,
+    studentName: row.student_name as string,
+    studentDob: row.student_dob as string,
+    previousSchool: (row.previous_school as string | null) ?? '',
+    previousGrade: (row.previous_grade as string | null) ?? '',
+    siblingsAttending: (row.siblings_attending as string | null) ?? '',
+    startDate: row.start_date as string,
+    enrolmentLength: row.enrolment_length as EnrolmentInput['enrolmentLength'],
+    enrolmentLengthOther: (row.enrolment_length_other as string | null) ?? '',
+    kitasStatus: row.kitas_status as EnrolmentInput['kitasStatus'],
+    kitasNotes: (row.kitas_notes as string | null) ?? '',
+    passportNumber: (row.passport_number as string | null) ?? '',
+    passportNationality: (row.passport_nationality as string | null) ?? '',
+    passportExpiry: (row.passport_expiry as string | null) ?? '',
+    photographyConsent: row.photography_consent ? 'yes' : 'no',
+    medicalConditions: (row.medical_conditions as string | null) ?? '',
+    allergies: (row.allergies as string | null) ?? '',
+    lunchOption: row.lunch_option as EnrolmentInput['lunchOption'],
+    lunchOtherNotes: (row.lunch_other_notes as string | null) ?? '',
+    shuttleService: row.shuttle_service ? 'yes' : 'no',
+    emergencyContactName: row.emergency_contact_name as string,
+    emergencyContactPhone: row.emergency_contact_phone as string,
+    authorizedPickup: (row.authorized_pickup as string | null) ?? '',
+    parentName: row.parent_name as string,
+    parentEmail: row.parent_email as string,
+    parentWhatsapp: row.parent_whatsapp as string,
+  };
+}
+
+/** Finds-or-creates the Family Board card for one enrolment submission, populates it from the
+ * form, and records the link on both sides (family_activity_log, and enrolment_submissions.
+ * linked_child_id so the Enrolments admin list can show whether this ever happened without
+ * joining through the activity log). Safe to call more than once for the same submission --
+ * findOrCreateFamilyForContact matches by email/phone before creating, and
+ * populateChildFromEnrolment is a plain UPDATE with COALESCE fallbacks -- which is what makes this
+ * safe to expose as an admin "Link to Family Board" retry action for a submission whose original,
+ * automatic attempt (inside submitEnrolment) failed and was only logged. */
+export async function linkEnrolmentToFamily(submissionId: number): Promise<number> {
+  const record = await loadEnrolmentAsInput(submissionId);
+  const childId = await findOrCreateFamilyForContact({
+    parentName: record.parentName,
+    parentEmail: record.parentEmail,
+    parentPhone: record.parentWhatsapp,
+    childName: record.studentName,
+  });
+  await logFamilyActivity(childId, 'new_student_enrolment_form', 'enrolment_submissions', submissionId);
+  await populateChildFromEnrolment(childId, record, submissionId);
+  await sql`UPDATE enrolment_submissions SET linked_child_id = ${childId} WHERE id = ${submissionId}`;
+  return childId;
+}
+
 /** Writes the enrolment submission to Postgres first, then sends both emails, then records delivery status. */
 export async function submitEnrolment(record: EnrolmentInput): Promise<SubmitEnrolmentResult> {
   await ensureSchema();
@@ -42,20 +111,11 @@ export async function submitEnrolment(record: EnrolmentInput): Promise<SubmitEnr
 
   // Unlike the enquiry forms, every enrolment submission names a specific child, so this always
   // runs. Linking failure is logged and swallowed rather than thrown, so a Family Board hiccup
-  // never stops the enrolment itself from being saved and emailed. Once the card exists (new or
-  // matched to an existing enquiry), every field the form collects that has a home on the Child
-  // Card is populated onto it immediately — see populateChildFromEnrolment — so nobody has to
-  // retype what the parent just submitted.
+  // never stops the enrolment itself from being saved and emailed -- see linkEnrolmentToFamily's
+  // own comment for why it's also exposed as an admin retry action for exactly this case.
   let linkedChildId: number | null = null;
   try {
-    linkedChildId = await findOrCreateFamilyForContact({
-      parentName: record.parentName,
-      parentEmail: record.parentEmail,
-      parentPhone: record.parentWhatsapp,
-      childName: record.studentName,
-    });
-    await logFamilyActivity(linkedChildId, 'new_student_enrolment_form', 'enrolment_submissions', id);
-    await populateChildFromEnrolment(linkedChildId, record, id);
+    linkedChildId = await linkEnrolmentToFamily(id);
   } catch (err) {
     console.error('[enrolments] family linking failed (enrolment itself still saved)', { id, err });
   }
