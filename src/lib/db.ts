@@ -918,6 +918,17 @@ export function ensureSchema(): Promise<void> {
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_family_activity_log_child ON family_activity_log (child_id)`;
 
+      // Backfills linked_child_id for enrolments that were correctly linked to a family card
+      // before that column existed -- family_activity_log above already recorded every successful
+      // link (tag = 'new_student_enrolment_form') going back further than the column does.
+      // Idempotent: only touches rows where linked_child_id is still null, so safe on every deploy.
+      await sql`
+        UPDATE enrolment_submissions e
+        SET linked_child_id = fal.child_id
+        FROM family_activity_log fal
+        WHERE fal.source_table = 'enrolment_submissions' AND fal.source_id = e.id AND e.linked_child_id IS NULL
+      `;
+
       // One Google account (the school's) authorizes meeting-scheduling for the whole school — same
       // singleton pattern as classroom_connection, but a separate row/scope: the Classroom
       // connection is read-only (courses/rosters/coursework) and this one needs calendar read
