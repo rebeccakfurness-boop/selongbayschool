@@ -11,6 +11,17 @@ const nextConfig = {
         protocol: 'https',
         hostname: '*.public.blob.vercel-storage.com',
       },
+      // Book cover images pulled in by the ISBN/title lookup on the library catalogue (see
+      // /api/admin/library/lookup-book) — stored as-is on the item rather than re-uploaded to
+      // Blob storage, so Next/Image needs these hosts allowed too.
+      {
+        protocol: 'https',
+        hostname: 'books.google.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'covers.openlibrary.org',
+      },
     ],
   },
 };

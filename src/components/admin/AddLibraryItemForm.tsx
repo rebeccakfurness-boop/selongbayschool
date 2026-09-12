@@ -22,6 +22,31 @@ export default function AddLibraryItemForm() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [lookupQuery, setLookupQuery] = useState('');
+  const [lookingUp, setLookingUp] = useState(false);
+  const [lookupError, setLookupError] = useState<string | null>(null);
+
+  async function lookupBook() {
+    if (!lookupQuery.trim()) return;
+    setLookingUp(true);
+    setLookupError(null);
+    try {
+      const res = await fetch(`/api/admin/library/lookup-book?q=${encodeURIComponent(lookupQuery.trim())}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not find that book.');
+      if (data.title) setTitle(data.title);
+      if (data.author) setAuthor(data.author);
+      if (data.description) setDescription(data.description);
+      if (data.category) setCategory(data.category);
+      if (data.photoUrl) setPhotoUrl(data.photoUrl);
+      if (data.isbn) setItemCode(data.isbn);
+    } catch (err) {
+      setLookupError(err instanceof Error ? err.message : 'Could not find that book.');
+    } finally {
+      setLookingUp(false);
+    }
+  }
+
   async function submit() {
     setSaving(true);
     setError(null);
@@ -41,6 +66,8 @@ export default function AddLibraryItemForm() {
       setDescription('');
       setTotalCopies('1');
       setPhotoUrl(null);
+      setLookupQuery('');
+      setLookupError(null);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not add this item.');
@@ -60,6 +87,40 @@ export default function AddLibraryItemForm() {
   return (
     <div className="w-full rounded-md border border-sand-line bg-paper p-6 shadow-soft">
       <h2 className="font-display text-lg font-semibold text-ink">Add a catalogue item</h2>
+
+      {itemType === 'book' && (
+        <div className="mt-4 rounded-sm border border-sand-line bg-sand/30 p-4">
+          <label htmlFor="li-lookup" className="font-sans text-sm font-bold text-ink">
+            Look up by ISBN or title
+          </label>
+          <p className="mt-1 text-xs text-ink-soft">Fills in the title, author, description and cover below automatically — like Libib&apos;s lookup.</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <TextInput
+              id="li-lookup"
+              value={lookupQuery}
+              onChange={(e) => setLookupQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  lookupBook();
+                }
+              }}
+              placeholder="e.g. 9780141439518 or Charlotte's Web"
+              className="max-w-xs"
+            />
+            <button
+              type="button"
+              onClick={lookupBook}
+              disabled={lookingUp || !lookupQuery.trim()}
+              className="rounded-full bg-teal px-4 py-2 text-sm font-bold text-white hover:bg-teal-deep disabled:opacity-50"
+            >
+              {lookingUp ? 'Looking up…' : 'Look up'}
+            </button>
+          </div>
+          {lookupError && <p className="mt-2 text-xs font-semibold text-orange-deep">{lookupError}</p>}
+        </div>
+      )}
+
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <Field label="Type" htmlFor="li-type" required>
           <select id="li-type" value={itemType} onChange={(e) => setItemType(e.target.value)} className={selectClasses}>
@@ -78,7 +139,7 @@ export default function AddLibraryItemForm() {
         <Field label="Category" htmlFor="li-category">
           <TextInput id="li-category" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Picture books, Ball games" />
         </Field>
-        <Field label="Item code / barcode" htmlFor="li-code">
+        <Field label="Item code / barcode (ISBN for books)" htmlFor="li-code">
           <TextInput id="li-code" value={itemCode} onChange={(e) => setItemCode(e.target.value)} />
         </Field>
         <Field label="Copies on the shelf" htmlFor="li-copies" required>
