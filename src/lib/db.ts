@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 37;
+const SCHEMA_VERSION = 38;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2421,6 +2421,32 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_duty_roster_staff ON duty_roster (admin_user_id, day_of_week)`;
+
+      // Resource/purchase requests -- a teacher asks for approval to buy something (or, having
+      // already bought it, attaches a receipt straight away) and an admin approves/rejects, then
+      // separately marks it reimbursed once the money's actually paid back. receipt_url +
+      // amount_idr are nullable and settable by the requester themselves at any point up to
+      // reimbursement (see /api/admin/resource-requests/[id] PATCH) -- not required up front, since
+      // a pre-purchase approval request won't have one yet.
+      await sql`
+        CREATE TABLE IF NOT EXISTS resource_requests (
+          id BIGSERIAL PRIMARY KEY,
+          requested_by BIGINT NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+          item_description TEXT NOT NULL,
+          reason TEXT,
+          amount_idr BIGINT,
+          receipt_url TEXT,
+          status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected', 'reimbursed')),
+          admin_notes TEXT,
+          decided_by BIGINT REFERENCES admin_users(id),
+          decided_at TIMESTAMPTZ,
+          reimbursed_by BIGINT REFERENCES admin_users(id),
+          reimbursed_at TIMESTAMPTZ,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_resource_requests_staff ON resource_requests (requested_by)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_resource_requests_status ON resource_requests (status)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

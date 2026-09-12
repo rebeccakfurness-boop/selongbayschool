@@ -1677,3 +1677,26 @@ export const realTeachingExportSchema = z.object({
   lessons: z.array(realTeachingLessonSchema).min(1, 'a class export needs at least one lesson'),
 });
 export type RealTeachingExportInput = z.infer<typeof realTeachingExportSchema>;
+
+export const createResourceRequestSchema = z.object({
+  itemDescription: z.string().trim().min(1, 'Describe the item or resource').max(500),
+  reason: z.string().trim().max(2000).nullable().optional(),
+  amountIdr: z.coerce.number().int('Whole rupiah only').positive().nullable().optional(),
+  receiptUrl: z.string().trim().url().nullable().optional(),
+});
+export type CreateResourceRequestInput = z.infer<typeof createResourceRequestSchema>;
+
+/** Attaching/updating a receipt is the requester's own action (they're the one with the paper
+ * trail), separate from the admin's approve/reject decision below -- see the route's field-based
+ * role split. */
+export const attachResourceRequestReceiptSchema = z.object({
+  receiptUrl: z.string().trim().url(),
+  amountIdr: z.coerce.number().int('Whole rupiah only').positive().nullable().optional(),
+});
+export type AttachResourceRequestReceiptInput = z.infer<typeof attachResourceRequestReceiptSchema>;
+
+export const decideResourceRequestSchema = z.object({
+  status: z.enum(['approved', 'rejected']).optional(),
+  adminNotes: z.string().trim().max(2000).nullable().optional(),
+});
+export type DecideResourceRequestInput = z.infer<typeof decideResourceRequestSchema>;
