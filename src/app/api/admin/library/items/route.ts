@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema, sql } from '@/lib/db';
 import { requireAdmin } from '@/lib/current-staff';
+import { parseTagsInput } from '@/lib/library';
 
 const ITEM_TYPES = ['book', 'toy', 'sports_equipment', 'other'];
 
@@ -22,6 +23,9 @@ export async function POST(req: NextRequest) {
     itemCode?: string;
     description?: string;
     photoUrl?: string;
+    ageGroup?: string;
+    tags?: string;
+    schoolOnly?: boolean;
     totalCopies?: number;
   };
 
@@ -39,10 +43,11 @@ export async function POST(req: NextRequest) {
   try {
     await ensureSchema();
     const rows = await sql`
-      INSERT INTO library_items (item_type, title, author, category, item_code, description, photo_url, total_copies)
+      INSERT INTO library_items (item_type, title, author, category, item_code, description, photo_url, age_group, tags, school_only, total_copies)
       VALUES (
         ${d.itemType}, ${d.title.trim()}, ${d.author?.trim() || null}, ${d.category?.trim() || null},
-        ${d.itemCode?.trim() || null}, ${d.description?.trim() || null}, ${d.photoUrl?.trim() || null}, ${totalCopies}
+        ${d.itemCode?.trim() || null}, ${d.description?.trim() || null}, ${d.photoUrl?.trim() || null},
+        ${d.ageGroup?.trim() || null}, ${parseTagsInput(d.tags)}, ${d.schoolOnly ?? false}, ${totalCopies}
       )
       RETURNING id
     `;

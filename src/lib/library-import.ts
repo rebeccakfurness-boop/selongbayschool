@@ -1,9 +1,10 @@
 import * as XLSX from 'xlsx';
 import { sql } from './db';
+import { parseTagsInput } from './library';
 
 /** One row of a Libib CSV export ("Export Library" in Libib settings) — only the columns this
- * import actually uses; Libib's export has many more (price, notes, tags, review, ...) that don't
- * map to anything on library_items and are ignored. */
+ * import actually uses; Libib's export has many more (price, notes, review, ...) that don't map
+ * to anything on library_items and are ignored. */
 interface LibibRow {
   item_type?: string;
   title?: string;
@@ -12,6 +13,8 @@ interface LibibRow {
   ean_isbn13?: string | number;
   upc_isbn10?: string | number;
   description?: string;
+  age_group?: string;
+  tags?: string;
   copies?: string | number;
 }
 
@@ -22,6 +25,8 @@ export interface ParsedLibraryImportItem {
   category: string | null;
   itemCode: string | null;
   description: string | null;
+  ageGroup: string | null;
+  tags: string[];
   totalCopies: number;
 }
 
@@ -86,6 +91,8 @@ export function parseLibibWorkbook(wb: XLSX.WorkBook): ParsedLibraryImportItem[]
       category: cleanCategory(row.collection),
       itemCode: isbn13 || isbn10 || null,
       description: cleanText(row.description),
+      ageGroup: cleanText(row.age_group),
+      tags: parseTagsInput(row.tags ?? null),
       totalCopies: Number.isInteger(copies) && copies > 0 ? copies : 1,
     });
   }
@@ -118,8 +125,11 @@ export async function runLibraryImport(items: ParsedLibraryImportItem[]): Promis
     }
 
     await sql`
-      INSERT INTO library_items (item_type, title, author, category, item_code, description, total_copies)
-      VALUES (${item.itemType}, ${item.title}, ${item.author}, ${item.category}, ${item.itemCode}, ${item.description}, ${item.totalCopies})
+      INSERT INTO library_items (item_type, title, author, category, item_code, description, age_group, tags, total_copies)
+      VALUES (
+        ${item.itemType}, ${item.title}, ${item.author}, ${item.category}, ${item.itemCode}, ${item.description},
+        ${item.ageGroup}, ${item.tags}, ${item.totalCopies}
+      )
     `;
     inserted++;
   }

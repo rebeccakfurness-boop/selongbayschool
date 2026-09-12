@@ -133,11 +133,45 @@ async function lookupGoogleBooks(query: string, byIsbn: boolean): Promise<Lookup
   };
 }
 
+export interface CoverCandidate {
+  title: string | null;
+  author: string | null;
+  isbn: string | null;
+  photoUrl: string | null;
+}
+
+/** Several editions of the same title often have quite different cover art (or the single "best
+ * match" the plain lookup above picks isn't the edition on the shelf) -- this returns a gallery
+ * of candidates by title instead of committing to one, so an admin can pick the actual cover by
+ * eye rather than accept whatever the first match happened to be. Open Library's search endpoint
+ * already returns several docs per query with a cover_i each, so one call is enough -- no need to
+ * also hit Google Books here. */
+async function searchBookCovers(query: string): Promise<CoverCandidate[]> {
+  const search = await fetchJson<{ docs?: { title?: string; author_name?: string[]; cover_i?: number; isbn?: string[] }[] }>(
+    `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=12&fields=title,author_name,cover_i,isbn`
+  );
+  const candidates: CoverCandidate[] = [];
+  for (const doc of search?.docs ?? []) {
+    if (!doc.cover_i) continue;
+    candidates.push({
+      title: doc.title || null,
+      author: doc.author_name?.join(', ') || null,
+      isbn: doc.isbn?.[0] || null,
+      photoUrl: `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg`,
+    });
+    if (candidates.length >= 8) break;
+  }
+  return candidates;
+}
+
 /** Looks up a book by ISBN or title so an admin adding it to the catalogue doesn't have to type
  * out the title, author, description and find a cover image by hand — see the "Look up by ISBN
  * or title" field in AddLibraryItemForm.tsx. Open Library is tried first (free, unlimited);
  * Google Books fills in anything still missing (typically the description), best-effort. Any
- * logged-in staff, same access level as the rest of the catalogue. */
+ * logged-in staff, same access level as the rest of the catalogue.
+ *
+ * `?covers=true` switches to gallery mode (searchBookCovers above): several candidate covers for
+ * a title search instead of one merged best guess, for the "Search for a cover" picker. */
 export async function GET(req: NextRequest) {
   await getCurrentStaff();
 
@@ -145,6 +179,17 @@ export async function GET(req: NextRequest) {
   if (!q) {
     return NextResponse.json({ error: 'Enter an ISBN or title to look up.' }, { status: 400 });
   }
+
+  if (req.nextUrl.searchParams.get('covers') === 'true') {
+    try {
+      const candidates = await searchBookCovers(q);
+      return NextResponse.json({ candidates });
+    } catch (err) {
+      console.error('[api/admin/library/lookup-book] cover search failed', err);
+      return NextResponse.json({ error: 'Could not search for covers right now.' }, { status: 502 });
+    }
+  }
+
   const byIsbn = isIsbn(q);
 
   let result: LookupResult | null = null;

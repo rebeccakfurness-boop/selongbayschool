@@ -12,6 +12,8 @@ export interface BrowseItem {
   category: string | null;
   description: string | null;
   photo_url: string | null;
+  age_group: string | null;
+  tags: string[];
   available_copies: number;
   waitlist_count: number;
 }
@@ -133,8 +135,21 @@ function CatalogueItemRow({
             {ITEM_TYPE_LABELS[item.item_type]}
           </span>
         </div>
-        {item.category && <p className="mt-0.5 text-xs text-ink-soft">{item.category}</p>}
+        {(item.category || item.age_group) && (
+          <p className="mt-0.5 text-xs text-ink-soft">
+            {[item.category, item.age_group && `Age ${item.age_group}`].filter(Boolean).join(' · ')}
+          </p>
+        )}
         {item.description && <p className="mt-1.5 text-sm text-ink-soft">{item.description}</p>}
+        {item.tags.length > 0 && (
+          <div className="mt-1.5 flex flex-wrap gap-1">
+            {item.tags.map((tag) => (
+              <span key={tag} className="rounded-full bg-sand px-2 py-0.5 text-xs font-semibold text-ink-soft">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
 
         <div className="mt-2.5 flex flex-wrap items-center gap-2">
           <span className={`text-xs font-semibold ${available ? 'text-teal-deep' : 'text-orange-deep'}`}>
@@ -188,19 +203,27 @@ export default function LibraryCatalogueBrowser({
 }) {
   const [query, setQuery] = useState('');
   const [type, setType] = useState('all');
+  const [ageGroup, setAgeGroup] = useState('all');
+
+  const ageGroups = useMemo(
+    () => [...new Set(items.map((i) => i.age_group).filter((a): a is string => !!a))].sort(),
+    [items]
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return items.filter((item) => {
       if (type !== 'all' && item.item_type !== type) return false;
+      if (ageGroup !== 'all' && item.age_group !== ageGroup) return false;
       if (!q) return true;
       return (
         item.title.toLowerCase().includes(q) ||
         (item.author?.toLowerCase().includes(q) ?? false) ||
-        (item.category?.toLowerCase().includes(q) ?? false)
+        (item.category?.toLowerCase().includes(q) ?? false) ||
+        item.tags.some((tag) => tag.toLowerCase().includes(q))
       );
     });
-  }, [items, query, type]);
+  }, [items, query, type, ageGroup]);
 
   return (
     <div>
@@ -226,7 +249,7 @@ export default function LibraryCatalogueBrowser({
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by title, author or category…"
+          placeholder="Search by title, author, category or tag…"
           className="min-w-[220px] flex-1 rounded-sm border border-sand-line bg-white px-4 py-2.5 text-[15px] text-ink placeholder:text-ink-soft/50"
         />
         <select value={type} onChange={(e) => setType(e.target.value)} className={selectClasses}>
@@ -236,6 +259,16 @@ export default function LibraryCatalogueBrowser({
           <option value="sports_equipment">Sports equipment</option>
           <option value="other">Other</option>
         </select>
+        {ageGroups.length > 0 && (
+          <select value={ageGroup} onChange={(e) => setAgeGroup(e.target.value)} className={selectClasses}>
+            <option value="all">All ages</option>
+            {ageGroups.map((a) => (
+              <option key={a} value={a}>
+                Age {a}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div className="mt-4 rounded-md border border-sand-line bg-paper px-5">

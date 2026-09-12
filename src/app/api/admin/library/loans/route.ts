@@ -24,13 +24,14 @@ export async function POST(req: NextRequest) {
     await ensureSchema();
 
     const [item] = (await sql`
-      SELECT total_copies, is_active,
+      SELECT total_copies, is_active, school_only,
         (SELECT count(*) FROM library_loans WHERE item_id = ${itemId} AND returned_at IS NULL) AS copies_out,
         (SELECT count(*) FROM library_reservations WHERE item_id = ${itemId} AND status = 'pending_pickup') AS copies_held
       FROM library_items WHERE id = ${itemId}
-    `) as unknown as { total_copies: number; is_active: boolean; copies_out: number; copies_held: number }[];
+    `) as unknown as { total_copies: number; is_active: boolean; school_only: boolean; copies_out: number; copies_held: number }[];
     if (!item) return NextResponse.json({ error: 'Item not found.' }, { status: 404 });
     if (!item.is_active) return NextResponse.json({ error: 'This item is no longer active in the catalogue.' }, { status: 400 });
+    if (item.school_only) return NextResponse.json({ error: 'This item is for school use only and cannot be checked out to take home.' }, { status: 400 });
     if (item.copies_out + item.copies_held >= item.total_copies) {
       return NextResponse.json({ error: 'No copies of this item are currently available — the rest are on loan or held for a reservation.' }, { status: 400 });
     }

@@ -9,11 +9,13 @@ export default function LibraryItemActions({
   itemId,
   isActive,
   available,
+  schoolOnly,
   childOptions,
 }: {
   itemId: number;
   isActive: boolean;
   available: boolean;
+  schoolOnly: boolean;
   childOptions: { id: number; label: string }[];
 }) {
   const router = useRouter();
@@ -113,14 +115,20 @@ export default function LibraryItemActions({
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <button
-        type="button"
-        onClick={() => setCheckingOut(true)}
-        disabled={!isActive || !available}
-        className="whitespace-nowrap rounded-full bg-orange-deep px-3 py-1 text-xs font-bold text-white hover:bg-orange disabled:opacity-40"
-      >
-        Check out
-      </button>
+      {schoolOnly ? (
+        <span className="text-xs font-semibold text-ink-soft" title="School use only — never checked out to take home">
+          School use only
+        </span>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setCheckingOut(true)}
+          disabled={!isActive || !available}
+          className="whitespace-nowrap rounded-full bg-orange-deep px-3 py-1 text-xs font-bold text-white hover:bg-orange disabled:opacity-40"
+        >
+          Check out
+        </button>
+      )}
       <button type="button" onClick={toggleActive} disabled={busy} className="text-xs font-semibold text-teal-deep hover:underline disabled:opacity-50">
         {isActive ? 'Deactivate' : 'Reactivate'}
       </button>

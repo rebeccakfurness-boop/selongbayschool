@@ -14,7 +14,8 @@ export default async function EditLibraryItemPage({ params }: { params: Promise<
   if (!Number.isInteger(id)) notFound();
 
   const rows = (await sql`
-    SELECT id, item_type, title, author, category, item_code, description, photo_url, total_copies, is_active
+    SELECT id, item_type, title, author, category, item_code, description, photo_url,
+      age_group, tags, school_only, total_copies, is_active
     FROM library_items WHERE id = ${id}
   `) as unknown as EditableLibraryItem[];
   const item = rows[0];

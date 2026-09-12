@@ -2,6 +2,22 @@ import { sql } from './db';
 import { formatDate } from './admin-format';
 import { sendLibraryDueSoonEmail, sendLibraryReservationReadyEmail } from './email';
 
+/** Shared by the add/edit item forms and the CSV importer -- a comma-separated tags string (or
+ * an already-split array) into a clean, deduplicated list. Casing is preserved as typed since
+ * these are meant to read naturally as filter chips, not normalized into a fixed vocabulary. */
+export function parseTagsInput(value: string | string[] | null | undefined): string[] {
+  const raw = Array.isArray(value) ? value : (value ?? '').split(',');
+  const seen = new Set<string>();
+  const tags: string[] = [];
+  for (const entry of raw) {
+    const tag = String(entry).trim();
+    if (!tag || seen.has(tag.toLowerCase())) continue;
+    seen.add(tag.toLowerCase());
+    tags.push(tag);
+  }
+  return tags;
+}
+
 export interface LibrarySettings {
   monthly_membership_fee_idr: number;
   default_loan_period_days: number;
@@ -353,6 +369,9 @@ export interface LibraryItemRow {
   item_code: string | null;
   description: string | null;
   photo_url: string | null;
+  age_group: string | null;
+  tags: string[];
+  school_only: boolean;
   total_copies: number;
   is_active: boolean;
   copies_out: number;
@@ -365,7 +384,13 @@ export interface LibraryItemRow {
  * though it hasn't been handed over yet (see createLibraryReservation/fulfillLibraryReservation).
  * available_copies is what every checkout/reserve decision should gate on, never total_copies or
  * copies_out alone. */
-export async function getLibraryItems(): Promise<LibraryItemRow[]> {
+/** `q` matches title/author/category/age_group/tags (case-insensitive substring); `type` matches
+ * item_type exactly. Both optional and combinable -- used by the admin catalogue's own search
+ * bar, a plain GET form (see /admin/library) rather than a client component, so the filter is
+ * just whatever's in the URL and needs no JS to work. */
+export async function getLibraryItems(filter?: { q?: string; type?: string }): Promise<LibraryItemRow[]> {
+  const q = filter?.q?.trim() ? `%${filter.q.trim()}%` : null;
+  const type = filter?.type?.trim() || null;
   return (await sql`
     SELECT li.*,
       COALESCE((SELECT count(*) FROM library_loans l WHERE l.item_id = li.id AND l.returned_at IS NULL), 0)::int AS copies_out,
@@ -375,6 +400,9 @@ export async function getLibraryItems(): Promise<LibraryItemRow[]> {
         - COALESCE((SELECT count(*) FROM library_reservations r WHERE r.item_id = li.id AND r.status = 'pending_pickup'), 0)
       )::int AS available_copies
     FROM library_items li
+    WHERE (${q}::text IS NULL OR li.title ILIKE ${q} OR li.author ILIKE ${q} OR li.category ILIKE ${q}
+      OR li.age_group ILIKE ${q} OR array_to_string(li.tags, ' ') ILIKE ${q})
+      AND (${type}::text IS NULL OR li.item_type = ${type})
     ORDER BY li.item_type, li.title
   `) as unknown as LibraryItemRow[];
 }
@@ -390,20 +418,26 @@ export interface LibraryBrowseItem {
   category: string | null;
   description: string | null;
   photo_url: string | null;
+  age_group: string | null;
+  tags: string[];
   available_copies: number;
   waitlist_count: number;
 }
 
+/** school_only items are excluded entirely rather than shown-but-disabled -- this list exists to
+ * let a family find something to borrow, and an item that can never leave the school has nothing
+ * to offer that view (see the school_only column comment on library_items in db.ts). It's still
+ * catalogued and searchable from the admin side (getLibraryItems), just not here. */
 export async function getBrowsableLibraryItems(): Promise<LibraryBrowseItem[]> {
   return (await sql`
-    SELECT li.id, li.item_type, li.title, li.author, li.category, li.description, li.photo_url,
+    SELECT li.id, li.item_type, li.title, li.author, li.category, li.description, li.photo_url, li.age_group, li.tags,
       (li.total_copies
         - COALESCE((SELECT count(*) FROM library_loans l WHERE l.item_id = li.id AND l.returned_at IS NULL), 0)
         - COALESCE((SELECT count(*) FROM library_reservations r WHERE r.item_id = li.id AND r.status = 'pending_pickup'), 0)
       )::int AS available_copies,
       COALESCE((SELECT count(*) FROM library_reservations r WHERE r.item_id = li.id AND r.status = 'waitlisted'), 0)::int AS waitlist_count
     FROM library_items li
-    WHERE li.is_active = true
+    WHERE li.is_active = true AND li.school_only = false
     ORDER BY li.item_type, li.title
   `) as unknown as LibraryBrowseItem[];
 }
@@ -533,8 +567,12 @@ export async function createLibraryReservation(input: { itemId: number; childId:
     throw new ReservationError('Join the library first, then you can reserve items.');
   }
 
-  const [item] = (await sql`SELECT is_active FROM library_items WHERE id = ${input.itemId}`) as unknown as { is_active: boolean }[];
+  const [item] = (await sql`SELECT is_active, school_only FROM library_items WHERE id = ${input.itemId}`) as unknown as {
+    is_active: boolean;
+    school_only: boolean;
+  }[];
   if (!item || !item.is_active) throw new ReservationError('This item is no longer available in the catalogue.');
+  if (item.school_only) throw new ReservationError('This item is for use at school only and cannot be borrowed.');
 
   const existing = await sql`
     SELECT id FROM library_reservations

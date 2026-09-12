@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import LibraryItemPhotoUpload from '@/components/admin/LibraryItemPhotoUpload';
+import LibraryCoverSearch from '@/components/admin/LibraryCoverSearch';
 
 export interface EditableLibraryItem {
   id: number;
@@ -15,6 +16,9 @@ export interface EditableLibraryItem {
   item_code: string | null;
   description: string | null;
   photo_url: string | null;
+  age_group: string | null;
+  tags: string[];
+  school_only: boolean;
   total_copies: number;
   is_active: boolean;
 }
@@ -32,6 +36,9 @@ export default function EditLibraryItemForm({ item }: { item: EditableLibraryIte
   const [totalCopies, setTotalCopies] = useState(String(item.total_copies));
   const [isActive, setIsActive] = useState(item.is_active);
   const [photoUrl, setPhotoUrl] = useState<string | null>(item.photo_url);
+  const [ageGroup, setAgeGroup] = useState(item.age_group ?? '');
+  const [tags, setTags] = useState(item.tags.join(', '));
+  const [schoolOnly, setSchoolOnly] = useState(item.school_only);
   const [saving, setSaving] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,6 +83,9 @@ export default function EditLibraryItemForm({ item }: { item: EditableLibraryIte
           itemCode,
           description,
           photoUrl,
+          ageGroup,
+          tags,
+          schoolOnly,
           totalCopies: Number(totalCopies),
           isActive,
         }),
@@ -166,6 +176,12 @@ export default function EditLibraryItemForm({ item }: { item: EditableLibraryIte
         <Field label="Copies on the shelf" htmlFor="eli-copies" required>
           <TextInput id="eli-copies" type="number" min={1} value={totalCopies} onChange={(e) => setTotalCopies(e.target.value)} />
         </Field>
+        <Field label="Age range" htmlFor="eli-age">
+          <TextInput id="eli-age" value={ageGroup} onChange={(e) => setAgeGroup(e.target.value)} placeholder="e.g. 3-5 years" />
+        </Field>
+        <Field label="Tags" htmlFor="eli-tags">
+          <TextInput id="eli-tags" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="e.g. Fiction, Adventure, Picture book" />
+        </Field>
         <div className="sm:col-span-2">
           <Field label="Description" htmlFor="eli-description">
             <TextArea id="eli-description" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
@@ -175,11 +191,22 @@ export default function EditLibraryItemForm({ item }: { item: EditableLibraryIte
           <Field label="Photo" htmlFor="eli-photo">
             <LibraryItemPhotoUpload currentUrl={photoUrl} pathPrefix={`library-items/${item.id}`} onUploaded={setPhotoUrl} />
           </Field>
+          {itemType === 'book' && (
+            <div className="mt-2">
+              <LibraryCoverSearch onSelect={setPhotoUrl} />
+            </div>
+          )}
         </div>
         <div className="sm:col-span-2 flex items-center gap-2">
           <input id="eli-active" type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} className="h-4 w-4" />
           <label htmlFor="eli-active" className="text-sm font-semibold text-ink">
             Active (visible in the catalogue and available to check out or reserve)
+          </label>
+        </div>
+        <div className="sm:col-span-2 flex items-center gap-2">
+          <input id="eli-school-only" type="checkbox" checked={schoolOnly} onChange={(e) => setSchoolOnly(e.target.checked)} className="h-4 w-4" />
+          <label htmlFor="eli-school-only" className="text-sm font-semibold text-ink">
+            School use only — recorded in the catalogue but never checked out or reserved to take home
           </label>
         </div>
       </div>

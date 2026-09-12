@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 32;
+const SCHEMA_VERSION = 33;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2127,6 +2127,22 @@ export function ensureSchema(): Promise<void> {
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_library_reservations_item ON library_reservations (item_id)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_library_reservations_customer ON library_reservations (customer_id)`;
+
+      // Structured filters for the catalogue browser (/account/library) and the admin catalogue's
+      // own search -- age_group is a single freeform label ("3-5 years", "Pre-School") rather than
+      // a numeric range since that's how both Libib exports and staff actually describe it; tags
+      // covers everything else worth filtering by (genre, "Fiction"/"Non-fiction", subject) as a
+      // freeform list rather than a fixed enum, since a school library's own taxonomy will grow
+      // and change over time in ways a hard-coded CHECK constraint can't.
+      await sql`ALTER TABLE library_items ADD COLUMN IF NOT EXISTS age_group TEXT`;
+      await sql`ALTER TABLE library_items ADD COLUMN IF NOT EXISTS tags TEXT[] NOT NULL DEFAULT '{}'`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_library_items_tags ON library_items USING GIN (tags)`;
+
+      // Still catalogued (shows up in the admin inventory) but never leaves the school -- reference
+      // copies, fragile items, shared classroom sets. Blocks both the admin's own "Check out"
+      // action and a parent reserving it, enforced server-side (not just hidden in the UI) in the
+      // loans-checkout route and createLibraryReservation.
+      await sql`ALTER TABLE library_items ADD COLUMN IF NOT EXISTS school_only BOOLEAN NOT NULL DEFAULT false`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

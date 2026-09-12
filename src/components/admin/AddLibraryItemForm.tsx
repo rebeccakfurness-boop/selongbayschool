@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import LibraryItemPhotoUpload from '@/components/admin/LibraryItemPhotoUpload';
+import LibraryCoverSearch from '@/components/admin/LibraryCoverSearch';
 
 const selectClasses = 'rounded-sm border border-sand-line bg-white px-4 py-2.5 text-[15px] text-ink';
 
@@ -19,6 +20,9 @@ export default function AddLibraryItemForm() {
   const [description, setDescription] = useState('');
   const [totalCopies, setTotalCopies] = useState('1');
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [ageGroup, setAgeGroup] = useState('');
+  const [tags, setTags] = useState('');
+  const [schoolOnly, setSchoolOnly] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,7 +58,19 @@ export default function AddLibraryItemForm() {
       const res = await fetch('/api/admin/library/items', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemType, title, author, category, itemCode, description, totalCopies: Number(totalCopies), photoUrl }),
+        body: JSON.stringify({
+          itemType,
+          title,
+          author,
+          category,
+          itemCode,
+          description,
+          totalCopies: Number(totalCopies),
+          photoUrl,
+          ageGroup,
+          tags,
+          schoolOnly,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not add this item.');
@@ -66,6 +82,9 @@ export default function AddLibraryItemForm() {
       setDescription('');
       setTotalCopies('1');
       setPhotoUrl(null);
+      setAgeGroup('');
+      setTags('');
+      setSchoolOnly(false);
       setLookupQuery('');
       setLookupError(null);
       router.refresh();
@@ -145,6 +164,12 @@ export default function AddLibraryItemForm() {
         <Field label="Copies on the shelf" htmlFor="li-copies" required>
           <TextInput id="li-copies" type="number" min={1} value={totalCopies} onChange={(e) => setTotalCopies(e.target.value)} />
         </Field>
+        <Field label="Age range" htmlFor="li-age">
+          <TextInput id="li-age" value={ageGroup} onChange={(e) => setAgeGroup(e.target.value)} placeholder="e.g. 3-5 years" />
+        </Field>
+        <Field label="Tags" htmlFor="li-tags">
+          <TextInput id="li-tags" value={tags} onChange={(e) => setTags(e.target.value)} placeholder="e.g. Fiction, Adventure, Picture book" />
+        </Field>
         <div className="sm:col-span-2">
           <Field label="Description" htmlFor="li-description">
             <TextArea id="li-description" rows={2} value={description} onChange={(e) => setDescription(e.target.value)} />
@@ -154,6 +179,17 @@ export default function AddLibraryItemForm() {
           <Field label="Photo" htmlFor="li-photo">
             <LibraryItemPhotoUpload currentUrl={photoUrl} pathPrefix="library-items" onUploaded={setPhotoUrl} />
           </Field>
+          {itemType === 'book' && (
+            <div className="mt-2">
+              <LibraryCoverSearch onSelect={setPhotoUrl} />
+            </div>
+          )}
+        </div>
+        <div className="sm:col-span-2 flex items-center gap-2">
+          <input id="li-school-only" type="checkbox" checked={schoolOnly} onChange={(e) => setSchoolOnly(e.target.checked)} className="h-4 w-4" />
+          <label htmlFor="li-school-only" className="text-sm font-semibold text-ink">
+            School use only — recorded in the catalogue but never checked out or reserved to take home
+          </label>
         </div>
       </div>
       {error && <p role="alert" className="mt-4 font-semibold text-orange-deep">{error}</p>}

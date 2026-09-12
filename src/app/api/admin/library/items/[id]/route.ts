@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { requireAdmin } from '@/lib/current-staff';
+import { parseTagsInput } from '@/lib/library';
 
 const ITEM_TYPES = ['book', 'toy', 'sports_equipment', 'other'];
 
@@ -27,6 +28,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     itemCode?: string;
     description?: string;
     photoUrl?: string;
+    ageGroup?: string;
+    tags?: string;
+    schoolOnly?: boolean;
     totalCopies?: number;
     isActive?: boolean;
   };
@@ -38,6 +42,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ error: 'Title is required.' }, { status: 400 });
   }
 
+  // Unlike the free-text fields below (which only ever fill in a blank, never clear one already
+  // set — see the COALESCE comment on populateChildFromEnrolment for the same reasoning), tags is
+  // a full replace when present at all, empty array included, so removing a tag from the edit
+  // form actually removes it rather than being silently ignored.
+  const tags = d.tags !== undefined ? parseTagsInput(d.tags) : null;
+
   try {
     const rows = await sql`
       UPDATE library_items SET
@@ -48,6 +58,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         item_code = COALESCE(${d.itemCode?.trim() || null}, item_code),
         description = COALESCE(${d.description?.trim() || null}, description),
         photo_url = COALESCE(${d.photoUrl?.trim() || null}, photo_url),
+        age_group = COALESCE(${d.ageGroup?.trim() || null}, age_group),
+        tags = COALESCE(${tags}, tags),
+        school_only = COALESCE(${d.schoolOnly ?? null}, school_only),
         total_copies = COALESCE(${d.totalCopies ?? null}, total_copies),
         is_active = COALESCE(${d.isActive ?? null}, is_active)
       WHERE id = ${itemId}
