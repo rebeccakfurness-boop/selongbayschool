@@ -40,7 +40,8 @@ const MORE_LINKS = [
   {
     href: '/admin/teaching/curriculum-plans',
     label: 'Curriculum Plans',
-    description: 'The full list of every class and subject’s programme, across the whole school.',
+    description:
+      'Every class and subject’s programme, across the whole school — and where each lesson’s self-directed online version (worksheet, video, starter/exit quiz) is edited.',
   },
   {
     href: '/admin/teaching/curriculum',

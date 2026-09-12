@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import DocumentUploadField from '@/components/DocumentUploadField';
@@ -39,12 +39,22 @@ export default function CurriculumPlanManager({
   isAdmin: boolean;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const focusTermId = Number(searchParams?.get('term')) || null;
+  const focusLessonId = Number(searchParams?.get('lesson')) || null;
   const [terms, setTerms] = useState(initialTerms);
   const [selectedTermId, setSelectedTermId] = useState<number | null>(null);
   const [termTree, setTermTree] = useState<CurriculumTermTree | null>(null);
   const [progressByChild, setProgressByChild] = useState<Map<number, Map<number, LessonProgressStatus>>>(new Map());
   const [loadingTerm, setLoadingTerm] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Deep link from Lesson Planning's "Edit online lesson" button (?term=&lesson=) -- open the
+  // right programme once on arrival rather than making the teacher hunt for it via the term pills.
+  useEffect(() => {
+    if (focusTermId) selectTerm(focusTermId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [className, setClassName] = useState(classOptions[0] ?? '');
   const [subject, setSubject] = useState('');
@@ -234,6 +244,7 @@ export default function CurriculumPlanManager({
           progressByChild={progressByChild}
           isAdmin={isAdmin}
           classOptions={classOptions}
+          focusLessonId={focusLessonId}
           onDeleteTerm={() => deleteTerm(termTree.id)}
           onRefresh={refreshTermTree}
           onUpdateMeta={(meta) => updateTermMeta(termTree.id, meta)}
@@ -249,6 +260,7 @@ function TermEditor({
   progressByChild,
   isAdmin,
   classOptions,
+  focusLessonId,
   onDeleteTerm,
   onRefresh,
   onUpdateMeta,
@@ -258,6 +270,7 @@ function TermEditor({
   progressByChild: Map<number, Map<number, LessonProgressStatus>>;
   isAdmin: boolean;
   classOptions: string[];
+  focusLessonId: number | null;
   onDeleteTerm: () => void;
   onRefresh: () => void;
   onUpdateMeta: (meta: { className: string; subject: string; termLabel: string; frameworkLabel: string | null }) => Promise<string | null>;
@@ -404,6 +417,7 @@ function TermEditor({
             isLast={i === term.units.length - 1}
             roster={roster}
             progressByChild={progressByChild}
+            focusLessonId={focusLessonId}
             onRefresh={onRefresh}
           />
         ))}
@@ -437,6 +451,7 @@ function UnitBlock({
   isLast,
   roster,
   progressByChild,
+  focusLessonId,
   onRefresh,
 }: {
   unit: CurriculumUnit;
@@ -445,9 +460,10 @@ function UnitBlock({
   isLast: boolean;
   roster: ClassRoster;
   progressByChild: Map<number, Map<number, LessonProgressStatus>>;
+  focusLessonId: number | null;
   onRefresh: () => void;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(() => unit.lessons.some((l) => l.id === focusLessonId));
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(unit.title);
   const [description, setDescription] = useState(unit.description ?? '');
@@ -524,6 +540,7 @@ function UnitBlock({
               isLast={i === unit.lessons.length - 1}
               roster={roster}
               progressByChild={progressByChild}
+              autoFocus={lesson.id === focusLessonId}
               onRefresh={onRefresh}
             />
           ))}
@@ -551,6 +568,7 @@ function LessonRow({
   isLast,
   roster,
   progressByChild,
+  autoFocus,
   onRefresh,
 }: {
   lesson: CurriculumLesson;
@@ -559,9 +577,17 @@ function LessonRow({
   isLast: boolean;
   roster: ClassRoster;
   progressByChild: Map<number, Map<number, LessonProgressStatus>>;
+  autoFocus: boolean;
   onRefresh: () => void;
 }) {
-  const [editing, setEditing] = useState(false);
+  const [rowEl, setRowEl] = useState<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (autoFocus) rowEl?.scrollIntoView({ block: 'center' });
+    // Scroll once, right after this row mounts already expanded (deep link from Lesson Planning) --
+    // not something that should re-run as rowEl or autoFocus later change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rowEl]);
+  const [editing, setEditing] = useState(autoFocus);
   const [title, setTitle] = useState(lesson.title);
   const [objectives, setObjectives] = useState(lesson.objectives ?? '');
   const [worksheetUrl, setWorksheetUrl] = useState(lesson.worksheet_url);
@@ -629,7 +655,10 @@ function LessonRow({
   const [previewing, setPreviewing] = useState(false);
 
   return (
-    <div className="border-t border-sand-line/60 px-4 py-3 first:border-t-0">
+    <div
+      ref={setRowEl}
+      className={`border-t border-sand-line/60 px-4 py-3 first:border-t-0 ${autoFocus ? 'bg-teal/5' : ''}`}
+    >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="flex items-center gap-2 text-sm font-semibold text-ink">
           Lesson {index + 1}: {lesson.title}

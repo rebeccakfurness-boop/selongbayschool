@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Field, TextInput } from '@/components/forms/FormField';
 import Button from '@/components/Button';
@@ -185,6 +186,7 @@ export default function LessonPlanningDashboard({
       <div className="mt-6">
         {tab === 'home' && (
           <HomeView
+            termId={term.id}
             lessons={lessons}
             nextLesson={nextLesson}
             donePct={donePct}
@@ -197,6 +199,7 @@ export default function LessonPlanningDashboard({
         )}
         {tab === 'sequence' && (
           <SequenceView
+            termId={term.id}
             lessons={lessons}
             nextLessonId={nextLesson?.id ?? null}
             assignableOccurrences={assignableOccurrences}
@@ -243,11 +246,13 @@ export default function LessonPlanningDashboard({
 }
 
 function MaterialButtons({
+  termId,
   lesson,
   onOpenPreview,
   onOpenScript,
   onOpenCards,
 }: {
+  termId: number;
   lesson: CurriculumLesson;
   onOpenPreview: (id: number) => void;
   onOpenScript: (id: number) => void;
@@ -255,6 +260,12 @@ function MaterialButtons({
 }) {
   return (
     <div className="flex flex-wrap gap-2">
+      <Link
+        href={`/admin/teaching/curriculum-plans?term=${termId}&lesson=${lesson.id}`}
+        className="rounded-full border-2 border-teal-deep px-3 py-1.5 text-xs font-bold text-teal-deep hover:bg-teal-deep hover:text-white"
+      >
+        ✏️ Edit online lesson
+      </Link>
       {lesson.real_plan && (
         <a
           href={`/admin/teaching/lesson-plan/${lesson.id}`}
@@ -332,6 +343,7 @@ function MaterialButtons({
 }
 
 function HomeView({
+  termId,
   lessons,
   nextLesson,
   donePct,
@@ -341,6 +353,7 @@ function HomeView({
   onOpenScript,
   onOpenCards,
 }: {
+  termId: number;
   lessons: CurriculumLesson[];
   nextLesson: CurriculumLesson | null;
   donePct: number;
@@ -390,7 +403,7 @@ function HomeView({
               {nextLesson.occurrence_starts_at ? formatDateTime(nextLesson.occurrence_starts_at) : 'Not scheduled yet'} · {PHASE_LABELS[nextLesson.phase]}
             </p>
             <div className="mt-4">
-              <MaterialButtons lesson={nextLesson} onOpenPreview={onOpenPreview} onOpenScript={onOpenScript} onOpenCards={onOpenCards} />
+              <MaterialButtons termId={termId} lesson={nextLesson} onOpenPreview={onOpenPreview} onOpenScript={onOpenScript} onOpenCards={onOpenCards} />
             </div>
             <div className="mt-4">
               <Button type="button" variant="primary" onClick={() => onToggleTaught(nextLesson)}>
@@ -444,6 +457,7 @@ function StatTile({ label, value, foot }: { label: string; value: string; foot: 
 }
 
 function SequenceView({
+  termId,
   lessons,
   nextLessonId,
   assignableOccurrences,
@@ -454,6 +468,7 @@ function SequenceView({
   onOpenScript,
   onOpenCards,
 }: {
+  termId: number;
   lessons: CurriculumLesson[];
   nextLessonId: number | null;
   assignableOccurrences: AssignableOccurrenceRow[];
@@ -520,7 +535,7 @@ function SequenceView({
                   <td className="px-2 py-2 font-mono text-xs text-ink-soft">{l.syllabus_ref || '—'}</td>
                   <td className={`px-2 py-2 ${l.taught ? 'line-through' : ''}`}>{l.title}</td>
                   <td className="px-2 py-2">
-                    <MaterialButtons lesson={l} onOpenPreview={onOpenPreview} onOpenScript={onOpenScript} onOpenCards={onOpenCards} />
+                    <MaterialButtons termId={termId} lesson={l} onOpenPreview={onOpenPreview} onOpenScript={onOpenScript} onOpenCards={onOpenCards} />
                   </td>
                   <td className="px-2 py-2">
                     <div className="flex gap-1.5">
