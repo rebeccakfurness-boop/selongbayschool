@@ -6,6 +6,7 @@ const TABS = [
   { href: '/admin/library/reservations', label: 'Reservations' },
   { href: '/admin/library/memberships', label: 'Memberships', adminOnly: true },
   { href: '/admin/library/discount-codes', label: 'Discount Codes', adminOnly: true },
+  { href: '/admin/library/import', label: 'Import', adminOnly: true },
 ];
 
 export default function LibrarySubNav({ active, isAdmin }: { active: string; isAdmin: boolean }) {
