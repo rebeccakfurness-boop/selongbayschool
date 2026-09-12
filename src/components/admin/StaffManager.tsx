@@ -23,6 +23,7 @@ export default function StaffManager({ initial, classOptions }: { initial: Staff
   const [error, setError] = useState<string | null>(null);
   const [newTempPassword, setNewTempPassword] = useState<{ email: string; password: string } | null>(null);
   const [pendingClass, setPendingClass] = useState<Record<number, string>>({});
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   async function setActive(staffId: number, isActive: boolean) {
     setError(null);
@@ -74,6 +75,30 @@ export default function StaffManager({ initial, classOptions }: { initial: Staff
     setStaff((prev) => prev.map((s) => (s.id === staffId ? { ...s, assigned_classes: [...s.assigned_classes, className] } : s)));
     setPendingClass((prev) => ({ ...prev, [staffId]: '' }));
     router.refresh();
+  }
+
+  async function deleteStaff(s: StaffRow) {
+    const label = s.display_name || s.email;
+    if (
+      !window.confirm(
+        `Permanently delete ${label}'s account? This removes it completely and cannot be undone. Only do this for a duplicate or an account created in error — a real (even former) staff member should be Deactivated instead, which keeps their history intact.`
+      )
+    ) {
+      return;
+    }
+    setDeletingId(s.id);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/staff/${s.id}`, { method: 'DELETE' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Failed to delete account');
+      setStaff((prev) => prev.filter((row) => row.id !== s.id));
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete account');
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   async function removeClass(staffId: number, className: string) {
@@ -131,13 +156,23 @@ export default function StaffManager({ initial, classOptions }: { initial: Staff
                   <span className="ml-2 rounded-full bg-orange/20 px-2 py-0.5 text-xs font-bold text-orange-deep">Deactivated</span>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={() => setActive(s.id, !s.is_active)}
-                className={`text-xs font-semibold hover:underline ${s.is_active ? 'text-orange-deep' : 'text-teal-deep'}`}
-              >
-                {s.is_active ? 'Deactivate' : 'Reactivate'}
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setActive(s.id, !s.is_active)}
+                  className={`text-xs font-semibold hover:underline ${s.is_active ? 'text-orange-deep' : 'text-teal-deep'}`}
+                >
+                  {s.is_active ? 'Deactivate' : 'Reactivate'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => deleteStaff(s)}
+                  disabled={deletingId === s.id}
+                  className="text-xs font-semibold text-red-600 hover:underline disabled:opacity-50"
+                >
+                  {deletingId === s.id ? 'Deleting…' : 'Delete'}
+                </button>
+              </div>
             </div>
             {s.role === 'teacher' && (
               <div className="mt-3">

@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import DocumentUploadField from '@/components/DocumentUploadField';
-import { EMPLOYMENT_STATUS_LEGEND, BPJS_STATUS_LABELS, type EmploymentStatus } from '@/lib/staff-data';
+import { EMPLOYMENT_STATUS_LEGEND, EMPLOYMENT_STATUS_ORDER, BPJS_STATUS_LABELS, type EmploymentStatus } from '@/lib/staff-data';
+import { isActiveEmploymentStatus } from '@/lib/staff-lifecycle-shared';
 import { formatDate } from '@/lib/admin-format';
 import type { StaffDetail } from '@/lib/staff-hr';
 import StaffProfessionalDevelopmentSection from '@/components/admin/StaffProfessionalDevelopmentSection';
@@ -61,6 +62,37 @@ export default function StaffCard({
   const [form, setForm] = useState<FormState>(() => toFormState(staff));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [employmentStatus, setEmploymentStatus] = useState<EmploymentStatus>(staff.employment_status as EmploymentStatus);
+  const [statusSaving, setStatusSaving] = useState(false);
+  const [statusError, setStatusError] = useState<string | null>(null);
+
+  async function changeStatus(next: EmploymentStatus) {
+    // Same pre-check the Teacher Board's drag handler does -- an immediate message instead of a
+    // round trip that the server (checkActiveEmploymentGuardRail) would reject anyway.
+    if (isActiveEmploymentStatus(next) && !staff.start_date) {
+      setStatusError('Set a start date first (in Edit, below) before moving to an active status.');
+      return;
+    }
+    const previous = employmentStatus;
+    setEmploymentStatus(next);
+    setStatusSaving(true);
+    setStatusError(null);
+    try {
+      const res = await fetch(`/api/admin/staff/${staff.id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: next }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not change status.');
+      router.refresh();
+    } catch (err) {
+      setEmploymentStatus(previous);
+      setStatusError(err instanceof Error ? err.message : 'Could not change status.');
+    } finally {
+      setStatusSaving(false);
+    }
+  }
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -94,7 +126,7 @@ export default function StaffCard({
     }
   }
 
-  const statusLegend = EMPLOYMENT_STATUS_LEGEND[staff.employment_status as EmploymentStatus];
+  const statusLegend = EMPLOYMENT_STATUS_LEGEND[employmentStatus];
 
   return (
     <div className="flex flex-col gap-6">
@@ -104,10 +136,24 @@ export default function StaffCard({
             <h1 className="font-display text-2xl font-semibold text-ink">{staff.display_name || staff.email}</h1>
             <p className="text-sm text-ink-soft">{staff.email}</p>
             <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className={`rounded-full px-3 py-1 text-xs font-bold ${statusLegend.badgeClass}`}>{statusLegend.label}</span>
+              {canEdit ? (
+                <select
+                  value={employmentStatus}
+                  onChange={(e) => changeStatus(e.target.value as EmploymentStatus)}
+                  disabled={statusSaving}
+                  className={`rounded-full border-none px-3 py-1 text-xs font-bold ${statusLegend.badgeClass} disabled:opacity-60`}
+                >
+                  {EMPLOYMENT_STATUS_ORDER.map((s) => (
+                    <option key={s} value={s}>{EMPLOYMENT_STATUS_LEGEND[s].label}</option>
+                  ))}
+                </select>
+              ) : (
+                <span className={`rounded-full px-3 py-1 text-xs font-bold ${statusLegend.badgeClass}`}>{statusLegend.label}</span>
+              )}
               {!staff.is_active && <span className="rounded-full bg-ink/10 px-3 py-1 text-xs font-bold text-ink-soft">Login disabled</span>}
               {staff.position_title && <span className="text-xs text-ink-soft">{staff.position_title}</span>}
             </div>
+            {statusError && <p className="mt-1 text-xs font-semibold text-orange-deep">{statusError}</p>}
             {staff.assigned_classes.length > 0 && (
               <p className="mt-1 text-xs text-ink-soft">Assigned classes: {staff.assigned_classes.join(', ')}</p>
             )}

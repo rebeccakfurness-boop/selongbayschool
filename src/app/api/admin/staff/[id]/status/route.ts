@@ -4,10 +4,11 @@ import { getCurrentStaff } from '@/lib/current-staff';
 import { updateStaffStatusSchema } from '@/lib/validation';
 import { checkActiveEmploymentGuardRail } from '@/lib/staff-lifecycle';
 
-/** The only route that changes employment_status on an existing staff member -- called
- * exclusively by the Teacher Board's drag handler (src/components/admin/StaffBoard.tsx), mirroring
+/** The only route that changes employment_status on an existing staff member -- called by the
+ * Teacher Board's drag handler (src/components/admin/StaffBoard.tsx) and by the status dropdown
+ * on the Staff Card itself (src/components/admin/StaffCard.tsx), mirroring
  * /api/admin/children/[id]/status exactly. Enforces the lifecycle guard rail (an active employee
- * status needs a start date already on file) server-side -- the board also pre-checks this
+ * status needs a start date already on file) server-side -- both callers also pre-check this
  * client-side for an immediate inline message, but this is the real boundary. */
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const staff = await getCurrentStaff();

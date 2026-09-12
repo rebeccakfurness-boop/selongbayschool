@@ -183,8 +183,9 @@ export type UpdateStaffStatusInput = z.infer<typeof updateStaffStatusSchema>;
 
 const bpjsStatusEnum = z.enum(['active', 'pending', 'inactive', 'not_applicable']).nullable().optional();
 
-/** The Staff Card's general edit-form save -- every HR field except employment_status (set only
- * via the board drag, see updateStaffStatusSchema) and is_active (set only via Staff Accounts). */
+/** The Staff Card's general edit-form save -- every HR field except employment_status (set via
+ * the board drag or the Staff Card's own status dropdown, see updateStaffStatusSchema) and
+ * is_active (set only via Staff Accounts). */
 export const updateStaffHrSchema = z.object({
   displayName: optionalStr,
   positionTitle: optionalStr,
