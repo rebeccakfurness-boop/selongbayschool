@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
 import { getLibraryItems } from '@/lib/library';
@@ -55,7 +56,9 @@ export default async function AdminLibraryCataloguePage() {
                     <LibraryItemPhotoCell itemId={item.id} photoUrl={item.photo_url} />
                   </td>
                   <td className="px-4 py-3">
-                    <div className="font-semibold text-ink">{item.title}</div>
+                    <Link href={`/admin/library/${item.id}/edit`} className="font-semibold text-teal-deep hover:underline">
+                      {item.title}
+                    </Link>
                     {item.author && <div className="text-xs text-ink-soft">{item.author}</div>}
                     {item.item_code && <div className="text-xs text-ink-soft">Code: {item.item_code}</div>}
                   </td>
