@@ -100,7 +100,22 @@ export default async function OnlineLibraryPage() {
         })}
       </div>
 
-      <div className="mt-8 w-full max-w-md rounded-lg border border-sand-line bg-paper p-8 shadow-soft">
+      <div className="mt-8 w-full max-w-md rounded-lg border-2 border-orange bg-orange/10 p-6 text-left shadow-soft">
+        <span className="rounded-full bg-orange px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-white">Special offer</span>
+        <p className="mt-3 text-[15px] leading-relaxed text-ink">
+          <strong>Donate 5 books or high-quality items</strong> to the school library and receive a{' '}
+          <strong>free 6-month membership</strong> in return.
+        </p>
+        <p className="mt-2 text-sm text-ink-soft">
+          Contact us for more details at{' '}
+          <a href="mailto:hello@selongbayschool.com" className="font-semibold text-teal-deep underline">
+            hello@selongbayschool.com
+          </a>
+          .
+        </p>
+      </div>
+
+      <div className="mt-6 w-full max-w-md rounded-lg border border-sand-line bg-paper p-8 shadow-soft">
         <h2 className="font-display text-xl font-semibold text-ink">Membership</h2>
         <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">
           {monthlyFee > 0 ? (
