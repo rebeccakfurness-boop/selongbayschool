@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 36;
+const SCHEMA_VERSION = 37;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2278,6 +2278,149 @@ export function ensureSchema(): Promise<void> {
       // submitLessonWorksheetSchema's refine for "at least one of the two").
       await sql`ALTER TABLE curriculum_lesson_worksheet_submissions ALTER COLUMN file_url DROP NOT NULL`;
       await sql`ALTER TABLE curriculum_lesson_worksheet_submissions ADD COLUMN IF NOT EXISTS answer_audio_url TEXT`;
+
+      // --- Teacher Board (HR/recruitment pipeline) + duty roster ---
+      // admin_users already doubles as the staff table (see its own earlier comment); these are
+      // additive HR fields on the same row, mirroring how `children` carries every family-side
+      // field on one wide row rather than a companion table -- consistent with this codebase's own
+      // convention rather than introducing a second pattern.
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS employment_status TEXT`;
+      // Backfill before the CHECK/NOT NULL land, so an existing deployment's real admin/teacher
+      // rows get a sensible starting column instead of the migration failing on non-null legacy
+      // rows -- an admin can always correct the real employment_status afterwards from the board.
+      await sql`
+        UPDATE admin_users SET employment_status = CASE WHEN role = 'teacher' THEN 'teaching_staff' ELSE 'admin_staff' END
+        WHERE employment_status IS NULL
+      `;
+      await sql`ALTER TABLE admin_users ALTER COLUMN employment_status SET NOT NULL`;
+      await sql`ALTER TABLE admin_users ALTER COLUMN employment_status SET DEFAULT 'applicant'`;
+      await sql`ALTER TABLE admin_users DROP CONSTRAINT IF EXISTS admin_users_employment_status_check`;
+      await sql`
+        ALTER TABLE admin_users ADD CONSTRAINT admin_users_employment_status_check
+        CHECK (employment_status IN ('applicant', 'casual_employee', 'teaching_staff', 'admin_staff', 'past_employee'))
+      `;
+
+      // Personal / HR fields -- dob doubles as the payslip access password (see staff_payslips
+      // below); everything else is the standard set for an Indonesia-based international school
+      // (BPJS is the national social security scheme; KITAS is the foreign-worker residence permit).
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS dob DATE`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS start_date DATE`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS end_date DATE`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS position_title TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS phone TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS address TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS nationality TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS emergency_contact_name TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS emergency_contact_phone TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS cv_url TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS contract_url TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS qualifications TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS visa_status TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS kitas_number TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS kitas_expiry DATE`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS passport_copy_url TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bpjs_kesehatan_number TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bpjs_kesehatan_status TEXT`;
+      await sql`ALTER TABLE admin_users DROP CONSTRAINT IF EXISTS admin_users_bpjs_kesehatan_status_check`;
+      await sql`
+        ALTER TABLE admin_users ADD CONSTRAINT admin_users_bpjs_kesehatan_status_check
+        CHECK (bpjs_kesehatan_status IS NULL OR bpjs_kesehatan_status IN ('active', 'pending', 'inactive', 'not_applicable'))
+      `;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bpjs_ketenagakerjaan_number TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bpjs_ketenagakerjaan_status TEXT`;
+      await sql`ALTER TABLE admin_users DROP CONSTRAINT IF EXISTS admin_users_bpjs_ketenagakerjaan_status_check`;
+      await sql`
+        ALTER TABLE admin_users ADD CONSTRAINT admin_users_bpjs_ketenagakerjaan_status_check
+        CHECK (bpjs_ketenagakerjaan_status IS NULL OR bpjs_ketenagakerjaan_status IN ('active', 'pending', 'inactive', 'not_applicable'))
+      `;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bank_name TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bank_account_number TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bank_account_name TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS hr_notes TEXT`;
+
+      // One row per professional-development entry a staff member has attended or is booked onto.
+      await sql`
+        CREATE TABLE IF NOT EXISTS staff_professional_development (
+          id BIGSERIAL PRIMARY KEY,
+          admin_user_id BIGINT NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+          title TEXT NOT NULL,
+          provider TEXT,
+          start_date DATE,
+          end_date DATE,
+          status TEXT NOT NULL DEFAULT 'upcoming' CHECK (status IN ('upcoming', 'completed', 'cancelled')),
+          notes TEXT,
+          certificate_url TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_staff_professional_development_staff ON staff_professional_development (admin_user_id)`;
+
+      // One row per payslip period. file_url is an ordinary (unencrypted) blob -- access is gated
+      // at the application layer instead: a staff member must submit their own date of birth
+      // before the file is served to them (see the payslip download route), since no PDF-encryption
+      // library is safe to add here sight-unseen (this app's existing PDF routes already live in
+      // the Pages Router specifically to dodge an @react-pdf/renderer rendering bug in the App
+      // Router -- see their own file comments -- and no dependency in this repo can set a real
+      // PDF *open* password; the realistic options all need a native/binary dependency that can't
+      // be verified against this deployment from here). An admin viewing via the admin portal skips
+      // the DOB prompt entirely (see the download route's own auth branch).
+      await sql`
+        CREATE TABLE IF NOT EXISTS staff_payslips (
+          id BIGSERIAL PRIMARY KEY,
+          admin_user_id BIGINT NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+          period_label TEXT NOT NULL,
+          file_url TEXT NOT NULL,
+          uploaded_by BIGINT REFERENCES admin_users(id),
+          uploaded_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_staff_payslips_staff ON staff_payslips (admin_user_id)`;
+
+      // Mirrors lunch_orders (see that table's own comment) minus the invoicing step -- staff
+      // lunches aren't billed to the staff member, so there's no invoice_id/line-item to generate.
+      await sql`
+        CREATE TABLE IF NOT EXISTS staff_lunch_orders (
+          id BIGSERIAL PRIMARY KEY,
+          admin_user_id BIGINT NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+          own_lunch BOOLEAN NOT NULL DEFAULT false,
+          start_date DATE,
+          end_date DATE,
+          monday BOOLEAN NOT NULL DEFAULT false,
+          tuesday BOOLEAN NOT NULL DEFAULT false,
+          wednesday BOOLEAN NOT NULL DEFAULT false,
+          thursday BOOLEAN NOT NULL DEFAULT false,
+          friday BOOLEAN NOT NULL DEFAULT false,
+          lunch_size TEXT CHECK (lunch_size IN ('normal', 'large')),
+          food_preference TEXT,
+          allergies_notes TEXT,
+          lunch_count INTEGER,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_staff_lunch_orders_staff ON staff_lunch_orders (admin_user_id)`;
+
+      // Staff duty roster -- deliberately a separate table from class_schedule rather than
+      // overloading it with nullable class/subject columns: a duty isn't tied to a class_name or
+      // subject the way a teaching session is, and (unlike class_schedule's one teacher_id per
+      // row) more than one staff member can share the same duty slot, so this is one row per
+      // (staff member, duty). A teacher's "My Roster" view merges this with class_schedule rows
+      // where they're the teacher_id -- see getRosterForTeacher in lib/staff-roster.ts.
+      await sql`
+        CREATE TABLE IF NOT EXISTS duty_roster (
+          id BIGSERIAL PRIMARY KEY,
+          admin_user_id BIGINT NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+          duty_type TEXT NOT NULL CHECK (duty_type IN (
+            'welcome_to_school', 'break_duty', 'lunch_duty', 'cca_supervision', 'non_contact_admin', 'online_teaching_duty', 'other'
+          )),
+          day_of_week TEXT NOT NULL CHECK (day_of_week IN ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')),
+          start_time TIME NOT NULL,
+          end_time TIME NOT NULL,
+          label TEXT,
+          location TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_duty_roster_staff ON duty_roster (admin_user_id, day_of_week)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

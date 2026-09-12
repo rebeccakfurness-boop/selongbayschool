@@ -172,6 +172,84 @@ export const updateChildStatusSchema = z
   .refine((d) => d.status !== undefined || d.isActive !== undefined, { message: 'Nothing to update.' });
 export type UpdateChildStatusInput = z.infer<typeof updateChildStatusSchema>;
 
+/** The only way employment_status changes on an existing staff member -- called exclusively by
+ * the Teacher Board's drag handler, mirroring updateChildStatusSchema above. Deliberately doesn't
+ * touch admin_users.is_active (login access) -- that stays a separate, deliberate action on the
+ * Staff Accounts page, not an automatic side effect of a board drag. */
+export const updateStaffStatusSchema = z.object({
+  status: z.enum(['applicant', 'casual_employee', 'teaching_staff', 'admin_staff', 'past_employee']),
+});
+export type UpdateStaffStatusInput = z.infer<typeof updateStaffStatusSchema>;
+
+const bpjsStatusEnum = z.enum(['active', 'pending', 'inactive', 'not_applicable']).nullable().optional();
+
+/** The Staff Card's general edit-form save -- every HR field except employment_status (set only
+ * via the board drag, see updateStaffStatusSchema) and is_active (set only via Staff Accounts). */
+export const updateStaffHrSchema = z.object({
+  displayName: optionalStr,
+  positionTitle: optionalStr,
+  dob: optionalDate,
+  startDate: optionalDate,
+  endDate: optionalDate,
+  phone: optionalStr,
+  address: optionalStr,
+  nationality: optionalStr,
+  emergencyContactName: optionalStr,
+  emergencyContactPhone: optionalStr,
+  cvUrl: optionalStr,
+  contractUrl: optionalStr,
+  qualifications: optionalStr,
+  visaStatus: optionalStr,
+  kitasNumber: optionalStr,
+  kitasExpiry: optionalDate,
+  passportCopyUrl: optionalStr,
+  bpjsKesehatanNumber: optionalStr,
+  bpjsKesehatanStatus: bpjsStatusEnum,
+  bpjsKetenagakerjaanNumber: optionalStr,
+  bpjsKetenagakerjaanStatus: bpjsStatusEnum,
+  bankName: optionalStr,
+  bankAccountNumber: optionalStr,
+  bankAccountName: optionalStr,
+  hrNotes: optionalStr,
+});
+export type UpdateStaffHrInput = z.infer<typeof updateStaffHrSchema>;
+
+export const addProfessionalDevelopmentSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  provider: optionalStr,
+  startDate: optionalDate,
+  endDate: optionalDate,
+  status: z.enum(['upcoming', 'completed', 'cancelled']).default('upcoming'),
+  notes: optionalStr,
+});
+export type AddProfessionalDevelopmentInput = z.infer<typeof addProfessionalDevelopmentSchema>;
+
+export const addPayslipSchema = z.object({
+  periodLabel: z.string().trim().min(1, 'Period is required').max(100),
+  fileUrl: z.string().trim().url(),
+});
+export type AddPayslipInput = z.infer<typeof addPayslipSchema>;
+
+export const verifyPayslipDobSchema = z.object({
+  dob: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter your date of birth'),
+});
+export type VerifyPayslipDobInput = z.infer<typeof verifyPayslipDobSchema>;
+
+export const createStaffLunchOrderSchema = z.object({
+  ownLunch: z.boolean().optional(),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  monday: z.boolean().optional(),
+  tuesday: z.boolean().optional(),
+  wednesday: z.boolean().optional(),
+  thursday: z.boolean().optional(),
+  friday: z.boolean().optional(),
+  lunchSize: z.enum(['normal', 'large']).optional(),
+  foodPreference: optionalStr,
+  allergiesNotes: optionalStr,
+});
+export type CreateStaffLunchOrderInput = z.infer<typeof createStaffLunchOrderSchema>;
+
 export const updateChildSchema = z.object({
   programme: optionalStr,
   classBand: z.enum(['early_years', 'kindergarten', 'primary', 'secondary']).nullable().optional(),
@@ -317,6 +395,27 @@ export const upsertLessonPlanSchema = z.object({
 export type UpsertLessonPlanInput = z.infer<typeof upsertLessonPlanSchema>;
 
 const TIME_HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+export const dutyRosterEntrySchema = z
+  .object({
+    adminUserId: z.coerce.number().int().positive(),
+    dutyType: z.enum([
+      'welcome_to_school',
+      'break_duty',
+      'lunch_duty',
+      'cca_supervision',
+      'non_contact_admin',
+      'online_teaching_duty',
+      'other',
+    ]),
+    dayOfWeek: z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']),
+    startTime: z.string().trim().regex(TIME_HHMM, 'Use HH:MM'),
+    endTime: z.string().trim().regex(TIME_HHMM, 'Use HH:MM'),
+    label: z.string().trim().max(200).nullable().optional(),
+    location: z.string().trim().max(200).nullable().optional(),
+  })
+  .refine((v) => v.endTime > v.startTime, { message: 'End time must be after start time', path: ['endTime'] });
+export type DutyRosterEntryInput = z.infer<typeof dutyRosterEntrySchema>;
 
 export const classScheduleSchema = z
   .object({
