@@ -19,7 +19,7 @@ export interface InvoiceChildData {
 
 export interface InvoiceData {
   invoice_number: number;
-  invoice_type: 'tuition' | 'activity' | 'lunch';
+  invoice_type: 'tuition' | 'activity' | 'lunch' | 'library';
   billed_to_name: string;
   issue_date: string;
   due_date: string;

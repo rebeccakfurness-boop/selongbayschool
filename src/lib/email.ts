@@ -593,7 +593,7 @@ export interface InvoiceEmailInput {
   toEmail: string;
   billedToName: string;
   invoiceNumber: number;
-  invoiceType: 'tuition' | 'activity' | 'lunch';
+  invoiceType: 'tuition' | 'activity' | 'lunch' | 'library';
   totalAmount: number;
   currency: string;
   dueDate: string;

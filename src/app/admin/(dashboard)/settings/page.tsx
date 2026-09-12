@@ -3,6 +3,7 @@ import { getCurrentStaff } from '@/lib/current-staff';
 import ChangePasswordForm from '@/components/admin/ChangePasswordForm';
 import SchoolSettingsForm, { type SchoolSettings } from '@/components/admin/SchoolSettingsForm';
 import LunchSettingsForm, { type LunchSettings } from '@/components/admin/LunchSettingsForm';
+import LibrarySettingsForm, { type LibrarySettingsValues } from '@/components/admin/LibrarySettingsForm';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,6 +13,8 @@ export default async function AdminSettingsPage() {
 
   const [settings] = staff.role === 'admin' ? ((await sql`SELECT * FROM school_settings WHERE id = 1`) as unknown as SchoolSettings[]) : [];
   const [lunchSettings] = staff.role === 'admin' ? ((await sql`SELECT * FROM lunch_settings WHERE id = 1`) as unknown as LunchSettings[]) : [];
+  const [librarySettings] =
+    staff.role === 'admin' ? ((await sql`SELECT * FROM library_settings WHERE id = 1`) as unknown as LibrarySettingsValues[]) : [];
 
   return (
     <section className="max-w-2xl">
@@ -22,6 +25,7 @@ export default async function AdminSettingsPage() {
         <ChangePasswordForm />
         {staff.role === 'admin' && settings && <SchoolSettingsForm initial={settings} />}
         {staff.role === 'admin' && lunchSettings && <LunchSettingsForm initial={lunchSettings} />}
+        {staff.role === 'admin' && librarySettings && <LibrarySettingsForm initial={librarySettings} />}
       </div>
     </section>
   );

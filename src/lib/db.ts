@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 28;
+const SCHEMA_VERSION = 29;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1986,6 +1986,110 @@ export function ensureSchema(): Promise<void> {
       // programmes are per-term but the card applies across the whole year). Null for every term
       // that isn't from that import path.
       await sql`ALTER TABLE curriculum_terms ADD COLUMN IF NOT EXISTS ongoing_card JSONB`;
+
+      // --- Library system (replaces the old Libib embed) — books, toys and sports equipment on
+      // one shared catalogue, loaned to children and billed to their family's account. ---
+
+      // Singleton (id always 1), same pattern as school_settings/lunch_settings. late_fee_cap_idr
+      // null means uncapped; monthly_membership_fee_idr is the *default* applied to a new
+      // membership — see library_memberships.monthly_fee_idr, which is copied from this at join
+      // time and then kept as its own value so a later settings change never reprices someone
+      // who already joined (same reasoning as lunch pricing being frozen onto lunch_orders).
+      await sql`
+        CREATE TABLE IF NOT EXISTS library_settings (
+          id INTEGER PRIMARY KEY DEFAULT 1,
+          monthly_membership_fee_idr BIGINT NOT NULL DEFAULT 0,
+          default_loan_period_days INTEGER NOT NULL DEFAULT 14,
+          late_fee_per_day_idr BIGINT NOT NULL DEFAULT 0,
+          late_fee_cap_idr BIGINT,
+          invoice_due_days INTEGER NOT NULL DEFAULT 7
+        )
+      `;
+      await sql`INSERT INTO library_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`;
+
+      // Self-service codes a parent enters on /account/library — see redeemLibraryDiscountCode in
+      // library.ts. discount_percent of 100 means free membership. max_redemptions null = unlimited.
+      await sql`
+        CREATE TABLE IF NOT EXISTS library_discount_codes (
+          id BIGSERIAL PRIMARY KEY,
+          code TEXT NOT NULL UNIQUE,
+          description TEXT,
+          discount_percent NUMERIC NOT NULL CHECK (discount_percent > 0 AND discount_percent <= 100),
+          max_redemptions INTEGER,
+          times_redeemed INTEGER NOT NULL DEFAULT 0,
+          expires_at DATE,
+          is_active BOOLEAN NOT NULL DEFAULT true,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS library_items (
+          id BIGSERIAL PRIMARY KEY,
+          item_type TEXT NOT NULL CHECK (item_type IN ('book', 'toy', 'sports_equipment')),
+          title TEXT NOT NULL,
+          author TEXT,
+          category TEXT,
+          item_code TEXT,
+          description TEXT,
+          photo_url TEXT,
+          total_copies INTEGER NOT NULL DEFAULT 1,
+          is_active BOOLEAN NOT NULL DEFAULT true,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_library_items_type ON library_items (item_type)`;
+
+      // One membership per family account (customers.id), not per child — siblings borrow under
+      // the same subscription. monthly_fee_idr/discount_percent are snapshotted onto this row (see
+      // library_settings comment above) so redeeming a code or a later price change only affects
+      // this family from here on, never retroactively. next_billing_date is advanced a month at a
+      // time by runLibraryBilling() each time it successfully invoices this membership.
+      await sql`
+        CREATE TABLE IF NOT EXISTS library_memberships (
+          id BIGSERIAL PRIMARY KEY,
+          customer_id BIGINT NOT NULL UNIQUE REFERENCES customers(id) ON DELETE CASCADE,
+          status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'cancelled')),
+          monthly_fee_idr BIGINT NOT NULL DEFAULT 0,
+          discount_percent NUMERIC NOT NULL DEFAULT 0,
+          discount_code_id BIGINT REFERENCES library_discount_codes(id),
+          joined_at DATE NOT NULL DEFAULT CURRENT_DATE,
+          next_billing_date DATE NOT NULL DEFAULT CURRENT_DATE,
+          cancelled_at DATE,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      // A loan is always against a specific child (who physically has the item); billing (the
+      // membership subscription, and any late fee) is against that child's family account instead.
+      // late_fee_charged_idr is filled in once, at return time, from library_settings' rate as of
+      // that day — see returnLibraryLoan in library.ts; while still out, the fee is only ever an
+      // estimate computed live off due_date so an admin changing the daily rate never reaches back
+      // into an old, already-settled loan.
+      await sql`
+        CREATE TABLE IF NOT EXISTS library_loans (
+          id BIGSERIAL PRIMARY KEY,
+          item_id BIGINT NOT NULL REFERENCES library_items(id),
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          borrowed_at DATE NOT NULL DEFAULT CURRENT_DATE,
+          due_date DATE NOT NULL,
+          returned_at DATE,
+          late_fee_charged_idr BIGINT,
+          late_fee_waived BOOLEAN NOT NULL DEFAULT false,
+          late_fee_invoice_id BIGINT REFERENCES invoices(id),
+          notes TEXT,
+          checked_out_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_library_loans_item ON library_loans (item_id)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_library_loans_child ON library_loans (child_id)`;
+
+      // library membership fees and late fees are billed the same way tuition/activity/lunch
+      // already are — one more invoice_type on the existing invoices table (see runLibraryBilling
+      // and chargeLibraryLateFee in library.ts) rather than a parallel billing system.
+      await sql`ALTER TABLE invoices DROP CONSTRAINT IF EXISTS invoices_invoice_type_check`;
+      await sql`ALTER TABLE invoices ADD CONSTRAINT invoices_invoice_type_check CHECK (invoice_type IN ('tuition', 'activity', 'lunch', 'library'))`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

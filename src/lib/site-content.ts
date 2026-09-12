@@ -413,11 +413,10 @@ export const temporaryEnrolments = {
 };
 
 export const onlineLibrary = {
-  href: 'https://www.libib.com/',
   paragraphs: [
-    "Every Selong Bay student and family has access to our school library collection through an online booking system called Libib. Explore everything available on campus, including books, educational resources, toys, games, sports equipment, helmets, and other learning materials, and collect from the school campus.",
-    "Search what's on our shelves, check availability, place items on hold, and keep track of what you are borrowing. From picture books and chapter books to curriculum resources, creative play materials, sports equipment, toys and practical equipment for everyday learning and exploration.",
-    "Community library coming soon for a monthly membership fee. Anyone who calls Selong Bay home can sign up for access to the school library. A wider range of books will be added for all reading levels, with fiction and non-fiction books available for lending.",
+    "Every Selong Bay family can borrow from our own library — books, educational resources, toys, games, sports equipment, helmets and other learning materials, all collected from and returned to the school campus.",
+    "Membership is a small monthly fee on top of school fees, managed entirely from your parent account: see everything currently on loan for your children, their due dates, and any late fees, right alongside your other invoices. Long-term families can be given a discount code for free or reduced-price access.",
+    "Log in to your parent account to join, browse the full catalogue, and see what your family currently has borrowed.",
   ],
 };
 
