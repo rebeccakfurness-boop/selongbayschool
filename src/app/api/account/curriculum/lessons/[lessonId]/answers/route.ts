@@ -77,7 +77,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ les
     // Same "what" trust check as the student route: confirm the question actually belongs to this
     // (published) lesson before recording an answer against it.
     const found = await getLessonForOnlineFlow(lessonId, childId);
-    const belongs = found && [...found.lesson.starter_quiz, ...found.lesson.exit_quiz].some((q) => q.id === d.quizQuestionId);
+    // String(...): quiz_question_id is a Postgres BIGSERIAL, returned as a string despite its
+    // `number` type -- d.quizQuestionId, coerced to a real JS number by the zod schema, would
+    // otherwise never strictly-equal it.
+    const belongs = found && [...found.lesson.starter_quiz, ...found.lesson.exit_quiz].some((q) => String(q.id) === String(d.quizQuestionId));
     if (!belongs) {
       return NextResponse.json({ error: 'That question is not part of this lesson.' }, { status: 400 });
     }

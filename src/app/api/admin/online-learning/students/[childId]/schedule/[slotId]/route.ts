@@ -20,7 +20,8 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ c
       return NextResponse.json({ error: 'You are not assigned to that class.' }, { status: 403 });
     }
     const slotChildId = await getChildIdForOnlineScheduleSlot(slotId);
-    if (slotChildId !== childId) {
+    // String(...): child_id comes back from the driver as a string despite its `number` type.
+    if (slotChildId == null || String(slotChildId) !== String(childId)) {
       return NextResponse.json({ error: 'Slot not found.' }, { status: 404 });
     }
 

@@ -69,7 +69,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ chi
     }
 
     const programme = await getChildOnlineProgrammeTerms(childId);
-    if (!programme.some((t) => t.id === d.curriculumTermId)) {
+    // String(...) on both sides: curriculum_terms.id is a Postgres BIGSERIAL, which this driver
+    // returns as a string despite CurriculumTerm's `id: number` type -- d.curriculumTermId, coerced
+    // to a real JS number by the zod schema, would otherwise never strictly-equal it.
+    if (!programme.some((t) => String(t.id) === String(d.curriculumTermId))) {
       return NextResponse.json({ error: "That programme isn't assigned to this student yet." }, { status: 400 });
     }
 

@@ -119,8 +119,8 @@ export default function CurriculumPlanManager({
   }
 
   async function deleteTerm(termId: number) {
-    setTerms((prev) => prev.filter((t) => t.id !== termId));
-    if (selectedTermId === termId) {
+    setTerms((prev) => prev.filter((t) => String(t.id) !== String(termId)));
+    if (String(selectedTermId) === String(termId)) {
       setSelectedTermId(null);
       setTermTree(null);
     }
@@ -227,7 +227,7 @@ export default function CurriculumPlanManager({
               onClick={() => selectTerm(t.id)}
               title={titleParts.length > 0 ? titleParts.join(' — ') : undefined}
               className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
-                selectedTermId === t.id ? 'bg-teal text-white' : 'border border-sand-line bg-paper text-ink hover:border-teal'
+                String(selectedTermId) === String(t.id) ? 'bg-teal text-white' : 'border border-sand-line bg-paper text-ink hover:border-teal'
               } ${unmatched || unverifiedSource ? 'border-orange text-orange-deep' : ''}`}
             >
               {(unmatched || unverifiedSource) && '⚠ '}
@@ -466,7 +466,7 @@ function UnitBlock({
   focusLessonId: number | null;
   onRefresh: () => void;
 }) {
-  const [expanded, setExpanded] = useState(() => unit.lessons.some((l) => l.id === focusLessonId));
+  const [expanded, setExpanded] = useState(() => focusLessonId != null && unit.lessons.some((l) => String(l.id) === String(focusLessonId)));
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(unit.title);
   const [description, setDescription] = useState(unit.description ?? '');
@@ -543,7 +543,7 @@ function UnitBlock({
               isLast={i === unit.lessons.length - 1}
               roster={roster}
               progressByChild={progressByChild}
-              autoFocus={lesson.id === focusLessonId}
+              autoFocus={focusLessonId != null && String(lesson.id) === String(focusLessonId)}
               onRefresh={onRefresh}
             />
           ))}

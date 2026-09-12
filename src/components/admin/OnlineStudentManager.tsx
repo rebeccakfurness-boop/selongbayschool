@@ -62,7 +62,10 @@ export default function OnlineStudentManager({
       setError((data.error as string) || 'Could not add that programme.');
       return;
     }
-    const term = allTerms.find((t) => t.id === addTermId);
+    // String(...): curriculum_terms.id comes back from the driver as a string despite its
+    // `number` type, so a plain === against addTermId (a real JS number from the <select>) would
+    // never match.
+    const term = allTerms.find((t) => String(t.id) === String(addTermId));
     if (term) setProgramme((prev) => [...prev, term]);
     setAddTermId('');
   }
