@@ -103,6 +103,7 @@ export default async function AdminLibraryLoansPage({ searchParams }: { searchPa
                       hasFee={loan.estimated_late_fee_idr > 0}
                       feeWaived={loan.late_fee_waived}
                       feeInvoiced={!!loan.late_fee_invoice_id}
+                      dueSoonEmailSent={loan.due_soon_email_sent}
                     />
                   </td>
                 </tr>

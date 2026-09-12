@@ -9,16 +9,19 @@ export default function LibraryLoanActions({
   hasFee,
   feeWaived,
   feeInvoiced,
+  dueSoonEmailSent,
 }: {
   loanId: number;
   returned: boolean;
   hasFee: boolean;
   feeWaived: boolean;
   feeInvoiced: boolean;
+  dueSoonEmailSent: boolean;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [reminderSent, setReminderSent] = useState(false);
 
   async function call(path: string) {
     setBusy(true);
@@ -35,9 +38,25 @@ export default function LibraryLoanActions({
     }
   }
 
+  async function sendReminder() {
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/library/loans/${loanId}/send-reminder`, { method: 'POST' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not send this reminder.');
+      setReminderSent(true);
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not send this reminder.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <div className="flex flex-col items-start gap-1.5">
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         {!returned && (
           <button
             type="button"
@@ -46,6 +65,16 @@ export default function LibraryLoanActions({
             className="whitespace-nowrap rounded-full bg-teal px-3 py-1 text-xs font-bold text-white hover:bg-teal-deep disabled:opacity-50"
           >
             Mark returned
+          </button>
+        )}
+        {!returned && (
+          <button
+            type="button"
+            onClick={sendReminder}
+            disabled={busy}
+            className="whitespace-nowrap text-xs font-semibold text-teal-deep hover:underline disabled:opacity-50"
+          >
+            {dueSoonEmailSent || reminderSent ? 'Resend reminder' : 'Send reminder'}
           </button>
         )}
         {returned && hasFee && !feeWaived && !feeInvoiced && (

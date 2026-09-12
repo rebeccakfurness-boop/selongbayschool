@@ -452,6 +452,29 @@ export async function sendPassExpiryReminderEmail(input: PassExpiryReminderEmail
   return send(input.customerEmail, `${input.childName}'s activity pack expires in a week`, html);
 }
 
+export interface LibraryDueSoonEmailInput {
+  toEmail: string;
+  childFullName: string;
+  itemTitle: string;
+  /** Already formatted, e.g. "12 September 2026" — see formatDate in admin-format.ts. */
+  dueDateLabel: string;
+}
+
+/** Sent once per loan, the day before it's due — either by the daily cron
+ * (/api/cron/library-due-reminders) or an admin's manual "Send reminder" button on
+ * /admin/library/loans. See sendDueSoonReminderForLoan in lib/library.ts, which both call. */
+export async function sendLibraryDueSoonEmail(input: LibraryDueSoonEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    'A library item is due back tomorrow',
+    `<p>Hi there,</p>
+     <p><strong>${input.itemTitle}</strong>, borrowed for ${input.childFullName}, is due back at school tomorrow (${input.dueDateLabel}).</p>
+     <p>Please return it on time to avoid a late fee.</p>
+     <p><a href="${siteConfig.url}/account/library" style="color:#007c83; font-weight:700;">View your library loans &rarr;</a></p>
+     <p style="margin-top: 24px;">Thanks!<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `Reminder: ${input.itemTitle} is due back tomorrow`, html);
+}
+
 export interface ScheduleSessionReminderEmailInput {
   customerName: string;
   customerEmail: string;

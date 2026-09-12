@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 30;
+const SCHEMA_VERSION = 31;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2096,6 +2096,12 @@ export function ensureSchema(): Promise<void> {
       // their constraint widened explicitly here too.
       await sql`ALTER TABLE library_items DROP CONSTRAINT IF EXISTS library_items_item_type_check`;
       await sql`ALTER TABLE library_items ADD CONSTRAINT library_items_item_type_check CHECK (item_type IN ('book', 'toy', 'sports_equipment', 'other'))`;
+
+      // Set once the "due back tomorrow" reminder has gone out for this loan (whether the daily
+      // cron sent it or an admin used the manual "Send reminder" button) -- see
+      // sendDueSoonReminderForLoan in library.ts. Stops the cron re-sending the same reminder every
+      // day an overdue item stays out; a manual resend is still always allowed regardless of this.
+      await sql`ALTER TABLE library_loans ADD COLUMN IF NOT EXISTS due_soon_email_sent BOOLEAN NOT NULL DEFAULT false`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

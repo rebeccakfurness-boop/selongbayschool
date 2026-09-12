@@ -1,4 +1,6 @@
 import { sql } from './db';
+import { formatDate } from './admin-format';
+import { sendLibraryDueSoonEmail } from './email';
 
 export interface LibrarySettings {
   monthly_membership_fee_idr: number;
@@ -210,6 +212,7 @@ export interface LibraryLoanRow {
   late_fee_charged_idr: number | null;
   late_fee_waived: boolean;
   late_fee_invoice_id: number | null;
+  due_soon_email_sent: boolean;
   days_overdue: number;
   estimated_late_fee_idr: number;
 }
@@ -227,7 +230,7 @@ export async function getLoansForChildren(childIds: number[]): Promise<LibraryLo
   const rows = (await sql`
     SELECT l.id, l.item_id, li.title AS item_title, li.item_type, l.child_id, c.child_full_name,
       l.borrowed_at::text, l.due_date::text, l.returned_at::text,
-      l.late_fee_charged_idr, l.late_fee_waived, l.late_fee_invoice_id,
+      l.late_fee_charged_idr, l.late_fee_waived, l.late_fee_invoice_id, l.due_soon_email_sent,
       GREATEST(0, (COALESCE(l.returned_at, CURRENT_DATE) - l.due_date))::int AS days_overdue
     FROM library_loans l
     JOIN library_items li ON li.id = l.item_id
@@ -242,7 +245,7 @@ export async function getAllLoans(): Promise<LibraryLoanRow[]> {
   const rows = (await sql`
     SELECT l.id, l.item_id, li.title AS item_title, li.item_type, l.child_id, c.child_full_name,
       l.borrowed_at::text, l.due_date::text, l.returned_at::text,
-      l.late_fee_charged_idr, l.late_fee_waived, l.late_fee_invoice_id,
+      l.late_fee_charged_idr, l.late_fee_waived, l.late_fee_invoice_id, l.due_soon_email_sent,
       GREATEST(0, (COALESCE(l.returned_at, CURRENT_DATE) - l.due_date))::int AS days_overdue
     FROM library_loans l
     JOIN library_items li ON li.id = l.item_id
@@ -362,4 +365,58 @@ export async function getLibraryItems(): Promise<LibraryItemRow[]> {
     FROM library_items li
     ORDER BY li.item_type, li.title
   `) as unknown as LibraryItemRow[];
+}
+
+interface LoanReminderRow {
+  id: number;
+  item_title: string;
+  child_full_name: string;
+  due_date: string;
+  returned_at: string | null;
+  primary_contact_email: string | null;
+}
+
+/** Loans exactly one day from their due date, still out, and not already reminded — the daily
+ * cron's worklist (see /api/cron/library-due-reminders). Excludes anything without an email on
+ * file rather than letting sendDueSoonReminderForLoan fail on each one individually. */
+export async function getLoansDueTomorrow(): Promise<LoanReminderRow[]> {
+  return (await sql`
+    SELECT l.id, li.title AS item_title, c.child_full_name, l.due_date::text, l.returned_at::text, c.primary_contact_email
+    FROM library_loans l
+    JOIN library_items li ON li.id = l.item_id
+    JOIN children c ON c.id = l.child_id
+    WHERE l.returned_at IS NULL AND l.due_soon_email_sent = false
+      AND l.due_date = CURRENT_DATE + 1 AND c.primary_contact_email IS NOT NULL
+  `) as unknown as LoanReminderRow[];
+}
+
+export class DueSoonReminderError extends Error {}
+
+/** Sends the "due back tomorrow" reminder for one loan and marks it sent — called once per loan
+ * by the daily cron, and directly by the admin's manual "Send reminder" button (which isn't
+ * limited to loans due tomorrow, or blocked by due_soon_email_sent, since a manual resend should
+ * always be possible). Shared here so both call sites stay in sync rather than duplicating the
+ * lookup + send + mark-sent sequence. */
+export async function sendDueSoonReminderForLoan(loanId: number): Promise<void> {
+  const rows = (await sql`
+    SELECT l.id, li.title AS item_title, c.child_full_name, l.due_date::text, l.returned_at::text, c.primary_contact_email
+    FROM library_loans l
+    JOIN library_items li ON li.id = l.item_id
+    JOIN children c ON c.id = l.child_id
+    WHERE l.id = ${loanId}
+  `) as unknown as LoanReminderRow[];
+  const loan = rows[0];
+  if (!loan) throw new DueSoonReminderError('Loan not found.');
+  if (loan.returned_at) throw new DueSoonReminderError('This item has already been returned.');
+  if (!loan.primary_contact_email) throw new DueSoonReminderError('No email on file for this family.');
+
+  const sent = await sendLibraryDueSoonEmail({
+    toEmail: loan.primary_contact_email,
+    childFullName: loan.child_full_name,
+    itemTitle: loan.item_title,
+    dueDateLabel: formatDate(loan.due_date),
+  });
+  if (!sent) throw new DueSoonReminderError('The email could not be sent.');
+
+  await sql`UPDATE library_loans SET due_soon_email_sent = true WHERE id = ${loanId}`;
 }
