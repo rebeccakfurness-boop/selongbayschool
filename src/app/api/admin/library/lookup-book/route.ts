@@ -109,7 +109,11 @@ interface GoogleBooksVolume {
 async function lookupGoogleBooks(query: string, byIsbn: boolean): Promise<LookupResult | null> {
   const searchTerm = byIsbn ? `isbn:${normalizeIsbn(query)}` : `intitle:${query}`;
   const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
-  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchTerm)}&maxResults=1${apiKey ? `&key=${apiKey}` : ''}`;
+  // Without a country, Google's Books API sometimes can't geolocate a server-to-server request
+  // and returns a 403 ("Cannot determine user location for geographically restricted operation")
+  // instead of results -- passing the school's own country sidesteps that entirely rather than
+  // relying on IP geolocation that a serverless function's outbound IP won't reliably supply.
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(searchTerm)}&maxResults=1&country=ID${apiKey ? `&key=${apiKey}` : ''}`;
 
   const data = await fetchJson<{ items?: GoogleBooksVolume[] }>(url);
   const info = data?.items?.[0]?.volumeInfo;
