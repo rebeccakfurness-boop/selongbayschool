@@ -22,6 +22,12 @@ export const DUTY_TYPE_LABELS: Record<DutyType, string> = {
   other: 'Other',
 };
 
+/** The whole-school day structure -- Welcome to School, play break, lunch, and CCAs -- as
+ * opposed to non_contact_admin/online_teaching_duty, which are per-teacher arrangements with no
+ * single school-wide time. Drives the Grand Roster section of "My Roster" (every staff member's
+ * view of the common daily structure, not just their own duties). */
+export const SCHOOL_WIDE_DUTY_TYPES: DutyType[] = ['welcome_to_school', 'break_duty', 'lunch_duty', 'cca_supervision'];
+
 export interface DutyPreset {
   dutyType: DutyType;
   label: string;
@@ -60,6 +66,22 @@ export async function getDutyRosterAll(): Promise<DutyRosterRow[]> {
            d.duty_type, d.day_of_week, d.start_time, d.end_time, d.label, d.location
     FROM duty_roster d
     JOIN admin_users a ON a.id = d.admin_user_id
+    ORDER BY d.day_of_week, d.start_time
+  `;
+  return rows as unknown as DutyRosterRow[];
+}
+
+/** The Grand Roster data -- every whole-school block (see SCHOOL_WIDE_DUTY_TYPES) across every
+ * staff member, for any staff member to view (not admin-only like getDutyRosterAll's caller-side
+ * usage on the admin editor page; this one's read by the "My Roster" page every staff member can
+ * open). */
+export async function getSchoolWideDutyRoster(): Promise<DutyRosterRow[]> {
+  const rows = await sql`
+    SELECT d.id, d.admin_user_id, COALESCE(a.display_name, a.email) AS staff_label,
+           d.duty_type, d.day_of_week, d.start_time, d.end_time, d.label, d.location
+    FROM duty_roster d
+    JOIN admin_users a ON a.id = d.admin_user_id
+    WHERE d.duty_type = ANY(${SCHOOL_WIDE_DUTY_TYPES})
     ORDER BY d.day_of_week, d.start_time
   `;
   return rows as unknown as DutyRosterRow[];

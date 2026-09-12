@@ -33,6 +33,15 @@ export const WEEKLY_SCHEDULE_CLASSES = [
   'Secondary 9',
 ] as const;
 
+/** The three areas "My Roster" groups WEEKLY_SCHEDULE_CLASSES into for its area rosters --
+ * Kindergarten is "Early Years" under its usual school-facing name (the class_name itself stays
+ * "Early Years" everywhere else; this is purely a display grouping). */
+export const SCHOOL_AREAS: { label: string; classes: (typeof WEEKLY_SCHEDULE_CLASSES)[number][] }[] = [
+  { label: 'Kindergarten', classes: ['Early Years'] },
+  { label: 'Primary', classes: ['Primary 1', 'Primary 2', 'Primary 3', 'Primary 4', 'Primary 5', 'Primary 6'] },
+  { label: 'Secondary', classes: ['Secondary 7', 'Secondary 8', 'Secondary 9'] },
+];
+
 /** One row of a seed timetable (see class-schedule-seed.ts) — no id/class_name, since those are
  * supplied by whatever is importing it (class_name is the seed data's object key). */
 export interface ClassScheduleSeedEntry {
