@@ -23,6 +23,10 @@ export interface OnlineLearningExtras {
   answersApiBase: string;
   worksheetApiBase: string;
   translateApiBase: string;
+  /** Blob upload token route -- defaults to the student one; the parent portal passes its own
+   * child-scoped equivalent so a parent acting on behalf of their child uploads under the same
+   * ownership check as everything else in /account. */
+  uploadEndpoint?: string;
 }
 
 function youtubeEmbedUrl(url: string): string | null {
@@ -144,6 +148,7 @@ function ClassicLessonFlow({
   const openResponseProps = onlineExtras
     ? {
         childId: onlineExtras.childId,
+        uploadEndpoint: onlineExtras.uploadEndpoint,
         existingAnswers,
         onSubmit: async (quizQuestionId: number, answer: { answerText: string | null; answerAudioUrl: string | null }) => {
           const res = await fetch(onlineExtras.answersApiBase, {
@@ -277,6 +282,7 @@ function ClassicLessonFlow({
         lesson={lesson}
         childId={onlineExtras.childId}
         worksheetApiBase={onlineExtras.worksheetApiBase}
+        uploadEndpoint={onlineExtras.uploadEndpoint}
         worksheetSubmitted={worksheetSubmitted}
         worksheetGrade={worksheetGrade}
         onBack={() => setView('hub')}
@@ -757,6 +763,7 @@ function WorksheetSubmitStep({
   lesson,
   childId,
   worksheetApiBase,
+  uploadEndpoint,
   worksheetSubmitted,
   worksheetGrade,
   onBack,
@@ -765,6 +772,7 @@ function WorksheetSubmitStep({
   lesson: CurriculumLesson;
   childId: number;
   worksheetApiBase: string;
+  uploadEndpoint?: string;
   worksheetSubmitted: boolean;
   worksheetGrade: { grade: string | null; comments: string | null } | null;
   onBack: () => void;
@@ -783,7 +791,7 @@ function WorksheetSubmitStep({
     try {
       const result = await upload(`children/${childId}/lesson-worksheets/${lesson.id}/${file.name}`, file, {
         access: 'public',
-        handleUploadUrl: '/api/student/upload',
+        handleUploadUrl: uploadEndpoint || '/api/student/upload',
       });
       setFileUrl(result.url);
     } catch (err) {

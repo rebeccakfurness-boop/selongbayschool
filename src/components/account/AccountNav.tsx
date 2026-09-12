@@ -3,6 +3,7 @@ import LogoutButton from '@/components/account/LogoutButton';
 
 const LINKS = [
   { href: '/account/learning', label: 'My Children' },
+  { href: '/account/online-learning', label: 'Online Learning' },
   { href: '/account/attendance', label: 'Attendance' },
   { href: '/account/bookings', label: 'My Bookings' },
   { href: '/account/library', label: 'Library' },

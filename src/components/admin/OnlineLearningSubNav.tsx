@@ -2,6 +2,7 @@ import Link from 'next/link';
 
 const TABS = [
   { href: '/admin/online-learning', label: 'Overview' },
+  { href: '/admin/online-learning/students', label: 'Online Students' },
   { href: '/admin/online-learning/answers', label: 'Answers to Review' },
   { href: '/admin/online-learning/worksheets', label: 'Worksheets to Mark' },
 ];

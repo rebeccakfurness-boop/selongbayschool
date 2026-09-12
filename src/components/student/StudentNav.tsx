@@ -9,11 +9,16 @@ const LINKS = [
 
 /** On login, students land directly on their schedule (/student) per the spec -- but Work
  * Samples, Resources, and Classroom assignments stay reachable from here rather than being
- * removed, so this nav is the "simple navigation" that keeps them one click away. */
-export default function StudentNav({ active }: { active: string }) {
+ * removed, so this nav is the "simple navigation" that keeps them one click away.
+ *
+ * showOnlineLearning is passed by every page individually (from that page's own children row)
+ * rather than this component fetching it itself, since it has no data access of its own -- only
+ * shown once a teacher has turned online learning on for this specific student. */
+export default function StudentNav({ active, showOnlineLearning = false }: { active: string; showOnlineLearning?: boolean }) {
+  const links = showOnlineLearning ? [...LINKS, { href: '/student/online-learning', label: 'Online Learning' }] : LINKS;
   return (
     <div className="mt-6 flex flex-wrap items-center gap-4 border-b border-sand-line pb-3">
-      {LINKS.map((l) => (
+      {links.map((l) => (
         <Link
           key={l.href}
           href={l.href}

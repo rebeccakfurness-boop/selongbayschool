@@ -25,8 +25,14 @@ export default async function StudentHomePage() {
   const session = await getIronSession<StudentSessionData>(await cookies(), await getStudentSessionOptions());
 
   const [child] = (await sql`
-    SELECT child_full_name, child_nickname, class_name, schedule_type FROM children WHERE id = ${session.childId}
-  `) as unknown as { child_full_name: string; child_nickname: string | null; class_name: string | null; schedule_type: ScheduleType | null }[];
+    SELECT child_full_name, child_nickname, class_name, schedule_type, online_learning_enabled FROM children WHERE id = ${session.childId}
+  `) as unknown as {
+    child_full_name: string;
+    child_nickname: string | null;
+    class_name: string | null;
+    schedule_type: ScheduleType | null;
+    online_learning_enabled: boolean;
+  }[];
 
   const from = todayStr();
   // Wide enough for a few weeks of Prev/Next navigation on the timetable grid, not just "this
@@ -44,7 +50,7 @@ export default async function StudentHomePage() {
           </h1>
         </div>
 
-        <StudentNav active="/student" />
+        <StudentNav active="/student" showOnlineLearning={child?.online_learning_enabled ?? false} />
 
         <div className="mt-6">
           <OccurrenceScheduleBoard

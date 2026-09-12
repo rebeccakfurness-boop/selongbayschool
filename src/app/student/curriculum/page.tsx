@@ -2,7 +2,8 @@ import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
 import { ensureSchema, sql } from '@/lib/db';
 import { getStudentSessionOptions, type StudentSessionData } from '@/lib/auth';
-import { getCurriculumTermsForClass, getCurriculumTermTree, getProgressMapForChild } from '@/lib/curriculum';
+import { getCurriculumTermsForClass, getCurriculumTermTree, getProgressMapForChild, type CurriculumTerm } from '@/lib/curriculum';
+import { getChildOnlineProgrammeTerms } from '@/lib/online-learning';
 import StudentNav from '@/components/student/StudentNav';
 import StudentCurriculumSection from '@/components/student/StudentCurriculumSection';
 
@@ -13,10 +14,17 @@ export default async function StudentCurriculumPage() {
   const session = await getIronSession<StudentSessionData>(await cookies(), await getStudentSessionOptions());
 
   const [child] = (await sql`
-    SELECT child_full_name, child_nickname, class_name FROM children WHERE id = ${session.childId}
-  `) as unknown as { child_full_name: string; child_nickname: string | null; class_name: string | null }[];
+    SELECT child_full_name, child_nickname, class_name, online_learning_enabled FROM children WHERE id = ${session.childId}
+  `) as unknown as { child_full_name: string; child_nickname: string | null; class_name: string | null; online_learning_enabled: boolean }[];
 
-  const terms = await getCurriculumTermsForClass(child?.class_name ?? null);
+  const [classTerms, onlineTerms] = await Promise.all([
+    getCurriculumTermsForClass(child?.class_name ?? null),
+    session.childId ? getChildOnlineProgrammeTerms(session.childId) : Promise.resolve([]),
+  ]);
+  // A student individually assigned an online programme sees it here too, alongside their class's
+  // own curriculum -- deduped by id in case a teacher assigned the exact same term their class
+  // already has (e.g. to make it explicitly self-directed).
+  const terms: CurriculumTerm[] = [...classTerms, ...onlineTerms.filter((t) => !classTerms.some((c) => c.id === t.id))];
   const [initialTerm, progressMap] =
     terms.length > 0 && session.childId
       ? await Promise.all([getCurriculumTermTree(terms[0].id), getProgressMapForChild(session.childId)])
@@ -32,7 +40,7 @@ export default async function StudentCurriculumPage() {
           </h1>
         </div>
 
-        <StudentNav active="/student/curriculum" />
+        <StudentNav active="/student/curriculum" showOnlineLearning={child?.online_learning_enabled ?? false} />
 
         <div className="mt-6">
           <StudentCurriculumSection terms={terms} initialTerm={initialTerm} initialProgress={[...progressMap.entries()]} />

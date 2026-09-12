@@ -11,7 +11,9 @@ import { guardianOwnsChild } from '@/lib/lms-data';
  * onBeforeGenerateToken so a client can't point the same authorized request at a different child's
  * folder. ?kind=avatar restricts to images and a smaller size cap (it's just a profile photo);
  * ?kind=document (passport/KITAS/birth certificate) allows PDFs too, matching the admin route's
- * allowance for scanned documents. */
+ * allowance for scanned documents. ?kind=lesson matches /api/student/upload's own allowance
+ * (images, PDF, audio) -- a parent completing the self-directed online flow alongside/on behalf of
+ * their child uploads worksheets and voice answers the same way a student does. */
 export async function POST(req: NextRequest, { params }: { params: Promise<{ childId: string }> }): Promise<NextResponse> {
   const session = await getIronSession<CustomerSessionData>(await cookies(), await getCustomerSessionOptions());
   if (!session.customerId) {
@@ -29,7 +31,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ chi
     return NextResponse.json({ error: 'Not authorized to upload files for this child.' }, { status: 403 });
   }
 
-  const kind = req.nextUrl.searchParams.get('kind') === 'document' ? 'document' : 'avatar';
+  const kindParam = req.nextUrl.searchParams.get('kind');
+  const kind = kindParam === 'document' ? 'document' : kindParam === 'lesson' ? 'lesson' : 'avatar';
   const pathPrefix = `children/${childId}/`;
 
   const body = (await req.json()) as HandleUploadBody;
@@ -41,6 +44,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ chi
       onBeforeGenerateToken: async (pathname) => {
         if (!pathname.startsWith(pathPrefix)) {
           throw new Error('Upload path not allowed.');
+        }
+        if (kind === 'lesson') {
+          return {
+            allowedContentTypes: ['image/jpeg', 'image/png', 'image/webp', 'application/pdf', 'audio/webm', 'audio/mp4', 'audio/mpeg', 'audio/ogg'],
+            maximumSizeInBytes: 15 * 1024 * 1024,
+            addRandomSuffix: true,
+          };
         }
         return kind === 'document'
           ? { allowedContentTypes: ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'], maximumSizeInBytes: 15 * 1024 * 1024, addRandomSuffix: true }

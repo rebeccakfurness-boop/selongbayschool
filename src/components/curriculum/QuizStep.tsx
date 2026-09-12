@@ -21,6 +21,9 @@ export interface ExistingAnswer {
  * behalf. */
 export interface OpenResponseSubmission {
   childId: number;
+  /** Blob upload token route for a recorded voice answer -- defaults to the student one; see
+   * OnlineLearningExtras.uploadEndpoint. */
+  uploadEndpoint?: string;
   existingAnswers: ExistingAnswer[];
   onSubmit: (quizQuestionId: number, answer: { answerText: string | null; answerAudioUrl: string | null }) => Promise<void>;
 }
@@ -254,7 +257,11 @@ function OpenResponseQuestion({
               placeholder="Type your answer here…"
               className="w-full rounded-md border-2 border-sand-line bg-white p-4 text-sm text-ink placeholder:text-ink-soft/50"
             />
-            <VoiceRecorder pathPrefix={`children/${openResponse.childId}/lesson-answers/${question.id}`} onRecorded={setAudioUrl} />
+            <VoiceRecorder
+              pathPrefix={`children/${openResponse.childId}/lesson-answers/${question.id}`}
+              uploadEndpoint={openResponse.uploadEndpoint}
+              onRecorded={setAudioUrl}
+            />
             {existing?.grade && (
               <div className="rounded-md border border-teal/40 bg-teal/10 p-3 text-sm">
                 <p className="font-bold text-teal-deep">Marked: {existing.grade}</p>

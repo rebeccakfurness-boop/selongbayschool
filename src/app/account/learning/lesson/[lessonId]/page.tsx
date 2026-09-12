@@ -48,6 +48,13 @@ export default async function ParentLessonOnlinePage({
         initialProgress={progress}
         apiBase={`/api/account/curriculum/lessons/${lessonId}/online?childId=${childId}`}
         backHref={`/account/learning#child-${childId}`}
+        onlineExtras={{
+          childId,
+          answersApiBase: `/api/account/curriculum/lessons/${lessonId}/answers?childId=${childId}`,
+          worksheetApiBase: `/api/account/curriculum/lessons/${lessonId}/worksheet?childId=${childId}`,
+          translateApiBase: `/api/account/curriculum/lessons/${lessonId}/translate?childId=${childId}`,
+          uploadEndpoint: `/api/account/children/${childId}/upload?kind=lesson`,
+        }}
       />
     </div>
   );

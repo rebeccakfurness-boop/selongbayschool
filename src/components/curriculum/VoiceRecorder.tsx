@@ -10,9 +10,11 @@ import { upload } from '@vercel/blob/client';
  * previous attempt mid-upload. */
 export default function VoiceRecorder({
   pathPrefix,
+  uploadEndpoint,
   onRecorded,
 }: {
   pathPrefix: string;
+  uploadEndpoint?: string;
   onRecorded: (audioUrl: string) => void;
 }) {
   const [recording, setRecording] = useState(false);
@@ -40,7 +42,7 @@ export default function VoiceRecorder({
           const ext = (recorder.mimeType || 'audio/webm').includes('mp4') ? 'm4a' : 'webm';
           const result = await upload(`${pathPrefix}/answer-${Date.now()}.${ext}`, blob, {
             access: 'public',
-            handleUploadUrl: '/api/student/upload',
+            handleUploadUrl: uploadEndpoint || '/api/student/upload',
           });
           onRecorded(result.url);
         } catch (err) {

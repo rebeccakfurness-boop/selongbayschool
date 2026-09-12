@@ -22,8 +22,14 @@ export default async function StudentLearningPage() {
   const session = await getIronSession<StudentSessionData>(await cookies(), await getStudentSessionOptions());
 
   const [child] = (await sql`
-    SELECT child_full_name, child_nickname, class_name, class_band FROM children WHERE id = ${session.childId}
-  `) as unknown as { child_full_name: string; child_nickname: string | null; class_name: string | null; class_band: ClassBand | null }[];
+    SELECT child_full_name, child_nickname, class_name, class_band, online_learning_enabled FROM children WHERE id = ${session.childId}
+  `) as unknown as {
+    child_full_name: string;
+    child_nickname: string | null;
+    class_name: string | null;
+    class_band: ClassBand | null;
+    online_learning_enabled: boolean;
+  }[];
 
   const [lessons, workSamples, resources, classroomAssignments, classroomSubmissions] = await Promise.all([
     getUpcomingLessonPlans(child?.class_name ?? null, 5),
@@ -44,7 +50,7 @@ export default async function StudentLearningPage() {
           </h1>
         </div>
 
-        <StudentNav active="/student/learning" />
+        <StudentNav active="/student/learning" showOnlineLearning={child?.online_learning_enabled ?? false} />
 
         <div className="mt-6 flex flex-col gap-6">
           {classroomAssignments.length > 0 && (

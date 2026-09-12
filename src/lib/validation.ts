@@ -228,8 +228,24 @@ export const updateChildSchema = z.object({
   photoUrl: optionalStr,
   classroomStudentEmail: optionalStr,
   enrollmentType: z.enum(['regular', 'activities_only']).optional(),
+  onlineLearningEnabled: z.boolean().optional(),
 });
 export type UpdateChildInput = z.infer<typeof updateChildSchema>;
+
+export const dayOfWeekEnum = z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
+
+const timeOfDay = z.string().trim().regex(/^\d{2}:\d{2}(:\d{2})?$/, 'Use HH:MM');
+
+export const addOnlineScheduleSlotSchema = z
+  .object({
+    curriculumTermId: z.coerce.number().int().positive(),
+    dayOfWeek: dayOfWeekEnum,
+    startTime: timeOfDay,
+    endTime: timeOfDay,
+    label: optionalStr,
+  })
+  .refine((d) => d.endTime > d.startTime, { message: 'End time must be after start time.' });
+export type AddOnlineScheduleSlotInput = z.infer<typeof addOnlineScheduleSlotSchema>;
 
 /** status/isActive are here (creation) and in updateChildStatusSchema (drag) but nowhere in
  * updateChildSchema (the general edit-form save) — a brand-new record needs a starting status,

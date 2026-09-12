@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 34;
+const SCHEMA_VERSION = 35;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2220,6 +2220,44 @@ export function ensureSchema(): Promise<void> {
           UNIQUE (lesson_id, language)
         )
       `;
+
+      // --- Online Learning as its own enrolment type: a teacher/admin flips this on for one
+      // student (not a whole class), then assigns that student an individual programme
+      // (curriculum_terms, which may not even match their class_name -- e.g. working ahead or on a
+      // different subject entirely) and a weekly timetable of when to do it. Deliberately NOT
+      // built on class_schedule/schedule_session_occurrences: those are whole-class, dated, and
+      // resolve to a real_plan/lesson_plans row, whereas an online slot is per-child, a recurring
+      // weekly pattern with no dates to generate/sync, and resolves dynamically to "whichever
+      // lesson in this term the child hasn't completed yet" (see getNextLessonForChildTerm) --
+      // reusing the physical schedule's machinery would mean bolting a child_id onto tables and a
+      // cron job built for a completely different resolution target.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS online_learning_enabled BOOLEAN NOT NULL DEFAULT false`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS child_online_programme_terms (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          curriculum_term_id BIGINT NOT NULL REFERENCES curriculum_terms(id) ON DELETE CASCADE,
+          added_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (child_id, curriculum_term_id)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_child_online_programme_terms_child ON child_online_programme_terms (child_id)`;
+
+      // day_of_week as TEXT, matching class_schedule's own convention (see its column comment).
+      await sql`
+        CREATE TABLE IF NOT EXISTS child_online_schedule_slots (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          curriculum_term_id BIGINT NOT NULL REFERENCES curriculum_terms(id) ON DELETE CASCADE,
+          day_of_week TEXT NOT NULL CHECK (day_of_week IN ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')),
+          start_time TIME NOT NULL,
+          end_time TIME NOT NULL,
+          label TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_child_online_schedule_slots_child ON child_online_schedule_slots (child_id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

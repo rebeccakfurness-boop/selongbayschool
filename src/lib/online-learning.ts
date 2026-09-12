@@ -1,4 +1,5 @@
 import { sql } from './db';
+import { getCurriculumTermTree, getProgressMapForChild, flattenLessons, type CurriculumTerm, type CurriculumTermTree, type LessonProgressStatus } from './curriculum';
 
 export interface LessonAnswerSubmission {
   id: number;
@@ -195,4 +196,176 @@ export async function getOnlineLearningOverview(): Promise<OnlineLearningOvervie
     GROUP BY t.class_name, t.subject
     ORDER BY t.class_name, t.subject
   `) as unknown as OnlineLearningOverviewRow[];
+}
+
+// --- Per-student online learning: enable a specific child for self-directed online learning
+// (children.online_learning_enabled), give them their own programme (curriculum_terms they've
+// been assigned individually, independent of class_name) and a weekly timetable of recurring
+// slots -- each slot resolves dynamically to "whichever lesson in that term the child hasn't
+// completed yet," never a fixed lessonId a teacher would have to keep updating by hand. ---
+
+/** For the canAccessClass gate on the admin per-student online-learning routes below. */
+export async function getChildForOnlineLearningAccessCheck(childId: number): Promise<{ class_name: string | null; child_full_name: string } | null> {
+  const rows = (await sql`SELECT class_name, child_full_name FROM children WHERE id = ${childId}`) as unknown as {
+    class_name: string | null;
+    child_full_name: string;
+  }[];
+  return rows[0] ?? null;
+}
+
+export interface OnlineLearningStudentRow {
+  child_id: number;
+  child_full_name: string;
+  class_name: string | null;
+  programme_term_count: number;
+  schedule_slot_count: number;
+}
+
+/** Every online-learning-enabled child, for the admin "Online Students" list -- callers filter by
+ * canAccessClass themselves (same pattern as getAnswersForReview/getLessonWorksheetsForReview's
+ * callers), since class_name can be null here and canAccessClass is a page-level concern. */
+export async function getOnlineLearningStudents(): Promise<OnlineLearningStudentRow[]> {
+  return (await sql`
+    SELECT c.id AS child_id, c.child_full_name, c.class_name,
+      count(DISTINCT pt.id)::int AS programme_term_count,
+      count(DISTINCT sl.id)::int AS schedule_slot_count
+    FROM children c
+    LEFT JOIN child_online_programme_terms pt ON pt.child_id = c.id
+    LEFT JOIN child_online_schedule_slots sl ON sl.child_id = c.id
+    WHERE c.online_learning_enabled = true
+    GROUP BY c.id, c.child_full_name, c.class_name
+    ORDER BY c.child_full_name
+  `) as unknown as OnlineLearningStudentRow[];
+}
+
+/** Same select list as getCurriculumTermsForClass/getAllCurriculumTerms in curriculum.ts -- kept
+ * here rather than there since this join is specific to the per-child assignment table this file
+ * owns. */
+export async function getChildOnlineProgrammeTerms(childId: number): Promise<CurriculumTerm[]> {
+  return (await sql`
+    SELECT t.id, t.class_name, t.subject, t.term_label, t.framework_label, t.exam_board, t.exam_series,
+      t.syllabus_pdf_url, t.workbook_pdf_url, t.source_verified, t.source_note
+    FROM child_online_programme_terms pt
+    JOIN curriculum_terms t ON t.id = pt.curriculum_term_id
+    WHERE pt.child_id = ${childId}
+    ORDER BY t.subject, t.term_label
+  `) as unknown as CurriculumTerm[];
+}
+
+export async function assignChildOnlineTerm(childId: number, termId: number): Promise<void> {
+  await sql`
+    INSERT INTO child_online_programme_terms (child_id, curriculum_term_id)
+    VALUES (${childId}, ${termId})
+    ON CONFLICT (child_id, curriculum_term_id) DO NOTHING
+  `;
+}
+
+/** Also removes any weekly schedule slots pointing at this term for this child -- a slot for a
+ * programme that's no longer assigned would otherwise keep resolving to a lesson the student was
+ * never (or no longer) actually given (curriculum_term_id is a direct FK to curriculum_terms, not
+ * routed through this assignment table, so it wouldn't be cleaned up on its own). */
+export async function removeChildOnlineTerm(childId: number, termId: number): Promise<void> {
+  await sql`DELETE FROM child_online_schedule_slots WHERE child_id = ${childId} AND curriculum_term_id = ${termId}`;
+  await sql`DELETE FROM child_online_programme_terms WHERE child_id = ${childId} AND curriculum_term_id = ${termId}`;
+}
+
+export interface ChildOnlineScheduleSlot {
+  id: number;
+  child_id: number;
+  curriculum_term_id: number;
+  subject: string;
+  term_label: string;
+  day_of_week: string;
+  start_time: string;
+  end_time: string;
+  label: string | null;
+}
+
+export async function getChildOnlineScheduleSlots(childId: number): Promise<ChildOnlineScheduleSlot[]> {
+  return (await sql`
+    SELECT s.id, s.child_id, s.curriculum_term_id, t.subject, t.term_label,
+      s.day_of_week, s.start_time::text, s.end_time::text, s.label
+    FROM child_online_schedule_slots s
+    JOIN curriculum_terms t ON t.id = s.curriculum_term_id
+    WHERE s.child_id = ${childId}
+    ORDER BY
+      CASE s.day_of_week
+        WHEN 'monday' THEN 1 WHEN 'tuesday' THEN 2 WHEN 'wednesday' THEN 3
+        WHEN 'thursday' THEN 4 WHEN 'friday' THEN 5 WHEN 'saturday' THEN 6 ELSE 7
+      END,
+      s.start_time
+  `) as unknown as ChildOnlineScheduleSlot[];
+}
+
+export async function addChildOnlineScheduleSlot(
+  childId: number,
+  slot: { curriculumTermId: number; dayOfWeek: string; startTime: string; endTime: string; label: string | null }
+): Promise<number> {
+  const rows = (await sql`
+    INSERT INTO child_online_schedule_slots (child_id, curriculum_term_id, day_of_week, start_time, end_time, label)
+    VALUES (${childId}, ${slot.curriculumTermId}, ${slot.dayOfWeek}, ${slot.startTime}, ${slot.endTime}, ${slot.label})
+    RETURNING id
+  `) as unknown as { id: number }[];
+  return rows[0].id;
+}
+
+export async function deleteChildOnlineScheduleSlot(slotId: number): Promise<void> {
+  await sql`DELETE FROM child_online_schedule_slots WHERE id = ${slotId}`;
+}
+
+/** For the canAccessClass gate on the admin schedule-management routes. */
+export async function getChildIdForOnlineScheduleSlot(slotId: number): Promise<number | null> {
+  const rows = (await sql`SELECT child_id FROM child_online_schedule_slots WHERE id = ${slotId}`) as unknown as { child_id: number }[];
+  return rows[0]?.child_id ?? null;
+}
+
+export interface NextLessonResolution {
+  lessonId: number;
+  lessonTitle: string;
+  unitTitle: string;
+  /** True once every lesson in the term is marked completed -- lessonId/lessonTitle still point at
+   * the last lesson in that case, so a "revisit" link always has somewhere sensible to go. */
+  allCompleted: boolean;
+}
+
+function resolveNextLesson(term: CurriculumTermTree, progress: Map<number, LessonProgressStatus>): NextLessonResolution | null {
+  const lessons = flattenLessons(term);
+  if (lessons.length === 0) return null;
+  const next = lessons.find((l) => (progress.get(l.id) ?? 'not_started') !== 'completed') ?? lessons[lessons.length - 1];
+  const unit = term.units.find((u) => u.id === next.unit_id);
+  return {
+    lessonId: next.id,
+    lessonTitle: next.title,
+    unitTitle: unit?.title ?? '',
+    allCompleted: lessons.every((l) => (progress.get(l.id) ?? 'not_started') === 'completed'),
+  };
+}
+
+/** "Whichever lesson in this term the child hasn't completed yet" -- what an online schedule slot
+ * resolves to when clicked, so a teacher never has to hand-update a fixed lessonId as the child
+ * progresses. Returns null only if the term has no published lessons at all. */
+export async function getNextLessonForChildTerm(childId: number, termId: number): Promise<NextLessonResolution | null> {
+  const term = await getCurriculumTermTree(termId);
+  if (!term) return null;
+  const progress = await getProgressMapForChild(childId);
+  return resolveNextLesson(term, progress);
+}
+
+export interface ChildOnlineScheduleSlotWithLesson extends ChildOnlineScheduleSlot {
+  nextLesson: NextLessonResolution | null;
+}
+
+/** Batches getNextLessonForChildTerm across every one of a child's slots -- one progress-map fetch
+ * and one term-tree fetch per distinct term (not per slot), for the schedule board both the
+ * student and parent portals render. */
+export async function getChildOnlineScheduleWithNextLessons(childId: number): Promise<ChildOnlineScheduleSlotWithLesson[]> {
+  const slots = await getChildOnlineScheduleSlots(childId);
+  if (slots.length === 0) return [];
+  const termIds = [...new Set(slots.map((s) => s.curriculum_term_id))];
+  const [progress, trees] = await Promise.all([getProgressMapForChild(childId), Promise.all(termIds.map((id) => getCurriculumTermTree(id)))]);
+  const treeByTermId = new Map(termIds.map((id, i) => [id, trees[i]]));
+  return slots.map((s) => {
+    const term = treeByTermId.get(s.curriculum_term_id);
+    return { ...s, nextLesson: term ? resolveNextLesson(term, progress) : null };
+  });
 }

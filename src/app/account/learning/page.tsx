@@ -40,6 +40,7 @@ import {
   type CurriculumTermTree,
   type LessonProgressStatus,
 } from '@/lib/curriculum';
+import { getChildOnlineProgrammeTerms } from '@/lib/online-learning';
 import { formatIDR } from '@/lib/site-content';
 import { formatDate } from '@/lib/admin-format';
 import AccountNav from '@/components/account/AccountNav';
@@ -137,12 +138,17 @@ export default async function ParentLearningPage() {
           customerId ? getNotificationPref(customerId, child.id) : Promise.resolve(false),
           getCurriculumTermsForClass(child.class_name),
         ]);
-        const [initialCurriculumTerm, progressMap] = curriculumTerms.length > 0
-          ? await Promise.all([getCurriculumTermTree(curriculumTerms[0].id), getProgressMapForChild(child.id)])
+        // A child individually assigned an online programme (see /account/online-learning) sees
+        // it here too, alongside their class's own curriculum -- deduped by id.
+        const onlineTerms = await getChildOnlineProgrammeTerms(child.id);
+        const mergedCurriculumTerms = [...curriculumTerms, ...onlineTerms.filter((t) => !curriculumTerms.some((c) => c.id === t.id))];
+        const [initialCurriculumTerm, progressMap] = mergedCurriculumTerms.length > 0
+          ? await Promise.all([getCurriculumTermTree(mergedCurriculumTerms[0].id), getProgressMapForChild(child.id)])
           : [null, new Map<number, LessonProgressStatus>()];
         return {
           child, unit, lessons, workSamples, photos, resources, profiles, invoices, classroomAssignments,
-          classroomSubmissions, lunchOrders, occurrences, gradebook, complianceStatus, notificationsEnabled, curriculumTerms,
+          classroomSubmissions, lunchOrders, occurrences, gradebook, complianceStatus, notificationsEnabled,
+          curriculumTerms: mergedCurriculumTerms,
           initialCurriculumTerm, initialCurriculumProgress: [...progressMap.entries()],
         };
       })
