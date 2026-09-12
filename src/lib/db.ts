@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 31;
+const SCHEMA_VERSION = 32;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2102,6 +2102,31 @@ export function ensureSchema(): Promise<void> {
       // sendDueSoonReminderForLoan in library.ts. Stops the cron re-sending the same reminder every
       // day an overdue item stays out; a manual resend is still always allowed regardless of this.
       await sql`ALTER TABLE library_loans ADD COLUMN IF NOT EXISTS due_soon_email_sent BOOLEAN NOT NULL DEFAULT false`;
+
+      // A parent-initiated hold on a catalogue item — see createLibraryReservation in
+      // library.ts. 'pending_pickup' means a copy is being held for them at the desk right now;
+      // 'waitlisted' means every copy is currently out or already held, and this is queued behind
+      // any earlier waitlisted reservations for the same item (ordered by requested_at). Promoted
+      // from waitlisted -> pending_pickup automatically (promoteNextWaitlisted) whenever a copy
+      // frees up -- an item gets returned, or another reservation for it is cancelled.
+      // fulfilled_loan_id links to the real library_loans row created when the item is actually
+      // handed over (fulfillLibraryReservation), at which point this reservation is done, not
+      // reclaimed by anything else.
+      await sql`
+        CREATE TABLE IF NOT EXISTS library_reservations (
+          id BIGSERIAL PRIMARY KEY,
+          item_id BIGINT NOT NULL REFERENCES library_items(id) ON DELETE CASCADE,
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          customer_id BIGINT NOT NULL REFERENCES customers(id),
+          status TEXT NOT NULL DEFAULT 'waitlisted' CHECK (status IN ('pending_pickup', 'waitlisted', 'fulfilled', 'cancelled')),
+          requested_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          ready_at TIMESTAMPTZ,
+          fulfilled_loan_id BIGINT REFERENCES library_loans(id),
+          cancelled_at TIMESTAMPTZ
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_library_reservations_item ON library_reservations (item_id)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_library_reservations_customer ON library_reservations (customer_id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

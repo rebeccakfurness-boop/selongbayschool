@@ -48,7 +48,7 @@ export default async function AdminLibraryCataloguePage() {
           </thead>
           <tbody>
             {items.map((item) => {
-              const available = item.copies_out < item.total_copies;
+              const available = item.available_copies > 0;
               return (
                 <tr key={item.id} className="border-b border-sand-line/60 last:border-0 align-top">
                   <td className="px-4 py-3">
@@ -62,7 +62,8 @@ export default async function AdminLibraryCataloguePage() {
                   <td className="whitespace-nowrap px-4 py-3 text-ink-soft">{ITEM_TYPE_LABELS[item.item_type]}</td>
                   <td className="px-4 py-3 text-ink-soft">{item.category || '—'}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-ink-soft">
-                    {item.total_copies - item.copies_out} / {item.total_copies} available
+                    {item.available_copies} / {item.total_copies} available
+                    {item.copies_held > 0 && <div className="text-xs">({item.copies_held} held for pickup)</div>}
                   </td>
                   <td className="whitespace-nowrap px-4 py-3">
                     <span

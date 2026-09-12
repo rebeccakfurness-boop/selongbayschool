@@ -1,6 +1,6 @@
 import { sql } from './db';
 import { formatDate } from './admin-format';
-import { sendLibraryDueSoonEmail } from './email';
+import { sendLibraryDueSoonEmail, sendLibraryReservationReadyEmail } from './email';
 
 export interface LibrarySettings {
   monthly_membership_fee_idr: number;
@@ -278,12 +278,13 @@ export async function returnLibraryLoan(loanId: number): Promise<void> {
   const settings = await getLibrarySettings();
   const rows = (await sql`
     UPDATE library_loans SET returned_at = CURRENT_DATE WHERE id = ${loanId} AND returned_at IS NULL
-    RETURNING due_date::text, (CURRENT_DATE - due_date)::int AS days_late
-  `) as unknown as { due_date: string; days_late: number }[];
+    RETURNING item_id, due_date::text, (CURRENT_DATE - due_date)::int AS days_late
+  `) as unknown as { item_id: number; due_date: string; days_late: number }[];
   const row = rows[0];
   if (!row) return;
   const fee = calculateLateFee(row.days_late, settings);
   await sql`UPDATE library_loans SET late_fee_charged_idr = ${fee} WHERE id = ${loanId}`;
+  await promoteNextWaitlisted(row.item_id);
 }
 
 export async function waiveLateFee(loanId: number): Promise<void> {
@@ -355,16 +356,56 @@ export interface LibraryItemRow {
   total_copies: number;
   is_active: boolean;
   copies_out: number;
+  copies_held: number;
+  available_copies: number;
 }
 
+/** copies_held counts 'pending_pickup' reservations -- a copy someone's already been told is
+ * ready for them at the desk is not available for anyone else to check out or reserve, even
+ * though it hasn't been handed over yet (see createLibraryReservation/fulfillLibraryReservation).
+ * available_copies is what every checkout/reserve decision should gate on, never total_copies or
+ * copies_out alone. */
 export async function getLibraryItems(): Promise<LibraryItemRow[]> {
   return (await sql`
-    SELECT li.*, COALESCE((
-      SELECT count(*) FROM library_loans l WHERE l.item_id = li.id AND l.returned_at IS NULL
-    ), 0)::int AS copies_out
+    SELECT li.*,
+      COALESCE((SELECT count(*) FROM library_loans l WHERE l.item_id = li.id AND l.returned_at IS NULL), 0)::int AS copies_out,
+      COALESCE((SELECT count(*) FROM library_reservations r WHERE r.item_id = li.id AND r.status = 'pending_pickup'), 0)::int AS copies_held,
+      (li.total_copies
+        - COALESCE((SELECT count(*) FROM library_loans l WHERE l.item_id = li.id AND l.returned_at IS NULL), 0)
+        - COALESCE((SELECT count(*) FROM library_reservations r WHERE r.item_id = li.id AND r.status = 'pending_pickup'), 0)
+      )::int AS available_copies
     FROM library_items li
     ORDER BY li.item_type, li.title
   `) as unknown as LibraryItemRow[];
+}
+
+/** Same shape as getLibraryItems, but only active items with title/author/category included for
+ * the parent-facing catalogue browser (/account/library) -- no item_code/description bloat the
+ * parent doesn't need to search or filter on beyond what's already shown. */
+export interface LibraryBrowseItem {
+  id: number;
+  item_type: 'book' | 'toy' | 'sports_equipment' | 'other';
+  title: string;
+  author: string | null;
+  category: string | null;
+  description: string | null;
+  photo_url: string | null;
+  available_copies: number;
+  waitlist_count: number;
+}
+
+export async function getBrowsableLibraryItems(): Promise<LibraryBrowseItem[]> {
+  return (await sql`
+    SELECT li.id, li.item_type, li.title, li.author, li.category, li.description, li.photo_url,
+      (li.total_copies
+        - COALESCE((SELECT count(*) FROM library_loans l WHERE l.item_id = li.id AND l.returned_at IS NULL), 0)
+        - COALESCE((SELECT count(*) FROM library_reservations r WHERE r.item_id = li.id AND r.status = 'pending_pickup'), 0)
+      )::int AS available_copies,
+      COALESCE((SELECT count(*) FROM library_reservations r WHERE r.item_id = li.id AND r.status = 'waitlisted'), 0)::int AS waitlist_count
+    FROM library_items li
+    WHERE li.is_active = true
+    ORDER BY li.item_type, li.title
+  `) as unknown as LibraryBrowseItem[];
 }
 
 interface LoanReminderRow {
@@ -419,4 +460,201 @@ export async function sendDueSoonReminderForLoan(loanId: number): Promise<void> 
   if (!sent) throw new DueSoonReminderError('The email could not be sent.');
 
   await sql`UPDATE library_loans SET due_soon_email_sent = true WHERE id = ${loanId}`;
+}
+
+export class ReservationError extends Error {}
+
+export interface LibraryReservationRow {
+  id: number;
+  item_id: number;
+  item_title: string;
+  item_type: 'book' | 'toy' | 'sports_equipment' | 'other';
+  child_id: number;
+  child_full_name: string;
+  customer_id: number;
+  status: 'pending_pickup' | 'waitlisted' | 'fulfilled' | 'cancelled';
+  requested_at: string;
+  ready_at: string | null;
+  queue_position: number | null;
+}
+
+/** Whichever waitlisted reservation for this item has been waiting longest gets first claim on a
+ * copy that just freed up (a return, or another hold on the same item being cancelled) -- called
+ * from returnLibraryLoan and both cancel functions below. Loops rather than promoting just one,
+ * since more than one copy can free up at once (e.g. two loans returned together). Best-effort on
+ * the email: a failed send still leaves the reservation correctly promoted, just unannounced. */
+async function promoteNextWaitlisted(itemId: number): Promise<void> {
+  for (;;) {
+    const [item] = (await sql`
+      SELECT total_copies,
+        (SELECT count(*) FROM library_loans l WHERE l.item_id = ${itemId} AND l.returned_at IS NULL) AS copies_out,
+        (SELECT count(*) FROM library_reservations r WHERE r.item_id = ${itemId} AND r.status = 'pending_pickup') AS copies_held
+      FROM library_items WHERE id = ${itemId}
+    `) as unknown as { total_copies: number; copies_out: number; copies_held: number }[];
+    if (!item || item.total_copies - item.copies_out - item.copies_held <= 0) return;
+
+    const rows = (await sql`
+      UPDATE library_reservations SET status = 'pending_pickup', ready_at = now()
+      WHERE id = (
+        SELECT id FROM library_reservations
+        WHERE item_id = ${itemId} AND status = 'waitlisted'
+        ORDER BY requested_at ASC LIMIT 1
+      )
+      RETURNING id, child_id, customer_id
+    `) as unknown as { id: number; child_id: number; customer_id: number }[];
+    const promoted = rows[0];
+    if (!promoted) return;
+
+    try {
+      const [details] = (await sql`
+        SELECT li.title AS item_title, c.child_full_name, cu.email AS customer_email
+        FROM library_items li, children c, customers cu
+        WHERE li.id = ${itemId} AND c.id = ${promoted.child_id} AND cu.id = ${promoted.customer_id}
+      `) as unknown as { item_title: string; child_full_name: string; customer_email: string }[];
+      if (details) {
+        await sendLibraryReservationReadyEmail({
+          toEmail: details.customer_email,
+          childFullName: details.child_full_name,
+          itemTitle: details.item_title,
+        });
+      }
+    } catch (err) {
+      console.error('[library] failed to send reservation-ready email', { reservationId: promoted.id, err });
+    }
+  }
+}
+
+/** Parent-initiated hold from the catalogue browser on /account/library — pending_pickup if a
+ * copy is free right now, otherwise queued onto the waitlist. Requires an active membership
+ * (same rule as borrowing) and refuses a second active hold by the same child on the same item. */
+export async function createLibraryReservation(input: { itemId: number; childId: number; customerId: number }): Promise<LibraryReservationRow> {
+  const membership = await getMembershipForCustomer(input.customerId);
+  if (!membership || membership.status !== 'active') {
+    throw new ReservationError('Join the library first, then you can reserve items.');
+  }
+
+  const [item] = (await sql`SELECT is_active FROM library_items WHERE id = ${input.itemId}`) as unknown as { is_active: boolean }[];
+  if (!item || !item.is_active) throw new ReservationError('This item is no longer available in the catalogue.');
+
+  const existing = await sql`
+    SELECT id FROM library_reservations
+    WHERE item_id = ${input.itemId} AND child_id = ${input.childId} AND status IN ('pending_pickup', 'waitlisted')
+  `;
+  if (existing.length > 0) throw new ReservationError('Already reserved or on the waitlist for this item.');
+
+  const [counts] = (await sql`
+    SELECT
+      (SELECT total_copies FROM library_items WHERE id = ${input.itemId}) AS total_copies,
+      (SELECT count(*) FROM library_loans l WHERE l.item_id = ${input.itemId} AND l.returned_at IS NULL) AS copies_out,
+      (SELECT count(*) FROM library_reservations r WHERE r.item_id = ${input.itemId} AND r.status = 'pending_pickup') AS copies_held
+  `) as unknown as { total_copies: number; copies_out: number; copies_held: number }[];
+  const available = counts.total_copies - counts.copies_out - counts.copies_held;
+  const status = available > 0 ? 'pending_pickup' : 'waitlisted';
+
+  const readyAt = status === 'pending_pickup' ? new Date() : null;
+  const rows = await sql`
+    INSERT INTO library_reservations (item_id, child_id, customer_id, status, ready_at)
+    VALUES (${input.itemId}, ${input.childId}, ${input.customerId}, ${status}, ${readyAt})
+    RETURNING id, item_id, child_id, customer_id, status, requested_at::text, ready_at::text
+  `;
+  const row = rows[0] as { id: number; item_id: number; child_id: number; customer_id: number; status: string; requested_at: string; ready_at: string | null };
+
+  const [details] = (await sql`
+    SELECT li.title AS item_title, li.item_type, c.child_full_name FROM library_items li, children c
+    WHERE li.id = ${input.itemId} AND c.id = ${input.childId}
+  `) as unknown as { item_title: string; item_type: LibraryReservationRow['item_type']; child_full_name: string }[];
+
+  return {
+    id: row.id,
+    item_id: row.item_id,
+    item_title: details.item_title,
+    item_type: details.item_type,
+    child_id: row.child_id,
+    child_full_name: details.child_full_name,
+    customer_id: row.customer_id,
+    status: row.status as LibraryReservationRow['status'],
+    requested_at: row.requested_at,
+    ready_at: row.ready_at,
+    queue_position: null,
+  };
+}
+
+export async function getReservationsForCustomer(customerId: number): Promise<LibraryReservationRow[]> {
+  return (await sql`
+    SELECT r.id, r.item_id, li.title AS item_title, li.item_type, r.child_id, c.child_full_name, r.customer_id,
+      r.status, r.requested_at::text, r.ready_at::text,
+      CASE WHEN r.status = 'waitlisted' THEN (
+        SELECT count(*) FROM library_reservations r2
+        WHERE r2.item_id = r.item_id AND r2.status = 'waitlisted' AND r2.requested_at <= r.requested_at
+      ) END AS queue_position
+    FROM library_reservations r
+    JOIN library_items li ON li.id = r.item_id
+    JOIN children c ON c.id = r.child_id
+    WHERE r.customer_id = ${customerId} AND r.status IN ('pending_pickup', 'waitlisted')
+    ORDER BY r.requested_at ASC
+  `) as unknown as LibraryReservationRow[];
+}
+
+export interface AdminReservationRow extends LibraryReservationRow {
+  customer_name: string | null;
+  customer_email: string;
+}
+
+export async function getAllReservations(): Promise<AdminReservationRow[]> {
+  return (await sql`
+    SELECT r.id, r.item_id, li.title AS item_title, li.item_type, r.child_id, c.child_full_name, r.customer_id,
+      cu.name AS customer_name, cu.email AS customer_email,
+      r.status, r.requested_at::text, r.ready_at::text,
+      CASE WHEN r.status = 'waitlisted' THEN (
+        SELECT count(*) FROM library_reservations r2
+        WHERE r2.item_id = r.item_id AND r2.status = 'waitlisted' AND r2.requested_at <= r.requested_at
+      ) END AS queue_position
+    FROM library_reservations r
+    JOIN library_items li ON li.id = r.item_id
+    JOIN children c ON c.id = r.child_id
+    JOIN customers cu ON cu.id = r.customer_id
+    WHERE r.status IN ('pending_pickup', 'waitlisted')
+    ORDER BY r.status, r.requested_at ASC
+  `) as unknown as AdminReservationRow[];
+}
+
+/** Cancelling frees up whatever this reservation was holding (a pending_pickup copy) or simply
+ * removes it from the queue (waitlisted) -- either way, worth an immediate promotion check since
+ * a pending_pickup cancellation specifically frees a copy someone else could now take. */
+export async function cancelLibraryReservationByCustomer(reservationId: number, customerId: number): Promise<void> {
+  const rows = (await sql`
+    UPDATE library_reservations SET status = 'cancelled', cancelled_at = now()
+    WHERE id = ${reservationId} AND customer_id = ${customerId} AND status IN ('pending_pickup', 'waitlisted')
+    RETURNING item_id
+  `) as unknown as { item_id: number }[];
+  if (rows[0]) await promoteNextWaitlisted(rows[0].item_id);
+}
+
+export async function cancelLibraryReservationAdmin(reservationId: number): Promise<void> {
+  const rows = (await sql`
+    UPDATE library_reservations SET status = 'cancelled', cancelled_at = now()
+    WHERE id = ${reservationId} AND status IN ('pending_pickup', 'waitlisted')
+    RETURNING item_id
+  `) as unknown as { item_id: number }[];
+  if (rows[0]) await promoteNextWaitlisted(rows[0].item_id);
+}
+
+/** Hands the item over for real — creates the actual loan (same checkoutLibraryItem the admin's
+ * ad-hoc "Check out" button uses) and closes out the reservation. Only valid on a pending_pickup
+ * reservation; a still-waitlisted one has no copy held for it yet to hand over. */
+export async function fulfillLibraryReservation(reservationId: number, checkedOutBy: number): Promise<number> {
+  const [reservation] = (await sql`
+    SELECT item_id, child_id, status FROM library_reservations WHERE id = ${reservationId}
+  `) as unknown as { item_id: number; child_id: number; status: string }[];
+  if (!reservation) throw new ReservationError('Reservation not found.');
+  if (reservation.status !== 'pending_pickup') throw new ReservationError('This reservation is not ready for pickup yet.');
+
+  const settings = await getLibrarySettings();
+  const [{ due }] = (await sql`
+    SELECT (CURRENT_DATE + (${settings.default_loan_period_days} || ' days')::interval)::date::text AS due
+  `) as unknown as { due: string }[];
+
+  const loanId = await checkoutLibraryItem({ itemId: reservation.item_id, childId: reservation.child_id, dueDate: due, checkedOutBy, notes: null });
+  await sql`UPDATE library_reservations SET status = 'fulfilled', fulfilled_loan_id = ${loanId} WHERE id = ${reservationId}`;
+  return loanId;
 }

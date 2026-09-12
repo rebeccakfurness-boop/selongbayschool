@@ -8,6 +8,8 @@ import {
   getLoansForChildren,
   getLibrarySettings,
   effectiveMonthlyFee,
+  getBrowsableLibraryItems,
+  getReservationsForCustomer,
   type LibraryMembership,
   type LibraryLoanRow,
   type LibrarySettings,
@@ -18,6 +20,7 @@ import AccountNav from '@/components/account/AccountNav';
 import JoinLibraryButton from '@/components/account/JoinLibraryButton';
 import RedeemLibraryCodeForm from '@/components/account/RedeemLibraryCodeForm';
 import CancelLibraryMembershipButton from '@/components/account/CancelLibraryMembershipButton';
+import LibraryCatalogueBrowser, { type BrowseItem, type BrowseReservation } from '@/components/account/LibraryCatalogueBrowser';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,8 +55,19 @@ export default async function AccountLibraryPage() {
     const membership = customerId ? await getMembershipForCustomer(customerId) : null;
     const settings = await getLibrarySettings();
     const loans = await getLoansForChildren(kids.map((k) => k.id));
+    const catalogueItems = await getBrowsableLibraryItems();
+    const reservations = (customerId ? await getReservationsForCustomer(customerId) : []) as unknown as BrowseReservation[];
+    const childOptions = kids.map((k) => ({ id: k.id, label: k.child_nickname || k.child_full_name }));
 
-    return renderLibraryPage({ kidsCount: kids.length, membership, settings, loans });
+    return renderLibraryPage({
+      kidsCount: kids.length,
+      childOptions,
+      membership,
+      settings,
+      loans,
+      catalogueItems,
+      reservations,
+    });
   } catch (error) {
     console.error('[account/library] failed to load', error);
     return <OverviewLoadError error={error} />;
@@ -62,14 +76,20 @@ export default async function AccountLibraryPage() {
 
 function renderLibraryPage({
   kidsCount,
+  childOptions,
   membership,
   settings,
   loans,
+  catalogueItems,
+  reservations,
 }: {
   kidsCount: number;
+  childOptions: { id: number; label: string }[];
   membership: LibraryMembership | null;
   settings: LibrarySettings;
   loans: LibraryLoanRow[];
+  catalogueItems: BrowseItem[];
+  reservations: BrowseReservation[];
 }) {
   const activeLoans = loans.filter((l) => !l.returned_at);
   const pastLoans = loans.filter((l) => l.returned_at);
@@ -115,6 +135,21 @@ function renderLibraryPage({
             <div className="mt-2">
               <RedeemLibraryCodeForm />
             </div>
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <h2 className="font-display text-lg font-semibold text-ink">Browse the catalogue</h2>
+          <p className="mt-1 text-sm text-ink-soft">
+            Search what&apos;s on the shelves. Reserve an available item for pickup, or join the waitlist if every copy is out.
+          </p>
+          <div className="mt-3">
+            <LibraryCatalogueBrowser
+              items={catalogueItems}
+              childOptions={childOptions}
+              reservations={reservations}
+              canReserve={isMember && childOptions.length > 0}
+            />
           </div>
         </div>
 

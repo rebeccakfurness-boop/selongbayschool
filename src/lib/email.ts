@@ -475,6 +475,26 @@ export async function sendLibraryDueSoonEmail(input: LibraryDueSoonEmailInput): 
   return send(input.toEmail, `Reminder: ${input.itemTitle} is due back tomorrow`, html);
 }
 
+export interface LibraryReservationReadyEmailInput {
+  toEmail: string;
+  childFullName: string;
+  itemTitle: string;
+}
+
+/** Sent once a waitlisted reservation is promoted to "pending pickup" — see
+ * promoteNextWaitlisted in lib/library.ts, triggered whenever a copy frees up (an item is
+ * returned, or another hold on it is cancelled). */
+export async function sendLibraryReservationReadyEmail(input: LibraryReservationReadyEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    'Your library reservation is ready',
+    `<p>Hi there,</p>
+     <p>Good news — <strong>${input.itemTitle}</strong>, reserved for ${input.childFullName}, is now ready for pickup at school.</p>
+     <p><a href="${siteConfig.url}/account/library" style="color:#007c83; font-weight:700;">View your library reservations &rarr;</a></p>
+     <p style="margin-top: 24px;">See you soon!<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `${input.itemTitle} is ready for pickup`, html);
+}
+
 export interface ScheduleSessionReminderEmailInput {
   customerName: string;
   customerEmail: string;

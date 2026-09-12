@@ -3,6 +3,7 @@ import Link from 'next/link';
 const TABS = [
   { href: '/admin/library', label: 'Catalogue' },
   { href: '/admin/library/loans', label: 'Loans' },
+  { href: '/admin/library/reservations', label: 'Reservations' },
   { href: '/admin/library/memberships', label: 'Memberships', adminOnly: true },
   { href: '/admin/library/discount-codes', label: 'Discount Codes', adminOnly: true },
 ];
