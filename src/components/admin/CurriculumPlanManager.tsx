@@ -805,6 +805,7 @@ function QuizEditor({
   onRefresh: () => void;
 }) {
   const [adding, setAdding] = useState(false);
+  const [newQuestionType, setNewQuestionType] = useState<'multiple_choice' | 'open_response'>('multiple_choice');
   const [newQuestion, setNewQuestion] = useState('');
   const [newOptions, setNewOptions] = useState(['', '']);
   const [newCorrectIndex, setNewCorrectIndex] = useState(0);
@@ -829,20 +830,34 @@ function QuizEditor({
   }
 
   async function addQuestion() {
-    const options = newOptions.map((o) => o.trim()).filter(Boolean);
-    if (options.length < 2) return;
     setSaving(true);
-    await apiCall(`/api/admin/curriculum/lessons/${lessonId}/quiz`, 'POST', {
-      quizType,
-      question: newQuestion,
-      options,
-      correctOptionIndex: Math.min(newCorrectIndex, options.length - 1),
-      hint: newHint || null,
-    });
+    if (newQuestionType === 'open_response') {
+      await apiCall(`/api/admin/curriculum/lessons/${lessonId}/quiz`, 'POST', {
+        quizType,
+        questionType: 'open_response',
+        question: newQuestion,
+        hint: newHint || null,
+      });
+    } else {
+      const options = newOptions.map((o) => o.trim()).filter(Boolean);
+      if (options.length < 2) {
+        setSaving(false);
+        return;
+      }
+      await apiCall(`/api/admin/curriculum/lessons/${lessonId}/quiz`, 'POST', {
+        quizType,
+        questionType: 'multiple_choice',
+        question: newQuestion,
+        options,
+        correctOptionIndex: Math.min(newCorrectIndex, options.length - 1),
+        hint: newHint || null,
+      });
+    }
     setNewQuestion('');
     setNewOptions(['', '']);
     setNewCorrectIndex(0);
     setNewHint('');
+    setNewQuestionType('multiple_choice');
     setSaving(false);
     setAdding(false);
     onRefresh();
@@ -867,14 +882,18 @@ function QuizEditor({
                 Remove
               </button>
             </div>
-            <ul className="mt-1 flex flex-col gap-0.5">
-              {q.options.map((o, oi) => (
-                <li key={oi} className={`text-xs ${oi === q.correct_option_index ? 'font-bold text-teal-deep' : 'text-ink-soft'}`}>
-                  {oi === q.correct_option_index ? '✓ ' : '· '}
-                  {o}
-                </li>
-              ))}
-            </ul>
+            {q.question_type === 'open_response' ? (
+              <p className="mt-1 text-xs font-semibold text-orange-deep">🎙️ Typed or voice answer — marked by a teacher, not auto-scored</p>
+            ) : (
+              <ul className="mt-1 flex flex-col gap-0.5">
+                {q.options.map((o, oi) => (
+                  <li key={oi} className={`text-xs ${oi === q.correct_option_index ? 'font-bold text-teal-deep' : 'text-ink-soft'}`}>
+                    {oi === q.correct_option_index ? '✓ ' : '· '}
+                    {o}
+                  </li>
+                ))}
+              </ul>
+            )}
             {q.hint && <p className="mt-1 text-xs italic text-ink-soft">Hint: {q.hint}</p>}
           </li>
         ))}
@@ -883,36 +902,56 @@ function QuizEditor({
 
       {adding ? (
         <div className="mt-2 rounded-sm border border-dashed border-sand-line p-3">
-          <TextInput value={newQuestion} onChange={(e) => setNewQuestion(e.target.value)} placeholder="Question text" className="w-full" />
-          <div className="mt-2 flex flex-col gap-1.5">
-            {newOptions.map((o, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name={`correct-${lessonId}-${quizType}`}
-                  checked={newCorrectIndex === i}
-                  onChange={() => setNewCorrectIndex(i)}
-                  aria-label={`Option ${i + 1} is correct`}
-                />
-                <TextInput value={o} onChange={(e) => updateOption(i, e.target.value)} placeholder={`Option ${i + 1}`} className="flex-1" />
-                {newOptions.length > 2 && (
-                  <button type="button" onClick={() => removeOptionField(i)} className="text-xs font-semibold text-orange-deep hover:underline">✕</button>
-                )}
-              </div>
-            ))}
-            {newOptions.length < 6 && (
-              <button type="button" onClick={addOptionField} className="self-start text-xs font-semibold text-teal-deep hover:underline">
-                + Add another option
-              </button>
-            )}
+          <div className="flex gap-1.5">
+            <button
+              type="button"
+              onClick={() => setNewQuestionType('multiple_choice')}
+              className={`rounded-full px-3 py-1 text-xs font-bold ${newQuestionType === 'multiple_choice' ? 'bg-ink text-white' : 'border border-sand-line text-ink-soft'}`}
+            >
+              Multiple choice
+            </button>
+            <button
+              type="button"
+              onClick={() => setNewQuestionType('open_response')}
+              className={`rounded-full px-3 py-1 text-xs font-bold ${newQuestionType === 'open_response' ? 'bg-ink text-white' : 'border border-sand-line text-ink-soft'}`}
+            >
+              🎙️ Typed or voice answer
+            </button>
           </div>
+          <TextInput value={newQuestion} onChange={(e) => setNewQuestion(e.target.value)} placeholder="Question text" className="mt-2 w-full" />
+          {newQuestionType === 'multiple_choice' ? (
+            <div className="mt-2 flex flex-col gap-1.5">
+              {newOptions.map((o, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name={`correct-${lessonId}-${quizType}`}
+                    checked={newCorrectIndex === i}
+                    onChange={() => setNewCorrectIndex(i)}
+                    aria-label={`Option ${i + 1} is correct`}
+                  />
+                  <TextInput value={o} onChange={(e) => updateOption(i, e.target.value)} placeholder={`Option ${i + 1}`} className="flex-1" />
+                  {newOptions.length > 2 && (
+                    <button type="button" onClick={() => removeOptionField(i)} className="text-xs font-semibold text-orange-deep hover:underline">✕</button>
+                  )}
+                </div>
+              ))}
+              {newOptions.length < 6 && (
+                <button type="button" onClick={addOptionField} className="self-start text-xs font-semibold text-teal-deep hover:underline">
+                  + Add another option
+                </button>
+              )}
+            </div>
+          ) : (
+            <p className="mt-2 text-xs text-ink-soft">The student types or records their answer — you&apos;ll mark it afterwards with a grade and comment.</p>
+          )}
           <TextInput value={newHint} onChange={(e) => setNewHint(e.target.value)} placeholder="Hint (optional)" className="mt-2 w-full" />
           <div className="mt-2 flex items-center gap-2">
             <Button
               type="button"
               variant="primary"
               onClick={addQuestion}
-              disabled={saving || !newQuestion.trim() || newOptions.filter((o) => o.trim()).length < 2}
+              disabled={saving || !newQuestion.trim() || (newQuestionType === 'multiple_choice' && newOptions.filter((o) => o.trim()).length < 2)}
             >
               {saving ? 'Adding…' : 'Add question'}
             </Button>

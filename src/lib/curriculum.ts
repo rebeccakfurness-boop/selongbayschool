@@ -39,16 +39,21 @@ export interface CurriculumLessonResource {
 }
 
 export type QuizType = 'starter' | 'exit';
+export type QuizQuestionType = 'multiple_choice' | 'open_response';
 
 export interface CurriculumQuizQuestion {
   id: number;
   lesson_id: number;
   quiz_type: QuizType;
+  question_type: QuizQuestionType;
   sort_order: number;
   question: string;
+  /** Empty for an open_response question -- see question_type. */
   options: string[];
-  correct_option_index: number;
+  /** Null for an open_response question, which has nothing to auto-score. */
+  correct_option_index: number | null;
   hint: string | null;
+  allow_voice_answer: boolean;
 }
 
 export type LessonReviewStatus = 'needs_review' | 'published';
@@ -235,7 +240,7 @@ export async function getCurriculumTermTree(termId: number, includeNeedsReview =
     lessonIds.length === 0
       ? Promise.resolve([])
       : ((sql`
-          SELECT id, lesson_id, quiz_type, sort_order, question, options, correct_option_index, hint
+          SELECT id, lesson_id, quiz_type, question_type, sort_order, question, options, correct_option_index, hint, allow_voice_answer
           FROM curriculum_lesson_quiz_questions
           WHERE lesson_id = ANY(${lessonIds}) ORDER BY quiz_type, sort_order, id
         `) as unknown as Promise<CurriculumQuizQuestion[]>),
@@ -319,7 +324,7 @@ export async function getLessonForOnlineFlow(
       SELECT id, lesson_id, title, url FROM curriculum_lesson_resources WHERE lesson_id = ${lessonId} ORDER BY id
     `) as unknown as Promise<CurriculumLessonResource[]>,
     (sql`
-      SELECT id, lesson_id, quiz_type, sort_order, question, options, correct_option_index, hint
+      SELECT id, lesson_id, quiz_type, question_type, sort_order, question, options, correct_option_index, hint, allow_voice_answer
       FROM curriculum_lesson_quiz_questions WHERE lesson_id = ${lessonId} ORDER BY quiz_type, sort_order, id
     `) as unknown as Promise<CurriculumQuizQuestion[]>,
     (sql`

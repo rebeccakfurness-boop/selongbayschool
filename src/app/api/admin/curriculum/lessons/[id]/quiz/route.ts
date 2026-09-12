@@ -45,8 +45,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     const rows = await sql`
       INSERT INTO curriculum_lesson_quiz_questions
-        (lesson_id, quiz_type, sort_order, question, options, correct_option_index, hint)
-      VALUES (${lessonId}, ${d.quizType}, ${next_order}, ${d.question}, ${d.options}, ${d.correctOptionIndex}, ${d.hint || null})
+        (lesson_id, quiz_type, sort_order, question, question_type, options, correct_option_index, hint)
+      VALUES (
+        ${lessonId}, ${d.quizType}, ${next_order}, ${d.question}, ${d.questionType},
+        ${d.questionType === 'multiple_choice' ? d.options : []},
+        ${d.questionType === 'multiple_choice' ? d.correctOptionIndex : null},
+        ${d.hint || null}
+      )
       RETURNING id
     `;
     return NextResponse.json({ id: rows[0].id });

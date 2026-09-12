@@ -889,16 +889,28 @@ export const setLessonProgressSchema = z.object({
 });
 export type SetLessonProgressInput = z.infer<typeof setLessonProgressSchema>;
 
-const quizQuestionBaseSchema = {
-  quizType: z.enum(['starter', 'exit']),
-  question: z.string().trim().min(1, 'Question is required').max(500),
-  options: z.array(z.string().trim().min(1).max(200)).min(2, 'At least two options are required').max(6),
-  correctOptionIndex: z.coerce.number().int().min(0),
-  hint: z.string().trim().max(300).nullable().optional(),
-};
-export const createQuizQuestionSchema = z
-  .object(quizQuestionBaseSchema)
+const multipleChoiceQuestionSchema = z
+  .object({
+    quizType: z.enum(['starter', 'exit']),
+    questionType: z.literal('multiple_choice').default('multiple_choice'),
+    question: z.string().trim().min(1, 'Question is required').max(500),
+    options: z.array(z.string().trim().min(1).max(200)).min(2, 'At least two options are required').max(6),
+    correctOptionIndex: z.coerce.number().int().min(0),
+    hint: z.string().trim().max(300).nullable().optional(),
+  })
   .refine((d) => d.correctOptionIndex < d.options.length, { message: 'correctOptionIndex must point at one of the options', path: ['correctOptionIndex'] });
+
+/** A question the student answers by typing or recording their own words instead of picking an
+ * option -- see curriculum_lesson_answer_submissions and OpenResponseStep.tsx. There's nothing to
+ * auto-score, so no options/correctOptionIndex; a teacher grades it afterwards instead. */
+const openResponseQuestionSchema = z.object({
+  quizType: z.enum(['starter', 'exit']),
+  questionType: z.literal('open_response'),
+  question: z.string().trim().min(1, 'Question is required').max(500),
+  hint: z.string().trim().max(300).nullable().optional(),
+});
+
+export const createQuizQuestionSchema = z.union([multipleChoiceQuestionSchema, openResponseQuestionSchema]);
 export type CreateQuizQuestionInput = z.infer<typeof createQuizQuestionSchema>;
 
 export const updateQuizQuestionSchema = z
@@ -913,6 +925,35 @@ export const updateQuizQuestionSchema = z
     path: ['correctOptionIndex'],
   });
 export type UpdateQuizQuestionInput = z.infer<typeof updateQuizQuestionSchema>;
+
+/** A student's answer to an open_response question -- exactly one of answerText/answerAudioUrl,
+ * matching curriculum_lesson_answer_submissions' own CHECK constraint. audioUrl is a Vercel Blob
+ * URL from a prior upload (see /api/student/curriculum/answers/upload), never a raw file here. */
+export const submitAnswerSchema = z
+  .object({
+    quizQuestionId: z.coerce.number().int().positive(),
+    answerText: z.string().trim().max(4000).nullable().optional(),
+    answerAudioUrl: z.string().trim().url().nullable().optional(),
+  })
+  .refine((d) => !!d.answerText || !!d.answerAudioUrl, { message: 'Type an answer or record one.' });
+export type SubmitAnswerInput = z.infer<typeof submitAnswerSchema>;
+
+export const gradeAnswerSchema = z.object({
+  grade: z.string().trim().min(1).max(50).nullable(),
+  comment: z.string().trim().max(2000).nullable().optional(),
+});
+export type GradeAnswerInput = z.infer<typeof gradeAnswerSchema>;
+
+export const submitLessonWorksheetSchema = z.object({
+  fileUrl: z.string().trim().url(),
+});
+export type SubmitLessonWorksheetInput = z.infer<typeof submitLessonWorksheetSchema>;
+
+export const gradeLessonWorksheetSchema = z.object({
+  grade: z.string().trim().min(1).max(50).nullable(),
+  comments: z.string().trim().max(2000).nullable().optional(),
+});
+export type GradeLessonWorksheetInput = z.infer<typeof gradeLessonWorksheetSchema>;
 
 /** Discriminated on step -- matches the OnlineProgressStep union in lib/curriculum.ts. childId is
  * only present on the parent-portal route (the student route trusts the session's own childId

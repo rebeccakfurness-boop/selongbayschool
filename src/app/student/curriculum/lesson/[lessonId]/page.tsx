@@ -36,6 +36,12 @@ export default async function StudentLessonOnlinePage({ params }: { params: Prom
         initialProgress={progress}
         apiBase={`/api/student/curriculum/lessons/${lessonId}/online`}
         backHref="/student/curriculum"
+        onlineExtras={{
+          childId: session.childId,
+          answersApiBase: `/api/student/curriculum/lessons/${lessonId}/answers`,
+          worksheetApiBase: `/api/student/curriculum/lessons/${lessonId}/worksheet`,
+          translateApiBase: `/api/student/curriculum/lessons/${lessonId}/translate`,
+        }}
       />
     </div>
   );

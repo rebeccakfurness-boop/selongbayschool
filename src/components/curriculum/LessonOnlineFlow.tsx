@@ -1,13 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { upload } from '@vercel/blob/client';
 import type { CurriculumLesson, CurriculumTerm, ChildLessonOnlineProgress, QuizType } from '@/lib/curriculum';
-import QuizStep from '@/components/curriculum/QuizStep';
+import type { LessonLanguage, LessonTranslationContent, TranslatedQuizQuestion } from '@/lib/curriculum-translation';
+import { LESSON_LANGUAGE_LABELS } from '@/lib/curriculum-translation';
+import QuizStep, { type ExistingAnswer } from '@/components/curriculum/QuizStep';
+import ReadAloudButton from '@/components/curriculum/ReadAloudButton';
 import InteractiveLessonStepper from '@/components/curriculum/interactive/InteractiveLessonStepper';
 
-type StepId = 'intro' | 'starter' | 'video' | 'exit';
+type StepId = 'intro' | 'starter' | 'video' | 'exit' | 'submit_worksheet';
+
+/** Present only on the student portal (see /student/curriculum/lesson/:lessonId) -- everywhere
+ * else (the parent "watch alongside" view, or a lesson mounted inside InteractiveLessonStepper)
+ * this stays undefined and the flow degrades gracefully: no language switcher, no voice/typed
+ * answers, no worksheet-upload step. Keeping these as one bundle rather than three separate
+ * optional props makes that "all or nothing" split explicit at the type level. */
+export interface OnlineLearningExtras {
+  childId: number;
+  answersApiBase: string;
+  worksheetApiBase: string;
+  translateApiBase: string;
+}
 
 function youtubeEmbedUrl(url: string): string | null {
   const watch = url.match(/[?&]v=([\w-]{6,})/);
@@ -36,6 +52,7 @@ export default function LessonOnlineFlow(props: {
   initialProgress: ChildLessonOnlineProgress;
   apiBase: string;
   backHref: string;
+  onlineExtras?: OnlineLearningExtras;
 }) {
   if (props.lesson.interactive_content) {
     return (
@@ -58,6 +75,7 @@ function ClassicLessonFlow({
   initialProgress,
   apiBase,
   backHref,
+  onlineExtras,
 }: {
   lesson: CurriculumLesson;
   unitTitle: string;
@@ -65,19 +83,101 @@ function ClassicLessonFlow({
   initialProgress: ChildLessonOnlineProgress;
   apiBase: string;
   backHref: string;
+  onlineExtras?: OnlineLearningExtras;
 }) {
   const [progress, setProgress] = useState(initialProgress);
   const [view, setView] = useState<'hub' | StepId>('hub');
   const [justCompleted, setJustCompleted] = useState(false);
 
+  const [language, setLanguage] = useState<'en' | LessonLanguage>('en');
+  const [translationsByLang, setTranslationsByLang] = useState<Partial<Record<LessonLanguage, LessonTranslationContent>>>({});
+  const [translationLoading, setTranslationLoading] = useState(false);
+  const [translationError, setTranslationError] = useState<string | null>(null);
+  const [existingAnswers, setExistingAnswers] = useState<ExistingAnswer[]>([]);
+  const [worksheetSubmitted, setWorksheetSubmitted] = useState(false);
+  const [worksheetGrade, setWorksheetGrade] = useState<{ grade: string | null; comments: string | null } | null>(null);
+
+  const translation = language === 'en' ? null : (translationsByLang[language] ?? null);
+
+  useEffect(() => {
+    if (!onlineExtras) return;
+    fetch(onlineExtras.answersApiBase)
+      .then((r) => r.json())
+      .then((data) => setExistingAnswers(data.answers ?? []))
+      .catch(() => undefined);
+    fetch(onlineExtras.worksheetApiBase)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.submission) {
+          setWorksheetSubmitted(true);
+          setWorksheetGrade({ grade: data.submission.grade, comments: data.submission.comments });
+        }
+      })
+      .catch(() => undefined);
+  }, [onlineExtras]);
+
+  async function changeLanguage(next: 'en' | LessonLanguage) {
+    setLanguage(next);
+    if (next === 'en' || translationsByLang[next] || !onlineExtras) return;
+    setTranslationLoading(true);
+    setTranslationError(null);
+    try {
+      const res = await fetch(`${onlineExtras.translateApiBase}?lang=${next}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Could not translate this lesson.');
+      setTranslationsByLang((prev) => ({ ...prev, [next]: data.content }));
+    } catch (err) {
+      setTranslationError(err instanceof Error ? err.message : 'Could not translate this lesson.');
+      setLanguage('en');
+    } finally {
+      setTranslationLoading(false);
+    }
+  }
+
+  const translationsByQuestionId = useMemo(() => {
+    if (!translation) return undefined;
+    const map: Record<number, TranslatedQuizQuestion> = {};
+    for (const q of [...translation.starterQuiz, ...translation.exitQuiz]) map[q.id] = q;
+    return map;
+  }, [translation]);
+
+  const openResponseProps = onlineExtras
+    ? {
+        childId: onlineExtras.childId,
+        existingAnswers,
+        onSubmit: async (quizQuestionId: number, answer: { answerText: string | null; answerAudioUrl: string | null }) => {
+          const res = await fetch(onlineExtras.answersApiBase, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ quizQuestionId, ...answer }),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(data.error || 'Could not save your answer.');
+          setExistingAnswers((prev) => [
+            ...prev.filter((a) => a.quiz_question_id !== quizQuestionId),
+            { quiz_question_id: quizQuestionId, answer_text: answer.answerText, answer_audio_url: answer.answerAudioUrl, grade: null, teacher_comment: null },
+          ]);
+        },
+      }
+    : undefined;
+
+  const hasWorksheet = !!(lesson.worksheet_url || lesson.real_worksheet || lesson.worksheet_docx_url || lesson.worksheet_pdf_url);
   const hasStarter = lesson.starter_quiz.length > 0;
   const hasExit = lesson.exit_quiz.length > 0;
-  const stepOrder: StepId[] = ['intro', ...(hasStarter ? (['starter'] as const) : []), 'video', ...(hasExit ? (['exit'] as const) : [])];
+  const canSubmitWorksheet = !!onlineExtras && hasWorksheet;
+  const stepOrder: StepId[] = [
+    'intro',
+    ...(hasStarter ? (['starter'] as const) : []),
+    'video',
+    ...(hasExit ? (['exit'] as const) : []),
+    ...(canSubmitWorksheet ? (['submit_worksheet'] as const) : []),
+  ];
 
   function isStepDone(step: StepId): boolean {
     if (step === 'intro') return progress.intro_done;
     if (step === 'starter') return progress.starter_quiz_score !== null;
     if (step === 'video') return progress.video_done;
+    if (step === 'submit_worksheet') return worksheetSubmitted;
     return progress.exit_quiz_score !== null;
   }
 
@@ -117,33 +217,72 @@ function ClassicLessonFlow({
       setProgress((p) => ({ ...p, starter_quiz_score: score, starter_quiz_total: total }));
     } else {
       setProgress((p) => ({ ...p, exit_quiz_score: score, exit_quiz_total: total, completed_at: new Date().toISOString() }));
-      setJustCompleted(true);
+      if (!canSubmitWorksheet) setJustCompleted(true);
     }
     await patchProgress({ step: type === 'starter' ? 'starter_quiz' : 'exit_quiz', score, total });
     if (type === 'exit') {
-      setView('hub');
+      goToNextStep('exit');
     } else {
       goToNextStep('starter');
     }
+  }
+
+  async function completeWorksheetSubmit() {
+    setWorksheetSubmitted(true);
+    setJustCompleted(true);
+    setView('hub');
   }
 
   if (view === 'intro') {
     return (
       <IntroStep
         lesson={lesson}
+        objectives={translation?.objectives ?? lesson.objectives}
+        equipmentNote={translation?.equipmentNote ?? lesson.equipment_note}
         onBack={() => setView('hub')}
         onReady={completeIntro}
       />
     );
   }
   if (view === 'starter' && hasStarter) {
-    return <QuizStep questions={lesson.starter_quiz} title="Starter Quiz" onBack={() => setView('hub')} onFinish={(score, total) => completeQuiz('starter', score, total)} />;
+    return (
+      <QuizStep
+        questions={lesson.starter_quiz}
+        title="Starter Quiz"
+        onBack={() => setView('hub')}
+        onFinish={(score, total) => completeQuiz('starter', score, total)}
+        translations={translationsByQuestionId}
+        openResponse={openResponseProps}
+      />
+    );
   }
   if (view === 'video') {
     return <VideoStep lesson={lesson} unitTitle={unitTitle} onBack={() => setView('hub')} onDone={completeVideo} />;
   }
   if (view === 'exit' && hasExit) {
-    return <QuizStep questions={lesson.exit_quiz} title="Exit Quiz" onBack={() => setView('hub')} onFinish={(score, total) => completeQuiz('exit', score, total)} />;
+    return (
+      <QuizStep
+        questions={lesson.exit_quiz}
+        title="Exit Quiz"
+        onBack={() => setView('hub')}
+        onFinish={(score, total) => completeQuiz('exit', score, total)}
+        translations={translationsByQuestionId}
+        openResponse={openResponseProps}
+      />
+    );
+  }
+  if (view === 'submit_worksheet' && onlineExtras) {
+    return (
+      <WorksheetSubmitStep
+        lesson={lesson}
+        childId={onlineExtras.childId}
+        worksheetApiBase={onlineExtras.worksheetApiBase}
+        worksheetSubmitted={worksheetSubmitted}
+        worksheetGrade={worksheetGrade}
+        onBack={() => setView('hub')}
+        onDone={completeWorksheetSubmit}
+      />
+    );
   }
 
   return (
@@ -154,6 +293,9 @@ function ClassicLessonFlow({
       progress={progress}
       hasStarter={hasStarter}
       hasExit={hasExit}
+      canSubmitWorksheet={canSubmitWorksheet}
+      worksheetSubmitted={worksheetSubmitted}
+      worksheetGrade={worksheetGrade}
       backHref={backHref}
       justCompleted={justCompleted}
       allStepsDone={stepOrder.every(isStepDone)}
@@ -162,6 +304,11 @@ function ClassicLessonFlow({
         const next = stepOrder.find((s) => !isStepDone(s));
         if (next) setView(next);
       }}
+      showLanguageSwitcher={!!onlineExtras}
+      language={language}
+      onChangeLanguage={changeLanguage}
+      translationLoading={translationLoading}
+      translationError={translationError}
     />
   );
 }
@@ -261,6 +408,42 @@ function StepCard({
   );
 }
 
+const LANGUAGE_OPTIONS: ('en' | LessonLanguage)[] = ['en', 'fr', 'id', 'es'];
+
+function LanguageSwitcher({
+  language,
+  onChange,
+  loading,
+  error,
+}: {
+  language: 'en' | LessonLanguage;
+  onChange: (l: 'en' | LessonLanguage) => void;
+  loading: boolean;
+  error: string | null;
+}) {
+  return (
+    <div className="flex flex-col items-end gap-1">
+      <div className="flex gap-1.5">
+        {LANGUAGE_OPTIONS.map((l) => (
+          <button
+            key={l}
+            type="button"
+            onClick={() => onChange(l)}
+            disabled={loading}
+            className={`rounded-full px-3 py-1 text-xs font-bold transition disabled:opacity-50 ${
+              language === l ? 'bg-ink text-white' : 'border border-ink/20 bg-white text-ink hover:border-ink'
+            }`}
+          >
+            {l === 'en' ? 'English' : LESSON_LANGUAGE_LABELS[l]}
+          </button>
+        ))}
+      </div>
+      {loading && <p className="text-xs text-ink-soft">Translating…</p>}
+      {error && <p className="text-xs font-semibold text-orange-deep">{error}</p>}
+    </div>
+  );
+}
+
 function HubView({
   lesson,
   unitTitle,
@@ -268,11 +451,19 @@ function HubView({
   progress,
   hasStarter,
   hasExit,
+  canSubmitWorksheet,
+  worksheetSubmitted,
+  worksheetGrade,
   backHref,
   justCompleted,
   allStepsDone,
   onOpenStep,
   onContinue,
+  showLanguageSwitcher,
+  language,
+  onChangeLanguage,
+  translationLoading,
+  translationError,
 }: {
   lesson: CurriculumLesson;
   unitTitle: string;
@@ -280,18 +471,31 @@ function HubView({
   progress: ChildLessonOnlineProgress;
   hasStarter: boolean;
   hasExit: boolean;
+  canSubmitWorksheet: boolean;
+  worksheetSubmitted: boolean;
+  worksheetGrade: { grade: string | null; comments: string | null } | null;
   backHref: string;
   justCompleted: boolean;
   allStepsDone: boolean;
   onOpenStep: (s: StepId) => void;
   onContinue: () => void;
+  showLanguageSwitcher: boolean;
+  language: 'en' | LessonLanguage;
+  onChangeLanguage: (l: 'en' | LessonLanguage) => void;
+  translationLoading: boolean;
+  translationError: string | null;
 }) {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-6">
-      <Link href={backHref} className="inline-flex items-center gap-2 text-sm font-bold text-ink hover:underline">
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-white">←</span>
-        View all lessons
-      </Link>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <Link href={backHref} className="inline-flex items-center gap-2 text-sm font-bold text-ink hover:underline">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-white">←</span>
+          View all lessons
+        </Link>
+        {showLanguageSwitcher && (
+          <LanguageSwitcher language={language} onChange={onChangeLanguage} loading={translationLoading} error={translationError} />
+        )}
+      </div>
 
       {justCompleted && (
         <div className="mt-4 rounded-md border border-teal/40 bg-teal/10 p-4 text-sm font-semibold text-teal-deep">
@@ -307,7 +511,10 @@ function HubView({
           <p className="mt-1 text-xs text-ink-soft">{unitTitle}</p>
           {lesson.objectives && (
             <div className="mt-4">
-              <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Lesson outcome</p>
+              <div className="flex items-center gap-2">
+                <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Lesson outcome</p>
+                <ReadAloudButton text={lesson.objectives} label="" />
+              </div>
               <p className="mt-1 whitespace-pre-line text-sm text-ink-soft">{lesson.objectives}</p>
             </div>
           )}
@@ -352,6 +559,21 @@ function HubView({
                   : `Check · ${lesson.exit_quiz.length} question${lesson.exit_quiz.length === 1 ? '' : 's'}`
               }
               onClick={() => onOpenStep('exit')}
+            />
+          )}
+          {canSubmitWorksheet && (
+            <StepCard
+              color="border-teal-deep/40 bg-teal/5"
+              icon="📤"
+              title="Submit your worksheet"
+              subtitle={
+                worksheetGrade?.grade
+                  ? `Marked: ${worksheetGrade.grade}`
+                  : worksheetSubmitted
+                    ? 'Sent to your teacher'
+                    : 'Upload your completed worksheet'
+              }
+              onClick={() => onOpenStep('submit_worksheet')}
             />
           )}
         </div>
@@ -409,7 +631,19 @@ function StepShell({
   );
 }
 
-function IntroStep({ lesson, onBack, onReady }: { lesson: CurriculumLesson; onBack: () => void; onReady: () => void }) {
+function IntroStep({
+  lesson,
+  objectives,
+  equipmentNote,
+  onBack,
+  onReady,
+}: {
+  lesson: CurriculumLesson;
+  objectives: string | null;
+  equipmentNote: string | null;
+  onBack: () => void;
+  onReady: () => void;
+}) {
   return (
     <StepShell
       color="bg-teal/10"
@@ -422,7 +656,11 @@ function IntroStep({ lesson, onBack, onReady }: { lesson: CurriculumLesson; onBa
         </button>
       }
     >
-      <h2 className="font-display text-3xl font-bold text-ink">What will you need for this lesson?</h2>
+      <div className="flex items-start justify-between gap-3">
+        <h2 className="font-display text-3xl font-bold text-ink">What will you need for this lesson?</h2>
+        {objectives && <ReadAloudButton text={objectives} label="" />}
+      </div>
+      {objectives && <p className="mt-2 whitespace-pre-line text-sm text-ink-soft">{objectives}</p>}
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <div className="rounded-md bg-teal/15 p-5">
           <p className="font-bold text-ink">Are you ready to learn?</p>
@@ -430,7 +668,7 @@ function IntroStep({ lesson, onBack, onReady }: { lesson: CurriculumLesson; onBa
             <li>Are you sitting in a quiet space away from distractions?</li>
             <li>Do you have all the equipment you need?</li>
           </ul>
-          {lesson.equipment_note && <p className="mt-3 text-sm font-semibold text-ink">You&apos;ll need: {lesson.equipment_note}</p>}
+          {equipmentNote && <p className="mt-3 text-sm font-semibold text-ink">You&apos;ll need: {equipmentNote}</p>}
         </div>
         <div className="rounded-md bg-white p-5 shadow-soft">
           <p className="font-bold text-ink">Worksheet</p>
@@ -442,6 +680,15 @@ function IntroStep({ lesson, onBack, onReady }: { lesson: CurriculumLesson; onBa
               className="mt-3 inline-block font-bold text-teal-deep underline"
             >
               Download {lesson.worksheet_title || 'worksheet'}
+            </a>
+          ) : lesson.worksheet_docx_url || lesson.worksheet_pdf_url ? (
+            <a
+              href={lesson.worksheet_docx_url || lesson.worksheet_pdf_url || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-block font-bold text-teal-deep underline"
+            >
+              Download worksheet
             </a>
           ) : (
             <p className="mt-3 text-sm text-ink-soft">No worksheet for this lesson (optional).</p>
@@ -464,6 +711,7 @@ function VideoStep({
   onDone: () => void;
 }) {
   const embedUrl = lesson.video_url ? youtubeEmbedUrl(lesson.video_url) : null;
+  const isVideoFile = lesson.video_url ? /\.(mp4|webm|mov)$/i.test(lesson.video_url) : false;
 
   return (
     <StepShell
@@ -482,6 +730,8 @@ function VideoStep({
           <div className="aspect-video w-full overflow-hidden rounded-md border-2 border-ink bg-black">
             <iframe src={embedUrl} title={lesson.video_title || lesson.title} className="h-full w-full" allowFullScreen />
           </div>
+        ) : isVideoFile ? (
+          <video src={lesson.video_url} controls className="aspect-video w-full rounded-md border-2 border-ink bg-black" />
         ) : (
           <div className="rounded-md border-2 border-ink bg-white p-6 text-center">
             <a href={lesson.video_url} target="_blank" rel="noopener noreferrer" className="font-bold text-teal-deep underline">
@@ -503,3 +753,108 @@ function VideoStep({
   );
 }
 
+function WorksheetSubmitStep({
+  lesson,
+  childId,
+  worksheetApiBase,
+  worksheetSubmitted,
+  worksheetGrade,
+  onBack,
+  onDone,
+}: {
+  lesson: CurriculumLesson;
+  childId: number;
+  worksheetApiBase: string;
+  worksheetSubmitted: boolean;
+  worksheetGrade: { grade: string | null; comments: string | null } | null;
+  onBack: () => void;
+  onDone: () => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const result = await upload(`children/${childId}/lesson-worksheets/${lesson.id}/${file.name}`, file, {
+        access: 'public',
+        handleUploadUrl: '/api/student/upload',
+      });
+      setFileUrl(result.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to upload your worksheet.');
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function submit() {
+    if (!fileUrl) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch(worksheetApiBase, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileUrl }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not submit your worksheet.');
+      onDone();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not submit your worksheet.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <StepShell
+      color="bg-teal/5"
+      icon="📤"
+      title="Submit your worksheet"
+      onBack={onBack}
+      footer={
+        <button
+          type="button"
+          onClick={submit}
+          disabled={!fileUrl || submitting}
+          className="rounded-full bg-ink px-6 py-3 text-sm font-bold text-white hover:bg-ink/85 disabled:opacity-40"
+        >
+          {submitting ? 'Sending…' : 'Send to my teacher →'}
+        </button>
+      }
+    >
+      <h2 className="font-display text-2xl font-bold text-ink">Take a photo or scan of your completed worksheet</h2>
+      <p className="mt-2 text-sm text-ink-soft">Your teacher will mark it and send back a grade and comments.</p>
+      {worksheetGrade?.grade && (
+        <div className="mt-4 rounded-md border border-teal/40 bg-teal/10 p-4">
+          <p className="font-bold text-teal-deep">Marked: {worksheetGrade.grade}</p>
+          {worksheetGrade.comments && <p className="mt-1 text-sm text-ink-soft">{worksheetGrade.comments}</p>}
+        </div>
+      )}
+      {worksheetSubmitted && !worksheetGrade?.grade && (
+        <p className="mt-4 rounded-md border border-sand-line bg-white p-4 text-sm text-ink-soft">
+          Already sent to your teacher — you can send a new version below if you&apos;d like to replace it.
+        </p>
+      )}
+      <div className="mt-6 rounded-md border-2 border-dashed border-ink/30 bg-white p-6 text-center">
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp,application/pdf"
+          onChange={handleFile}
+          disabled={uploading}
+          className="mx-auto text-sm"
+        />
+        {uploading && <p className="mt-2 text-sm text-ink-soft">Uploading…</p>}
+        {fileUrl && !uploading && <p className="mt-2 text-sm font-semibold text-teal-deep">✓ Ready to send</p>}
+        {error && <p className="mt-2 text-sm font-semibold text-orange-deep">{error}</p>}
+      </div>
+    </StepShell>
+  );
+}

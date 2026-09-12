@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 33;
+const SCHEMA_VERSION = 34;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2143,6 +2143,83 @@ export function ensureSchema(): Promise<void> {
       // action and a parent reserving it, enforced server-side (not just hidden in the UI) in the
       // loans-checkout route and createLibraryReservation.
       await sql`ALTER TABLE library_items ADD COLUMN IF NOT EXISTS school_only BOOLEAN NOT NULL DEFAULT false`;
+
+      // --- Online Learning: open-response (typed/voice) questions, worksheet upload from the
+      // self-directed flow, and cached lesson translations. ---
+
+      // A question the student answers in their own words instead of picking an option -- nothing
+      // to auto-score, so options/correct_option_index don't apply (see the CHECK below and
+      // submitAnswerSchema in validation.ts). allow_voice_answer lets a teacher author a
+      // text-only question (e.g. where a spoken answer wouldn't make sense to grade) without a
+      // separate question type.
+      await sql`ALTER TABLE curriculum_lesson_quiz_questions ALTER COLUMN options DROP NOT NULL`;
+      await sql`ALTER TABLE curriculum_lesson_quiz_questions ALTER COLUMN correct_option_index DROP NOT NULL`;
+      await sql`ALTER TABLE curriculum_lesson_quiz_questions ADD COLUMN IF NOT EXISTS question_type TEXT NOT NULL DEFAULT 'multiple_choice'`;
+      await sql`ALTER TABLE curriculum_lesson_quiz_questions DROP CONSTRAINT IF EXISTS curriculum_lesson_quiz_questions_question_type_check`;
+      await sql`
+        ALTER TABLE curriculum_lesson_quiz_questions ADD CONSTRAINT curriculum_lesson_quiz_questions_question_type_check
+        CHECK (question_type IN ('multiple_choice', 'open_response'))
+      `;
+      await sql`ALTER TABLE curriculum_lesson_quiz_questions ADD COLUMN IF NOT EXISTS allow_voice_answer BOOLEAN NOT NULL DEFAULT true`;
+
+      // One row per (question, child) -- a resubmission overwrites the previous answer and clears
+      // any existing grade/comment (see submitLessonAnswer in lib/online-learning.ts), same
+      // "re-upload clears the old mark" reasoning as session_worksheet_submissions/worksheet_marks.
+      // Exactly one of answer_text/answer_audio_url is set, enforced at the app layer
+      // (submitAnswerSchema) since a CHECK referencing both nullable columns would reject the
+      // perfectly normal case of a row not yet answered during an UPDATE ... SET one at a time.
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_lesson_answer_submissions (
+          id BIGSERIAL PRIMARY KEY,
+          quiz_question_id BIGINT NOT NULL REFERENCES curriculum_lesson_quiz_questions(id) ON DELETE CASCADE,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          answer_text TEXT,
+          answer_audio_url TEXT,
+          submitted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          grade TEXT,
+          teacher_comment TEXT,
+          graded_by BIGINT REFERENCES admin_users(id),
+          graded_at TIMESTAMPTZ,
+          UNIQUE (quiz_question_id, child_id)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_lesson_answer_submissions_child ON curriculum_lesson_answer_submissions (child_id)`;
+
+      // The self-directed online flow's own worksheet upload-back loop -- distinct from
+      // session_worksheet_submissions (which is keyed to a scheduled class occurrence a student
+      // may never have, since this flow is meant to work stand-alone). Same shape and same
+      // "resubmission clears the mark" rule.
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_lesson_worksheet_submissions (
+          id BIGSERIAL PRIMARY KEY,
+          lesson_id BIGINT NOT NULL REFERENCES curriculum_unit_lessons(id) ON DELETE CASCADE,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          file_url TEXT NOT NULL,
+          submitted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          grade TEXT,
+          comments TEXT,
+          graded_by BIGINT REFERENCES admin_users(id),
+          graded_at TIMESTAMPTZ,
+          UNIQUE (lesson_id, child_id)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_lesson_worksheet_submissions_child ON curriculum_lesson_worksheet_submissions (child_id)`;
+
+      // Translated display text for a lesson, generated once per (lesson, language) via Claude
+      // (see lib/curriculum-translation.ts) and cached here rather than re-translated on every
+      // view -- content is a JSON bundle {objectives, equipmentNote, worksheetTasks, starterQuiz,
+      // exitQuiz}; quiz entries carry the original question's id so the student-facing flow can
+      // still score against the untranslated correct_option_index, never a translated one.
+      await sql`
+        CREATE TABLE IF NOT EXISTS curriculum_lesson_translations (
+          id BIGSERIAL PRIMARY KEY,
+          lesson_id BIGINT NOT NULL REFERENCES curriculum_unit_lessons(id) ON DELETE CASCADE,
+          language TEXT NOT NULL CHECK (language IN ('fr', 'id', 'es')),
+          content JSONB NOT NULL,
+          generated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (lesson_id, language)
+        )
+      `;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();
