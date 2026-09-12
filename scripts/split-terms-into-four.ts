@@ -26,9 +26,11 @@ async function main() {
       console.log(`SKIP  ${group.className} / ${group.subject}: ${group.reason}`);
       continue;
     }
-    console.log(`\n${group.className} / ${group.subject} -- across ${group.oldTermLabels.join(', ')}:`);
+    console.log(`\n${group.className} / ${group.subject} -- across ${group.oldTermLabels.join(', ')} (${group.splitMethod}):`);
     group.buckets!.forEach((b, i) => {
-      console.log(`  Term ${i + 1}: ${b.unitTitles.length} unit(s), ${b.lessonCount} lessons -- ${b.unitTitles.join(' | ')}`);
+      console.log(
+        `  Term ${i + 1}: ${b.unitTitles.length} unit(s), ${b.lessonCount} lessons${b.dateRange ? ` (${b.dateRange})` : ''} -- ${b.unitTitles.join(' | ')}`
+      );
     });
   }
 

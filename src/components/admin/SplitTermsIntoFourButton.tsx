@@ -10,7 +10,8 @@ interface GroupPlan {
   status: 'planned' | 'skipped';
   reason?: string;
   oldTermLabels: string[];
-  buckets?: { unitTitles: string[]; lessonCount: number }[];
+  splitMethod?: 'calendar_dates' | 'lesson_count';
+  buckets?: { unitTitles: string[]; lessonCount: number; dateRange: string | null }[];
 }
 interface Plan {
   groups: GroupPlan[];
@@ -119,13 +120,21 @@ export default function SplitTermsIntoFourButton() {
                 {g.status === 'skipped' ? (
                   <p className="mt-0.5 text-xs text-orange-deep">Skipped: {g.reason}</p>
                 ) : (
-                  <ul className="mt-1 flex flex-col gap-0.5 pl-3 text-xs text-ink-soft">
-                    {g.buckets!.map((b, i) => (
-                      <li key={i}>
-                        <span className="font-semibold text-teal-deep">Term {i + 1}:</span> {b.unitTitles.length} unit(s), {b.lessonCount} lessons
-                      </li>
-                    ))}
-                  </ul>
+                  <>
+                    <p className="mt-0.5 text-xs text-ink-soft">
+                      {g.splitMethod === 'calendar_dates'
+                        ? 'Cut at the 3 biggest real calendar gaps (its actual scheduled dates)'
+                        : 'No full date coverage -- balanced by lesson count instead'}
+                    </p>
+                    <ul className="mt-1 flex flex-col gap-0.5 pl-3 text-xs text-ink-soft">
+                      {g.buckets!.map((b, i) => (
+                        <li key={i}>
+                          <span className="font-semibold text-teal-deep">Term {i + 1}:</span> {b.unitTitles.length} unit(s), {b.lessonCount} lessons
+                          {b.dateRange && <span> · {b.dateRange}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
                 )}
               </div>
             ))}
