@@ -4,6 +4,7 @@ import { getLibraryItems } from '@/lib/library';
 import LibrarySubNav from '@/components/admin/LibrarySubNav';
 import AddLibraryItemForm from '@/components/admin/AddLibraryItemForm';
 import LibraryItemActions from '@/components/admin/LibraryItemActions';
+import LibraryItemPhotoCell from '@/components/admin/LibraryItemPhotoCell';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +12,7 @@ const ITEM_TYPE_LABELS: Record<string, string> = {
   book: 'Book',
   toy: 'Toy',
   sports_equipment: 'Sports equipment',
+  other: 'Other',
 };
 
 export default async function AdminLibraryCataloguePage() {
@@ -32,9 +34,10 @@ export default async function AdminLibraryCataloguePage() {
       </div>
 
       <div className="mt-4 overflow-x-auto rounded-md border border-sand-line bg-paper">
-        <table className="w-full min-w-[900px] border-collapse text-sm">
+        <table className="w-full min-w-[1040px] border-collapse text-sm">
           <thead>
             <tr className="border-b border-sand-line bg-sand/40 text-left">
+              <th className="px-4 py-3 font-bold text-ink-soft">Photo</th>
               <th className="px-4 py-3 font-bold text-ink-soft">Item</th>
               <th className="px-4 py-3 font-bold text-ink-soft">Type</th>
               <th className="px-4 py-3 font-bold text-ink-soft">Category</th>
@@ -48,6 +51,9 @@ export default async function AdminLibraryCataloguePage() {
               const available = item.copies_out < item.total_copies;
               return (
                 <tr key={item.id} className="border-b border-sand-line/60 last:border-0 align-top">
+                  <td className="px-4 py-3">
+                    <LibraryItemPhotoCell itemId={item.id} photoUrl={item.photo_url} />
+                  </td>
                   <td className="px-4 py-3">
                     <div className="font-semibold text-ink">{item.title}</div>
                     {item.author && <div className="text-xs text-ink-soft">{item.author}</div>}
@@ -75,7 +81,7 @@ export default async function AdminLibraryCataloguePage() {
             })}
             {items.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-6 text-center text-ink-soft">No items in the catalogue yet.</td>
+                <td colSpan={7} className="px-4 py-6 text-center text-ink-soft">No items in the catalogue yet.</td>
               </tr>
             )}
           </tbody>

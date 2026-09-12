@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 29;
+const SCHEMA_VERSION = 30;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2026,7 +2026,7 @@ export function ensureSchema(): Promise<void> {
       await sql`
         CREATE TABLE IF NOT EXISTS library_items (
           id BIGSERIAL PRIMARY KEY,
-          item_type TEXT NOT NULL CHECK (item_type IN ('book', 'toy', 'sports_equipment')),
+          item_type TEXT NOT NULL CHECK (item_type IN ('book', 'toy', 'sports_equipment', 'other')),
           title TEXT NOT NULL,
           author TEXT,
           category TEXT,
@@ -2090,6 +2090,12 @@ export function ensureSchema(): Promise<void> {
       // and chargeLibraryLateFee in library.ts) rather than a parallel billing system.
       await sql`ALTER TABLE invoices DROP CONSTRAINT IF EXISTS invoices_invoice_type_check`;
       await sql`ALTER TABLE invoices ADD CONSTRAINT invoices_invoice_type_check CHECK (invoice_type IN ('tuition', 'activity', 'lunch', 'library'))`;
+
+      // 'other' added after the library_items table already existed on production — the inline
+      // CREATE TABLE check above only takes effect on a fresh install, so existing databases need
+      // their constraint widened explicitly here too.
+      await sql`ALTER TABLE library_items DROP CONSTRAINT IF EXISTS library_items_item_type_check`;
+      await sql`ALTER TABLE library_items ADD CONSTRAINT library_items_item_type_check CHECK (item_type IN ('book', 'toy', 'sports_equipment', 'other'))`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

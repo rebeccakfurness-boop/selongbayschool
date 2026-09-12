@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema, sql } from '@/lib/db';
 import { requireAdmin } from '@/lib/current-staff';
 
-const ITEM_TYPES = ['book', 'toy', 'sports_equipment'];
+const ITEM_TYPES = ['book', 'toy', 'sports_equipment', 'other'];
 
 export async function POST(req: NextRequest) {
   await requireAdmin();

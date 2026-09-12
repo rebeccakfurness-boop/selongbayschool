@@ -201,7 +201,7 @@ export interface LibraryLoanRow {
   id: number;
   item_id: number;
   item_title: string;
-  item_type: 'book' | 'toy' | 'sports_equipment';
+  item_type: 'book' | 'toy' | 'sports_equipment' | 'other';
   child_id: number;
   child_full_name: string;
   borrowed_at: string;
@@ -342,7 +342,7 @@ export async function chargeLateFee(loanId: number): Promise<number> {
 
 export interface LibraryItemRow {
   id: number;
-  item_type: 'book' | 'toy' | 'sports_equipment';
+  item_type: 'book' | 'toy' | 'sports_equipment' | 'other';
   title: string;
   author: string | null;
   category: string | null;

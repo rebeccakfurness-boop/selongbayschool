@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
+import LibraryItemPhotoUpload from '@/components/admin/LibraryItemPhotoUpload';
 
 const selectClasses = 'rounded-sm border border-sand-line bg-white px-4 py-2.5 text-[15px] text-ink';
 
@@ -17,6 +18,7 @@ export default function AddLibraryItemForm() {
   const [itemCode, setItemCode] = useState('');
   const [description, setDescription] = useState('');
   const [totalCopies, setTotalCopies] = useState('1');
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +29,7 @@ export default function AddLibraryItemForm() {
       const res = await fetch('/api/admin/library/items', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ itemType, title, author, category, itemCode, description, totalCopies: Number(totalCopies) }),
+        body: JSON.stringify({ itemType, title, author, category, itemCode, description, totalCopies: Number(totalCopies), photoUrl }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not add this item.');
@@ -38,6 +40,7 @@ export default function AddLibraryItemForm() {
       setItemCode('');
       setDescription('');
       setTotalCopies('1');
+      setPhotoUrl(null);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not add this item.');
@@ -63,6 +66,7 @@ export default function AddLibraryItemForm() {
             <option value="book">Book</option>
             <option value="toy">Toy</option>
             <option value="sports_equipment">Sports equipment</option>
+            <option value="other">Other</option>
           </select>
         </Field>
         <Field label="Title" htmlFor="li-title" required>
@@ -83,6 +87,11 @@ export default function AddLibraryItemForm() {
         <div className="sm:col-span-2">
           <Field label="Description" htmlFor="li-description">
             <TextArea id="li-description" rows={2} value={description} onChange={(e) => setDescription(e.target.value)} />
+          </Field>
+        </div>
+        <div className="sm:col-span-2">
+          <Field label="Photo" htmlFor="li-photo">
+            <LibraryItemPhotoUpload currentUrl={photoUrl} pathPrefix="library-items" onUploaded={setPhotoUrl} />
           </Field>
         </div>
       </div>

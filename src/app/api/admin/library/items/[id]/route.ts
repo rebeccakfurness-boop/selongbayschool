@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sql } from '@/lib/db';
 import { requireAdmin } from '@/lib/current-staff';
 
-const ITEM_TYPES = ['book', 'toy', 'sports_equipment'];
+const ITEM_TYPES = ['book', 'toy', 'sports_equipment', 'other'];
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();

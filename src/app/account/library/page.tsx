@@ -39,6 +39,7 @@ const ITEM_TYPE_LABELS: Record<string, string> = {
   book: 'Book',
   toy: 'Toy',
   sports_equipment: 'Sports equipment',
+  other: 'Other',
 };
 
 export default async function AccountLibraryPage() {
