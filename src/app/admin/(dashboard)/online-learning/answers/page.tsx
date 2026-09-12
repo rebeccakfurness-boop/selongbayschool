@@ -32,7 +32,8 @@ export default async function AdminOnlineLearningAnswersPage() {
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
                 <p className="text-xs text-ink-soft">
-                  {a.class_name} · {a.subject} · {a.lesson_title} · {a.quiz_type === 'starter' ? 'Starter quiz' : 'Exit quiz'}
+                  {a.class_name} · {a.subject} · {a.lesson_title} ·{' '}
+                  {a.quiz_type === 'starter' ? 'Starter quiz' : a.quiz_type === 'discussion' ? 'Lesson discussion' : 'Exit quiz'}
                 </p>
                 <p className="mt-1 font-semibold text-ink">{a.question}</p>
                 <p className="mt-1 text-sm text-ink-soft">{a.child_full_name} · submitted {formatDateTime(a.submitted_at)}</p>

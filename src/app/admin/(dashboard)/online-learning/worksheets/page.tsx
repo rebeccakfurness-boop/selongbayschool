@@ -37,9 +37,12 @@ export default async function AdminOnlineLearningWorksheetsPage() {
               {s.graded_at && <span className="whitespace-nowrap rounded-full bg-teal/15 px-2 py-0.5 text-xs font-bold text-teal-deep">Graded</span>}
             </div>
 
-            <a href={s.file_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-sm font-bold text-teal-deep underline">
-              View submitted worksheet →
-            </a>
+            {s.file_url && (
+              <a href={s.file_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-sm font-bold text-teal-deep underline">
+                View submitted worksheet →
+              </a>
+            )}
+            {s.answer_audio_url && <audio controls src={s.answer_audio_url} className="mt-3 w-full max-w-sm" />}
 
             <div className="mt-3">
               <GradeSubmissionForm

@@ -907,7 +907,7 @@ export type SetLessonProgressInput = z.infer<typeof setLessonProgressSchema>;
 
 const multipleChoiceQuestionSchema = z
   .object({
-    quizType: z.enum(['starter', 'exit']),
+    quizType: z.enum(['starter', 'exit', 'discussion']),
     questionType: z.literal('multiple_choice').default('multiple_choice'),
     question: z.string().trim().min(1, 'Question is required').max(500),
     options: z.array(z.string().trim().min(1).max(200)).min(2, 'At least two options are required').max(6),
@@ -920,7 +920,7 @@ const multipleChoiceQuestionSchema = z
  * option -- see curriculum_lesson_answer_submissions and OpenResponseStep.tsx. There's nothing to
  * auto-score, so no options/correctOptionIndex; a teacher grades it afterwards instead. */
 const openResponseQuestionSchema = z.object({
-  quizType: z.enum(['starter', 'exit']),
+  quizType: z.enum(['starter', 'exit', 'discussion']),
   questionType: z.literal('open_response'),
   question: z.string().trim().min(1, 'Question is required').max(500),
   hint: z.string().trim().max(300).nullable().optional(),
@@ -960,9 +960,12 @@ export const gradeAnswerSchema = z.object({
 });
 export type GradeAnswerInput = z.infer<typeof gradeAnswerSchema>;
 
-export const submitLessonWorksheetSchema = z.object({
-  fileUrl: z.string().trim().url(),
-});
+export const submitLessonWorksheetSchema = z
+  .object({
+    fileUrl: z.string().trim().url().nullable().optional(),
+    answerAudioUrl: z.string().trim().url().nullable().optional(),
+  })
+  .refine((d) => !!d.fileUrl || !!d.answerAudioUrl, { message: 'Upload your worksheet or record a voice answer.' });
 export type SubmitLessonWorksheetInput = z.infer<typeof submitLessonWorksheetSchema>;
 
 export const gradeLessonWorksheetSchema = z.object({
@@ -983,6 +986,7 @@ export const onlineProgressStepSchema = z.discriminatedUnion('step', [
     score: z.coerce.number().int().min(0),
     total: z.coerce.number().int().min(1),
   }),
+  z.object({ step: z.literal('discussion'), childId: z.coerce.number().int().positive().optional() }),
   z.object({
     step: z.literal('exit_quiz'),
     childId: z.coerce.number().int().positive().optional(),

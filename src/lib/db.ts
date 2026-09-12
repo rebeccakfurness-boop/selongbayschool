@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 35;
+const SCHEMA_VERSION = 36;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2258,6 +2258,26 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_child_online_schedule_slots_child ON child_online_schedule_slots (child_id)`;
+
+      // --- Lesson Discussion Questions: a third quiz_type, distinct from starter/exit -- the
+      // original spec's "after the video, some questions the student answers in their own words"
+      // step, which had been folded into "an open_response question added to either quiz" with no
+      // step of its own. Reuses every bit of the open_response/voice-answer machinery already
+      // built for starter/exit questions (curriculum_lesson_answer_submissions, translations,
+      // grading) -- only the bucket a question is filed under is new.
+      await sql`ALTER TABLE curriculum_lesson_quiz_questions DROP CONSTRAINT IF EXISTS curriculum_lesson_quiz_questions_quiz_type_check`;
+      await sql`
+        ALTER TABLE curriculum_lesson_quiz_questions ADD CONSTRAINT curriculum_lesson_quiz_questions_quiz_type_check
+        CHECK (quiz_type IN ('starter', 'exit', 'discussion'))
+      `;
+      await sql`ALTER TABLE child_lesson_online_progress ADD COLUMN IF NOT EXISTS discussion_done BOOLEAN NOT NULL DEFAULT false`;
+
+      // Worksheet submissions: a voice-only answer is now an accepted alternative to uploading a
+      // photo/scan of a written worksheet, for a student who can speak an answer more easily than
+      // writing or typing one -- file_url alone is no longer required (see
+      // submitLessonWorksheetSchema's refine for "at least one of the two").
+      await sql`ALTER TABLE curriculum_lesson_worksheet_submissions ALTER COLUMN file_url DROP NOT NULL`;
+      await sql`ALTER TABLE curriculum_lesson_worksheet_submissions ADD COLUMN IF NOT EXISTS answer_audio_url TEXT`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

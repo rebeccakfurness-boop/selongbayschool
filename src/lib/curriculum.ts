@@ -38,7 +38,7 @@ export interface CurriculumLessonResource {
   url: string;
 }
 
-export type QuizType = 'starter' | 'exit';
+export type QuizType = 'starter' | 'exit' | 'discussion';
 export type QuizQuestionType = 'multiple_choice' | 'open_response';
 
 export interface CurriculumQuizQuestion {
@@ -143,6 +143,11 @@ export interface CurriculumLesson {
   resources: CurriculumLessonResource[];
   starter_quiz: CurriculumQuizQuestion[];
   exit_quiz: CurriculumQuizQuestion[];
+  /** Shown as its own step after the video, before the exit quiz -- open-ended questions the
+   * student answers in their own words (typed or voice), distinct from the starter/exit quiz's
+   * mostly-multiple-choice content. Same CurriculumQuizQuestion shape and quiz_type column as
+   * starter/exit, just a third value ('discussion'). */
+  discussion_questions: CurriculumQuizQuestion[];
   flashcards: CurriculumFlashcard[];
 }
 
@@ -257,8 +262,9 @@ export async function getCurriculumTermTree(termId: number, includeNeedsReview =
 
   const starterQuizByLesson = new Map<number, CurriculumQuizQuestion[]>();
   const exitQuizByLesson = new Map<number, CurriculumQuizQuestion[]>();
+  const discussionByLesson = new Map<number, CurriculumQuizQuestion[]>();
   for (const q of quizQuestions) {
-    const map = q.quiz_type === 'starter' ? starterQuizByLesson : exitQuizByLesson;
+    const map = q.quiz_type === 'starter' ? starterQuizByLesson : q.quiz_type === 'exit' ? exitQuizByLesson : discussionByLesson;
     map.set(q.lesson_id, [...(map.get(q.lesson_id) ?? []), q]);
   }
 
@@ -272,6 +278,7 @@ export async function getCurriculumTermTree(termId: number, includeNeedsReview =
       resources: resourcesByLesson.get(l.id) ?? [],
       starter_quiz: starterQuizByLesson.get(l.id) ?? [],
       exit_quiz: exitQuizByLesson.get(l.id) ?? [],
+      discussion_questions: discussionByLesson.get(l.id) ?? [],
       flashcards: flashcardsByLesson.get(l.id) ?? [],
     };
     lessonsByUnit.set(l.unit_id, [...(lessonsByUnit.get(l.unit_id) ?? []), full]);
@@ -373,6 +380,7 @@ export async function getLessonForOnlineFlow(
     resources,
     starter_quiz: quizQuestions.filter((q) => q.quiz_type === 'starter'),
     exit_quiz: quizQuestions.filter((q) => q.quiz_type === 'exit'),
+    discussion_questions: quizQuestions.filter((q) => q.quiz_type === 'discussion'),
     flashcards,
   };
 
@@ -503,6 +511,9 @@ export interface ChildLessonOnlineProgress {
   starter_quiz_score: number | null;
   starter_quiz_total: number | null;
   video_done: boolean;
+  /** Not scored, like video_done -- the discussion step's questions are open-ended, so "done"
+   * just means the student worked through them, not a grade. */
+  discussion_done: boolean;
   exit_quiz_score: number | null;
   exit_quiz_total: number | null;
   completed_at: string | null;
@@ -513,6 +524,7 @@ const EMPTY_ONLINE_PROGRESS: ChildLessonOnlineProgress = {
   starter_quiz_score: null,
   starter_quiz_total: null,
   video_done: false,
+  discussion_done: false,
   exit_quiz_score: null,
   exit_quiz_total: null,
   completed_at: null,
@@ -522,7 +534,7 @@ const EMPTY_ONLINE_PROGRESS: ChildLessonOnlineProgress = {
  * getProgressMapForChild, rather than a route having to special-case a null result. */
 export async function getOnlineProgress(childId: number, lessonId: number): Promise<ChildLessonOnlineProgress> {
   const rows = (await sql`
-    SELECT intro_done, starter_quiz_score, starter_quiz_total, video_done, exit_quiz_score, exit_quiz_total, completed_at
+    SELECT intro_done, starter_quiz_score, starter_quiz_total, video_done, discussion_done, exit_quiz_score, exit_quiz_total, completed_at
     FROM child_lesson_online_progress WHERE child_id = ${childId} AND lesson_id = ${lessonId}
   `) as unknown as ChildLessonOnlineProgress[];
   return rows[0] ?? EMPTY_ONLINE_PROGRESS;
@@ -532,6 +544,7 @@ export type OnlineProgressStep =
   | { step: 'intro' }
   | { step: 'video' }
   | { step: 'starter_quiz'; score: number; total: number }
+  | { step: 'discussion' }
   | { step: 'exit_quiz'; score: number; total: number }
   /** Finishing InteractiveLessonStepper's last step, for a lesson with interactive_content --
    * the stepper doesn't have separate intro/starter/video/exit milestones, so this is the one
@@ -559,6 +572,7 @@ export async function upsertOnlineProgressStep(
     next.starter_quiz_score = update.score;
     next.starter_quiz_total = update.total;
   }
+  if (update.step === 'discussion') next.discussion_done = true;
   if (update.step === 'exit_quiz') {
     next.exit_quiz_score = update.score;
     next.exit_quiz_total = update.total;
@@ -570,16 +584,17 @@ export async function upsertOnlineProgressStep(
 
   await sql`
     INSERT INTO child_lesson_online_progress
-      (child_id, lesson_id, intro_done, starter_quiz_score, starter_quiz_total, video_done, exit_quiz_score, exit_quiz_total, completed_at, updated_at)
+      (child_id, lesson_id, intro_done, starter_quiz_score, starter_quiz_total, video_done, discussion_done, exit_quiz_score, exit_quiz_total, completed_at, updated_at)
     VALUES (
       ${childId}, ${lessonId}, ${next.intro_done}, ${next.starter_quiz_score}, ${next.starter_quiz_total},
-      ${next.video_done}, ${next.exit_quiz_score}, ${next.exit_quiz_total}, ${next.completed_at}, now()
+      ${next.video_done}, ${next.discussion_done}, ${next.exit_quiz_score}, ${next.exit_quiz_total}, ${next.completed_at}, now()
     )
     ON CONFLICT (child_id, lesson_id) DO UPDATE SET
       intro_done = EXCLUDED.intro_done,
       starter_quiz_score = EXCLUDED.starter_quiz_score,
       starter_quiz_total = EXCLUDED.starter_quiz_total,
       video_done = EXCLUDED.video_done,
+      discussion_done = EXCLUDED.discussion_done,
       exit_quiz_score = EXCLUDED.exit_quiz_score,
       exit_quiz_total = EXCLUDED.exit_quiz_total,
       completed_at = EXCLUDED.completed_at,

@@ -138,7 +138,8 @@ function StatTile({ label, value, foot }: { label: string; value: string; foot: 
 }
 
 function MaterialButtons({ lesson, onlineHref }: { lesson: CurriculumLesson; onlineHref?: string }) {
-  const hasOnlineContent = lesson.starter_quiz.length > 0 || lesson.exit_quiz.length > 0 || Boolean(lesson.video_url);
+  const hasOnlineContent =
+    lesson.starter_quiz.length > 0 || lesson.discussion_questions.length > 0 || lesson.exit_quiz.length > 0 || Boolean(lesson.video_url);
   const hasAny = lesson.worksheet_url || lesson.worksheet_docx_url || lesson.worksheet_pdf_url || (onlineHref && hasOnlineContent);
   return (
     <div className="flex flex-wrap gap-2">

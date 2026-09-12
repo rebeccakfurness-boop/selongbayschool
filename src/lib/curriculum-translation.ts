@@ -28,6 +28,9 @@ export interface LessonTranslationContent {
   equipmentNote: string | null;
   worksheetTasks: { heading: string; instruction: string }[] | null;
   starterQuiz: TranslatedQuizQuestion[];
+  /** Optional for backwards compatibility with a translation cached before this field existed --
+   * consumers should fall back to an empty array rather than assume it's always present. */
+  discussionQuestions?: TranslatedQuizQuestion[];
   exitQuiz: TranslatedQuizQuestion[];
 }
 
@@ -62,6 +65,7 @@ async function translateWithClaude(lesson: CurriculumLesson, language: LessonLan
     equipmentNote: lesson.equipment_note,
     worksheetTasks: lesson.real_worksheet?.tasks.map((t) => ({ heading: t.heading, instruction: t.instruction })) ?? null,
     starterQuiz: lesson.starter_quiz.map(sourceQuiz),
+    discussionQuestions: lesson.discussion_questions.map(sourceQuiz),
     exitQuiz: lesson.exit_quiz.map(sourceQuiz),
   };
 
@@ -100,9 +104,10 @@ async function translateWithClaude(lesson: CurriculumLesson, language: LessonLan
                 items: { type: 'object', properties: { heading: { type: 'string' }, instruction: { type: 'string' } }, required: ['heading', 'instruction'] },
               },
               starterQuiz: { type: 'array', items: quizQuestionSchema },
+              discussionQuestions: { type: 'array', items: quizQuestionSchema },
               exitQuiz: { type: 'array', items: quizQuestionSchema },
             },
-            required: ['objectives', 'equipmentNote', 'worksheetTasks', 'starterQuiz', 'exitQuiz'],
+            required: ['objectives', 'equipmentNote', 'worksheetTasks', 'starterQuiz', 'discussionQuestions', 'exitQuiz'],
             additionalProperties: false,
           },
         },

@@ -9,9 +9,10 @@ import type { LessonLanguage, LessonTranslationContent, TranslatedQuizQuestion }
 import { LESSON_LANGUAGE_LABELS } from '@/lib/curriculum-translation';
 import QuizStep, { type ExistingAnswer } from '@/components/curriculum/QuizStep';
 import ReadAloudButton from '@/components/curriculum/ReadAloudButton';
+import VoiceRecorder from '@/components/curriculum/VoiceRecorder';
 import InteractiveLessonStepper from '@/components/curriculum/interactive/InteractiveLessonStepper';
 
-type StepId = 'intro' | 'starter' | 'video' | 'exit' | 'submit_worksheet';
+type StepId = 'intro' | 'starter' | 'video' | 'discussion' | 'exit' | 'submit_worksheet';
 
 /** Present only on the student portal (see /student/curriculum/lesson/:lessonId) -- everywhere
  * else (the parent "watch alongside" view, or a lesson mounted inside InteractiveLessonStepper)
@@ -141,7 +142,7 @@ function ClassicLessonFlow({
   const translationsByQuestionId = useMemo(() => {
     if (!translation) return undefined;
     const map: Record<number, TranslatedQuizQuestion> = {};
-    for (const q of [...translation.starterQuiz, ...translation.exitQuiz]) map[q.id] = q;
+    for (const q of [...translation.starterQuiz, ...(translation.discussionQuestions ?? []), ...translation.exitQuiz]) map[q.id] = q;
     return map;
   }, [translation]);
 
@@ -168,12 +169,14 @@ function ClassicLessonFlow({
 
   const hasWorksheet = !!(lesson.worksheet_url || lesson.real_worksheet || lesson.worksheet_docx_url || lesson.worksheet_pdf_url);
   const hasStarter = lesson.starter_quiz.length > 0;
+  const hasDiscussion = lesson.discussion_questions.length > 0;
   const hasExit = lesson.exit_quiz.length > 0;
   const canSubmitWorksheet = !!onlineExtras && hasWorksheet;
   const stepOrder: StepId[] = [
     'intro',
     ...(hasStarter ? (['starter'] as const) : []),
     'video',
+    ...(hasDiscussion ? (['discussion'] as const) : []),
     ...(hasExit ? (['exit'] as const) : []),
     ...(canSubmitWorksheet ? (['submit_worksheet'] as const) : []),
   ];
@@ -182,6 +185,7 @@ function ClassicLessonFlow({
     if (step === 'intro') return progress.intro_done;
     if (step === 'starter') return progress.starter_quiz_score !== null;
     if (step === 'video') return progress.video_done;
+    if (step === 'discussion') return progress.discussion_done;
     if (step === 'submit_worksheet') return worksheetSubmitted;
     return progress.exit_quiz_score !== null;
   }
@@ -215,6 +219,12 @@ function ClassicLessonFlow({
     setProgress((p) => ({ ...p, video_done: true }));
     await patchProgress({ step: 'video' });
     goToNextStep('video');
+  }
+
+  async function completeDiscussion() {
+    setProgress((p) => ({ ...p, discussion_done: true }));
+    await patchProgress({ step: 'discussion' });
+    goToNextStep('discussion');
   }
 
   async function completeQuiz(type: QuizType, score: number, total: number) {
@@ -264,6 +274,18 @@ function ClassicLessonFlow({
   if (view === 'video') {
     return <VideoStep lesson={lesson} unitTitle={unitTitle} onBack={() => setView('hub')} onDone={completeVideo} />;
   }
+  if (view === 'discussion' && hasDiscussion) {
+    return (
+      <QuizStep
+        questions={lesson.discussion_questions}
+        title="Lesson Discussion"
+        onBack={() => setView('hub')}
+        onFinish={completeDiscussion}
+        translations={translationsByQuestionId}
+        openResponse={openResponseProps}
+      />
+    );
+  }
   if (view === 'exit' && hasExit) {
     return (
       <QuizStep
@@ -298,6 +320,7 @@ function ClassicLessonFlow({
       term={term}
       progress={progress}
       hasStarter={hasStarter}
+      hasDiscussion={hasDiscussion}
       hasExit={hasExit}
       canSubmitWorksheet={canSubmitWorksheet}
       worksheetSubmitted={worksheetSubmitted}
@@ -456,6 +479,7 @@ function HubView({
   term,
   progress,
   hasStarter,
+  hasDiscussion,
   hasExit,
   canSubmitWorksheet,
   worksheetSubmitted,
@@ -476,6 +500,7 @@ function HubView({
   term: CurriculumTerm;
   progress: ChildLessonOnlineProgress;
   hasStarter: boolean;
+  hasDiscussion: boolean;
   hasExit: boolean;
   canSubmitWorksheet: boolean;
   worksheetSubmitted: boolean;
@@ -554,6 +579,19 @@ function HubView({
             subtitle={progress.video_done ? 'Watched' : lesson.video_url ? 'Learn' : 'Coming soon'}
             onClick={() => onOpenStep('video')}
           />
+          {hasDiscussion && (
+            <StepCard
+              color="border-purple-500/40 bg-purple-50"
+              icon="💬"
+              title="Lesson discussion"
+              subtitle={
+                progress.discussion_done
+                  ? 'Done'
+                  : `Talk it through · ${lesson.discussion_questions.length} question${lesson.discussion_questions.length === 1 ? '' : 's'}`
+              }
+              onClick={() => onOpenStep('discussion')}
+            />
+          )}
           {hasExit && (
             <StepCard
               color="border-yellow-500/40 bg-yellow-50"
@@ -780,6 +818,7 @@ function WorksheetSubmitStep({
 }) {
   const [uploading, setUploading] = useState(false);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -802,14 +841,14 @@ function WorksheetSubmitStep({
   }
 
   async function submit() {
-    if (!fileUrl) return;
+    if (!fileUrl && !audioUrl) return;
     setSubmitting(true);
     setError(null);
     try {
       const res = await fetch(worksheetApiBase, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fileUrl }),
+        body: JSON.stringify({ fileUrl, answerAudioUrl: audioUrl }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not submit your worksheet.');
@@ -831,15 +870,18 @@ function WorksheetSubmitStep({
         <button
           type="button"
           onClick={submit}
-          disabled={!fileUrl || submitting}
+          disabled={(!fileUrl && !audioUrl) || submitting}
           className="rounded-full bg-ink px-6 py-3 text-sm font-bold text-white hover:bg-ink/85 disabled:opacity-40"
         >
           {submitting ? 'Sending…' : 'Send to my teacher →'}
         </button>
       }
     >
-      <h2 className="font-display text-2xl font-bold text-ink">Take a photo or scan of your completed worksheet</h2>
-      <p className="mt-2 text-sm text-ink-soft">Your teacher will mark it and send back a grade and comments.</p>
+      <h2 className="font-display text-2xl font-bold text-ink">Show your teacher your completed worksheet</h2>
+      <p className="mt-2 text-sm text-ink-soft">
+        Upload a photo or scan, or just record yourself talking through your answers -- your teacher will mark it and
+        send back a grade and comments either way.
+      </p>
       {worksheetGrade?.grade && (
         <div className="mt-4 rounded-md border border-teal/40 bg-teal/10 p-4">
           <p className="font-bold text-teal-deep">Marked: {worksheetGrade.grade}</p>
@@ -851,18 +893,32 @@ function WorksheetSubmitStep({
           Already sent to your teacher — you can send a new version below if you&apos;d like to replace it.
         </p>
       )}
-      <div className="mt-6 rounded-md border-2 border-dashed border-ink/30 bg-white p-6 text-center">
-        <input
-          type="file"
-          accept="image/jpeg,image/png,image/webp,application/pdf"
-          onChange={handleFile}
-          disabled={uploading}
-          className="mx-auto text-sm"
-        />
-        {uploading && <p className="mt-2 text-sm text-ink-soft">Uploading…</p>}
-        {fileUrl && !uploading && <p className="mt-2 text-sm font-semibold text-teal-deep">✓ Ready to send</p>}
-        {error && <p className="mt-2 text-sm font-semibold text-orange-deep">{error}</p>}
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <div className="rounded-md border-2 border-dashed border-ink/30 bg-white p-6 text-center">
+          <p className="mb-3 text-xs font-bold uppercase tracking-wide text-ink-soft">Upload a photo or scan</p>
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,application/pdf"
+            onChange={handleFile}
+            disabled={uploading}
+            className="mx-auto text-sm"
+          />
+          {uploading && <p className="mt-2 text-sm text-ink-soft">Uploading…</p>}
+          {fileUrl && !uploading && <p className="mt-2 text-sm font-semibold text-teal-deep">✓ Ready to send</p>}
+        </div>
+        <div className="rounded-md border-2 border-dashed border-ink/30 bg-white p-6 text-center">
+          <p className="mb-3 text-xs font-bold uppercase tracking-wide text-ink-soft">Or record your answers</p>
+          <div className="flex justify-center">
+            <VoiceRecorder
+              pathPrefix={`children/${childId}/lesson-worksheets/${lesson.id}`}
+              uploadEndpoint={uploadEndpoint}
+              onRecorded={setAudioUrl}
+            />
+          </div>
+          {audioUrl && <p className="mt-2 text-sm font-semibold text-teal-deep">✓ Ready to send</p>}
+        </div>
       </div>
+      {error && <p className="mt-3 text-sm font-semibold text-orange-deep">{error}</p>}
     </StepShell>
   );
 }

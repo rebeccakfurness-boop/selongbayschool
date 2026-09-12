@@ -33,7 +33,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ less
     const found = await getLessonForOnlineFlow(lessonId, childId);
     if (!found) return NextResponse.json({ error: 'Lesson not found.' }, { status: 404 });
 
-    const questionIds = [...found.lesson.starter_quiz, ...found.lesson.exit_quiz]
+    const questionIds = [...found.lesson.starter_quiz, ...found.lesson.discussion_questions, ...found.lesson.exit_quiz]
       .filter((q) => q.question_type === 'open_response')
       .map((q) => q.id);
     const answers = await getAnswersForChild(childId, questionIds);
@@ -80,7 +80,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ les
     // String(...): quiz_question_id is a Postgres BIGSERIAL, returned as a string despite its
     // `number` type -- d.quizQuestionId, coerced to a real JS number by the zod schema, would
     // otherwise never strictly-equal it.
-    const belongs = found && [...found.lesson.starter_quiz, ...found.lesson.exit_quiz].some((q) => String(q.id) === String(d.quizQuestionId));
+    const belongs =
+      found &&
+      [...found.lesson.starter_quiz, ...found.lesson.discussion_questions, ...found.lesson.exit_quiz].some(
+        (q) => String(q.id) === String(d.quizQuestionId)
+      );
     if (!belongs) {
       return NextResponse.json({ error: 'That question is not part of this lesson.' }, { status: 400 });
     }

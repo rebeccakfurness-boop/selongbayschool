@@ -761,6 +761,13 @@ function LessonRow({
           </div>
 
           <QuizEditor lessonId={lesson.id} quizType="starter" label="Starter quiz" questions={lesson.starter_quiz} onRefresh={onRefresh} />
+          <QuizEditor
+            lessonId={lesson.id}
+            quizType="discussion"
+            label="Lesson discussion questions"
+            questions={lesson.discussion_questions}
+            onRefresh={onRefresh}
+          />
           <QuizEditor lessonId={lesson.id} quizType="exit" label="Exit quiz" questions={lesson.exit_quiz} onRefresh={onRefresh} />
 
           <div>

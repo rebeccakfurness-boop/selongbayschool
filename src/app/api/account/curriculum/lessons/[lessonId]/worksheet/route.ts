@@ -70,7 +70,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ les
     const found = await getLessonForOnlineFlow(lessonId, childId);
     if (!found) return NextResponse.json({ error: 'Lesson not found.' }, { status: 404 });
 
-    await submitLessonWorksheet(lessonId, childId, parsed.data.fileUrl);
+    await submitLessonWorksheet(lessonId, childId, {
+      fileUrl: parsed.data.fileUrl ?? null,
+      answerAudioUrl: parsed.data.answerAudioUrl ?? null,
+    });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[api/account/curriculum/lessons/:lessonId/worksheet] failed to submit', err);

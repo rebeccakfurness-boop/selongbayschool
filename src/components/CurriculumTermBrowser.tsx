@@ -143,7 +143,8 @@ export function LessonDetailModal({
   onlineHref?: string;
   onClose: () => void;
 }) {
-  const hasOnlineContent = lesson.starter_quiz.length > 0 || lesson.exit_quiz.length > 0 || Boolean(lesson.video_url);
+  const hasOnlineContent =
+    lesson.starter_quiz.length > 0 || lesson.discussion_questions.length > 0 || lesson.exit_quiz.length > 0 || Boolean(lesson.video_url);
   const [saving, setSaving] = useState(false);
   const [localStatus, setLocalStatus] = useState(status);
 

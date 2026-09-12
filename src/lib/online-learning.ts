@@ -46,7 +46,7 @@ export async function getAnswersForChild(childId: number, quizQuestionIds: numbe
 
 export interface AnswerForReview extends LessonAnswerSubmission {
   question: string;
-  quiz_type: 'starter' | 'exit';
+  quiz_type: 'starter' | 'exit' | 'discussion';
   lesson_id: number;
   lesson_title: string;
   child_full_name: string;
@@ -110,19 +110,27 @@ export interface LessonWorksheetSubmission {
   id: number;
   lesson_id: number;
   child_id: number;
-  file_url: string;
+  /** Null when the student submitted a voice-only answer instead of uploading a worksheet file --
+   * see submitLessonWorksheetSchema, which requires at least one of the two. */
+  file_url: string | null;
+  answer_audio_url: string | null;
   submitted_at: string;
   grade: string | null;
   comments: string | null;
   graded_at: string | null;
 }
 
-export async function submitLessonWorksheet(lessonId: number, childId: number, fileUrl: string): Promise<void> {
+export async function submitLessonWorksheet(
+  lessonId: number,
+  childId: number,
+  submission: { fileUrl: string | null; answerAudioUrl: string | null }
+): Promise<void> {
   await sql`
-    INSERT INTO curriculum_lesson_worksheet_submissions (lesson_id, child_id, file_url)
-    VALUES (${lessonId}, ${childId}, ${fileUrl})
+    INSERT INTO curriculum_lesson_worksheet_submissions (lesson_id, child_id, file_url, answer_audio_url)
+    VALUES (${lessonId}, ${childId}, ${submission.fileUrl}, ${submission.answerAudioUrl})
     ON CONFLICT (lesson_id, child_id) DO UPDATE SET
       file_url = EXCLUDED.file_url,
+      answer_audio_url = EXCLUDED.answer_audio_url,
       submitted_at = now(),
       grade = NULL,
       comments = NULL,
@@ -133,7 +141,7 @@ export async function submitLessonWorksheet(lessonId: number, childId: number, f
 
 export async function getLessonWorksheetSubmission(lessonId: number, childId: number): Promise<LessonWorksheetSubmission | null> {
   const rows = (await sql`
-    SELECT id, lesson_id, child_id, file_url, submitted_at::text, grade, comments, graded_at::text
+    SELECT id, lesson_id, child_id, file_url, answer_audio_url, submitted_at::text, grade, comments, graded_at::text
     FROM curriculum_lesson_worksheet_submissions WHERE lesson_id = ${lessonId} AND child_id = ${childId}
   `) as unknown as LessonWorksheetSubmission[];
   return rows[0] ?? null;
@@ -148,7 +156,7 @@ export interface WorksheetForReview extends LessonWorksheetSubmission {
 
 export async function getLessonWorksheetsForReview(): Promise<WorksheetForReview[]> {
   return (await sql`
-    SELECT s.id, s.lesson_id, s.child_id, s.file_url, s.submitted_at::text, s.grade, s.comments, s.graded_at::text,
+    SELECT s.id, s.lesson_id, s.child_id, s.file_url, s.answer_audio_url, s.submitted_at::text, s.grade, s.comments, s.graded_at::text,
       l.title AS lesson_title, c.child_full_name, t.class_name, t.subject
     FROM curriculum_lesson_worksheet_submissions s
     JOIN curriculum_unit_lessons l ON l.id = s.lesson_id
