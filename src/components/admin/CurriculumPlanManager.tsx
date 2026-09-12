@@ -7,6 +7,7 @@ import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import DocumentUploadField from '@/components/DocumentUploadField';
 import InteractiveLessonStepper from '@/components/curriculum/interactive/InteractiveLessonStepper';
+import SplitTermsIntoFourButton from '@/components/admin/SplitTermsIntoFourButton';
 import type { CurriculumTerm, CurriculumTermTree, CurriculumUnit, CurriculumLesson, LessonProgressStatus, CurriculumQuizQuestion, QuizType } from '@/lib/curriculum';
 
 export type ClassRoster = { id: number; label: string }[];
@@ -172,6 +173,8 @@ export default function CurriculumPlanManager({
           ✨ Generate a new course (AI, ⚠️ paid)
         </Link>
       </div>
+
+      {isAdmin && <SplitTermsIntoFourButton />}
 
       <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
         <h2 className="font-display text-lg font-semibold text-ink">New programme</h2>

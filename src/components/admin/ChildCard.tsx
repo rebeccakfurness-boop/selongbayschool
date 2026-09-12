@@ -19,6 +19,7 @@ import WelcomeLetterSection from '@/components/admin/WelcomeLetterSection';
 import OffboardingLetterSection from '@/components/admin/OffboardingLetterSection';
 import ClassroomSection from '@/components/admin/ClassroomSection';
 import AttendanceSection from '@/components/admin/AttendanceSection';
+import StudentLoginSection from '@/components/admin/StudentLoginSection';
 import ComplianceFormModal from '@/components/admin/ComplianceFormModal';
 import type { InvoiceSummaryRow, ClassroomSubmissionRow } from '@/lib/lms-data';
 import type { LetterOfOfferSummaryRow } from '@/lib/letters-of-offer';
@@ -579,6 +580,8 @@ export default function ChildCard({
           </div>
 
           <AttendanceSection childId={child.id} />
+
+          {canEdit && <StudentLoginSection childId={child.id} />}
 
           {canEdit && <GuardianLinksSection childId={child.id} initial={guardians} />}
         </>
