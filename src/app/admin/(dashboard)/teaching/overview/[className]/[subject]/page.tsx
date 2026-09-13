@@ -6,11 +6,22 @@ import PrintButton from '@/components/PrintButton';
 
 export const dynamic = 'force-dynamic';
 
+/** Tailwind needs static class names (no string interpolation survives the production purge), so
+ * the term-count -> grid-class mapping is a plain lookup rather than a computed string. Capped at
+ * 4 columns -- a 5th+ term is a data anomaly this page doesn't try to lay out specially for. */
+const TERM_GRID_CLASS: Record<number, string> = {
+  1: 'sm:grid-cols-1',
+  2: 'sm:grid-cols-2',
+  3: 'sm:grid-cols-3',
+  4: 'sm:grid-cols-4',
+};
+
 /** A parent-facing, one-page "year at a glance" for one class + subject: unit titles per term
  * (never individual lessons), the strand/skill areas covered, and a termly timeline -- built for
- * printing/saving as a PDF a teacher sends home, not for browsing on-screen. Landscape A4 so three
- * terms sit side by side; see WORKSHEET_CSS/the single-lesson print routes for the same
- * real-page-not-an-iframe print approach this follows. */
+ * printing/saving as a PDF a teacher sends home, not for browsing on-screen. Landscape A4 so every
+ * term sits side by side, however many there are (see TERM_GRID_CLASS above); see
+ * WORKSHEET_CSS/the single-lesson print routes for the same real-page-not-an-iframe print approach
+ * this follows. */
 export default async function YearOverviewPage({ params }: { params: Promise<{ className: string; subject: string }> }) {
   await ensureSchema();
   const staff = await getCurrentStaff();
@@ -65,7 +76,7 @@ export default async function YearOverviewPage({ params }: { params: Promise<{ c
         </div>
 
         <div className="bg-paper p-8">
-          <div className="grid gap-6 sm:grid-cols-3">
+          <div className={`grid gap-6 ${TERM_GRID_CLASS[overview.terms.length] ?? 'sm:grid-cols-4'}`}>
             {overview.terms.map((term) => (
               <div key={term.termId} className="rounded-md border border-sand-line p-4" style={{ breakInside: 'avoid' }}>
                 <div className="flex items-baseline justify-between gap-2 border-b border-sand-line pb-2">
