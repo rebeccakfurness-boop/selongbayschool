@@ -883,6 +883,24 @@ export const adminAttendanceCorrectionSchema = attendanceCheckBase.omit({ childI
   occurredAt: z.string().trim().min(1, 'Enter a date and time'),
 });
 
+// --- Staff Attendance ---
+
+/** No signature, no childId/sessionType/activityId -- a staff member checking themselves in is
+ * already logged in (that session IS the proof of who), and staff don't have a separate
+ * "activity" attendance concept the way students do. adminUserId always comes from the session
+ * for a self check, never the body -- see staffAttendanceCorrectionSchema below for the one place
+ * a different staff id is named explicitly (an admin's correction to someone else's record, and
+ * even there it comes from the URL param, not the body). */
+export const staffAttendanceCheckSchema = z.object({
+  eventType: z.enum(['check_in', 'check_out']),
+});
+export type StaffAttendanceCheckInput = z.infer<typeof staffAttendanceCheckSchema>;
+
+export const staffAttendanceCorrectionSchema = staffAttendanceCheckSchema.extend({
+  occurredAt: z.string().trim().min(1, 'Enter a date and time'),
+});
+export type StaffAttendanceCorrectionInput = z.infer<typeof staffAttendanceCorrectionSchema>;
+
 // --- Budget Tracker ---
 
 export const logRevenueSchema = z.object({

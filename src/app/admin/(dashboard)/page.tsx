@@ -6,6 +6,7 @@ import { formatDate, formatDateTime } from '@/lib/admin-format';
 import { formatIDR } from '@/lib/site-content';
 import { CLASS_BAND_LABELS, CLASS_BAND_ORDER, ENQUIRY_SOURCE_LABELS, type ClassBand } from '@/lib/family-data';
 import NewActivityCelebration from '@/components/admin/NewActivityCelebration';
+import StaffAttendanceButton from '@/components/admin/StaffAttendanceButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,6 +40,9 @@ export default async function AdminOverviewPage() {
           <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-ink-soft">
             Welcome back. Head to the Family Board to see the children in your assigned classes.
           </p>
+          <div className="mt-6">
+            <StaffAttendanceButton />
+          </div>
           <Link
             href="/admin/families"
             className="mt-6 inline-block rounded-full bg-teal px-6 py-3 text-sm font-bold text-white hover:bg-teal-deep"
@@ -176,8 +180,11 @@ export default async function AdminOverviewPage() {
           Welcome to your admin dashboard for Selong Bay School. Here, you can manage the family
           board, class forecast, activity bookings, and school enquiries.
         </p>
+        <div className="mt-6">
+          <StaffAttendanceButton />
+        </div>
 
-        <p className="mt-6 text-sm font-bold uppercase tracking-wide text-ink-soft">Enrolment overview</p>
+        <p className="mt-8 text-sm font-bold uppercase tracking-wide text-ink-soft">Enrolment overview</p>
         <div className="mt-3 grid gap-5 sm:grid-cols-4">
           {familyStats.map((stat) => (
             <Link

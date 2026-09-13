@@ -1,10 +1,11 @@
 import Link from 'next/link';
 
-export default function StaffTabs({ active }: { active: 'board' | 'accounts' | 'roster' }) {
+export default function StaffTabs({ active }: { active: 'board' | 'accounts' | 'roster' | 'attendance' }) {
   const tabs = [
     { key: 'board', href: '/admin/staff', label: 'Teacher Board' },
     { key: 'accounts', href: '/admin/staff/accounts', label: 'Accounts & Access' },
     { key: 'roster', href: '/admin/staff/roster', label: 'Duty Roster' },
+    { key: 'attendance', href: '/admin/staff/attendance', label: 'Attendance' },
   ] as const;
 
   return (

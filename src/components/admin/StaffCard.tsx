@@ -12,6 +12,7 @@ import type { StaffDetail } from '@/lib/staff-hr';
 import StaffProfessionalDevelopmentSection from '@/components/admin/StaffProfessionalDevelopmentSection';
 import StaffPayslipsSection from '@/components/admin/StaffPayslipsSection';
 import StaffLunchSection from '@/components/admin/StaffLunchSection';
+import StaffAttendanceSection from '@/components/admin/StaffAttendanceSection';
 
 const UPLOAD_ENDPOINT = '/api/admin/staff/upload';
 
@@ -367,6 +368,7 @@ export default function StaffCard({
         )}
       </div>
 
+      <StaffAttendanceSection adminUserId={staff.id} canEdit={canEdit} />
       <StaffProfessionalDevelopmentSection adminUserId={staff.id} canEdit={canEdit} />
       <StaffLunchSection adminUserId={staff.id} />
       <StaffPayslipsSection adminUserId={staff.id} canEdit={canEdit} isSelf={isSelf} staffDobOnFile={!!staff.dob} />

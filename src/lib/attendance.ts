@@ -1,6 +1,6 @@
 import { sql } from '@/lib/db';
 
-const SCHOOL_TIMEZONE = 'Asia/Makassar';
+export const SCHOOL_TIMEZONE = 'Asia/Makassar';
 
 /** School-local "today" as YYYY-MM-DD, used to group check-in/out events into a school day and to
  * decide the kiosk's default AM/PM mode — the server may run in UTC, so this can't just be

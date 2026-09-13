@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 38;
+const SCHEMA_VERSION = 39;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2447,6 +2447,31 @@ export function ensureSchema(): Promise<void> {
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_resource_requests_staff ON resource_requests (requested_by)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_resource_requests_status ON resource_requests (status)`;
+
+      // Staff check-in/out -- the same idea as attendance_events for students, scoped to
+      // admin_users instead of children and without that table's session_type/activity_id split
+      // (staff don't have a separate "activity" attendance concept). No signature column either:
+      // a parent's signature exists because there's no login to prove who's dropping a child off,
+      // but a staff member checking themselves in already IS logged in, so their own session is
+      // the proof. `performed_by_admin_id` is only ever set for source = 'admin' (an office
+      // correction) -- for source = 'self' the actor and the subject are the same admin_user_id,
+      // so there's nothing extra to record. ON DELETE CASCADE matches every other "staff's own"
+      // table (staff_payslips, duty_roster, etc.), not the no-cascade default most admin_users FKs
+      // use for real shared history.
+      await sql`
+        CREATE TABLE IF NOT EXISTS staff_attendance_events (
+          id BIGSERIAL PRIMARY KEY,
+          admin_user_id BIGINT NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+          event_type TEXT NOT NULL CHECK (event_type IN ('check_in', 'check_out')),
+          occurred_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          source TEXT NOT NULL CHECK (source IN ('self', 'admin')),
+          performed_by_admin_id BIGINT REFERENCES admin_users(id),
+          notes TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_staff_attendance_events_staff_time ON staff_attendance_events (admin_user_id, occurred_at DESC)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_staff_attendance_events_occurred_at ON staff_attendance_events (occurred_at)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();
