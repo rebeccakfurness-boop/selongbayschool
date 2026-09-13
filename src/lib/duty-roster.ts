@@ -10,6 +10,9 @@ export type DutyType =
   | 'cca_supervision'
   | 'non_contact_admin'
   | 'online_teaching_duty'
+  | 'kindergarten_teaching'
+  | 'primary_teaching'
+  | 'secondary_teaching'
   | 'other';
 
 export const DUTY_TYPE_LABELS: Record<DutyType, string> = {
@@ -19,6 +22,9 @@ export const DUTY_TYPE_LABELS: Record<DutyType, string> = {
   cca_supervision: 'CCA Supervision',
   non_contact_admin: 'Non-Contact / Admin Time',
   online_teaching_duty: 'Online Teaching Duty',
+  kindergarten_teaching: 'Kindergarten Teaching',
+  primary_teaching: 'Primary Teaching',
+  secondary_teaching: 'Secondary Teaching',
   other: 'Other',
 };
 
@@ -46,6 +52,9 @@ export const DUTY_PRESETS: DutyPreset[] = [
   { dutyType: 'cca_supervision', label: 'CCA Supervision', startTime: '13:30', endTime: '15:30' },
   { dutyType: 'non_contact_admin', label: 'Non-Contact / Admin Time', startTime: '13:30', endTime: '15:30' },
   { dutyType: 'online_teaching_duty', label: 'Online Teaching Duty', startTime: '08:30', endTime: '10:00' },
+  { dutyType: 'kindergarten_teaching', label: 'Kindergarten Teaching', startTime: '08:30', endTime: '15:30' },
+  { dutyType: 'primary_teaching', label: 'Primary Teaching', startTime: '08:30', endTime: '15:30' },
+  { dutyType: 'secondary_teaching', label: 'Secondary Teaching', startTime: '08:30', endTime: '15:30' },
 ];
 
 export interface DutyRosterRow {

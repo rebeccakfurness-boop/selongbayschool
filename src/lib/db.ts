@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 39;
+const SCHEMA_VERSION = 40;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2472,6 +2472,19 @@ export function ensureSchema(): Promise<void> {
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_staff_attendance_events_staff_time ON staff_attendance_events (admin_user_id, occurred_at DESC)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_staff_attendance_events_occurred_at ON staff_attendance_events (occurred_at)`;
+
+      // Three area-teaching duty types, alongside the existing whole-school/individual ones --
+      // for a general "teaching in Kindergarten/Primary/Secondary" block on someone's roster
+      // (e.g. a floating or casual teacher) without needing a full per-subject class_schedule
+      // entry for it. Auto-generated constraint name from the original inline CHECK.
+      await sql`ALTER TABLE duty_roster DROP CONSTRAINT IF EXISTS duty_roster_duty_type_check`;
+      await sql`
+        ALTER TABLE duty_roster ADD CONSTRAINT duty_roster_duty_type_check
+        CHECK (duty_type IN (
+          'welcome_to_school', 'break_duty', 'lunch_duty', 'cca_supervision', 'non_contact_admin', 'online_teaching_duty',
+          'kindergarten_teaching', 'primary_teaching', 'secondary_teaching', 'other'
+        ))
+      `;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();
