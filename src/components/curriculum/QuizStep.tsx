@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { CurriculumLesson } from '@/lib/curriculum';
 import type { TranslatedQuizQuestion } from '@/lib/curriculum-translation';
 import ReadAloudButton from '@/components/curriculum/ReadAloudButton';
@@ -202,6 +202,9 @@ function OpenResponseQuestion({
   const [submitted, setSubmitted] = useState(!!existing);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Whatever was already typed before this recording started -- dictation appends onto it rather
+  // than overwriting it, same as tapping into a text field mid-sentence rather than clearing it.
+  const textBeforeDictationRef = useRef('');
 
   async function submitAndAdvance() {
     if (!openResponse) {
@@ -244,7 +247,7 @@ function OpenResponseQuestion({
           <ReadAloudButton text={displayQuestion} />
         </div>
         <p className="mt-4 inline-block rounded-full bg-lime-200 px-3 py-1 text-xs font-bold text-ink">
-          Answer in your own words — type it, or record yourself saying it
+          Answer in your own words — type it, or record yourself saying it (many browsers will type out what you say too)
         </p>
         {displayHint && <p className="mt-2 text-sm italic text-ink-soft">💡 {displayHint}</p>}
 
@@ -261,6 +264,13 @@ function OpenResponseQuestion({
               pathPrefix={`children/${openResponse.childId}/lesson-answers/${question.id}`}
               uploadEndpoint={openResponse.uploadEndpoint}
               onRecorded={setAudioUrl}
+              onRecordingStart={() => {
+                textBeforeDictationRef.current = text;
+              }}
+              onTranscript={(spoken) => {
+                const base = textBeforeDictationRef.current;
+                setText(base ? `${base} ${spoken}` : spoken);
+              }}
             />
             {existing?.grade && (
               <div className="rounded-md border border-teal/40 bg-teal/10 p-3 text-sm">
