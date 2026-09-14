@@ -5,6 +5,7 @@ import type {
   WorkbookAnalysis,
   GeneratedUnit,
 } from './types';
+import { isKindergartenYearLevel } from '@/lib/curriculum-year-levels';
 
 /** claude-sonnet-5, not the default claude-opus-5 -- an explicit, cost-driven choice (this runs
  * across many subjects, not just one course), made by a human request, not by this provider's own
@@ -538,6 +539,34 @@ export class AnthropicContentGenerationProvider implements ContentGenerationProv
     });
   }
 
+  /** Kindergarten's equivalent of parseSyllabus -- there's no exam-board document to read, so this
+   * plans a term's topics directly from early-years framework knowledge instead of extracted PDF
+   * text. Returns the exact same ParsedSyllabus shape (same PARSE_SYLLABUS_SCHEMA), so job-runner's
+   * runInitStep can feed the result straight into persistSyllabusTopics/insertGeneratedUnit
+   * unchanged -- this is the only new method the Kindergarten path needed; everything downstream
+   * of "we now have a topic tree" is shared with the exam-track flow. */
+  async planEarlyYearsUnits(input: { className: string; subject: string }): Promise<ParsedSyllabus> {
+    const isToddler = input.className === 'Kindergarten 2-3';
+    return callForStructuredOutput<ParsedSyllabus>({
+      system:
+        'You are an experienced early-years educator planning a term of play-based learning. ' +
+        (isToddler
+          ? "This class is toddlers aged 2-3. There is no official Cambridge International curriculum below age 3 -- scale down " +
+            'age-appropriate developmental milestones for this area of learning rather than inventing exam-style content, and ' +
+            "label it as your own school's toddler programme, not as an official Cambridge offering. Keep every topic short, " +
+            'concrete, and sensory/play-based (things a 2-3 year old can touch, do, or imitate).'
+          : "This class is Cambridge International's Early Years EY2 stage (age 4-5). Ground every topic in Cambridge's real " +
+            'Early Years learning goals for this area of learning and age.') +
+        ' Propose 4-6 broad themed topics for one term, each with plain-language learning outcomes a teacher observes during ' +
+        'play, never exam-style assessment objectives. Leave "components" empty -- there is no exam paper structure here.',
+      userContent: `Area of learning: ${input.subject}\nClass: ${input.className}\nPropose this term's topic tree.`,
+      toolName: 'record_early_years_plan',
+      toolDescription: "Records this term's planned topics for an early-years class.",
+      inputSchema: PARSE_SYLLABUS_SCHEMA,
+      maxTokens: 4000,
+    });
+  }
+
   async analyzeWorkbook(input: { workbookText: string; topicTree: { id: string; title: string }[] }): Promise<WorkbookAnalysis> {
     return callForStructuredOutput<WorkbookAnalysis>({
       system:
@@ -570,19 +599,37 @@ export class AnthropicContentGenerationProvider implements ContentGenerationProv
       contextLines.push(`Local references to draw on where natural: ${input.exampleContext.localReferences.join(', ')}.`);
     }
 
-    return callForStructuredOutput<GeneratedUnit>({
-      system:
-        `You are an outstanding ${input.subject} teacher writing a complete, ready-to-teach unit for ${input.className}. ` +
+    // Same schema, same call shape -- only the brief changes. A 2-5 year old can't sit a
+    // multiple-choice quiz or read a worksheet question, so the Kindergarten brief asks for empty
+    // quizQuestions/flashcards, no calculationChecks, only the play-based interactive step types
+    // (never worked_example/interactive_calculator/data_table/proportional_bar_compare, which all
+    // assume an older, exam-track student), and a worksheetContent that's a simple take-home
+    // activity for a parent to do with their child rather than a graded exercise.
+    const isEarlyYears = isKindergartenYearLevel(input.className);
+    const system = isEarlyYears
+      ? `You are an outstanding early-years teacher writing a complete, ready-to-teach play-based unit for ${input.className} ` +
+        `(area of learning: ${input.subject}). Every lesson must be a short, hands-on, teacher-led activity: a real ` +
+        'circle-time/read-aloud or song moment, simple everyday materials, and an interactive step sequence built only from ' +
+        'flip_card, guess_reveal, sort_classify, or tap_reveal_grid steps (never explanation, worked_example, ' +
+        'interactive_calculator, data_table, or proportional_bar_compare -- those assume an older, exam-track student), ' +
+        "ending with a recap_checklist step. Write a full teaching script for the teacher. Leave quizQuestions and " +
+        'flashcards as empty arrays and omit calculationChecks entirely -- no reading-based testing at this age. ' +
+        'worksheetContent should be a simple take-home activity sheet for a parent to do with their child (e.g. a ' +
+        'drawing, matching, or "look around your home for..." prompt) with no marks and no single right answer expected.'
+      : `You are an outstanding ${input.subject} teacher writing a complete, ready-to-teach unit for ${input.className}. ` +
         'Every lesson must be genuinely teachable as written: real explanations with worked examples (not placeholders), ' +
         'a full interactive step sequence (an explanation step must appear before any step that tests it, and every lesson ' +
         'ends with a recap_checklist step), a full teaching script for the teacher, starter and exit quiz questions, ' +
         'flashcards for key terms, and a complete worksheet with an answer key. Every worksheet question with a single ' +
         'correct answer must include that answer. For any lesson with a numeric worked example, include calculationChecks ' +
-        'covering every stated worked answer.',
+        'covering every stated worked answer.';
+
+    return callForStructuredOutput<GeneratedUnit>({
+      system,
       userContent:
         `Topic: ${input.topic.title} (id: ${input.topic.id})${input.topic.description ? `\n${input.topic.description}` : ''}\n` +
         (input.topic.subtopics?.length ? `Subtopics: ${input.topic.subtopics.map((s) => `${s.id} ${s.title}`).join('; ')}\n` : '') +
-        `Assessment objectives: ${input.assessmentObjectives.join(', ')}\n` +
+        `Learning outcomes: ${input.assessmentObjectives.join(', ')}\n` +
         `Write exactly ${input.lessonCount} lesson(s) for this topic.\n` +
         (contextLines.length > 0 ? `${contextLines.join(' ')}\n` : ''),
       toolName: 'record_generated_unit',

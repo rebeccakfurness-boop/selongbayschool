@@ -4,6 +4,7 @@ import { extractPdfTextFromUrl } from './pdf-extract';
 import { AnthropicContentGenerationProvider } from './anthropic-provider';
 import { insertGeneratedUnit, flattenTopics, loadExampleContext, persistSyllabusTopics } from './generate';
 import type { ParsedSyllabus, WorkbookMasterySignal } from './types';
+import { isKindergartenYearLevel } from '@/lib/curriculum-year-levels';
 
 export type GenerationJobStatus = 'pending' | 'parsing' | 'generating' | 'completed' | 'failed';
 
@@ -17,10 +18,12 @@ export interface GenerationJobRow {
   class_name: string;
   subject: string;
   term_label: string;
-  exam_board: string;
-  exam_series: string;
+  // Nullable: a Kindergarten job has no exam board/series and no syllabus PDF -- there's no exam
+  // for a 2-5 year old to sit (see runInitStep's isKindergartenYearLevel branch).
+  exam_board: string | null;
+  exam_series: string | null;
   framework_label: string | null;
-  syllabus_pdf_url: string;
+  syllabus_pdf_url: string | null;
   workbook_pdf_url: string | null;
   status: GenerationJobStatus;
   term_id: number | null;
@@ -43,10 +46,11 @@ export interface CreateGenerationJobData {
   className: string;
   subject: string;
   termLabel: string;
-  examBoard: string;
-  examSeries: string;
+  // Optional/nullable for a Kindergarten job -- see the GenerationJobRow comment above.
+  examBoard: string | null;
+  examSeries: string | null;
   frameworkLabel: string | null;
-  syllabusPdfUrl: string;
+  syllabusPdfUrl: string | null;
   workbookPdfUrl: string | null;
   requestedByAdminUserId: number;
 }
@@ -110,11 +114,16 @@ async function runInitStep(job: GenerationJobRow): Promise<GenerationJobRow> {
     );
   }
 
-  const syllabusText = await extractPdfTextFromUrl(job.syllabus_pdf_url);
   const workbookText = job.workbook_pdf_url ? await extractPdfTextFromUrl(job.workbook_pdf_url) : undefined;
 
   const provider = new AnthropicContentGenerationProvider();
-  const parsedSyllabus = await provider.parseSyllabus({ syllabusText, subject: job.subject });
+  // Kindergarten has no exam-board syllabus PDF to upload -- there's no exam for a 2-5 year old
+  // to sit, so this plans the term's topics directly from framework knowledge instead of parsing
+  // one. See planEarlyYearsUnits's own comment: same ParsedSyllabus shape either way, so nothing
+  // below this line needs to know which path produced it.
+  const parsedSyllabus = isKindergartenYearLevel(job.class_name)
+    ? await provider.planEarlyYearsUnits({ className: job.class_name, subject: job.subject })
+    : await provider.parseSyllabus({ syllabusText: await extractPdfTextFromUrl(job.syllabus_pdf_url!), subject: job.subject });
   const pacing = await computeLessonPacing(job.class_name, job.subject, job.term_label);
   const topLevelTopics = parsedSyllabus.topicTree;
   const lessonCountPerUnit = Math.max(1, Math.round(pacing.sessionCount / Math.max(topLevelTopics.length, 1)));
@@ -123,10 +132,17 @@ async function runInitStep(job: GenerationJobRow): Promise<GenerationJobRow> {
     ? (await provider.analyzeWorkbook({ workbookText, topicTree: flattenTopics(topLevelTopics) })).masterySignals
     : [];
 
+  // Deterministic, not left to the model: which real (or honestly-labeled non-Cambridge) framework
+  // a Kindergarten programme is following depends only on which of the two classes this is, not
+  // on anything Claude might or might not have filled into parsedSyllabus.frameworkLabel.
+  const kindergartenFrameworkLabel =
+    job.class_name === 'Kindergarten 2-3' ? 'Cambridge-inspired (Toddler/Nursery)' : job.class_name === 'Kindergarten 4-5' ? 'Cambridge Early Years (EY2)' : null;
+
   const [term] = (await sql`
     INSERT INTO curriculum_terms (class_name, subject, term_label, framework_label, exam_board, exam_series, syllabus_pdf_url, workbook_pdf_url)
     VALUES (
-      ${job.class_name}, ${job.subject}, ${job.term_label}, ${job.framework_label ?? parsedSyllabus.frameworkLabel ?? null},
+      ${job.class_name}, ${job.subject}, ${job.term_label},
+      ${job.framework_label ?? kindergartenFrameworkLabel ?? parsedSyllabus.frameworkLabel ?? null},
       ${job.exam_board}, ${job.exam_series}, ${job.syllabus_pdf_url}, ${job.workbook_pdf_url}
     )
     RETURNING id
@@ -136,7 +152,7 @@ async function runInitStep(job: GenerationJobRow): Promise<GenerationJobRow> {
 
   const entry: GenerationJobProgressEntry = {
     at: new Date().toISOString(),
-    message: `Parsed syllabus: ${topLevelTopics.length} topic(s) found. Pacing: ${pacing.sessionCount} session(s) planned (${pacing.source === 'class_schedule' ? `from the timetable, ${pacing.academicTermLabel}` : 'default -- no matching timetable/academic term found yet'}).`,
+    message: `${isKindergartenYearLevel(job.class_name) ? `Planned ${topLevelTopics.length} topic(s)` : `Parsed syllabus: ${topLevelTopics.length} topic(s) found`}. Pacing: ${pacing.sessionCount} session(s) planned (${pacing.source === 'class_schedule' ? `from the timetable, ${pacing.academicTermLabel}` : 'default -- no matching timetable/academic term found yet'}).`,
   };
   await sql`
     UPDATE curriculum_generation_jobs SET

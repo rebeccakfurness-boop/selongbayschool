@@ -4,6 +4,8 @@
  * a fixed reference for that browsing UI, not a DB-enforced enum -- a class_name that doesn't
  * exactly match one of these still works everywhere else, it just won't get a tile here. */
 export const YEAR_LEVELS = [
+  'Kindergarten 2-3',
+  'Kindergarten 4-5',
   'Primary 1',
   'Primary 2',
   'Primary 3',
@@ -28,3 +30,22 @@ export function isPrimaryYearLevel(className: string): boolean {
  * year levels have no equivalent fixed list (IGCSE/A-level subject choice varies too much to
  * assume), so their subject grid only ever shows real existing programmes. */
 export const PRIMARY_SUBJECTS = ['Mathematics', 'English', 'Science', 'Art & Design', 'Global Perspectives', 'Computing'] as const;
+
+export function isKindergartenYearLevel(className: string): boolean {
+  return className === 'Kindergarten 2-3' || className === 'Kindergarten 4-5';
+}
+
+/** Cambridge International Early Years' six areas of learning -- plays the same "not started yet"
+ * placeholder role PRIMARY_SUBJECTS plays for Primary. Genuinely Cambridge for Kindergarten 4-5
+ * (maps onto Cambridge's own EY2 stage, age 4-5); Cambridge has no published stage below age 3,
+ * so for Kindergarten 2-3 these same six areas are used as a "Cambridge-inspired" toddler-scaled
+ * reference rather than an official Cambridge offering -- see each programme's own
+ * framework_label, which spells that distinction out rather than leaving it implicit here. */
+export const KINDERGARTEN_AREAS_OF_LEARNING = [
+  'Communication, Language & Literacy',
+  'Mathematics',
+  'Creative Expression',
+  'Personal, Social & Emotional Development',
+  'Physical Development',
+  'Understanding the World',
+] as const;

@@ -6,6 +6,7 @@ import Button from '@/components/Button';
 import { Field, TextInput } from '@/components/forms/FormField';
 import DocumentUploadField from '@/components/DocumentUploadField';
 import type { GenerationJobRow } from '@/lib/curriculum-generation';
+import { isKindergartenYearLevel } from '@/lib/curriculum-year-levels';
 
 const selectClasses =
   'rounded-sm border border-sand-line bg-white px-4 py-2.5 font-sans text-[15px] text-ink focus:border-teal focus:outline-none focus:ring-2 focus:ring-teal/30';
@@ -20,13 +21,17 @@ async function apiCall(url: string, method: string, body?: unknown): Promise<{ o
   return { ok: res.ok, data };
 }
 
-const STATUS_LABELS: Record<GenerationJobRow['status'], string> = {
-  pending: 'Starting…',
-  parsing: 'Reading the syllabus…',
-  generating: 'Generating lessons…',
-  completed: 'Done',
-  failed: 'Failed',
-};
+function statusLabel(job: GenerationJobRow): string {
+  if (job.status === 'parsing') return isKindergartenYearLevel(job.class_name) ? 'Planning topics…' : 'Reading the syllabus…';
+  const labels: Record<GenerationJobRow['status'], string> = {
+    pending: 'Starting…',
+    parsing: '',
+    generating: 'Generating lessons…',
+    completed: 'Done',
+    failed: 'Failed',
+  };
+  return labels[job.status];
+}
 
 export default function CourseBuilderForm({
   classOptions,
@@ -86,10 +91,10 @@ export default function CourseBuilderForm({
       className,
       subject,
       termLabel,
-      examBoard,
-      examSeries,
+      examBoard: isKindergarten ? null : examBoard,
+      examSeries: isKindergarten ? null : examSeries,
       frameworkLabel: frameworkLabel || null,
-      syllabusPdfUrl,
+      syllabusPdfUrl: isKindergarten ? null : syllabusPdfUrl,
       workbookPdfUrl: workbookPdfUrl || null,
     });
     setStarting(false);
@@ -111,9 +116,10 @@ export default function CourseBuilderForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [job?.id]);
 
+  const isKindergarten = isKindergartenYearLevel(className);
   const canStart =
     !starting && !job && className.trim() !== '' && subject.trim() !== '' && termLabel.trim() !== '' &&
-    examBoard.trim() !== '' && examSeries.trim() !== '' && syllabusPdfUrl != null;
+    (isKindergarten || (examBoard.trim() !== '' && examSeries.trim() !== '' && syllabusPdfUrl != null));
 
   const running = job != null && job.status !== 'completed' && job.status !== 'failed';
   const totalUnits = job?.total_units ?? null;
@@ -160,50 +166,65 @@ export default function CourseBuilderForm({
               disabled={running || job?.status === 'completed'}
             />
           </Field>
-          <Field label="Exam board / code" htmlFor="cb-exam-board" required>
-            <TextInput
-              id="cb-exam-board"
-              required
-              value={examBoard}
-              onChange={(e) => setExamBoard(e.target.value)}
-              placeholder="e.g. Cambridge IGCSE 0455"
-              disabled={running || job?.status === 'completed'}
-            />
-          </Field>
-          <Field label="Exam series" htmlFor="cb-exam-series" required>
-            <TextInput
-              id="cb-exam-series"
-              required
-              value={examSeries}
-              onChange={(e) => setExamSeries(e.target.value)}
-              placeholder="e.g. May/June 2027"
-              disabled={running || job?.status === 'completed'}
-            />
-          </Field>
-          <Field label="Curriculum framework" htmlFor="cb-framework">
-            <TextInput
-              id="cb-framework"
-              value={frameworkLabel}
-              onChange={(e) => setFrameworkLabel(e.target.value)}
-              placeholder="Optional, e.g. Cambridge International"
-              disabled={running || job?.status === 'completed'}
-            />
-          </Field>
+          {!isKindergarten && (
+            <>
+              <Field label="Exam board / code" htmlFor="cb-exam-board" required>
+                <TextInput
+                  id="cb-exam-board"
+                  required
+                  value={examBoard}
+                  onChange={(e) => setExamBoard(e.target.value)}
+                  placeholder="e.g. Cambridge IGCSE 0455"
+                  disabled={running || job?.status === 'completed'}
+                />
+              </Field>
+              <Field label="Exam series" htmlFor="cb-exam-series" required>
+                <TextInput
+                  id="cb-exam-series"
+                  required
+                  value={examSeries}
+                  onChange={(e) => setExamSeries(e.target.value)}
+                  placeholder="e.g. May/June 2027"
+                  disabled={running || job?.status === 'completed'}
+                />
+              </Field>
+              <Field label="Curriculum framework" htmlFor="cb-framework">
+                <TextInput
+                  id="cb-framework"
+                  value={frameworkLabel}
+                  onChange={(e) => setFrameworkLabel(e.target.value)}
+                  placeholder="Optional, e.g. Cambridge International"
+                  disabled={running || job?.status === 'completed'}
+                />
+              </Field>
+            </>
+          )}
         </div>
 
+        {isKindergarten && (
+          <p className="mt-4 rounded-sm border border-dashed border-sand-line bg-sand/20 p-3 text-xs text-ink-soft">
+            No exam board, exam series, or syllabus PDF needed for Kindergarten -- Claude plans this term&apos;s topics
+            directly from early-years framework knowledge instead: Cambridge Early Years (EY2) for Kindergarten 4-5, or a
+            clearly-labeled Cambridge-inspired toddler programme for Kindergarten 2-3 (Cambridge has no official curriculum
+            below age 3).
+          </p>
+        )}
+
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Syllabus PDF *</p>
-            <div className="mt-1">
-              <DocumentUploadField
-                currentUrl={syllabusPdfUrl}
-                pathPrefix="course-builder-syllabi"
-                label="syllabus PDF"
-                accept="application/pdf"
-                onUploaded={(url) => setSyllabusPdfUrl(url)}
-              />
+          {!isKindergarten && (
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Syllabus PDF *</p>
+              <div className="mt-1">
+                <DocumentUploadField
+                  currentUrl={syllabusPdfUrl}
+                  pathPrefix="course-builder-syllabi"
+                  label="syllabus PDF"
+                  accept="application/pdf"
+                  onUploaded={(url) => setSyllabusPdfUrl(url)}
+                />
+              </div>
             </div>
-          </div>
+          )}
           <div>
             <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Workbook PDF (optional)</p>
             <p className="mt-0.5 text-xs text-ink-soft">
@@ -238,7 +259,7 @@ export default function CourseBuilderForm({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="font-display text-lg font-semibold text-ink">
               {job.status === 'failed' ? '⚠ ' : ''}
-              {STATUS_LABELS[job.status]}
+              {statusLabel(job)}
             </h2>
             {job.status === 'completed' && job.term_id != null && (
               <Link

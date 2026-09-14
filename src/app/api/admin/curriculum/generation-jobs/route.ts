@@ -32,10 +32,10 @@ export async function POST(req: NextRequest) {
       className: d.className,
       subject: d.subject,
       termLabel: d.termLabel,
-      examBoard: d.examBoard,
-      examSeries: d.examSeries,
+      examBoard: d.examBoard || null,
+      examSeries: d.examSeries || null,
       frameworkLabel: d.frameworkLabel || null,
-      syllabusPdfUrl: d.syllabusPdfUrl,
+      syllabusPdfUrl: d.syllabusPdfUrl || null,
       workbookPdfUrl: d.workbookPdfUrl || null,
       requestedByAdminUserId: staff.adminUserId,
     });

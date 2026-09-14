@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isKindergartenYearLevel } from '@/lib/curriculum-year-levels';
 
 /** Prefixes a Zod validation error with the field it came from (e.g. "dob: must be a valid date
  * (YYYY-MM-DD)") instead of the bare message alone — on a form with dozens of fields bundled into
@@ -1119,16 +1120,28 @@ export const onlineProgressStepSchema = z.discriminatedUnion('step', [
 ]);
 export type OnlineProgressStepInput = z.infer<typeof onlineProgressStepSchema>;
 
-export const createGenerationJobSchema = z.object({
-  className: z.string().trim().min(1, 'Class is required').max(100),
-  subject: z.string().trim().min(1, 'Subject is required').max(200),
-  termLabel: z.string().trim().min(1, 'Term is required').max(200),
-  examBoard: z.string().trim().min(1, 'Exam board / code is required').max(200),
-  examSeries: z.string().trim().min(1, 'Exam series is required').max(100),
-  frameworkLabel: z.string().trim().max(200).nullable().optional(),
-  syllabusPdfUrl: z.string().trim().url().max(2000),
-  workbookPdfUrl: z.string().trim().url().max(2000).nullable().optional(),
-});
+// Exam board/series and a syllabus PDF are required for every exam-track class, but a
+// Kindergarten job has none of the three -- there's no exam for a 2-5 year old to sit (see
+// job-runner.ts's isKindergartenYearLevel branch, which plans topics from framework knowledge
+// instead of a parsed syllabus). Conditional on className via .superRefine rather than two
+// separate schemas, since every other field is identical either way.
+export const createGenerationJobSchema = z
+  .object({
+    className: z.string().trim().min(1, 'Class is required').max(100),
+    subject: z.string().trim().min(1, 'Subject is required').max(200),
+    termLabel: z.string().trim().min(1, 'Term is required').max(200),
+    examBoard: z.string().trim().max(200).nullable().optional(),
+    examSeries: z.string().trim().max(100).nullable().optional(),
+    frameworkLabel: z.string().trim().max(200).nullable().optional(),
+    syllabusPdfUrl: z.string().trim().url().max(2000).nullable().optional(),
+    workbookPdfUrl: z.string().trim().url().max(2000).nullable().optional(),
+  })
+  .superRefine((v, ctx) => {
+    if (isKindergartenYearLevel(v.className)) return;
+    if (!v.examBoard?.trim()) ctx.addIssue({ code: 'custom', message: 'Exam board / code is required', path: ['examBoard'] });
+    if (!v.examSeries?.trim()) ctx.addIssue({ code: 'custom', message: 'Exam series is required', path: ['examSeries'] });
+    if (!v.syllabusPdfUrl?.trim()) ctx.addIssue({ code: 'custom', message: 'A syllabus PDF is required', path: ['syllabusPdfUrl'] });
+  });
 export type CreateGenerationJobInput = z.infer<typeof createGenerationJobSchema>;
 
 // --- Static course import (no LLM call) -----------------------------------------------------

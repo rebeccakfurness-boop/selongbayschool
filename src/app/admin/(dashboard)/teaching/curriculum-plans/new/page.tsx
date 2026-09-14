@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff, getAssignedClasses } from '@/lib/current-staff';
 import { getWeeklyScheduleForClasses } from '@/lib/class-schedule';
+import { isKindergartenYearLevel, KINDERGARTEN_AREAS_OF_LEARNING } from '@/lib/curriculum-year-levels';
 import CourseBuilderForm from '@/components/admin/CourseBuilderForm';
 
 export const dynamic = 'force-dynamic';
@@ -25,6 +26,17 @@ export default async function NewCoursePage() {
   for (const row of schedule) {
     const list = (subjectsByClass[row.class_name] ??= []);
     if (!list.includes(row.subject)) list.push(row.subject);
+  }
+  // Kindergarten's six areas of learning are always offered as subject suggestions, same as
+  // PRIMARY_SUBJECTS does for the Lesson Planning grid -- unlike Primary/Secondary's real
+  // timetable subjects above, there's no guarantee a Kindergarten class has a weekly schedule
+  // entry yet for these to fall back to.
+  for (const className of classOptions) {
+    if (!isKindergartenYearLevel(className)) continue;
+    const list = (subjectsByClass[className] ??= []);
+    for (const area of KINDERGARTEN_AREAS_OF_LEARNING) {
+      if (!list.includes(area)) list.push(area);
+    }
   }
 
   return (

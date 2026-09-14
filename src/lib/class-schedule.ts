@@ -19,9 +19,12 @@ export const DAY_LABELS: Record<DayOfWeek, string> = {
  * new Weekly Schedule slot, instead of every distinct class_name a child happens to have (which
  * includes years of inconsistent real-world variants: "G1", "Kindergarten", "Grade 2", etc.).
  * Distinct from YEAR_LEVELS in curriculum-year-levels.ts (Lesson Planning & Preparation's tile
- * list): Early Years has no curriculum content, so it belongs here but not there. */
+ * list), though the two Kindergarten classes now appear on both -- unlike the old single "Early
+ * Years" entry they replace, Kindergarten has real curriculum content (see
+ * isKindergartenYearLevel/KINDERGARTEN_AREAS_OF_LEARNING there). */
 export const WEEKLY_SCHEDULE_CLASSES = [
-  'Early Years',
+  'Kindergarten 2-3',
+  'Kindergarten 4-5',
   'Primary 1',
   'Primary 2',
   'Primary 3',
@@ -33,11 +36,9 @@ export const WEEKLY_SCHEDULE_CLASSES = [
   'Secondary 9',
 ] as const;
 
-/** The three areas "My Roster" groups WEEKLY_SCHEDULE_CLASSES into for its area rosters --
- * Kindergarten is "Early Years" under its usual school-facing name (the class_name itself stays
- * "Early Years" everywhere else; this is purely a display grouping). */
+/** The three areas "My Roster" groups WEEKLY_SCHEDULE_CLASSES into for its area rosters. */
 export const SCHOOL_AREAS: { label: string; classes: (typeof WEEKLY_SCHEDULE_CLASSES)[number][] }[] = [
-  { label: 'Kindergarten', classes: ['Early Years'] },
+  { label: 'Kindergarten', classes: ['Kindergarten 2-3', 'Kindergarten 4-5'] },
   { label: 'Primary', classes: ['Primary 1', 'Primary 2', 'Primary 3', 'Primary 4', 'Primary 5', 'Primary 6'] },
   { label: 'Secondary', classes: ['Secondary 7', 'Secondary 8', 'Secondary 9'] },
 ];

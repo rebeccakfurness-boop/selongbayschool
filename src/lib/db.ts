@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 41;
+const SCHEMA_VERSION = 42;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2485,6 +2485,15 @@ export function ensureSchema(): Promise<void> {
           'kindergarten_teaching', 'primary_teaching', 'secondary_teaching', 'all_staff_meeting', 'other'
         ))
       `;
+
+      // Kindergarten AI Course Builder jobs have no exam board/series and no syllabus PDF to
+      // upload -- there's no exam for a 2-5 year old to sit, so runInitStep skips the PDF-parsing
+      // step entirely for a Kindergarten class_name and calls planEarlyYearsUnits instead (see
+      // job-runner.ts/anthropic-provider.ts). curriculum_terms already allows null on all three of
+      // these columns; this brings curriculum_generation_jobs in line with it.
+      await sql`ALTER TABLE curriculum_generation_jobs ALTER COLUMN exam_board DROP NOT NULL`;
+      await sql`ALTER TABLE curriculum_generation_jobs ALTER COLUMN exam_series DROP NOT NULL`;
+      await sql`ALTER TABLE curriculum_generation_jobs ALTER COLUMN syllabus_pdf_url DROP NOT NULL`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

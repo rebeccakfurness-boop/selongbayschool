@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ensureSchema } from '@/lib/db';
 import { getCurrentStaff, canAccessClass } from '@/lib/current-staff';
 import { getCurriculumTermsForClasses } from '@/lib/curriculum';
-import { PRIMARY_SUBJECTS, isPrimaryYearLevel } from '@/lib/curriculum-year-levels';
+import { PRIMARY_SUBJECTS, isPrimaryYearLevel, KINDERGARTEN_AREAS_OF_LEARNING, isKindergartenYearLevel } from '@/lib/curriculum-year-levels';
 import TeachingTabs from '@/components/admin/TeachingTabs';
 
 export const dynamic = 'force-dynamic';
@@ -33,7 +33,12 @@ export default async function LessonPlanningYearLevelPage({ params }: { params: 
   }
 
   const isPrimary = isPrimaryYearLevel(className);
-  const subjectsToShow = isPrimary ? [...new Set([...PRIMARY_SUBJECTS, ...termsBySubject.keys()])] : [...termsBySubject.keys()].sort();
+  const isKindergarten = isKindergartenYearLevel(className);
+  const subjectsToShow = isPrimary
+    ? [...new Set([...PRIMARY_SUBJECTS, ...termsBySubject.keys()])]
+    : isKindergarten
+      ? [...new Set([...KINDERGARTEN_AREAS_OF_LEARNING, ...termsBySubject.keys()])]
+      : [...termsBySubject.keys()].sort();
 
   return (
     <section>
