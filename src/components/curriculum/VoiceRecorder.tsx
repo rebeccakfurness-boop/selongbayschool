@@ -3,6 +3,18 @@
 import { useRef, useState } from 'react';
 import { upload } from '@vercel/blob/client';
 
+/** `new MediaRecorder(stream)` with no explicit mimeType lets the browser pick its own default
+ * container -- on Chrome/Edge that's often "video/webm" even for an audio-only stream (no video
+ * track, just the container format's own default label). The upload's allowedContentTypes only
+ * lists audio/* types, so an unrequested video/webm blob was being rejected outright by Vercel
+ * Blob ("Content type mismatch"). Requesting an audio-only mimeType explicitly, in the order a
+ * browser is actually likely to support it, avoids ever producing that mismatch in the first
+ * place. */
+function pickAudioMimeType(): string | undefined {
+  const candidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg'];
+  return candidates.find((t) => typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported?.(t));
+}
+
 /** Records a spoken answer with the browser's own MediaRecorder (no server-side speech processing
  * — a teacher listens to it directly when marking), then uploads it the same way every other
  * student file goes up (see /api/student/upload). pathPrefix should be unique per question/child
@@ -28,7 +40,8 @@ export default function VoiceRecorder({
     setError(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
+      const mimeType = pickAudioMimeType();
+      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
       chunksRef.current = [];
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) chunksRef.current.push(e.data);
@@ -39,7 +52,8 @@ export default function VoiceRecorder({
         setPreviewUrl(URL.createObjectURL(blob));
         setUploading(true);
         try {
-          const ext = (recorder.mimeType || 'audio/webm').includes('mp4') ? 'm4a' : 'webm';
+          const actualMimeType = recorder.mimeType || 'audio/webm';
+          const ext = actualMimeType.includes('mp4') ? 'm4a' : actualMimeType.includes('ogg') ? 'ogg' : 'webm';
           const result = await upload(`${pathPrefix}/answer-${Date.now()}.${ext}`, blob, {
             access: 'public',
             handleUploadUrl: uploadEndpoint || '/api/student/upload',
