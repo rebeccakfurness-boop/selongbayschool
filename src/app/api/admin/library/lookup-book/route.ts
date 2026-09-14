@@ -23,9 +23,24 @@ function stripHtml(value: string): string {
   return value.replace(/<[^>]+>/g, '').trim();
 }
 
+/** Open Library's own API docs: an unidentified request (no User-Agent) is throttled to 1
+ * req/sec and can be blocked outright, while a request that identifies the app + a contact gets
+ * a 3x allowance. Every fetch below was previously going out with no headers at all — on a
+ * shared serverless IP range (many other apps' traffic counted against the same "unidentified"
+ * bucket), that's enough on its own to make every lookup fail with nothing more than a silently
+ * swallowed non-ok response. Sent on the Google Books calls too even though it's not documented
+ * as required there -- harmless, and the same defensive move if Google ever applies similar
+ * bot heuristics to unidentified traffic. */
+const USER_AGENT = 'SelongBaySchoolLibrary/1.0 (https://selongbayschool.com; library@selongbayschool.com)';
+
 async function fetchJson<T>(url: string): Promise<T | null> {
-  const res = await fetch(url);
-  if (!res.ok) return null;
+  const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' } });
+  if (!res.ok) {
+    // Previously silent -- a non-ok response here (403/429 from Open Library's rate limiter,
+    // most likely) looked identical to "no results" with nothing in the logs to tell them apart.
+    console.error(`[api/admin/library/lookup-book] fetch failed: ${res.status} ${res.statusText} - ${url}`);
+    return null;
+  }
   return (await res.json()) as T;
 }
 
