@@ -410,6 +410,7 @@ export const dutyRosterEntrySchema = z
       'kindergarten_teaching',
       'primary_teaching',
       'secondary_teaching',
+      'all_staff_meeting',
       'other',
     ]),
     dayOfWeek: z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']),

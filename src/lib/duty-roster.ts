@@ -13,6 +13,7 @@ export type DutyType =
   | 'kindergarten_teaching'
   | 'primary_teaching'
   | 'secondary_teaching'
+  | 'all_staff_meeting'
   | 'other';
 
 export const DUTY_TYPE_LABELS: Record<DutyType, string> = {
@@ -25,14 +26,17 @@ export const DUTY_TYPE_LABELS: Record<DutyType, string> = {
   kindergarten_teaching: 'Kindergarten Teaching',
   primary_teaching: 'Primary Teaching',
   secondary_teaching: 'Secondary Teaching',
+  all_staff_meeting: 'All Staff Meeting',
   other: 'Other',
 };
 
-/** The whole-school day structure -- Welcome to School, play break, lunch, and CCAs -- as
- * opposed to non_contact_admin/online_teaching_duty, which are per-teacher arrangements with no
- * single school-wide time. Drives the Grand Roster section of "My Roster" (every staff member's
- * view of the common daily structure, not just their own duties). */
-export const SCHOOL_WIDE_DUTY_TYPES: DutyType[] = ['welcome_to_school', 'break_duty', 'lunch_duty', 'cca_supervision'];
+/** The whole-school day structure -- Welcome to School, play break, lunch, CCAs, and an all-staff
+ * meeting -- as opposed to non_contact_admin/online_teaching_duty/the area-teaching types, which
+ * are per-teacher arrangements with no single school-wide time. Drives the Grand Roster section of
+ * "My Roster" (every staff member's view of the common structure, not just their own duties). An
+ * all-staff meeting belongs here by definition -- it's the one entry on this list that isn't a
+ * daily fixture, but every staff member is still meant to see it, same as the daily ones. */
+export const SCHOOL_WIDE_DUTY_TYPES: DutyType[] = ['welcome_to_school', 'break_duty', 'lunch_duty', 'cca_supervision', 'all_staff_meeting'];
 
 export interface DutyPreset {
   dutyType: DutyType;
@@ -55,6 +59,7 @@ export const DUTY_PRESETS: DutyPreset[] = [
   { dutyType: 'kindergarten_teaching', label: 'Kindergarten Teaching', startTime: '08:30', endTime: '15:30' },
   { dutyType: 'primary_teaching', label: 'Primary Teaching', startTime: '08:30', endTime: '15:30' },
   { dutyType: 'secondary_teaching', label: 'Secondary Teaching', startTime: '08:30', endTime: '15:30' },
+  { dutyType: 'all_staff_meeting', label: 'All Staff Meeting', startTime: '15:30', endTime: '16:30' },
 ];
 
 export interface DutyRosterRow {
