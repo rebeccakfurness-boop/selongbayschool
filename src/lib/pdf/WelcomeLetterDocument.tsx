@@ -1,4 +1,4 @@
-import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, View, Text, Image, Link, StyleSheet } from '@react-pdf/renderer';
 import { registerBrandFonts, BRAND_COLORS } from './fonts';
 import { LOGO_PNG_BUFFER } from './assets';
 import { siteConfig } from '@/lib/site-content';
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
   bulletRow: { flexDirection: 'row', marginBottom: 5 },
   bulletDot: { width: 12, fontSize: 10, color: BRAND_COLORS.orangeDeep },
   bulletText: { flex: 1, fontSize: 10, lineHeight: 1.4, color: BRAND_COLORS.ink },
+  bulletLink: { flex: 1, fontSize: 10, lineHeight: 1.4, color: BRAND_COLORS.tealDeep, textDecoration: 'underline' },
   detailRow: { flexDirection: 'row', marginBottom: 6 },
   detailLabel: { width: 90, fontSize: 9, fontWeight: 700, color: BRAND_COLORS.ink },
   detailValue: { flex: 1, fontSize: 9.5, color: BRAND_COLORS.ink },
@@ -97,6 +98,10 @@ export function WelcomeLetterDocument({ letter }: { letter: WelcomeLetterPdfData
               <View style={styles.box}>
                 <View style={styles.detailRow}>
                   <Text style={styles.detailLabel}>Drop-off</Text>
+                  <Text style={styles.detailValue}>8:20am</Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Class begins</Text>
                   <Text style={styles.detailValue}>8:30am</Text>
                 </View>
                 <View style={styles.detailRow}>
@@ -105,7 +110,7 @@ export function WelcomeLetterDocument({ letter }: { letter: WelcomeLetterPdfData
                 </View>
                 <View style={styles.detailRow}>
                   <Text style={styles.detailLabel}>Pick-up</Text>
-                  <Text style={styles.detailValue}>3:30pm</Text>
+                  <Text style={styles.detailValue}>3:30pm — from school, or from Lantis Resto on Tuesdays and Thursdays</Text>
                 </View>
               </View>
             </View>
@@ -125,7 +130,118 @@ export function WelcomeLetterDocument({ letter }: { letter: WelcomeLetterPdfData
                   <Text style={styles.detailLabel}>Mariya</Text>
                   <Text style={styles.detailValue}>Admin, via the school number above</Text>
                 </View>
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Emergency</Text>
+                  <Text style={styles.detailValue}>Ms Indhie — +628111959911</Text>
+                </View>
               </View>
+            </View>
+          </View>
+
+          <View style={styles.twoCol}>
+            <View style={styles.colHalf}>
+              <Text style={styles.sectionTitle}>Our campus at SABA</Text>
+              <View style={styles.box}>
+                <View style={styles.bulletRow}>
+                  <Text style={styles.bulletDot}>•</Text>
+                  <Link src="https://maps.app.goo.gl/KPUDWS1TzADn1MK69" style={styles.bulletLink}>
+                    Find SABA on Google Maps
+                  </Link>
+                </View>
+                <View style={styles.bulletRow}>
+                  <Text style={styles.bulletDot}>•</Text>
+                  <Link src="https://saba-lombok.com/" style={styles.bulletLink}>
+                    saba-lombok.com
+                  </Link>
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.colHalf}>
+              <Text style={styles.sectionTitle}>Wifi</Text>
+              <View style={styles.box}>
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Network</Text>
+                  <Text style={styles.detailValue}>Selong BaySchool2</Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Text style={styles.detailLabel}>Password</Text>
+                  <Text style={styles.detailValue}>SBS2026!</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <Text style={styles.sectionTitle}>Tuesday & Thursday activities</Text>
+          <View style={styles.box}>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>When</Text>
+              <Text style={styles.detailValue}>1:30pm – 3:30pm, Tuesdays and Thursdays</Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Where</Text>
+              <Text style={styles.detailValue}>Lantis Resto & Bar</Text>
+            </View>
+            <View style={styles.bulletRow}>
+              <Text style={styles.bulletDot}>•</Text>
+              <Link src="https://share.google/pHectYCXWBheJz5RA" style={styles.bulletLink}>
+                Find Lantis Resto & Bar on Google Maps
+              </Link>
+            </View>
+            <View style={styles.bulletRow}>
+              <Text style={styles.bulletDot}>•</Text>
+              <Link src="https://linktr.ee/lantisrestoandbar" style={styles.bulletLink}>
+                linktr.ee/lantisrestoandbar
+              </Link>
+            </View>
+            <View style={styles.bulletRow}>
+              <Text style={styles.bulletDot}>•</Text>
+              <Text style={styles.bulletText}>
+                Pick-up on these two days is from Lantis Resto at 3:30pm, not from school.
+              </Text>
+            </View>
+          </View>
+
+          <Text style={styles.sectionTitle}>Payments</Text>
+          <View style={styles.box}>
+            <View style={styles.bulletRow}>
+              <Text style={styles.bulletDot}>•</Text>
+              <Text style={styles.bulletText}>You can pay by bank transfer or via Wise.</Text>
+            </View>
+            <View style={styles.bulletRow}>
+              <Text style={styles.bulletDot}>•</Text>
+              <Text style={styles.bulletText}>Our school administrator will send an invoice to your email address.</Text>
+            </View>
+            <View style={styles.bulletRow}>
+              <Text style={styles.bulletDot}>•</Text>
+              <Text style={styles.bulletText}>
+                Please send proof of payment, such as a screenshot, to the school WhatsApp or school email.
+              </Text>
+            </View>
+          </View>
+
+          <Text style={styles.sectionTitle}>The Parent Portal</Text>
+          <View style={styles.box}>
+            <View style={styles.bulletRow}>
+              <Text style={styles.bulletDot}>•</Text>
+              <Text style={styles.bulletText}>
+                Log in from the &apos;Log in&apos; link on our website to check {letter.child_full_name} in and out each day.
+              </Text>
+            </View>
+            <View style={styles.bulletRow}>
+              <Text style={styles.bulletDot}>•</Text>
+              <Text style={styles.bulletText}>You can also book lunches, browse the school library, and book extra activities.</Text>
+            </View>
+            <View style={styles.bulletRow}>
+              <Text style={styles.bulletDot}>•</Text>
+              <Text style={styles.bulletText}>Trouble logging in? Just contact us and we&apos;ll help.</Text>
+            </View>
+            <View style={styles.bulletRow}>
+              <Text style={styles.bulletDot}>•</Text>
+              <Text style={styles.bulletText}>
+                You&apos;ll also be added to our Parent Communication WhatsApp group — let us know if you don&apos;t
+                get access, or don&apos;t use WhatsApp.
+              </Text>
             </View>
           </View>
 
