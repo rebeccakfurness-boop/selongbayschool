@@ -188,6 +188,7 @@ const COMPLIANCE_FIELD_MAP: Record<string, { signed: keyof FormState; date: keyo
 export default function ChildCard({
   child,
   canEdit,
+  canUploadPortfolio,
   learningProfileCount,
   workSamples,
   photos,
@@ -202,6 +203,12 @@ export default function ChildCard({
 }: {
   child: ChildDetail;
   canEdit: boolean;
+  /** Uploading work samples/photos is a teaching-staff action, not a full-record-edit one -- a
+   * teacher assigned to this child's class can add to the Learning Portfolio even though canEdit
+   * (which gates the rest of this card) is admin-only. The upload/delete API routes already
+   * enforce the same class-assignment check independently, so this is a UI convenience, not the
+   * real access boundary. */
+  canUploadPortfolio: boolean;
   learningProfileCount: number;
   workSamples: WorkSample[];
   photos: PhotoFeedItem[];
@@ -563,9 +570,13 @@ export default function ChildCard({
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            <WorkSamplesSection childId={child.id} initial={workSamples} canEdit={canEdit} />
-            <ChildPhotoFeedSection childId={child.id} initial={photos} canEdit={canEdit} />
+          <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
+            <h3 className="font-display text-lg font-bold text-ink">Learning Portfolio</h3>
+            <p className="mt-1 text-sm text-ink-soft">Work samples and photos the teaching team has uploaded for {child.child_full_name}.</p>
+            <div className="mt-4 grid gap-6 md:grid-cols-2">
+              <WorkSamplesSection childId={child.id} initial={workSamples} canEdit={canUploadPortfolio} />
+              <ChildPhotoFeedSection childId={child.id} initial={photos} canEdit={canUploadPortfolio} />
+            </div>
           </div>
 
           <div className="mt-6">

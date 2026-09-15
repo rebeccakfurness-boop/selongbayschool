@@ -17,7 +17,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
       return NextResponse.json({ error: 'Photo not found.' }, { status: 404 });
     }
     const item = rows[0] as { class_name: string | null; uploaded_by: number | null };
-    const isOwnUpload = item.uploaded_by === staff.adminUserId;
+    const isOwnUpload = String(item.uploaded_by) === String(staff.adminUserId);
     if (!isOwnUpload && !(await canAccessClass(staff, item.class_name))) {
       return NextResponse.json({ error: 'You cannot remove this photo.' }, { status: 403 });
     }

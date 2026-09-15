@@ -85,6 +85,10 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
     return renderChildCard({
       child,
       canEdit: staff.role === 'admin',
+      // Both roles that can reach this page may add to the Learning Portfolio -- a teacher only
+      // gets here once already confirmed assigned to this child's class (see the notFound() check
+      // above), and the upload/delete API routes re-check that independently either way.
+      canUploadPortfolio: true,
       learningProfileCount,
       workSamples,
       photos,
