@@ -2,6 +2,8 @@ import Link from 'next/link';
 import type { InvoiceSummaryRow } from '@/lib/lms-data';
 import MarkInvoicePaidButton from '@/components/admin/MarkInvoicePaidButton';
 import SendInvoiceButton from '@/components/admin/SendInvoiceButton';
+import SendRemittanceButton from '@/components/admin/SendRemittanceButton';
+import InvoiceProofOfPaymentControl from '@/components/admin/InvoiceProofOfPaymentControl';
 import VoidInvoiceButton from '@/components/admin/VoidInvoiceButton';
 import DeleteInvoiceButton from '@/components/admin/DeleteInvoiceButton';
 
@@ -48,27 +50,37 @@ export default function InvoicesSection({
       </div>
       <ul className="mt-3 flex flex-col gap-2">
         {invoices.map((inv) => (
-          <li key={inv.id} className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-sand-line px-3 py-2 text-sm">
-            <div>
-              <a href={`/api/invoices/${inv.id}/pdf`} target="_blank" rel="noopener noreferrer" className="font-semibold text-teal-deep underline">
-                Invoice #{String(inv.invoice_number).padStart(3, '0')}
-              </a>
-              <span className="ml-2 text-xs text-ink-soft capitalize">{inv.invoice_type}</span>
+          <li key={inv.id} className="flex flex-col gap-2 rounded-sm border border-sand-line px-3 py-2 text-sm">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <a href={`/api/invoices/${inv.id}/pdf`} target="_blank" rel="noopener noreferrer" className="font-semibold text-teal-deep underline">
+                  Invoice #{String(inv.invoice_number).padStart(3, '0')}
+                </a>
+                <span className="ml-2 text-xs text-ink-soft capitalize">{inv.invoice_type}</span>
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-bold ${STATUS_STYLES[inv.status]}`}>
+                  {statusLabel(inv)}
+                </span>
+                {canEdit && <SendInvoiceButton invoiceId={inv.id} defaultEmail={defaultEmail} />}
+                {canEdit && (
+                  <Link href={`/admin/invoices/${inv.id}/edit`} className="text-xs font-semibold text-teal-deep hover:underline">
+                    Edit
+                  </Link>
+                )}
+                {canEdit && inv.status === 'outstanding' && <MarkInvoicePaidButton invoiceId={inv.id} />}
+                {canEdit && inv.status !== 'cancelled' && <VoidInvoiceButton invoiceId={inv.id} />}
+                {canEdit && <DeleteInvoiceButton invoiceId={inv.id} invoiceNumber={inv.invoice_number} />}
+              </div>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <span className={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-bold ${STATUS_STYLES[inv.status]}`}>
-                {statusLabel(inv)}
-              </span>
-              {canEdit && <SendInvoiceButton invoiceId={inv.id} defaultEmail={defaultEmail} />}
-              {canEdit && (
-                <Link href={`/admin/invoices/${inv.id}/edit`} className="text-xs font-semibold text-teal-deep hover:underline">
-                  Edit
-                </Link>
-              )}
-              {canEdit && inv.status === 'outstanding' && <MarkInvoicePaidButton invoiceId={inv.id} />}
-              {canEdit && inv.status !== 'cancelled' && <VoidInvoiceButton invoiceId={inv.id} />}
-              {canEdit && <DeleteInvoiceButton invoiceId={inv.id} invoiceNumber={inv.invoice_number} />}
-            </div>
+            {canEdit && (
+              <div className="flex flex-wrap items-center gap-3 border-t border-sand-line/70 pt-2">
+                <InvoiceProofOfPaymentControl invoiceId={inv.id} initialUrl={inv.proof_of_payment_url} />
+                {inv.status === 'paid' && (
+                  <SendRemittanceButton invoiceId={inv.id} defaultEmail={defaultEmail} initiallySent={!!inv.remittance_sent_at} />
+                )}
+              </div>
+            )}
           </li>
         ))}
         {invoices.length === 0 && <li className="text-sm text-ink-soft">No invoices yet.</li>}

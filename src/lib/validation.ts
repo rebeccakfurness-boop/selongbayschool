@@ -599,6 +599,16 @@ export const updateInvoiceStatusSchema = z.object({
 });
 export type UpdateInvoiceStatusInput = z.infer<typeof updateInvoiceStatusSchema>;
 
+export const attachInvoiceProofOfPaymentSchema = z.object({
+  proofOfPaymentUrl: z.string().trim().url('Enter a valid URL').max(2000),
+});
+export type AttachInvoiceProofOfPaymentInput = z.infer<typeof attachInvoiceProofOfPaymentSchema>;
+
+export const sendInvoiceRemittanceSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+});
+export type SendInvoiceRemittanceInput = z.infer<typeof sendInvoiceRemittanceSchema>;
+
 export const signComplianceFormSchema = z.object({
   signedByName: z.string().trim().min(1, 'Signed-by name is required').max(200),
   signatureDataUrl: z

@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 42;
+const SCHEMA_VERSION = 43;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2494,6 +2494,14 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE curriculum_generation_jobs ALTER COLUMN exam_board DROP NOT NULL`;
       await sql`ALTER TABLE curriculum_generation_jobs ALTER COLUMN exam_series DROP NOT NULL`;
       await sql`ALTER TABLE curriculum_generation_jobs ALTER COLUMN syllabus_pdf_url DROP NOT NULL`;
+
+      // proof_of_payment_url holds either an uploaded photo's blob URL or a pasted Google Drive
+      // link -- both are just a URL by the time they're stored, so one nullable column covers
+      // either source. remittance_sent_at tracks the last time the manual "Send remittance note"
+      // action fired, purely so the button can show "Sent (send again)" across page loads the
+      // same way an invoice's own "Send to parent" button would like to but doesn't track yet.
+      await sql`ALTER TABLE invoices ADD COLUMN IF NOT EXISTS proof_of_payment_url TEXT`;
+      await sql`ALTER TABLE invoices ADD COLUMN IF NOT EXISTS remittance_sent_at TIMESTAMPTZ`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

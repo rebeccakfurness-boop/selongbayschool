@@ -666,6 +666,39 @@ export async function sendInvoiceEmail(input: InvoiceEmailInput): Promise<boolea
   });
 }
 
+export interface InvoiceRemittanceEmailInput {
+  toEmail: string;
+  billedToName: string;
+  invoiceNumber: number;
+  invoiceType: 'tuition' | 'activity' | 'lunch' | 'library';
+  totalAmount: number;
+  currency: string;
+  paidAtLabel: string;
+}
+
+/** Sent from the manual "Send remittance note" action on an invoice once it's been marked paid —
+ * confirms payment was received, deliberately never sent automatically (the school wants to
+ * personally confirm receipt, e.g. after checking the attached proof of payment, before it goes
+ * out). Same cc-to-school-inbox pattern as every other outbound email in this app. */
+export async function sendInvoiceRemittanceEmail(input: InvoiceRemittanceEmailInput): Promise<boolean> {
+  const amount = input.currency === 'IDR' ? formatIDR(input.totalAmount) : `${input.totalAmount} ${input.currency}`;
+  const html = wrapEmail(
+    `Payment received — Invoice #${String(input.invoiceNumber).padStart(3, '0')}`,
+    `<p>Dear ${input.billedToName},</p>
+     <p>Thank you — we've received your payment for the following ${input.invoiceType} invoice.</p>
+     ${fieldRows([
+       ['Invoice number', `#${String(input.invoiceNumber).padStart(3, '0')}`],
+       ['Amount received', amount],
+       ['Date received', input.paidAtLabel],
+     ])}
+     <p style="margin-top: 16px;">This confirms your payment has been received in full — no further action is needed. If you have any questions, just reply to this email.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `Payment received — Invoice #${String(input.invoiceNumber).padStart(3, '0')} — Selong Bay School`, html, {
+    cc: NOTIFY_TO,
+  });
+}
+
 export interface LunchOrderSupplierEmailInput {
   toEmail: string;
   childFullName: string;
