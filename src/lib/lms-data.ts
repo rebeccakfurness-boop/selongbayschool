@@ -236,10 +236,15 @@ export async function getClassroomSubmissionsForChild(childId: number): Promise<
   `) as unknown as ClassroomSubmissionRow[];
 }
 
-export async function getLearningProfilesForChild(childId: number): Promise<LearningProfileSummaryRow[]> {
+/** onlyVisibleToParent restricts to reports that are both admin-approved AND already sent to the
+ * parent by email — the Parent Portal's own gate (see the Learning Profile PDF route's matching
+ * check). Admin/teacher callers (the Child Card, the admin report list) pass this as false to see
+ * every draft too. */
+export async function getLearningProfilesForChild(childId: number, onlyVisibleToParent = false): Promise<LearningProfileSummaryRow[]> {
   return (await sql`
     SELECT id, term_label, grade_label, created_at FROM learning_profiles
     WHERE child_id = ${childId}
+      AND (${onlyVisibleToParent}::boolean = false OR (status = 'approved' AND sent_at IS NOT NULL))
     ORDER BY created_at DESC
   `) as unknown as LearningProfileSummaryRow[];
 }

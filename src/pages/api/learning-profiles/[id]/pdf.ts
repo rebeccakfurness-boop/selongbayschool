@@ -19,13 +19,26 @@ import { LearningProfileDocument, type LearningProfileData, type LearningProfile
  *
  * Not gated by src/proxy.ts (that middleware only covers /admin, /account, /student paths) —
  * three different session types can legitimately reach this PDF (admin/teacher, the child's
- * guardian, or the child themselves), so authorization is checked here directly instead. */
-async function isAuthorized(req: NextApiRequest, res: NextApiResponse, childId: number, className: string | null): Promise<boolean> {
+ * guardian, or the child themselves), so authorization is checked here directly instead.
+ *
+ * Staff can always preview a report regardless of status (they're the ones drafting/approving
+ * it); a guardian or the student themselves can only reach it once it's been approved AND sent —
+ * the same gate the Parent Portal's own listing uses (see getLearningProfilesForChild), so a
+ * direct link to a not-yet-sent report's PDF doesn't bypass that. */
+async function isAuthorized(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  childId: number,
+  className: string | null,
+  visibleToParent: boolean
+): Promise<boolean> {
   const adminSession = await getIronSession<AdminSessionData>(req, res, await getSessionOptions());
   if (adminSession.adminUserId) {
     if (adminSession.role === 'admin') return true;
     return canAccessClass({ adminUserId: adminSession.adminUserId, email: adminSession.email!, role: 'teacher' }, className);
   }
+
+  if (!visibleToParent) return false;
 
   const customerSession = await getIronSession<CustomerSessionData>(req, res, await getCustomerSessionOptions());
   if (customerSession.customerId) {
@@ -57,6 +70,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const profiles = (await sql`SELECT * FROM learning_profiles WHERE id = ${id}`) as unknown as (LearningProfileData & {
     child_id: number;
+    status: string;
+    sent_at: string | null;
   })[];
   const profile = profiles[0];
   if (!profile) {
@@ -71,7 +86,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return;
   }
 
-  if (!(await isAuthorized(req, res, profile.child_id, child.class_name as string | null))) {
+  const visibleToParent = profile.status === 'approved' && profile.sent_at !== null;
+  if (!(await isAuthorized(req, res, profile.child_id, child.class_name as string | null, visibleToParent))) {
     res.status(403).json({ error: 'Not authorized to view this report.' });
     return;
   }

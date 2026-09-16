@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 43;
+const SCHEMA_VERSION = 44;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2502,6 +2502,19 @@ export function ensureSchema(): Promise<void> {
       // same way an invoice's own "Send to parent" button would like to but doesn't track yet.
       await sql`ALTER TABLE invoices ADD COLUMN IF NOT EXISTS proof_of_payment_url TEXT`;
       await sql`ALTER TABLE invoices ADD COLUMN IF NOT EXISTS remittance_sent_at TIMESTAMPTZ`;
+
+      // Term reports (learning_profiles) used to be visible to parents the moment a teacher
+      // created them. Now a report is admin-approved, then manually emailed, before it's shown in
+      // the Parent Portal -- getLearningProfilesForChild's parent-facing query and the PDF route's
+      // guardian/student authorization both gate on status='approved' AND sent_at IS NOT NULL, so
+      // reverting an already-sent report back to 'draft' (e.g. to fix a mistake) hides it from the
+      // portal again until it's re-approved and re-sent.
+      await sql`ALTER TABLE learning_profiles ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'draft'`;
+      await sql`ALTER TABLE learning_profiles DROP CONSTRAINT IF EXISTS learning_profiles_status_check`;
+      await sql`ALTER TABLE learning_profiles ADD CONSTRAINT learning_profiles_status_check CHECK (status IN ('draft', 'approved'))`;
+      await sql`ALTER TABLE learning_profiles ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ`;
+      await sql`ALTER TABLE learning_profiles ADD COLUMN IF NOT EXISTS approved_by BIGINT REFERENCES admin_users(id)`;
+      await sql`ALTER TABLE learning_profiles ADD COLUMN IF NOT EXISTS sent_at TIMESTAMPTZ`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

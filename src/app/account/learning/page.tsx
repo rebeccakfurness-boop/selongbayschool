@@ -127,7 +127,7 @@ export default async function ParentLearningPage() {
           getWorkSamplesForChild(child.id),
           getPhotoFeedForChild(child.id, child.class_name, 12),
           getResourcesForClassBand(child.class_band),
-          getLearningProfilesForChild(child.id),
+          getLearningProfilesForChild(child.id, true),
           getInvoicesForChild(child.id),
           getClassroomAssignmentsForClass(child.class_name, 5),
           getClassroomSubmissionsForChild(child.id),

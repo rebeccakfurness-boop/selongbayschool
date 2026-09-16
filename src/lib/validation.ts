@@ -387,6 +387,11 @@ export const upsertLearningProfileSchema = z.object({
 });
 export type UpsertLearningProfileInput = z.infer<typeof upsertLearningProfileSchema>;
 
+export const updateLearningProfileStatusSchema = z.object({
+  status: z.enum(['draft', 'approved']),
+});
+export type UpdateLearningProfileStatusInput = z.infer<typeof updateLearningProfileStatusSchema>;
+
 export const upsertLessonPlanSchema = z.object({
   className: z.string().trim().min(1, 'Class is required').max(100),
   weekLabel: z.string().trim().min(1, 'Week is required').max(100),

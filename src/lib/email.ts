@@ -666,6 +666,32 @@ export async function sendInvoiceEmail(input: InvoiceEmailInput): Promise<boolea
   });
 }
 
+export interface LearningProfileEmailInput {
+  toEmail: string;
+  childFullName: string;
+  termLabel: string;
+  pdfBuffer: Buffer;
+}
+
+/** Sent from the admin-only "Send to parent" action on an approved term report — same
+ * cc-to-school-inbox, PDF-attachment pattern as sendInvoiceEmail. Deliberately manual: a report
+ * only reaches a parent's inbox (and only then becomes visible in the Parent Portal) once an admin
+ * has approved it and chosen to send it, never automatically on creation or approval alone. */
+export async function sendLearningProfileEmail(input: LearningProfileEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    `${input.termLabel} report — ${input.childFullName}`,
+    `<p>Dear parent/guardian of ${input.childFullName},</p>
+     <p>Please find attached ${input.childFullName}'s ${input.termLabel} report.</p>
+     <p style="margin-top: 16px;">You can also view and download it any time from the Parent Portal. If you have any questions, just reply to this email.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  const fileName = `${input.childFullName}-${input.termLabel}.pdf`.replace(/[^a-z0-9.-]+/gi, '-');
+  return send(input.toEmail, `${input.termLabel} report — ${input.childFullName} — Selong Bay School`, html, {
+    cc: NOTIFY_TO,
+    attachment: [{ name: fileName, content: input.pdfBuffer.toString('base64') }],
+  });
+}
+
 export interface InvoiceRemittanceEmailInput {
   toEmail: string;
   billedToName: string;
