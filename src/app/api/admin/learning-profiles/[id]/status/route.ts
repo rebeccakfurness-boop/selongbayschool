@@ -46,6 +46,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[api/admin/learning-profiles/:id/status] failed to update', err);
-    return NextResponse.json({ error: 'Could not update report status.' }, { status: 500 });
+    // Admin-only internal route, so it's fine to return the real error rather than a generic
+    // message — see /api/learning-profiles/:id/pdf.ts for the precedent (this is what let a past
+    // schema/rendering bug get diagnosed without database or log access).
+    return NextResponse.json({ error: `Could not update report status: ${err instanceof Error ? err.message : String(err)}` }, { status: 500 });
   }
 }
