@@ -11,26 +11,37 @@ export interface FamilyContactInput {
 /** Finds the existing Family Board card (a `children` row) for this contact, or creates a new
  * status='enquiry' one — the same "log + link" idea already used by the admissions pipeline's
  * "Convert to Family" flow (see convertAdmissionsEnquiry in child-lifecycle.ts), extended here to
- * the public enquiry forms and the Student Enrolment Form. Matches strictly on
+ * the public enquiry forms and the Student Enrolment Form. Matches on
  * children.primary_contact_email/primary_contact_phone, not the free-text parent1_name/parent2_name
  * fields, so a near-miss on name spelling never silently merges two different families onto one
- * card. */
+ * card — but a contact match alone is NOT enough to reuse a card when this call names a specific
+ * child: siblings routinely share one parent email/WhatsApp number, and matching on contact alone
+ * used to fold every sibling's enrolment onto whichever one of them got a card first, silently
+ * overwriting that card's DOB/emergency-contact/lunch/etc. with the last-linked sibling's details.
+ * When childName is given, an existing card only counts as a match if its child_full_name also
+ * matches (case-insensitively) — otherwise a new card is created for this child under the same
+ * contact. When childName is omitted (e.g. attaching a meeting invite to a nameless contact-form
+ * enquiry), matching falls back to contact alone, same as before. */
 export async function findOrCreateFamilyForContact(input: FamilyContactInput): Promise<number> {
   const email = input.parentEmail?.trim().toLowerCase() || null;
   const phone = input.parentPhone?.trim() || null;
+  const childName = input.childName?.trim() || null;
 
   if (email || phone) {
     const rows = (await sql`
       SELECT id FROM children
-      WHERE (${email}::text IS NOT NULL AND lower(primary_contact_email) = ${email})
-         OR (${phone}::text IS NOT NULL AND primary_contact_phone = ${phone})
+      WHERE (
+          (${email}::text IS NOT NULL AND lower(primary_contact_email) = ${email})
+          OR (${phone}::text IS NOT NULL AND primary_contact_phone = ${phone})
+        )
+        AND (${childName}::text IS NULL OR lower(child_full_name) = lower(${childName}))
       ORDER BY id LIMIT 1
     `) as unknown as { id: number }[];
     if (rows[0]) return rows[0].id;
   }
 
   return createChild({
-    childFullName: input.childName?.trim() || input.parentName,
+    childFullName: childName || input.parentName,
     parent1Name: input.parentName,
     primaryContactEmail: email,
     primaryContactPhone: phone,
