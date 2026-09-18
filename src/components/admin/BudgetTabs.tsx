@@ -4,11 +4,16 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function BudgetTabs({ active }: { active: 'dashboard' | 'revenue' | 'expenses' | 'setup' | 'transactions' | 'forecast' }) {
+export default function BudgetTabs({
+  active,
+}: {
+  active: 'dashboard' | 'revenue' | 'expenses' | 'setup' | 'transactions' | 'forecast' | 'import';
+}) {
   const router = useRouter();
   const [locking, setLocking] = useState(false);
   const tabs = [
     { key: 'dashboard', href: '/admin/budget', label: 'Dashboard' },
+    { key: 'import', href: '/admin/budget/import', label: 'Import Statement' },
     { key: 'revenue', href: '/admin/budget/revenue', label: 'Log Revenue' },
     { key: 'expenses', href: '/admin/budget/expenses', label: 'Log Expense' },
     { key: 'forecast', href: '/admin/budget/forecast', label: 'Forecast' },

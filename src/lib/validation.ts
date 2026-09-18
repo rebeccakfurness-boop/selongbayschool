@@ -980,6 +980,11 @@ export const importBatchExpenseRowSchema = z.object({
   authorizedBy: z.string().trim().min(1, 'Enter who authorized or made this purchase').max(200),
 });
 
+export const parseBankStatementSchema = z.object({
+  fileUrl: z.string().trim().url('Enter a valid file URL'),
+});
+export type ParseBankStatementInput = z.infer<typeof parseBankStatementSchema>;
+
 export const createBudgetImportBatchSchema = z.object({
   sourceLabel: z.string().trim().min(1, 'Enter a source label (e.g. the account/statement)').max(300),
   periodStart: importBatchDateStr.nullable().optional(),
