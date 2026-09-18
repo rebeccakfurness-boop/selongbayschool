@@ -36,7 +36,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       UPDATE learning_profiles SET
         status = ${parsed.data.status},
         approved_at = CASE WHEN ${parsed.data.status} = 'approved' THEN now() ELSE NULL END,
-        approved_by = CASE WHEN ${parsed.data.status} = 'approved' THEN ${staff.adminUserId} ELSE NULL END
+        approved_by = CASE WHEN ${parsed.data.status} = 'approved' THEN ${staff.adminUserId}::bigint ELSE NULL END
       WHERE id = ${id}
       RETURNING id
     `;
