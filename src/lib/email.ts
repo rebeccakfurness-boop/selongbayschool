@@ -1049,6 +1049,33 @@ export async function sendChildProfileEditNotification(input: {
   return results.every(Boolean);
 }
 
+/** Sent by the daily birthday-reminders cron, `daysBefore` days ahead of a child's birthday — goes
+ * to the school inbox and every teacher assigned to the child's class, same recipient-fan-out shape
+ * as sendChildProfileEditNotification, since send() only takes one "to" address at a time.
+ * teacherEmails is often empty for a class with no assigned teacher yet, in which case this still
+ * reaches the school inbox. daysBefore is passed in rather than imported from
+ * lib/birthday-reminders.ts (the cron's own BIRTHDAY_REMINDER_DAYS_BEFORE constant) so this file
+ * keeps its existing one-directional dependency shape: data-layer modules import from email.ts,
+ * never the other way round. */
+export async function sendBirthdayReminderEmail(input: {
+  childFullName: string;
+  className: string | null;
+  turningAge: number;
+  birthdayDateLabel: string;
+  daysBefore: number;
+  teacherEmails: string[];
+}): Promise<boolean> {
+  const html = wrapEmail(
+    'Upcoming student birthday',
+    `<p><strong>${input.childFullName}</strong>${input.className ? ` (${input.className})` : ''} turns <strong>${input.turningAge}</strong> on <strong>${input.birthdayDateLabel}</strong> — coming up in ${input.daysBefore} days.</p>
+     <p style="margin-top: 16px;">A little heads-up in case you'd like to plan something for the day.</p>`
+  );
+  const subject = `${input.childFullName} turns ${input.turningAge} on ${input.birthdayDateLabel} — Selong Bay School`;
+  const recipients = [NOTIFY_TO, ...input.teacherEmails.filter((e) => e !== NOTIFY_TO)];
+  const results = await Promise.all(recipients.map((to) => send(to, subject, html)));
+  return results.every(Boolean);
+}
+
 /** Sent to the school inbox the moment a parent submits a concern through the portal (see
  * src/lib/parent-feedback.ts) -- replyTo is the parent's own email so a staff member can respond
  * directly from their inbox without looking anything up first. Subject is prefixed for anything

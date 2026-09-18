@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 44;
+const SCHEMA_VERSION = 45;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2515,6 +2515,21 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE learning_profiles ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ`;
       await sql`ALTER TABLE learning_profiles ADD COLUMN IF NOT EXISTS approved_by BIGINT REFERENCES admin_users(id)`;
       await sql`ALTER TABLE learning_profiles ADD COLUMN IF NOT EXISTS sent_at TIMESTAMPTZ`;
+
+      // Guards the daily birthday-reminders cron (src/app/api/cron/birthday-reminders/route.ts)
+      // against emailing teachers about the same child's birthday twice. Unlike welcome_letters (a
+      // one-time event, child_id UNIQUE), a birthday recurs every year, so the dedup key is
+      // (child_id, birthday_year) rather than child_id alone -- birthday_year is the calendar year
+      // of the upcoming birthday being reminded about, not the child's birth year.
+      await sql`
+        CREATE TABLE IF NOT EXISTS birthday_reminders (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          birthday_year INT NOT NULL,
+          sent_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (child_id, birthday_year)
+        )
+      `;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();
