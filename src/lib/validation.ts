@@ -964,6 +964,47 @@ export const updateBudgetSettingsSchema = z.object({
 export type UpdateBudgetSettingsInput = z.infer<typeof updateBudgetSettingsSchema>;
 export type AdminAttendanceCorrectionInput = z.infer<typeof adminAttendanceCorrectionSchema>;
 
+const importBatchDateStr = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date');
+
+export const importBatchRevenueRowSchema = z.object({
+  entryDate: importBatchDateStr,
+  amountIdr: z.coerce.number().int('Whole rupiah only').positive('Enter an amount greater than 0'),
+  payerSource: z.string().trim().min(1, 'Enter who this is from').max(300),
+  description: optionalStr,
+});
+export const importBatchExpenseRowSchema = z.object({
+  entryDate: importBatchDateStr,
+  amountIdr: z.coerce.number().int('Whole rupiah only').positive('Enter an amount greater than 0'),
+  categoryId: z.coerce.number().int().positive('Choose a category'),
+  vendorDescription: z.string().trim().min(1, 'Enter a vendor or description').max(300),
+  authorizedBy: z.string().trim().min(1, 'Enter who authorized or made this purchase').max(200),
+});
+
+export const createBudgetImportBatchSchema = z.object({
+  sourceLabel: z.string().trim().min(1, 'Enter a source label (e.g. the account/statement)').max(300),
+  periodStart: importBatchDateStr.nullable().optional(),
+  periodEnd: importBatchDateStr.nullable().optional(),
+  openingBalanceIdr: z.coerce.number().int().nullable().optional(),
+  closingBalanceIdr: z.coerce.number().int().nullable().optional(),
+  revenue: z.array(importBatchRevenueRowSchema).max(500),
+  expenses: z.array(importBatchExpenseRowSchema).max(500),
+});
+export type CreateBudgetImportBatchInput = z.infer<typeof createBudgetImportBatchSchema>;
+
+// --- Budget Forecast ---
+
+export const upsertBudgetForecastEntrySchema = z.object({
+  quarterLabel: z.string().trim().min(1, 'Enter a quarter label').max(100),
+  quarterStartDate: importBatchDateStr,
+  quarterEndDate: importBatchDateStr,
+  entryType: z.enum(['revenue', 'expense']),
+  categoryId: z.coerce.number().int().positive().nullable().optional(),
+  label: z.string().trim().min(1, 'Enter a label').max(300),
+  estimatedAmountIdr: z.coerce.number().int('Whole rupiah only').positive('Enter an amount greater than 0'),
+  notes: optionalStr,
+});
+export type UpsertBudgetForecastEntryInput = z.infer<typeof upsertBudgetForecastEntrySchema>;
+
 export const createCurriculumTermSchema = z.object({
   className: z.string().trim().min(1, 'Class is required').max(100),
   subject: z.string().trim().min(1, 'Subject is required').max(200),

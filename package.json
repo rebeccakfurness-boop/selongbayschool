@@ -21,7 +21,8 @@
     "db:import-real-teaching": "tsx --env-file-if-exists=.env.local scripts/import-real-teaching-export.ts",
     "db:cleanup-superseded-terms": "tsx --env-file-if-exists=.env.local scripts/cleanup-superseded-terms.ts",
     "db:assign-all-classes": "tsx --env-file-if-exists=.env.local scripts/assign-all-classes.ts",
-    "db:split-terms-into-four": "tsx --env-file-if-exists=.env.local scripts/split-terms-into-four.ts"
+    "db:split-terms-into-four": "tsx --env-file-if-exists=.env.local scripts/split-terms-into-four.ts",
+    "db:import-bank-statements": "tsx --env-file-if-exists=.env.local scripts/import-2026-q3-bank-statements.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.122.0",

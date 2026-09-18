@@ -21,3 +21,29 @@ export function budgetStatus(budgetIdr: number, spentIdr: number): BudgetStatus 
   if (pct > 0.8) return 'warning';
   return 'healthy';
 }
+
+export interface QuarterBounds {
+  label: string;
+  startDate: string;
+  endDate: string;
+}
+
+/** Standard calendar quarters (Jan-Mar, Apr-Jun, Jul-Sep, Oct-Dec) — deliberately NOT the same as
+ * budget_settings.term_start_date/term_end_date, which are the school's own ~4-5 month terms and
+ * don't align to calendar quarters. Used only by the Budget Forecast page. Computed in UTC so the
+ * date math never shifts a day across a timezone boundary. */
+export function quarterBoundsForDate(date: Date): QuarterBounds {
+  const year = date.getUTCFullYear();
+  const q = Math.floor(date.getUTCMonth() / 3);
+  const startMonth = q * 3;
+  const start = new Date(Date.UTC(year, startMonth, 1));
+  const end = new Date(Date.UTC(year, startMonth + 3, 0));
+  const toIso = (d: Date) => d.toISOString().slice(0, 10);
+  return { label: `Q${q + 1} ${year}`, startDate: toIso(start), endDate: toIso(end) };
+}
+
+export function nextQuarterBoundsForDate(date: Date): QuarterBounds {
+  const year = date.getUTCFullYear();
+  const q = Math.floor(date.getUTCMonth() / 3);
+  return quarterBoundsForDate(new Date(Date.UTC(year, q * 3 + 3, 1)));
+}

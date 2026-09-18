@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 45;
+const SCHEMA_VERSION = 46;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2530,6 +2530,62 @@ export function ensureSchema(): Promise<void> {
           UNIQUE (child_id, birthday_year)
         )
       `;
+
+      // budget_import_batches records a bulk import of already-reconciled bank/Wise statement
+      // transactions (see scripts/import-2026-q3-bank-statements.ts for the first real one) --
+      // source_label identifies which account/statement, opening/closing balance are the
+      // statement's own reported figures (kept for a reconciliation display, never used in the
+      // dashboard's own cash-on-hand math), and import_batch_id on budget_revenue/budget_expenses
+      // lets an admin trace any entry back to the statement it came from.
+      await sql`
+        CREATE TABLE IF NOT EXISTS budget_import_batches (
+          id BIGSERIAL PRIMARY KEY,
+          source_label TEXT NOT NULL,
+          period_start DATE,
+          period_end DATE,
+          opening_balance_idr BIGINT,
+          closing_balance_idr BIGINT,
+          imported_by BIGINT REFERENCES admin_users(id),
+          imported_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`ALTER TABLE budget_revenue ADD COLUMN IF NOT EXISTS import_batch_id BIGINT REFERENCES budget_import_batches(id)`;
+      await sql`ALTER TABLE budget_expenses ADD COLUMN IF NOT EXISTS import_batch_id BIGINT REFERENCES budget_import_batches(id)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_budget_revenue_import_batch ON budget_revenue (import_batch_id)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_budget_expenses_import_batch ON budget_expenses (import_batch_id)`;
+
+      // A "Reimbursements" category, seeded alongside the original 9 -- for repaying a staff
+      // member for costs they personally covered on the school's behalf (e.g. the real Q2 2026
+      // "Monthly Management" reimbursement imported by the script above), distinct from Staff
+      // Salaries & Wages.
+      await sql`
+        INSERT INTO budget_categories (name, monthly_budget_idr, sort_order)
+        VALUES ('Reimbursements', 0, (SELECT COALESCE(MAX(sort_order), 0) + 1 FROM budget_categories))
+        ON CONFLICT (name) DO NOTHING
+      `;
+
+      // budget_forecast_entries: an admin's manual estimate of revenue/expense for a future
+      // quarter -- distinct from budget_categories.monthly_budget_idr (a recurring monthly
+      // ceiling) and from budget_revenue/budget_expenses (actuals already received/spent).
+      // category_id is null for a revenue estimate, since budget_revenue itself has no category
+      // concept (see payer_source instead) -- only expense estimates categorize.
+      await sql`
+        CREATE TABLE IF NOT EXISTS budget_forecast_entries (
+          id BIGSERIAL PRIMARY KEY,
+          quarter_label TEXT NOT NULL,
+          quarter_start_date DATE NOT NULL,
+          quarter_end_date DATE NOT NULL,
+          entry_type TEXT NOT NULL CHECK (entry_type IN ('revenue', 'expense')),
+          category_id BIGINT REFERENCES budget_categories(id),
+          label TEXT NOT NULL,
+          estimated_amount_idr BIGINT NOT NULL,
+          notes TEXT,
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_budget_forecast_entries_quarter ON budget_forecast_entries (quarter_start_date)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

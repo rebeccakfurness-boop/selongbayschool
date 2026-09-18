@@ -1,5 +1,11 @@
 import { sql } from '@/lib/db';
-import type { LogRevenueInput, LogExpenseInput, UpdateBudgetSettingsInput } from '@/lib/validation';
+import type {
+  LogRevenueInput,
+  LogExpenseInput,
+  UpdateBudgetSettingsInput,
+  CreateBudgetImportBatchInput,
+  UpsertBudgetForecastEntryInput,
+} from '@/lib/validation';
 import { budgetStatus, type BudgetStatus } from '@/lib/budget-shared';
 
 export * from '@/lib/budget-shared';
@@ -266,4 +272,191 @@ export async function getCombinedTransactions(filters: { from?: string; to?: str
   ];
   combined.sort((a, b) => (a.entry_date < b.entry_date ? 1 : a.entry_date > b.entry_date ? -1 : b.id - a.id));
   return combined;
+}
+
+export interface BudgetImportBatchRow {
+  id: number;
+  source_label: string;
+  period_start: string | null;
+  period_end: string | null;
+  opening_balance_idr: number | null;
+  closing_balance_idr: number | null;
+  revenue_count: number;
+  expense_count: number;
+  imported_by_label: string | null;
+  imported_at: string;
+}
+
+export async function getBudgetImportBatches(): Promise<BudgetImportBatchRow[]> {
+  return (await sql`
+    SELECT b.id, b.source_label, b.period_start::text, b.period_end::text,
+      b.opening_balance_idr, b.closing_balance_idr,
+      (SELECT COUNT(*)::int FROM budget_revenue r WHERE r.import_batch_id = b.id) AS revenue_count,
+      (SELECT COUNT(*)::int FROM budget_expenses e WHERE e.import_batch_id = b.id) AS expense_count,
+      COALESCE(au.display_name, au.email) AS imported_by_label, b.imported_at::text
+    FROM budget_import_batches b
+    LEFT JOIN admin_users au ON au.id = b.imported_by
+    ORDER BY b.imported_at DESC
+  `) as unknown as BudgetImportBatchRow[];
+}
+
+/** Bulk-loads a reviewed batch of already-categorized revenue/expense rows (e.g. from a
+ * reconciled bank statement) in one action, tagging every row with the new batch so it stays
+ * traceable back to its source — see getBudgetImportBatches. Every row is inserted with
+ * payment_method='bank_transfer' (the only method a bank/Wise statement import produces; a cash
+ * entry still goes through the ordinary Log Revenue form). Loops rather than a multi-row INSERT
+ * since batches are small (admin-reviewed, capped at 500 rows each in validation) and this mirrors
+ * createRevenueEntry/createExpenseEntry's own per-row shape exactly. */
+export async function createBudgetImportBatch(
+  input: CreateBudgetImportBatchInput,
+  createdBy: number
+): Promise<{ batchId: number; revenueCount: number; expenseCount: number }> {
+  const batches = await sql`
+    INSERT INTO budget_import_batches (source_label, period_start, period_end, opening_balance_idr, closing_balance_idr, imported_by)
+    VALUES (
+      ${input.sourceLabel}, ${input.periodStart ?? null}::date, ${input.periodEnd ?? null}::date,
+      ${input.openingBalanceIdr ?? null}, ${input.closingBalanceIdr ?? null}, ${createdBy}
+    )
+    RETURNING id
+  `;
+  const batchId = batches[0].id as number;
+
+  for (const r of input.revenue) {
+    await sql`
+      INSERT INTO budget_revenue (entry_date, amount_idr, payer_source, description, payment_method, created_by, import_batch_id)
+      VALUES (${r.entryDate}::date, ${r.amountIdr}, ${r.payerSource}, ${r.description || null}, 'bank_transfer', ${createdBy}, ${batchId})
+    `;
+  }
+  for (const e of input.expenses) {
+    await sql`
+      INSERT INTO budget_expenses (entry_date, amount_idr, category_id, vendor_description, authorized_by, created_by, import_batch_id)
+      VALUES (${e.entryDate}::date, ${e.amountIdr}, ${e.categoryId}, ${e.vendorDescription}, ${e.authorizedBy}, ${createdBy}, ${batchId})
+    `;
+  }
+
+  return { batchId, revenueCount: input.revenue.length, expenseCount: input.expenses.length };
+}
+
+export interface BudgetForecastEntryRow {
+  id: number;
+  quarter_label: string;
+  quarter_start_date: string;
+  quarter_end_date: string;
+  entry_type: 'revenue' | 'expense';
+  category_id: number | null;
+  category_name: string | null;
+  label: string;
+  estimated_amount_idr: number;
+  notes: string | null;
+  created_at: string;
+}
+
+export async function getForecastEntries(quarterStartDate: string): Promise<BudgetForecastEntryRow[]> {
+  return (await sql`
+    SELECT f.id, f.quarter_label, f.quarter_start_date::text, f.quarter_end_date::text, f.entry_type,
+      f.category_id, bc.name AS category_name, f.label, f.estimated_amount_idr, f.notes, f.created_at::text
+    FROM budget_forecast_entries f
+    LEFT JOIN budget_categories bc ON bc.id = f.category_id
+    WHERE f.quarter_start_date = ${quarterStartDate}::date
+    ORDER BY f.entry_type, f.id
+  `) as unknown as BudgetForecastEntryRow[];
+}
+
+export async function createForecastEntry(input: UpsertBudgetForecastEntryInput, createdBy: number): Promise<number> {
+  const categoryId = input.entryType === 'expense' ? input.categoryId ?? null : null;
+  const rows = await sql`
+    INSERT INTO budget_forecast_entries (
+      quarter_label, quarter_start_date, quarter_end_date, entry_type, category_id, label, estimated_amount_idr, notes, created_by
+    )
+    VALUES (
+      ${input.quarterLabel}, ${input.quarterStartDate}::date, ${input.quarterEndDate}::date, ${input.entryType},
+      ${categoryId}, ${input.label}, ${input.estimatedAmountIdr}, ${input.notes || null}, ${createdBy}
+    )
+    RETURNING id
+  `;
+  return rows[0].id as number;
+}
+
+export async function updateForecastEntry(id: number, input: UpsertBudgetForecastEntryInput): Promise<void> {
+  const categoryId = input.entryType === 'expense' ? input.categoryId ?? null : null;
+  await sql`
+    UPDATE budget_forecast_entries SET
+      quarter_label = ${input.quarterLabel},
+      quarter_start_date = ${input.quarterStartDate}::date,
+      quarter_end_date = ${input.quarterEndDate}::date,
+      entry_type = ${input.entryType},
+      category_id = ${categoryId},
+      label = ${input.label},
+      estimated_amount_idr = ${input.estimatedAmountIdr},
+      notes = ${input.notes || null},
+      updated_at = now()
+    WHERE id = ${id}
+  `;
+}
+
+export async function deleteForecastEntry(id: number): Promise<void> {
+  await sql`DELETE FROM budget_forecast_entries WHERE id = ${id}`;
+}
+
+export interface ForecastSummary {
+  revenue: BudgetForecastEntryRow[];
+  expenses: BudgetForecastEntryRow[];
+  totalRevenueIdr: number;
+  totalExpensesIdr: number;
+  netIdr: number;
+  actualRevenueIdr: number;
+  actualExpensesIdr: number;
+}
+
+/** actualRevenueIdr/actualExpensesIdr are what's really landed in budget_revenue/budget_expenses
+ * so far within the same quarter date range, for a forecast-vs-actual comparison on the page —
+ * zero for a quarter that hasn't started yet. */
+export async function getForecastSummary(quarterStartDate: string, quarterEndDate: string): Promise<ForecastSummary> {
+  const entries = await getForecastEntries(quarterStartDate);
+  const revenue = entries.filter((e) => e.entry_type === 'revenue');
+  const expenses = entries.filter((e) => e.entry_type === 'expense');
+  const totalRevenueIdr = revenue.reduce((sum, e) => sum + Number(e.estimated_amount_idr), 0);
+  const totalExpensesIdr = expenses.reduce((sum, e) => sum + Number(e.estimated_amount_idr), 0);
+
+  const [actual] = (await sql`
+    SELECT
+      COALESCE((SELECT SUM(amount_idr) FROM budget_revenue WHERE entry_date BETWEEN ${quarterStartDate}::date AND ${quarterEndDate}::date), 0)::bigint AS revenue,
+      COALESCE((SELECT SUM(amount_idr) FROM budget_expenses WHERE entry_date BETWEEN ${quarterStartDate}::date AND ${quarterEndDate}::date), 0)::bigint AS expenses
+  `) as unknown as { revenue: number; expenses: number }[];
+
+  return {
+    revenue,
+    expenses,
+    totalRevenueIdr,
+    totalExpensesIdr,
+    netIdr: totalRevenueIdr - totalExpensesIdr,
+    actualRevenueIdr: Number(actual.revenue),
+    actualExpensesIdr: Number(actual.expenses),
+  };
+}
+
+export interface ForecastExpenseSuggestion {
+  categoryId: number;
+  categoryName: string;
+  suggestedAmountIdr: number;
+}
+
+/** The trailing 3 months' actual spend per category, as of `asOfDate` -- a starting point for a
+ * new quarter's forecast (one quarter back standing in for the next one), not a final answer; the
+ * admin edits or discards every suggested line on the way to actually creating forecast entries. */
+export async function getForecastExpenseSuggestions(asOfDate: string): Promise<ForecastExpenseSuggestion[]> {
+  const rows = (await sql`
+    SELECT bc.id AS category_id, bc.name AS category_name,
+      COALESCE(SUM(e.amount_idr), 0)::bigint AS total_last_3_months
+    FROM budget_categories bc
+    LEFT JOIN budget_expenses e ON e.category_id = bc.id
+      AND e.entry_date >= (${asOfDate}::date - INTERVAL '3 months')
+      AND e.entry_date < ${asOfDate}::date
+    WHERE bc.is_archived = false
+    GROUP BY bc.id, bc.name
+    ORDER BY bc.name
+  `) as unknown as { category_id: number; category_name: string; total_last_3_months: number }[];
+  return rows
+    .filter((r) => Number(r.total_last_3_months) > 0)
+    .map((r) => ({ categoryId: r.category_id, categoryName: r.category_name, suggestedAmountIdr: Math.round(Number(r.total_last_3_months)) }));
 }
