@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // pdf-parse's default ("require") build bundles a browser/canvas-capable pdf.js variant that
+  // references the DOM-only `DOMMatrix` global at module top level -- fine in a browser, but a
+  // ReferenceError the instant Node evaluates the module, before any of our code runs. Keeping it
+  // out of the webpack bundle and reaching it via dynamic import() (see pdf-extract.ts) makes Node
+  // resolve its clean, canvas-free ESM build instead.
+  serverExternalPackages: ['pdf-parse'],
   images: {
     formats: ['image/avif', 'image/webp'],
     // Optimized derivatives are cached at this TTL before Next/Vercel will re-run the resize on
