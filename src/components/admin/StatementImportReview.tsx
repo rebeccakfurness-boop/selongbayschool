@@ -18,8 +18,8 @@ interface ParsedBankStatement {
   currency: string;
   periodStart: string;
   periodEnd: string;
-  openingBalance: number | null;
-  closingBalance: number | null;
+  openingBalance?: number;
+  closingBalance?: number;
   transactions: ParsedStatementTransaction[];
 }
 
@@ -73,8 +73,15 @@ export default function StatementImportReview({ categories }: { categories: { id
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fileUrl: blob.url }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Could not read this statement.');
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        // A null `data` means the response body wasn't JSON at all — most likely the request ran
+        // past the server's own timeout and got killed before it could return a real error body
+        // (see budget-statement-ai.ts's effort:'low' comment), rather than a normal caught error.
+        // Surfacing the status code either way means a future failure is diagnosable from the
+        // message alone, not just "something went wrong".
+        throw new Error(data?.error || `Could not read this statement (server returned ${res.status}${res.status === 504 ? ' — timed out' : ''}).`);
+      }
 
       const parsed = data as ParsedBankStatement;
       setStatement(parsed);
@@ -142,8 +149,8 @@ export default function StatementImportReview({ categories }: { categories: { id
           sourceLabel: `${statement.accountLabel}${statement.periodStart ? ` (${statement.periodStart} to ${statement.periodEnd})` : ''}`,
           periodStart: DATE_RE.test(statement.periodStart) ? statement.periodStart : null,
           periodEnd: DATE_RE.test(statement.periodEnd) ? statement.periodEnd : null,
-          openingBalanceIdr: statement.currency === 'IDR' && statement.openingBalance !== null ? Math.round(statement.openingBalance) : null,
-          closingBalanceIdr: statement.currency === 'IDR' && statement.closingBalance !== null ? Math.round(statement.closingBalance) : null,
+          openingBalanceIdr: statement.currency === 'IDR' && statement.openingBalance !== undefined ? Math.round(statement.openingBalance) : null,
+          closingBalanceIdr: statement.currency === 'IDR' && statement.closingBalance !== undefined ? Math.round(statement.closingBalance) : null,
           revenue: included
             .filter((r) => r.action === 'revenue')
             .map((r) => ({ entryDate: r.date || statement.periodStart, amountIdr: Number(r.amountIdr), payerSource: r.label || 'Unknown', description: r.description })),
@@ -217,7 +224,7 @@ export default function StatementImportReview({ categories }: { categories: { id
             <p className="text-xs text-ink-soft">
               {statement?.currency}
               {statement?.periodStart && ` · ${statement.periodStart} to ${statement.periodEnd}`}
-              {statement?.closingBalance !== null && statement?.closingBalance !== undefined && ` · Statement closing balance: ${statement.closingBalance.toLocaleString('en-US')} ${statement.currency}`}
+              {statement?.closingBalance !== undefined && ` · Statement closing balance: ${statement.closingBalance.toLocaleString('en-US')} ${statement.currency}`}
             </p>
           </div>
           <button type="button" onClick={startOver} className="text-sm font-semibold text-ink-soft hover:underline">

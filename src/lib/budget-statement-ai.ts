@@ -37,8 +37,8 @@ export interface ParsedBankStatement {
   currency: string;
   periodStart: string;
   periodEnd: string;
-  openingBalance: number | null;
-  closingBalance: number | null;
+  openingBalance?: number;
+  closingBalance?: number;
   transactions: ParsedStatementTransaction[];
 }
 
@@ -65,8 +65,8 @@ const PARSE_STATEMENT_SCHEMA = {
     currency: { type: 'string', description: 'ISO currency code shown on the statement, e.g. IDR, NZD, USD' },
     periodStart: { type: 'string', description: 'ISO date, or empty string if not shown' },
     periodEnd: { type: 'string', description: 'ISO date, or empty string if not shown' },
-    openingBalance: { type: ['number', 'null'], description: 'null if not shown' },
-    closingBalance: { type: ['number', 'null'], description: 'null if not shown' },
+    openingBalance: { type: 'number', description: 'Omit this field entirely if no opening balance is shown on the statement' },
+    closingBalance: { type: 'number', description: 'Omit this field entirely if no closing balance is shown on the statement' },
     transactions: { type: 'array', items: TRANSACTION_SCHEMA, description: 'Every transaction line in the statement, in the order they appear' },
   },
   required: ['accountLabel', 'currency', 'transactions'],
@@ -88,7 +88,13 @@ export async function parseBankStatementText(statementText: string): Promise<Par
       model: MODEL,
       max_tokens: 16000,
       thinking: { type: 'adaptive' },
-      output_config: { effort: 'high' },
+      // 'low', not 'high' like the curriculum provider's own calls — this is literal transcription,
+      // not a task that benefits from deep reasoning, and keeping it light matters here: a long
+      // statement's full text plus high-effort thinking is a likely cause of the request running
+      // past Vercel's function timeout before ever returning a response (which shows up client-side
+      // as a generic, un-diagnosable failure, since a timeout kills the function before it can
+      // return a real error body).
+      output_config: { effort: 'low' },
       system:
         'You are transcribing a bank or payment-provider statement into structured data. Extract every transaction line ' +
         'exactly as it appears — do not summarize, merge, skip, or invent transactions, and do not guess what a transaction ' +
