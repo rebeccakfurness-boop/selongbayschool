@@ -82,8 +82,16 @@ const PARSE_STATEMENT_SCHEMA = {
  * transfers that no automated categorization could have caught safely, so nothing here writes to
  * the database or is treated as final without an admin reviewing every row first. */
 export async function parseBankStatementText(statementText: string): Promise<ParsedBankStatement> {
-  const client = getClient();
+  // Defends against a pathologically long extracted text (a many-page statement, or a CSV/XLSX
+  // export with far more rows than a bank statement realistically has) blowing out the request
+  // size or run time in a way that could crash the function rather than fail cleanly. ~200k chars
+  // is generous headroom over anything a real bank/Wise statement has produced this session.
+  const MAX_STATEMENT_CHARS = 200_000;
+  const truncated = statementText.length > MAX_STATEMENT_CHARS;
+  const textForPrompt = truncated ? statementText.slice(0, MAX_STATEMENT_CHARS) : statementText;
+
   try {
+    const client = getClient();
     const response = await client.messages.create({
       model: MODEL,
       max_tokens: 16000,
@@ -98,11 +106,12 @@ export async function parseBankStatementText(statementText: string): Promise<Par
       system:
         'You are transcribing a bank or payment-provider statement into structured data. Extract every transaction line ' +
         'exactly as it appears — do not summarize, merge, skip, or invent transactions, and do not guess what a transaction ' +
-        'is "for" beyond what the statement itself states. Preserve the statement’s own transaction order.',
+        'is "for" beyond what the statement itself states. Preserve the statement’s own transaction order.' +
+        (truncated ? ' The text below was truncated for length -- transcribe whatever transactions are present in it.' : ''),
       messages: [
         {
           role: 'user',
-          content: `Extract every transaction from this bank statement text:\n\n${statementText}`,
+          content: `Extract every transaction from this bank statement text:\n\n${textForPrompt}`,
         },
       ],
       tools: [
