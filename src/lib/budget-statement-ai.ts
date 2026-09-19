@@ -1,28 +1,11 @@
-import Anthropic from '@anthropic-ai/sdk';
-
-/** claude-sonnet-5 — matches curriculum-generation/anthropic-provider.ts's own choice and
- * reasoning (cost-driven, human-requested); this file mirrors that provider's
- * callForStructuredOutput/explainAnthropicError shape directly rather than importing it, since the
- * two are otherwise unrelated domains (curriculum content vs. bank statement transactions) and
- * duplicating ~30 lines is cheaper than coupling them. */
-const MODEL = 'claude-sonnet-5';
-
-function getClient(): Anthropic {
-  return new Anthropic();
-}
-
-function explainAnthropicError(err: unknown): Error {
-  if (err instanceof Anthropic.AuthenticationError) {
-    return new Error('Anthropic API key is missing or invalid (check ANTHROPIC_API_KEY in the Vercel project settings).');
-  }
-  if (err instanceof Anthropic.RateLimitError) {
-    return new Error('Anthropic API rate limit hit — try again shortly.');
-  }
-  if (err instanceof Anthropic.APIError) {
-    return new Error(`Anthropic API error (${err.status}): ${err.message}`);
-  }
-  return err instanceof Error ? err : new Error(String(err));
-}
+/** Gemini's free tier (aistudio.google.com -- no credit card required) rather than a paid
+ * Anthropic key, per an explicit cost decision: this feature only ever does one thing (literal
+ * transcription of a statement's transactions into structured JSON), which a free-tier model
+ * handles fine, so there's no reason to require a paid API key for it. gemini-2.5-flash is the
+ * model AI Studio's free tier documents as available at that tier -- swap MODEL below if Google
+ * changes which models are free. */
+const MODEL = 'gemini-2.5-flash';
+const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
 export interface ParsedStatementTransaction {
   date: string;
@@ -42,36 +25,46 @@ export interface ParsedBankStatement {
   transactions: ParsedStatementTransaction[];
 }
 
+// Gemini's responseSchema is a subset of the OpenAPI 3.0 schema object -- uppercase type names,
+// no additionalProperties support -- not the same JSON Schema dialect Anthropic's tool_choice
+// takes, so this isn't a drop-in reuse of the old PARSE_STATEMENT_SCHEMA.
 const TRANSACTION_SCHEMA = {
-  type: 'object',
+  type: 'OBJECT',
   properties: {
-    date: { type: 'string', description: 'ISO date, YYYY-MM-DD' },
-    description: { type: 'string', description: "The transaction's own remark/description text, as close to verbatim as the source allows" },
-    amount: { type: 'number', description: 'Always positive — direction carries the sign' },
-    direction: { type: 'string', enum: ['credit', 'debit'], description: 'credit = money in, debit = money out' },
+    date: { type: 'STRING', description: 'ISO date, YYYY-MM-DD' },
+    description: { type: 'STRING', description: "The transaction's own remark/description text, as close to verbatim as the source allows" },
+    amount: { type: 'NUMBER', description: 'Always positive — direction carries the sign' },
+    direction: { type: 'STRING', enum: ['credit', 'debit'], description: 'credit = money in, debit = money out' },
     counterparty: {
-      type: 'string',
+      type: 'STRING',
       description: 'The person, company, or bank this is from/to, if identifiable from the description — empty string if not identifiable',
     },
   },
   required: ['date', 'description', 'amount', 'direction', 'counterparty'],
-  additionalProperties: false,
 };
 
 const PARSE_STATEMENT_SCHEMA = {
-  type: 'object',
+  type: 'OBJECT',
   properties: {
-    accountLabel: { type: 'string', description: 'Bank/account name or number as shown on the statement' },
-    currency: { type: 'string', description: 'ISO currency code shown on the statement, e.g. IDR, NZD, USD' },
-    periodStart: { type: 'string', description: 'ISO date, or empty string if not shown' },
-    periodEnd: { type: 'string', description: 'ISO date, or empty string if not shown' },
-    openingBalance: { type: 'number', description: 'Omit this field entirely if no opening balance is shown on the statement' },
-    closingBalance: { type: 'number', description: 'Omit this field entirely if no closing balance is shown on the statement' },
-    transactions: { type: 'array', items: TRANSACTION_SCHEMA, description: 'Every transaction line in the statement, in the order they appear' },
+    accountLabel: { type: 'STRING', description: 'Bank/account name or number as shown on the statement' },
+    currency: { type: 'STRING', description: 'ISO currency code shown on the statement, e.g. IDR, NZD, USD' },
+    periodStart: { type: 'STRING', description: 'ISO date, or empty string if not shown' },
+    periodEnd: { type: 'STRING', description: 'ISO date, or empty string if not shown' },
+    openingBalance: { type: 'NUMBER', description: 'Omit this field entirely if no opening balance is shown on the statement' },
+    closingBalance: { type: 'NUMBER', description: 'Omit this field entirely if no closing balance is shown on the statement' },
+    transactions: { type: 'ARRAY', items: TRANSACTION_SCHEMA, description: 'Every transaction line in the statement, in the order they appear' },
   },
   required: ['accountLabel', 'currency', 'transactions'],
-  additionalProperties: false,
 };
+
+interface GeminiCandidate {
+  content?: { parts?: { text?: string }[] };
+  finishReason?: string;
+}
+interface GeminiResponse {
+  candidates?: GeminiCandidate[];
+  promptFeedback?: { blockReason?: string };
+}
 
 /** Extracts every transaction from a bank/Wise statement's raw text (already pulled out of a PDF
  * via pdf-extract.ts, or out of a CSV/XLSX via xlsx's sheet_to_csv — this function doesn't care
@@ -82,6 +75,11 @@ const PARSE_STATEMENT_SCHEMA = {
  * transfers that no automated categorization could have caught safely, so nothing here writes to
  * the database or is treated as final without an admin reviewing every row first. */
 export async function parseBankStatementText(statementText: string): Promise<ParsedBankStatement> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error('GEMINI_API_KEY is missing — get a free key at aistudio.google.com and add it in the Vercel project settings.');
+  }
+
   // Defends against a pathologically long extracted text (a many-page statement, or a CSV/XLSX
   // export with far more rows than a bank statement realistically has) blowing out the request
   // size or run time in a way that could crash the function rather than fail cleanly. ~200k chars
@@ -90,50 +88,61 @@ export async function parseBankStatementText(statementText: string): Promise<Par
   const truncated = statementText.length > MAX_STATEMENT_CHARS;
   const textForPrompt = truncated ? statementText.slice(0, MAX_STATEMENT_CHARS) : statementText;
 
-  try {
-    const client = getClient();
-    const response = await client.messages.create({
-      model: MODEL,
-      max_tokens: 16000,
-      thinking: { type: 'adaptive' },
-      // 'low', not 'high' like the curriculum provider's own calls — this is literal transcription,
-      // not a task that benefits from deep reasoning, and keeping it light matters here: a long
-      // statement's full text plus high-effort thinking is a likely cause of the request running
-      // past Vercel's function timeout before ever returning a response (which shows up client-side
-      // as a generic, un-diagnosable failure, since a timeout kills the function before it can
-      // return a real error body).
-      output_config: { effort: 'low' },
-      system:
-        'You are transcribing a bank or payment-provider statement into structured data. Extract every transaction line ' +
-        'exactly as it appears — do not summarize, merge, skip, or invent transactions, and do not guess what a transaction ' +
-        'is "for" beyond what the statement itself states. Preserve the statement’s own transaction order.' +
-        (truncated ? ' The text below was truncated for length -- transcribe whatever transactions are present in it.' : ''),
-      messages: [
-        {
-          role: 'user',
-          content: `Extract every transaction from this bank statement text:\n\n${textForPrompt}`,
-        },
-      ],
-      tools: [
-        {
-          name: 'record_parsed_statement',
-          description: "Records the statement's account details and every transaction line.",
-          input_schema: PARSE_STATEMENT_SCHEMA as Anthropic.Tool.InputSchema,
-        },
-      ],
-      tool_choice: { type: 'tool', name: 'record_parsed_statement' },
-    });
+  const systemInstruction =
+    'You are transcribing a bank or payment-provider statement into structured data. Extract every transaction line ' +
+    'exactly as it appears — do not summarize, merge, skip, or invent transactions, and do not guess what a transaction ' +
+    'is "for" beyond what the statement itself states. Preserve the statement’s own transaction order.' +
+    (truncated ? ' The text below was truncated for length -- transcribe whatever transactions are present in it.' : '');
 
-    const toolUse = response.content.find((b): b is Anthropic.ToolUseBlock => b.type === 'tool_use');
-    if (!toolUse) {
-      throw new Error(`Claude did not return parsed transactions (stop_reason: ${response.stop_reason}).`);
-    }
-    const result = toolUse.input as ParsedBankStatement;
-    if (result.transactions.length === 0) {
-      throw new Error('No transactions were found in this statement — check the file uploaded correctly.');
-    }
-    return result;
+  let response: Response;
+  try {
+    response = await fetch(`${GEMINI_ENDPOINT}?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ role: 'user', parts: [{ text: `Extract every transaction from this bank statement text:\n\n${textForPrompt}` }] }],
+        systemInstruction: { parts: [{ text: systemInstruction }] },
+        generationConfig: {
+          responseMimeType: 'application/json',
+          responseSchema: PARSE_STATEMENT_SCHEMA,
+        },
+      }),
+    });
   } catch (err) {
-    throw explainAnthropicError(err);
+    throw new Error(`Could not reach the Gemini API: ${err instanceof Error ? err.message : String(err)}`);
   }
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    const message = body?.error?.message || `HTTP ${response.status}`;
+    if (response.status === 400 && /API key/i.test(message)) {
+      throw new Error('Gemini API key is missing or invalid (check GEMINI_API_KEY in the Vercel project settings).');
+    }
+    if (response.status === 429) {
+      throw new Error('Gemini API rate limit hit (the free tier has a per-minute cap) — try again shortly.');
+    }
+    throw new Error(`Gemini API error (${response.status}): ${message}`);
+  }
+
+  const data = (await response.json()) as GeminiResponse;
+  if (data.promptFeedback?.blockReason) {
+    throw new Error(`Gemini declined to process this statement (${data.promptFeedback.blockReason}).`);
+  }
+
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) {
+    throw new Error(`Gemini did not return parsed transactions (finish reason: ${data.candidates?.[0]?.finishReason ?? 'unknown'}).`);
+  }
+
+  let result: ParsedBankStatement;
+  try {
+    result = JSON.parse(text) as ParsedBankStatement;
+  } catch {
+    throw new Error('Gemini returned malformed JSON for this statement — try again, or a shorter/clearer file.');
+  }
+
+  if (result.transactions.length === 0) {
+    throw new Error('No transactions were found in this statement — check the file uploaded correctly.');
+  }
+  return result;
 }

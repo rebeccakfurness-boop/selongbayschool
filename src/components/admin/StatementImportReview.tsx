@@ -38,7 +38,7 @@ interface ReviewRow {
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
-/** Uploads a bank/Wise statement (PDF, CSV, or XLSX), has it transcribed via Claude
+/** Uploads a bank/Wise statement (PDF, CSV, or XLSX), has it transcribed via Gemini's free tier
  * (parseBankStatementText — literal transcription only, no revenue/expense or category
  * judgment), then shows every transaction in an editable table before anything is written. This
  * review step is not a formality: this session's own experience finding a mixed
@@ -76,10 +76,9 @@ export default function StatementImportReview({ categories }: { categories: { id
       const data = await res.json().catch(() => null);
       if (!res.ok) {
         // A null `data` means the response body wasn't JSON at all — most likely the request ran
-        // past the server's own timeout and got killed before it could return a real error body
-        // (see budget-statement-ai.ts's effort:'low' comment), rather than a normal caught error.
-        // Surfacing the status code either way means a future failure is diagnosable from the
-        // message alone, not just "something went wrong".
+        // past the server's own timeout and got killed before it could return a real error body,
+        // rather than a normal caught error. Surfacing the status code either way means a future
+        // failure is diagnosable from the message alone, not just "something went wrong".
         throw new Error(data?.error || `Could not read this statement (server returned ${res.status}${res.status === 504 ? ' — timed out' : ''}).`);
       }
 
