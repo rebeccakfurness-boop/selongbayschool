@@ -1,94 +1,46 @@
-'use client';
+import { cookies } from 'next/headers';
+import { ensureSchema, sql } from '@/lib/db';
+import { ADMIN_DEVICE_COOKIE_NAME, sanitizeNextPath } from '@/lib/auth';
+import { peekDeviceToken } from '@/lib/device-trust';
+import AdminLoginForm from '@/components/admin/AdminLoginForm';
+import ContinueAsCard from '@/components/account/ContinueAsCard';
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { Suspense, useState, type FormEvent } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Button from '@/components/Button';
-import { Field, TextInput } from '@/components/forms/FormField';
+export const dynamic = 'force-dynamic';
 
-function AdminLoginForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+/** Server Component: checks the device-trust cookie and, if it's valid, shows "Continue as
+ * [name]?" instead of the password form — same pattern as /account/login, extended to staff so a
+ * teacher/admin isn't stuck re-typing a password every time the 12-hour session cookie expires. */
+export default async function AdminLoginPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
+  const { next: nextParam } = await searchParams;
+  const next = sanitizeNextPath(nextParam, '/admin');
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setSubmitting(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        setError(data.error || 'Login failed.');
-        setSubmitting(false);
-        return;
+  const deviceToken = (await cookies()).get(ADMIN_DEVICE_COOKIE_NAME)?.value;
+  let continueAsLabel: string | null = null;
+
+  if (deviceToken) {
+    await ensureSchema();
+    const peeked = await peekDeviceToken('admin', deviceToken);
+    if (peeked) {
+      const rows = await sql`SELECT display_name, email FROM admin_users WHERE id = ${peeked.accountId}`;
+      const user = rows[0];
+      if (user) {
+        continueAsLabel = (user.display_name as string | null) || (user.email as string);
       }
-      const next = searchParams?.get('next') || '/admin';
-      router.push(next);
-      router.refresh();
-    } catch {
-      setError('Could not reach the server. Please try again.');
-      setSubmitting(false);
     }
   }
 
   return (
-    <div className="w-full max-w-sm rounded-md border border-sand-line bg-paper p-8 shadow-soft">
-      <div className="mb-5 flex justify-center rounded-md bg-teal py-5">
-        <Image src="/images/logo-full.png" alt="Selong Bay School" width={378} height={299} className="h-20 w-auto" />
-      </div>
-      <h1 className="font-display text-2xl font-semibold text-ink">Admin login</h1>
-      <p className="mt-1 text-sm text-ink-soft">Selong Bay School internal tools.</p>
-      <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4" noValidate>
-        <Field label="Email" htmlFor="admin-email" required>
-          <TextInput
-            id="admin-email"
-            type="email"
-            required
-            autoFocus
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Field>
-        <Field label="Password" htmlFor="admin-password" required>
-          <TextInput
-            id="admin-password"
-            type="password"
-            required
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Field>
-        {error && <p role="alert" className="text-sm font-semibold text-orange-deep">{error}</p>}
-        <Button type="submit" variant="primary" disabled={submitting} fullWidth>
-          {submitting ? 'Logging in…' : 'Log in'}
-        </Button>
-      </form>
-      <p className="mt-4 text-center text-sm">
-        <Link href="/admin/forgot-password" className="font-semibold text-teal-deep underline">
-          Forgot password?
-        </Link>
-      </p>
-    </div>
-  );
-}
-
-export default function AdminLoginPage() {
-  return (
     <div className="flex min-h-screen items-center justify-center bg-cream px-6">
-      <Suspense fallback={null}>
+      {continueAsLabel ? (
+        <ContinueAsCard
+          title="Welcome back"
+          label={continueAsLabel}
+          continueHref={`/api/admin/device-login?next=${encodeURIComponent(next)}&from=${encodeURIComponent('/admin/login')}`}
+          forgetHref={`/api/admin/device-login/forget?next=${encodeURIComponent(next)}&from=${encodeURIComponent('/admin/login')}`}
+        />
+      ) : (
         <AdminLoginForm />
-      </Suspense>
+      )}
     </div>
   );
 }

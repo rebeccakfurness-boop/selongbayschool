@@ -3,8 +3,9 @@ import { cookies } from 'next/headers';
 import { getIronSession } from 'iron-session';
 import bcrypt from 'bcryptjs';
 import { ensureSchema, sql } from '@/lib/db';
-import { getSessionOptions, type AdminSessionData } from '@/lib/auth';
+import { getSessionOptions, ADMIN_DEVICE_COOKIE_NAME, deviceCookieOptions, type AdminSessionData } from '@/lib/auth';
 import { adminLoginSchema } from '@/lib/validation';
+import { createDeviceToken } from '@/lib/device-trust';
 
 export async function POST(req: NextRequest) {
   let body: unknown;
@@ -41,7 +42,13 @@ export async function POST(req: NextRequest) {
     session.role = user.role as AdminSessionData['role'];
     await session.save();
 
-    return NextResponse.json({ ok: true });
+    // "Remember this device" is automatic, same as the parent/student login flows — the admin
+    // session cookie itself only lasts 12 hours, so without this a teacher or admin who doesn't
+    // touch the portal for half a day is back to typing their password in again.
+    const deviceToken = await createDeviceToken('admin', user.id as number, req.headers);
+    const res = NextResponse.json({ ok: true });
+    res.cookies.set(ADMIN_DEVICE_COOKIE_NAME, deviceToken, deviceCookieOptions());
+    return res;
   } catch (err) {
     console.error('[api/admin/login] failed', err);
     return NextResponse.json({ error: 'Could not log in right now. Please try again shortly.' }, { status: 500 });

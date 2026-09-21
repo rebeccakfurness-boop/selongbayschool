@@ -10,7 +10,15 @@ import {
 } from '@/lib/auth';
 
 const PUBLIC_ADMIN_PATHS = ['/admin/login', '/admin/forgot-password', '/admin/reset-password'];
-const PUBLIC_ADMIN_API_PATHS = ['/api/admin/login', '/api/admin/forgot-password', '/api/admin/reset-password'];
+const PUBLIC_ADMIN_API_PATHS = [
+  '/api/admin/login',
+  '/api/admin/forgot-password',
+  '/api/admin/reset-password',
+  // Reached by a plain link click before any admin session exists — same "remember this device"
+  // flow /account/login uses, just for staff (see /admin/login and /teacher/login's own peek).
+  '/api/admin/device-login',
+  '/api/admin/device-login/forget',
+];
 const PUBLIC_ACCOUNT_PATHS = ['/account/login', '/account/signup'];
 const PUBLIC_STUDENT_PATHS = ['/student/login'];
 

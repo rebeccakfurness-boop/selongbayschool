@@ -13,6 +13,7 @@ export const MAGIC_LINK_TOKEN_TTL_MS = 1000 * 60 * 30; // 30 minutes
  * token itself proves nothing on its own without the matching DB row. */
 export const CUSTOMER_DEVICE_COOKIE_NAME = 'sbs_customer_device';
 export const STUDENT_DEVICE_COOKIE_NAME = 'sbs_student_device';
+export const ADMIN_DEVICE_COOKIE_NAME = 'sbs_admin_device';
 
 export function deviceCookieOptions() {
   return {

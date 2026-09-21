@@ -1,7 +1,7 @@
 import { randomBytes, createHash } from 'crypto';
 import { sql } from '@/lib/db';
 
-export type DeviceAccountType = 'customer' | 'student';
+export type DeviceAccountType = 'customer' | 'student' | 'admin';
 
 /** 45 days — inside the school's requested 30-60 day range. Rotated on every successful use
  * (see verifyAndRotateDeviceToken), so an actively-used device effectively never expires; only
@@ -154,6 +154,13 @@ export async function verifyAndRotateDeviceToken(
 async function accountStillExists(accountType: DeviceAccountType, accountId: number): Promise<boolean> {
   if (accountType === 'customer') {
     const rows = await sql`SELECT id FROM customers WHERE id = ${accountId}`;
+    return rows.length > 0;
+  }
+  if (accountType === 'admin') {
+    // is_active matters here, not just row existence -- a deactivated staff account is already
+    // blocked from a fresh password login (see /api/admin/login), so a trusted device shouldn't
+    // be a back door around that.
+    const rows = await sql`SELECT id FROM admin_users WHERE id = ${accountId} AND is_active = true`;
     return rows.length > 0;
   }
   const rows = await sql`SELECT id FROM student_accounts WHERE id = ${accountId}`;

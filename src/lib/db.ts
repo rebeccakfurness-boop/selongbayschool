@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 46;
+const SCHEMA_VERSION = 47;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2586,6 +2586,13 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_budget_forecast_entries_quarter ON budget_forecast_entries (quarter_start_date)`;
+
+      // Extends "remember this device" (see src/lib/device-trust.ts) to staff logins -- teachers
+      // and admins had no persistent-login mechanism at all before this, unlike parents/students,
+      // so every expired 12-hour admin session forced a fresh password entry. account_id means
+      // admin_users.id when account_type='admin', same polymorphic convention as the other two.
+      await sql`ALTER TABLE device_tokens DROP CONSTRAINT IF EXISTS device_tokens_account_type_check`;
+      await sql`ALTER TABLE device_tokens ADD CONSTRAINT device_tokens_account_type_check CHECK (account_type IN ('customer', 'student', 'admin'))`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();
