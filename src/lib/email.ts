@@ -154,12 +154,15 @@ export async function sendAdminPasswordResetEmail(email: string, resetUrl: strin
   return send(email, 'Reset your Selong Bay School admin password', html);
 }
 
-export async function sendCustomerMagicLinkEmail(email: string, name: string, verifyUrl: string): Promise<boolean> {
+export async function sendCustomerMagicLinkEmail(email: string, name: string, verifyUrl: string, code: string): Promise<boolean> {
   const html = wrapEmail(
     `Hi ${name.split(' ')[0]}, here's your login link`,
     `<p>Click below to access your Selong Bay School account:</p>
      <p><a href="${verifyUrl}" style="color:#007c83; font-weight:700;">Log in to your account</a></p>
-     <p>This link is valid for 30 minutes and can only be used once. If you didn't request this, you can safely ignore this email.</p>`
+     <p style="margin-top: 20px;">Tapping the link from your email app? If it doesn't seem to keep you logged in, type this
+     code into the login page instead, right in your usual browser:</p>
+     <p style="font-size: 28px; font-weight: 700; letter-spacing: 4px; color: #1a1a1a; margin: 8px 0;">${code}</p>
+     <p>The link and code are both valid for 30 minutes and can only be used once. If you didn't request this, you can safely ignore this email.</p>`
   );
   return send(email, 'Your Selong Bay School login link', html);
 }

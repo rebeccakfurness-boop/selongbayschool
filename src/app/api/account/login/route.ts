@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { randomBytes } from 'crypto';
 import { ensureSchema, sql } from '@/lib/db';
 import { customerLoginSchema } from '@/lib/validation';
 import { sendCustomerMagicLinkEmail } from '@/lib/email';
-import { sanitizeNextPath, MAGIC_LINK_TOKEN_TTL_MS } from '@/lib/auth';
-import { siteConfig } from '@/lib/site-content';
+import { sanitizeNextPath } from '@/lib/auth';
+import { issueCustomerMagicLink } from '@/lib/customer-magic-link';
 import { checkRateLimit } from '@/lib/device-trust';
 
 const GENERIC_MESSAGE = "If that email has an account, we've sent a login link.";
@@ -42,16 +41,8 @@ export async function POST(req: NextRequest) {
     const customer = rows[0];
 
     if (customer) {
-      const token = randomBytes(32).toString('hex');
-      const expiresAt = new Date(Date.now() + MAGIC_LINK_TOKEN_TTL_MS);
-      await sql`
-        UPDATE customers SET magic_link_token = ${token}, magic_link_token_expires_at = ${expiresAt.toISOString()}
-        WHERE id = ${customer.id}
-      `;
-      const verifyUrl = new URL('/api/account/verify', siteConfig.url);
-      verifyUrl.searchParams.set('token', token);
-      verifyUrl.searchParams.set('next', next);
-      await sendCustomerMagicLinkEmail(email, (customer.name as string) || 'there', verifyUrl.toString());
+      const { verifyUrl, code } = await issueCustomerMagicLink(customer.id as number, next);
+      await sendCustomerMagicLinkEmail(email, (customer.name as string) || 'there', verifyUrl, code);
     }
 
     return NextResponse.json({ ok: true, message: GENERIC_MESSAGE });

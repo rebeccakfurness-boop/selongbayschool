@@ -2594,6 +2594,12 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE device_tokens DROP CONSTRAINT IF EXISTS device_tokens_account_type_check`;
       await sql`ALTER TABLE device_tokens ADD CONSTRAINT device_tokens_account_type_check CHECK (account_type IN ('customer', 'student', 'admin'))`;
 
+      // A short code alongside the magic-link token (see lib/customer-magic-link.ts) -- typed into
+      // the login page rather than clicked, so it lands in whichever browser the parent is
+      // actually using instead of their email app's own in-app browser. Shares
+      // magic_link_token_expires_at's lifetime; cleared together with the token on either one's use.
+      await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS magic_link_code TEXT`;
+
       await setSchemaVersion(SCHEMA_VERSION);
     })();
   }

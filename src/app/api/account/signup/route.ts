@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { randomBytes } from 'crypto';
 import { ensureSchema, sql } from '@/lib/db';
 import { customerSignupSchema } from '@/lib/validation';
 import { sendCustomerMagicLinkEmail } from '@/lib/email';
-import { sanitizeNextPath, MAGIC_LINK_TOKEN_TTL_MS } from '@/lib/auth';
-import { siteConfig } from '@/lib/site-content';
+import { sanitizeNextPath } from '@/lib/auth';
+import { issueCustomerMagicLink } from '@/lib/customer-magic-link';
 
 export async function POST(req: NextRequest) {
   let body: unknown;
@@ -46,17 +45,8 @@ export async function POST(req: NextRequest) {
       `;
     }
 
-    const token = randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + MAGIC_LINK_TOKEN_TTL_MS);
-    await sql`
-      UPDATE customers SET magic_link_token = ${token}, magic_link_token_expires_at = ${expiresAt.toISOString()}
-      WHERE id = ${customerId}
-    `;
-
-    const verifyUrl = new URL('/api/account/verify', siteConfig.url);
-    verifyUrl.searchParams.set('token', token);
-    verifyUrl.searchParams.set('next', next);
-    await sendCustomerMagicLinkEmail(email, name, verifyUrl.toString());
+    const { verifyUrl, code } = await issueCustomerMagicLink(customerId, next);
+    await sendCustomerMagicLinkEmail(email, name, verifyUrl, code);
 
     return NextResponse.json({ ok: true, message: "We've emailed you a link to access your account." });
   } catch (err) {

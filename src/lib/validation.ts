@@ -778,6 +778,12 @@ export const customerLoginSchema = z.object({
 });
 export type CustomerLoginInput = z.infer<typeof customerLoginSchema>;
 
+export const customerVerifyCodeSchema = z.object({
+  email,
+  code: z.string().trim().regex(/^\d{6}$/, 'Enter the 6-digit code from your email'),
+});
+export type CustomerVerifyCodeInput = z.infer<typeof customerVerifyCodeSchema>;
+
 export const passPurchaseSchema = z.object({
   childName: z.string().trim().min(1, "Child's name is required").max(200),
   paymentMethod: z.enum(['pay_online', 'pay_at_session'], { message: 'Please choose a payment method' }),
