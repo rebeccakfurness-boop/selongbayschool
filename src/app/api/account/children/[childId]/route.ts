@@ -70,6 +70,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ chi
         passport_copy_url = COALESCE(${d.passportCopyUrl ?? null}, passport_copy_url),
         kitas_copy_url = COALESCE(${d.kitasCopyUrl ?? null}, kitas_copy_url),
         birth_certificate_url = COALESCE(${d.birthCertificateUrl ?? null}, birth_certificate_url),
+        family_card_url = COALESCE(${d.familyCardUrl ?? null}, family_card_url),
         updated_at = now()
       WHERE id = ${childId}
     `;

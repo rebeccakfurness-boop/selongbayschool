@@ -86,6 +86,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         visa_status = COALESCE(${d.visaStatus ?? null}, visa_status),
         kitas_copy_url = COALESCE(${d.kitasCopyUrl ?? null}, kitas_copy_url),
         birth_certificate_url = COALESCE(${d.birthCertificateUrl ?? null}, birth_certificate_url),
+        family_card_url = COALESCE(${d.familyCardUrl ?? null}, family_card_url),
         previous_school = COALESCE(${d.previousSchool ?? null}, previous_school),
         lunch_option = COALESCE(${d.lunchOption ?? null}, lunch_option),
         photo_url = COALESCE(${d.photoUrl ?? null}, photo_url),

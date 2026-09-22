@@ -27,6 +27,7 @@ function toFormState(staff: StaffDetail) {
     endDate: staff.end_date ?? '',
     phone: staff.phone ?? '',
     address: staff.address ?? '',
+    postalAddress: staff.postal_address ?? '',
     nationality: staff.nationality ?? '',
     emergencyContactName: staff.emergency_contact_name ?? '',
     emergencyContactPhone: staff.emergency_contact_phone ?? '',
@@ -37,6 +38,11 @@ function toFormState(staff: StaffDetail) {
     kitasNumber: staff.kitas_number ?? '',
     kitasExpiry: staff.kitas_expiry ?? '',
     passportCopyUrl: staff.passport_copy_url,
+    npwpNumber: staff.npwp_number ?? '',
+    taxStatus: staff.tax_status ?? '',
+    npwpUrl: staff.npwp_url,
+    nationalIdUrl: staff.national_id_url,
+    familyCardUrl: staff.family_card_url,
     bpjsKesehatanNumber: staff.bpjs_kesehatan_number ?? '',
     bpjsKesehatanStatus: staff.bpjs_kesehatan_status ?? '',
     bpjsKetenagakerjaanNumber: staff.bpjs_ketenagakerjaan_number ?? '',
@@ -194,9 +200,20 @@ export default function StaffCard({
               </Field>
             </div>
 
-            <Field label="Address" htmlFor="staff-address">
-              <TextArea id="staff-address" rows={2} value={form.address} onChange={(e) => set('address', e.target.value)} />
-            </Field>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Residential address" htmlFor="staff-address">
+                <TextArea id="staff-address" rows={2} value={form.address} onChange={(e) => set('address', e.target.value)} />
+              </Field>
+              <Field label="Postal address" htmlFor="staff-postal-address">
+                <TextArea
+                  id="staff-postal-address"
+                  rows={2}
+                  value={form.postalAddress}
+                  onChange={(e) => set('postalAddress', e.target.value)}
+                  placeholder="Leave blank if the same as residential address"
+                />
+              </Field>
+            </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Emergency contact name" htmlFor="staff-ec-name">
@@ -259,6 +276,56 @@ export default function StaffCard({
                     uploadEndpoint={UPLOAD_ENDPOINT}
                     onUploaded={(url) => set('passportCopyUrl', url)}
                   />
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-md border border-dashed border-sand-line p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Tax &amp; identity documents</p>
+              <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                <Field label="NPWP number" htmlFor="staff-npwp-number">
+                  <TextInput id="staff-npwp-number" value={form.npwpNumber} onChange={(e) => set('npwpNumber', e.target.value)} />
+                </Field>
+                <Field label="Tax status" htmlFor="staff-tax-status">
+                  <TextInput id="staff-tax-status" value={form.taxStatus} onChange={(e) => set('taxStatus', e.target.value)} placeholder="e.g. TK/0" />
+                </Field>
+              </div>
+              <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">NPWP card</p>
+                  <div className="mt-1">
+                    <DocumentUploadField
+                      currentUrl={form.npwpUrl}
+                      pathPrefix={`staff/${staff.id}/npwp`}
+                      label="NPWP card"
+                      uploadEndpoint={UPLOAD_ENDPOINT}
+                      onUploaded={(url) => set('npwpUrl', url)}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">National ID (KTP)</p>
+                  <div className="mt-1">
+                    <DocumentUploadField
+                      currentUrl={form.nationalIdUrl}
+                      pathPrefix={`staff/${staff.id}/national-id`}
+                      label="national ID"
+                      uploadEndpoint={UPLOAD_ENDPOINT}
+                      onUploaded={(url) => set('nationalIdUrl', url)}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Family card (Kartu Keluarga)</p>
+                  <div className="mt-1">
+                    <DocumentUploadField
+                      currentUrl={form.familyCardUrl}
+                      pathPrefix={`staff/${staff.id}/family-card`}
+                      label="family card"
+                      uploadEndpoint={UPLOAD_ENDPOINT}
+                      onUploaded={(url) => set('familyCardUrl', url)}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -332,7 +399,8 @@ export default function StaffCard({
               <InfoRow label="Date of birth" value={staff.dob ? formatDate(staff.dob) : null} />
               <InfoRow label="Phone" value={staff.phone} />
               <InfoRow label="Nationality" value={staff.nationality} />
-              <InfoRow label="Address" value={staff.address} />
+              <InfoRow label="Residential address" value={staff.address} />
+              <InfoRow label="Postal address" value={staff.postal_address} />
               <InfoRow label="Emergency contact" value={staff.emergency_contact_name ? `${staff.emergency_contact_name} · ${staff.emergency_contact_phone ?? ''}` : null} />
             </InfoBlock>
             <InfoBlock title="Employment">
@@ -347,6 +415,13 @@ export default function StaffCard({
               <InfoRow label="KITAS number" value={staff.kitas_number} />
               <InfoRow label="KITAS expiry" value={staff.kitas_expiry ? formatDate(staff.kitas_expiry) : null} />
               <InfoRow label="Passport copy" value={staff.passport_copy_url ? 'On file' : null} link={staff.passport_copy_url} />
+            </InfoBlock>
+            <InfoBlock title="Tax & identity documents">
+              <InfoRow label="NPWP number" value={staff.npwp_number} />
+              <InfoRow label="Tax status" value={staff.tax_status} />
+              <InfoRow label="NPWP card" value={staff.npwp_url ? 'On file' : null} link={staff.npwp_url} />
+              <InfoRow label="National ID (KTP)" value={staff.national_id_url ? 'On file' : null} link={staff.national_id_url} />
+              <InfoRow label="Family card" value={staff.family_card_url ? 'On file' : null} link={staff.family_card_url} />
             </InfoBlock>
             <InfoBlock title="BPJS">
               <InfoRow label="Kesehatan" value={staff.bpjs_kesehatan_number ? `${staff.bpjs_kesehatan_number} · ${BPJS_STATUS_LABELS[staff.bpjs_kesehatan_status ?? ''] ?? 'Not set'}` : null} />

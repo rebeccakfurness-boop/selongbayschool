@@ -49,6 +49,7 @@ export default function ParentChildProfileCard({
   const [passportCopyUrl, setPassportCopyUrl] = useState(child.passport_copy_url);
   const [kitasCopyUrl, setKitasCopyUrl] = useState(child.kitas_copy_url);
   const [birthCertificateUrl, setBirthCertificateUrl] = useState(child.birth_certificate_url);
+  const [familyCardUrl, setFamilyCardUrl] = useState(child.family_card_url);
 
   const { status, errorMessage, submit } = useFormSubmit<{ ok: true }>(`/api/account/children/${child.id}`);
 
@@ -65,7 +66,7 @@ export default function ParentChildProfileCard({
     await submit({ photoUrl: url });
   }
 
-  async function saveDocument(field: 'passportCopyUrl' | 'kitasCopyUrl' | 'birthCertificateUrl', url: string, setter: (url: string) => void) {
+  async function saveDocument(field: 'passportCopyUrl' | 'kitasCopyUrl' | 'birthCertificateUrl' | 'familyCardUrl', url: string, setter: (url: string) => void) {
     setter(url);
     await submit({ [field]: url });
   }
@@ -195,7 +196,7 @@ export default function ParentChildProfileCard({
           Visible only to you and school admin, never to teachers. Not part of the Forms &amp; Compliance
           checklist the school tracks separately.
         </p>
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <Field label="Passport copy" htmlFor="loo-passport">
             <DocumentUploadField
               currentUrl={passportCopyUrl}
@@ -221,6 +222,15 @@ export default function ParentChildProfileCard({
               label="Birth certificate"
               uploadEndpoint={`/api/account/children/${child.id}/upload?kind=document`}
               onUploaded={(url) => saveDocument('birthCertificateUrl', url, setBirthCertificateUrl)}
+            />
+          </Field>
+          <Field label="Family card (Kartu Keluarga)" htmlFor="loo-family-card">
+            <DocumentUploadField
+              currentUrl={familyCardUrl}
+              pathPrefix={`children/${child.id}/family-card`}
+              label="Family card"
+              uploadEndpoint={`/api/account/children/${child.id}/upload?kind=document`}
+              onUploaded={(url) => saveDocument('familyCardUrl', url, setFamilyCardUrl)}
             />
           </Field>
         </div>

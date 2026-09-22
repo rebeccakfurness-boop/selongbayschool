@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 47;
+const SCHEMA_VERSION = 48;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2599,6 +2599,25 @@ export function ensureSchema(): Promise<void> {
       // actually using instead of their email app's own in-app browser. Shares
       // magic_link_token_expires_at's lifetime; cleared together with the token on either one's use.
       await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS magic_link_code TEXT`;
+
+      // Indonesian tax/identity documents for staff, alongside the existing CV/contract/passport
+      // set on admin_users -- npwp_number and tax_status are plain fields (payroll/reporting need
+      // the actual value, not just a scan on file), the three *_url columns are Vercel Blob URLs
+      // via the same DocumentUploadField pattern as passport_copy_url above.
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS npwp_number TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS tax_status TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS npwp_url TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS national_id_url TEXT`;
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS family_card_url TEXT`;
+      // `address` (existing column) is now presented as "Residential address" in the UI; this is
+      // its postal-address counterpart, not a replacement -- Indonesian staff commonly have a KTP
+      // address that differs from where mail should actually go.
+      await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS postal_address TEXT`;
+
+      // Family card (Kartu Keluarga) for children, alongside the existing passport/KITAS/birth
+      // certificate set -- same shared-with-parent-portal pattern as those three (see ChildCard's
+      // and ParentChildProfileCard's own Immigration Documents sections).
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS family_card_url TEXT`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

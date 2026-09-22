@@ -92,6 +92,7 @@ export interface ChildDetail {
   visa_status: string | null;
   kitas_copy_url: string | null;
   birth_certificate_url: string | null;
+  family_card_url: string | null;
   previous_school: string | null;
   lunch_option: string | null;
   photo_url: string | null;
@@ -166,6 +167,7 @@ function toFormState(child: ChildDetail) {
     visaStatus: child.visa_status ?? '',
     kitasCopyUrl: child.kitas_copy_url,
     birthCertificateUrl: child.birth_certificate_url,
+    familyCardUrl: child.family_card_url,
     previousSchool: child.previous_school ?? '',
     lunchOption: child.lunch_option ?? '',
     photoUrl: child.photo_url,
@@ -233,7 +235,7 @@ export default function ChildCard({
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  async function uploadDocument(field: 'passportCopyUrl' | 'kitasCopyUrl' | 'birthCertificateUrl' | 'photoUrl', url: string) {
+  async function uploadDocument(field: 'passportCopyUrl' | 'kitasCopyUrl' | 'birthCertificateUrl' | 'familyCardUrl' | 'photoUrl', url: string) {
     set(field, url);
     try {
       await fetch(`/api/admin/children/${child.id}`, {
@@ -490,6 +492,18 @@ export default function ChildCard({
                       {child.birth_certificate_url ? (
                         <a href={child.birth_certificate_url} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-teal-deep underline">
                           View birth certificate
+                        </a>
+                      ) : (
+                        <span className="text-sm text-ink-soft">Not uploaded</span>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">Family card (Kartu Keluarga)</div>
+                    <div className="mt-1">
+                      {child.family_card_url ? (
+                        <a href={child.family_card_url} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-teal-deep underline">
+                          View family card
                         </a>
                       ) : (
                         <span className="text-sm text-ink-soft">Not uploaded</span>
@@ -814,10 +828,19 @@ export default function ChildCard({
                   onUploaded={(url) => uploadDocument('birthCertificateUrl', url)}
                 />
               </Field>
+              <Field label="Family card (Kartu Keluarga)" htmlFor="edit-family-card">
+                <DocumentUploadField
+                  currentUrl={form.familyCardUrl}
+                  pathPrefix={`children/${child.id}/family-card`}
+                  label="Family card"
+                  uploadEndpoint="/api/admin/children/upload"
+                  onUploaded={(url) => uploadDocument('familyCardUrl', url)}
+                />
+              </Field>
             </div>
             <p className="mt-3 text-xs text-ink-soft">
-              Passport, KITAS, and birth certificate are visible to the child&apos;s own parent in their portal, and
-              admin here, never to teachers. These aren&apos;t part of the Forms &amp; Compliance checklist above.
+              Passport, KITAS, birth certificate, and family card are visible to the child&apos;s own parent in their
+              portal, and admin here, never to teachers. These aren&apos;t part of the Forms &amp; Compliance checklist above.
             </p>
           </div>
 

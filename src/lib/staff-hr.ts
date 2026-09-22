@@ -40,6 +40,7 @@ export interface StaffDetail {
   position_title: string | null;
   phone: string | null;
   address: string | null;
+  postal_address: string | null;
   nationality: string | null;
   emergency_contact_name: string | null;
   emergency_contact_phone: string | null;
@@ -50,6 +51,11 @@ export interface StaffDetail {
   kitas_number: string | null;
   kitas_expiry: string | null;
   passport_copy_url: string | null;
+  npwp_number: string | null;
+  tax_status: string | null;
+  npwp_url: string | null;
+  national_id_url: string | null;
+  family_card_url: string | null;
   bpjs_kesehatan_number: string | null;
   bpjs_kesehatan_status: string | null;
   bpjs_ketenagakerjaan_number: string | null;
@@ -64,9 +70,10 @@ export interface StaffDetail {
 export async function getStaffDetail(adminUserId: number): Promise<StaffDetail | null> {
   const rows = (await sql`
     SELECT u.id, u.email, u.display_name, u.role, u.employment_status, u.is_active,
-      u.dob::text, u.start_date::text, u.end_date::text, u.position_title, u.phone, u.address, u.nationality,
+      u.dob::text, u.start_date::text, u.end_date::text, u.position_title, u.phone, u.address, u.postal_address, u.nationality,
       u.emergency_contact_name, u.emergency_contact_phone, u.cv_url, u.contract_url, u.qualifications,
       u.visa_status, u.kitas_number, u.kitas_expiry::text, u.passport_copy_url,
+      u.npwp_number, u.tax_status, u.npwp_url, u.national_id_url, u.family_card_url,
       u.bpjs_kesehatan_number, u.bpjs_kesehatan_status, u.bpjs_ketenagakerjaan_number, u.bpjs_ketenagakerjaan_status,
       u.bank_name, u.bank_account_number, u.bank_account_name, u.hr_notes,
       COALESCE(array_agg(ta.class_name) FILTER (WHERE ta.class_name IS NOT NULL), '{}') AS assigned_classes

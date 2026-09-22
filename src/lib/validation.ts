@@ -195,6 +195,7 @@ export const updateStaffHrSchema = z.object({
   endDate: optionalDate,
   phone: optionalStr,
   address: optionalStr,
+  postalAddress: optionalStr,
   nationality: optionalStr,
   emergencyContactName: optionalStr,
   emergencyContactPhone: optionalStr,
@@ -205,6 +206,11 @@ export const updateStaffHrSchema = z.object({
   kitasNumber: optionalStr,
   kitasExpiry: optionalDate,
   passportCopyUrl: optionalStr,
+  npwpNumber: optionalStr,
+  taxStatus: optionalStr,
+  npwpUrl: optionalStr,
+  nationalIdUrl: optionalStr,
+  familyCardUrl: optionalStr,
   bpjsKesehatanNumber: optionalStr,
   bpjsKesehatanStatus: bpjsStatusEnum,
   bpjsKetenagakerjaanNumber: optionalStr,
@@ -303,6 +309,7 @@ export const updateChildSchema = z.object({
   visaStatus: optionalStr,
   kitasCopyUrl: optionalStr,
   birthCertificateUrl: optionalStr,
+  familyCardUrl: optionalStr,
   previousSchool: optionalStr,
   lunchOption: optionalStr,
   photoUrl: optionalStr,
@@ -357,6 +364,7 @@ export const updateOwnChildSchema = z.object({
   passportCopyUrl: optionalStr,
   kitasCopyUrl: optionalStr,
   birthCertificateUrl: optionalStr,
+  familyCardUrl: optionalStr,
 });
 export type UpdateOwnChildInput = z.infer<typeof updateOwnChildSchema>;
 
