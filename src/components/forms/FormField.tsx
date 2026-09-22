@@ -21,8 +21,11 @@ export function Field({
   );
 }
 
+// 16px, not 15 -- iOS Safari auto-zooms the whole page on focus for any input/textarea/select
+// under that threshold, which is jarring on every form across both portals (every text field
+// used to trigger it) and doesn't zoom back out on its own once you tap away.
 const inputClasses =
-  'rounded-sm border border-sand-line bg-white px-4 py-2.5 font-sans text-[15px] text-ink placeholder:text-ink-soft/50 focus:border-teal focus:outline-none focus:ring-2 focus:ring-teal/30';
+  'rounded-sm border border-sand-line bg-white px-4 py-2.5 font-sans text-base text-ink placeholder:text-ink-soft/50 focus:border-teal focus:outline-none focus:ring-2 focus:ring-teal/30';
 
 export function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`${inputClasses} ${props.className ?? ''}`} />;

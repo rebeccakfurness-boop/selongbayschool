@@ -11,6 +11,20 @@ body {
   background-color: #f6f1e6;
 }
 
+/* iOS Safari zooms the whole page in on focus for any form control under 16px, and doesn't zoom
+   back out on its own -- jarring on a touch device, and easy to miss case-by-case across two
+   large portals' worth of ad-hoc inputs/selects that don't all go through one shared component.
+   A blanket floor on phone-width viewports is the standard fix: harmless on anything already
+   16px+, and desktop is untouched (it was never the platform with this behavior) so nothing
+   here changes existing desktop density. */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

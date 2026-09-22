@@ -25,7 +25,7 @@ function CategoryCard({ category }: { category: CategorySummary }) {
         <div className={`h-full rounded-full ${style.bar}`} style={{ width: `${Math.min(100, pct)}%` }} />
       </div>
 
-      <dl className="mt-4 grid grid-cols-3 gap-2 text-sm">
+      <dl className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-3">
         <div>
           <dt className="text-xs font-bold uppercase tracking-wide text-ink-soft">Budgeted</dt>
           <dd className="mt-0.5 font-semibold tabular-nums text-ink">{formatBudgetIDR(category.monthly_budget_idr)}</dd>

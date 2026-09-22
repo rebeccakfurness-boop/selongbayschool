@@ -35,45 +35,47 @@ export default function TodayRosterTable({ roster }: { roster: TodayRosterSummar
   }
 
   return (
-    <table className="w-full border-collapse text-sm">
-      <thead>
-        <tr className="border-b border-sand-line text-left">
-          <th className="py-2 font-bold text-ink-soft">Student</th>
-          <th className="py-2 font-bold text-ink-soft">Class</th>
-          <th className="py-2 font-bold text-ink-soft">Status</th>
-          <th className="py-2 font-bold text-ink-soft">Time</th>
-          <th className="py-2 font-bold text-ink-soft"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {roster.map((r) => (
-          <tr key={r.childId} className="border-b border-sand-line/60 last:border-0">
-            <td className="py-2 font-semibold text-ink">{r.childFullName}</td>
-            <td className="py-2 text-ink-soft">{r.className ?? '-'}</td>
-            <td className="py-2">
-              <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${STATUS_CLASSES[r.status]}`}>{STATUS_LABELS[r.status]}</span>
-            </td>
-            <td className="py-2 text-ink-soft">{r.lastEventTime ? formatDateTime(r.lastEventTime) : '-'}</td>
-            <td className="py-2 text-right">
-              {r.lastEventId && (
-                <button
-                  type="button"
-                  disabled={undoingId === r.lastEventId}
-                  onClick={() => undo(r.childId, r.lastEventId!)}
-                  className="text-xs font-semibold text-orange-deep hover:underline disabled:opacity-60"
-                >
-                  {undoingId === r.lastEventId ? 'Undoing…' : 'Undo'}
-                </button>
-              )}
-            </td>
+    <div className="overflow-x-auto">
+      <table className="w-full min-w-[480px] border-collapse text-sm">
+        <thead>
+          <tr className="border-b border-sand-line text-left">
+            <th className="py-2 font-bold text-ink-soft">Student</th>
+            <th className="py-2 font-bold text-ink-soft">Class</th>
+            <th className="py-2 font-bold text-ink-soft">Status</th>
+            <th className="py-2 font-bold text-ink-soft">Time</th>
+            <th className="py-2 font-bold text-ink-soft"></th>
           </tr>
-        ))}
-        {roster.length === 0 && (
-          <tr>
-            <td colSpan={5} className="py-6 text-center text-ink-soft">No regular students on file.</td>
-          </tr>
-        )}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {roster.map((r) => (
+            <tr key={r.childId} className="border-b border-sand-line/60 last:border-0">
+              <td className="py-2 font-semibold text-ink">{r.childFullName}</td>
+              <td className="py-2 text-ink-soft">{r.className ?? '-'}</td>
+              <td className="py-2">
+                <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${STATUS_CLASSES[r.status]}`}>{STATUS_LABELS[r.status]}</span>
+              </td>
+              <td className="py-2 text-ink-soft">{r.lastEventTime ? formatDateTime(r.lastEventTime) : '-'}</td>
+              <td className="py-2 text-right">
+                {r.lastEventId && (
+                  <button
+                    type="button"
+                    disabled={undoingId === r.lastEventId}
+                    onClick={() => undo(r.childId, r.lastEventId!)}
+                    className="text-xs font-semibold text-orange-deep hover:underline disabled:opacity-60"
+                  >
+                    {undoingId === r.lastEventId ? 'Undoing…' : 'Undo'}
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+          {roster.length === 0 && (
+            <tr>
+              <td colSpan={5} className="py-6 text-center text-ink-soft">No regular students on file.</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 }
