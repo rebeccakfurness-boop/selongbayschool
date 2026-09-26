@@ -1,7 +1,7 @@
 // Side-effect only, and before pdf-parse itself -- see that file's own comment for why. Must stay
-// first: static imports evaluate in source order, and pdf-parse's module graph needs these globals
-// to already exist by the time it evaluates, not after.
-import './dommatrix-polyfill';
+// first: static imports evaluate in source order, and pdf-parse's module graph needs these shims
+// to already be in place by the time it evaluates, not after.
+import './pdf-parse-node-shims';
 import { PDFParse } from 'pdf-parse';
 
 /** Extracts plain text from a PDF buffer -- the source text handed to
@@ -10,10 +10,9 @@ import { PDFParse } from 'pdf-parse';
  * malformed or scanned-image-only PDF fails loudly here rather than producing an empty prompt.
  *
  * next.config.mjs also aliases "pdf-parse" to its known-clean-of-DOMMatrix-references ESM entry
- * file (see that alias's own comment for the naive fixes that didn't work before this one) -- that
- * alias plus this polyfill together are both needed: the alias picks pdfjs-dist's Node-safe
- * "legacy" build, and the polyfill is what stops *that* build's own failed attempt to polyfill
- * DOMMatrix via the (missing-in-production) @napi-rs/canvas package from crashing the module. */
+ * file (see that alias's own comment for the naive fixes that didn't work before this one) -- the
+ * alias picks pdfjs-dist's Node-safe "legacy" build, and pdf-parse-node-shims.ts is what stops two
+ * further Vercel-serverless-bundling problems in that build from crashing the module. */
 export async function extractPdfText(buffer: Buffer): Promise<string> {
   const parser = new PDFParse({ data: buffer });
   try {
