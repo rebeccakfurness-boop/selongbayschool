@@ -95,25 +95,37 @@ export async function parseBankStatementText(statementText: string): Promise<Par
     'is "for" beyond what the statement itself states. Preserve the statement’s own transaction order.' +
     (truncated ? ' The text below was truncated for length -- transcribe whatever transactions are present in it.' : '');
 
-  let response: Response;
-  try {
-    response = await fetch(`${GEMINI_ENDPOINT}?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: `Extract every transaction from this bank statement text:\n\n${textForPrompt}` }] }],
-        systemInstruction: { parts: [{ text: systemInstruction }] },
-        generationConfig: {
-          responseMimeType: 'application/json',
-          responseSchema: PARSE_STATEMENT_SCHEMA,
-        },
-      }),
-    });
-  } catch (err) {
-    throw new Error(`Could not reach the Gemini API: ${err instanceof Error ? err.message : String(err)}`);
-  }
+  // Gemini's free tier occasionally returns 503 "currently experiencing high demand" -- its own
+  // error text says these spikes are usually temporary, so a couple of short retries clears most
+  // of them without the admin needing to notice and re-upload by hand. 429 (the per-minute rate
+  // cap) and everything else fail immediately -- retrying either wouldn't help within a few
+  // seconds or isn't the kind of transient blip this is for.
+  const MAX_ATTEMPTS = 3;
+  let response: Response | undefined;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      response = await fetch(`${GEMINI_ENDPOINT}?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: `Extract every transaction from this bank statement text:\n\n${textForPrompt}` }] }],
+          systemInstruction: { parts: [{ text: systemInstruction }] },
+          generationConfig: {
+            responseMimeType: 'application/json',
+            responseSchema: PARSE_STATEMENT_SCHEMA,
+          },
+        }),
+      });
+    } catch (err) {
+      throw new Error(`Could not reach the Gemini API: ${err instanceof Error ? err.message : String(err)}`);
+    }
 
-  if (!response.ok) {
+    if (response.ok) break;
+    if (response.status === 503 && attempt < MAX_ATTEMPTS) {
+      await new Promise((resolve) => setTimeout(resolve, attempt * 2000));
+      continue;
+    }
+
     const body = await response.json().catch(() => null);
     const message = body?.error?.message || `HTTP ${response.status}`;
     if (response.status === 400 && /API key/i.test(message)) {
@@ -122,10 +134,13 @@ export async function parseBankStatementText(statementText: string): Promise<Par
     if (response.status === 429) {
       throw new Error('Gemini API rate limit hit (the free tier has a per-minute cap) — try again shortly.');
     }
+    if (response.status === 503) {
+      throw new Error('Gemini is currently overloaded (its own free tier under high demand) — please try again in a minute.');
+    }
     throw new Error(`Gemini API error (${response.status}): ${message}`);
   }
 
-  const data = (await response.json()) as GeminiResponse;
+  const data = (await response!.json()) as GeminiResponse;
   if (data.promptFeedback?.blockReason) {
     throw new Error(`Gemini declined to process this statement (${data.promptFeedback.blockReason}).`);
   }
