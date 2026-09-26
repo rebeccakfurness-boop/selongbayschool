@@ -1,3 +1,7 @@
+// Side-effect only, and before pdf-parse itself -- see that file's own comment for why. Must stay
+// first: static imports evaluate in source order, and pdf-parse's module graph needs these globals
+// to already exist by the time it evaluates, not after.
+import './dommatrix-polyfill';
 import { PDFParse } from 'pdf-parse';
 
 /** Extracts plain text from a PDF buffer -- the source text handed to
@@ -5,9 +9,11 @@ import { PDFParse } from 'pdf-parse';
  * upload (required) and workbook upload (optional) go through this before any LLM call, so a
  * malformed or scanned-image-only PDF fails loudly here rather than producing an empty prompt.
  *
- * A plain static import is safe here specifically because next.config.mjs aliases "pdf-parse" to
- * its known-clean ESM entry file -- see that alias's own comment for why a naive fix (dynamic
- * import + serverExternalPackages) didn't actually work in production. */
+ * next.config.mjs also aliases "pdf-parse" to its known-clean-of-DOMMatrix-references ESM entry
+ * file (see that alias's own comment for the naive fixes that didn't work before this one) -- that
+ * alias plus this polyfill together are both needed: the alias picks pdfjs-dist's Node-safe
+ * "legacy" build, and the polyfill is what stops *that* build's own failed attempt to polyfill
+ * DOMMatrix via the (missing-in-production) @napi-rs/canvas package from crashing the module. */
 export async function extractPdfText(buffer: Buffer): Promise<string> {
   const parser = new PDFParse({ data: buffer });
   try {
