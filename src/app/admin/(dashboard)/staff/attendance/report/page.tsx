@@ -42,9 +42,14 @@ export default async function StaffAttendanceReportPage({
           <h1 className="font-display text-2xl font-semibold text-ink">Staff Attendance Reports</h1>
           <p className="mt-1 text-sm text-ink-soft">{rows.length} record{rows.length === 1 ? '' : 's'} in range.</p>
         </div>
-        <Link href="/admin/staff/attendance" className="text-sm font-semibold text-teal-deep hover:underline">
-          Back to today
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/admin/attendance/term-report" className="text-sm font-semibold text-teal-deep hover:underline">
+            Term Register (.xlsx)
+          </Link>
+          <Link href="/admin/staff/attendance" className="text-sm font-semibold text-teal-deep hover:underline">
+            Back to today
+          </Link>
+        </div>
       </div>
 
       <form method="get" className="mt-4 flex flex-wrap items-end gap-3 rounded-md border border-sand-line bg-paper p-4">

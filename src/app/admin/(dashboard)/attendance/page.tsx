@@ -35,9 +35,12 @@ export default async function AdminAttendancePage() {
           <h1 className="font-display text-2xl font-semibold text-ink">Attendance</h1>
           <p className="mt-1 text-sm text-ink-soft">Today, {schoolLocalToday()}: gate check-in status and requests.</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <Link href="/kiosk" className="rounded-full border border-teal px-5 py-2 text-sm font-bold text-teal-deep hover:bg-teal/10">
             Open Gate Kiosk
+          </Link>
+          <Link href="/admin/attendance/term-report" className="rounded-full border border-teal px-5 py-2 text-sm font-bold text-teal-deep hover:bg-teal/10">
+            Term Register (.xlsx)
           </Link>
           <Link href="/admin/attendance/report" className="rounded-full bg-teal px-5 py-2 text-sm font-bold text-white hover:bg-teal-deep">
             Reports &amp; export
