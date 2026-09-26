@@ -1,10 +1,11 @@
 /** Gemini's free tier (aistudio.google.com -- no credit card required) rather than a paid
  * Anthropic key, per an explicit cost decision: this feature only ever does one thing (literal
  * transcription of a statement's transactions into structured JSON), which a free-tier model
- * handles fine, so there's no reason to require a paid API key for it. gemini-2.5-flash is the
- * model AI Studio's free tier documents as available at that tier -- swap MODEL below if Google
- * changes which models are free. */
-const MODEL = 'gemini-2.5-flash';
+ * handles fine, so there's no reason to require a paid API key for it. gemini-2.5-flash (this
+ * file's original choice) came back 404 for a newly-created API key with Gemini's own error
+ * pointing at gemini-3.8-flash as its replacement -- swap MODEL below again if Google moves the
+ * free tier on to yet another model. */
+const MODEL = 'gemini-3.8-flash';
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
 export interface ParsedStatementTransaction {
