@@ -1,5 +1,5 @@
 import { ensureSchema } from '@/lib/db';
-import { getCombinedTransactions } from '@/lib/budget';
+import { getCombinedTransactions, getBudgetCategories } from '@/lib/budget';
 import BudgetTabs from '@/components/admin/BudgetTabs';
 import TransactionLogClient from '@/components/admin/TransactionLogClient';
 
@@ -12,7 +12,10 @@ export default async function TransactionLogPage({
 }) {
   await ensureSchema();
   const { from, to } = await searchParams;
-  const transactions = await getCombinedTransactions({ from: from || undefined, to: to || undefined });
+  const [transactions, categories] = await Promise.all([
+    getCombinedTransactions({ from: from || undefined, to: to || undefined }),
+    getBudgetCategories(false),
+  ]);
 
   return (
     <section>
@@ -41,7 +44,7 @@ export default async function TransactionLogPage({
       </form>
 
       <div className="mt-4">
-        <TransactionLogClient transactions={transactions} />
+        <TransactionLogClient transactions={transactions} categories={categories.map((c) => ({ id: c.id, name: c.name }))} />
       </div>
     </section>
   );

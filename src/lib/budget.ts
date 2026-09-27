@@ -148,14 +148,19 @@ export interface RevenueRow {
   receipt_url: string | null;
   created_by_label: string | null;
   created_at: string;
+  matched_invoice_id: number | null;
+  matched_invoice_number: number | null;
+  matched_invoice_billed_to: string | null;
 }
 
 export async function getRevenueEntries(filters: { from?: string; to?: string; paymentMethod?: string } = {}): Promise<RevenueRow[]> {
   return (await sql`
     SELECT r.id, r.entry_date::text, r.amount_idr, r.payer_source, r.description, r.payment_method, r.receipt_url,
-      COALESCE(au.display_name, au.email) AS created_by_label, r.created_at::text
+      COALESCE(au.display_name, au.email) AS created_by_label, r.created_at::text,
+      r.matched_invoice_id, inv.invoice_number AS matched_invoice_number, inv.billed_to_name AS matched_invoice_billed_to
     FROM budget_revenue r
     LEFT JOIN admin_users au ON au.id = r.created_by
+    LEFT JOIN invoices inv ON inv.id = r.matched_invoice_id
     WHERE (${filters.from ?? null}::date IS NULL OR r.entry_date >= ${filters.from ?? null}::date)
       AND (${filters.to ?? null}::date IS NULL OR r.entry_date <= ${filters.to ?? null}::date)
       AND (${filters.paymentMethod ?? null}::text IS NULL OR r.payment_method = ${filters.paymentMethod ?? null}::text)
@@ -170,6 +175,91 @@ export async function createRevenueEntry(input: LogRevenueInput, createdBy: numb
     RETURNING id
   `;
   return rows[0].id as number;
+}
+
+/** Corrects a miscoded revenue entry in place -- the Transaction Log's own edit action, not the
+ * one-off Log Revenue form. Leaves matched_invoice_id untouched: fixing a typo in the payer name
+ * or the receipt shouldn't silently unlink a reconciliation someone already confirmed. */
+export async function updateRevenueEntry(id: number, input: LogRevenueInput): Promise<void> {
+  const rows = await sql`
+    UPDATE budget_revenue SET
+      entry_date = ${input.entryDate}::date,
+      amount_idr = ${input.amountIdr},
+      payer_source = ${input.payerSource},
+      description = ${input.description || null},
+      payment_method = ${input.paymentMethod},
+      receipt_url = ${input.receiptUrl || null}
+    WHERE id = ${id}
+    RETURNING id
+  `;
+  if (rows.length === 0) throw new Error('Revenue entry not found.');
+}
+
+/** Deleting a matched entry also reverts the invoice it was reconciled against back to
+ * outstanding -- otherwise the invoice would be left marked paid with nothing behind it. */
+export async function deleteRevenueEntry(id: number): Promise<void> {
+  const rows = await sql`SELECT matched_invoice_id FROM budget_revenue WHERE id = ${id}`;
+  if (rows.length === 0) throw new Error('Revenue entry not found.');
+  const matchedInvoiceId = rows[0].matched_invoice_id as number | null;
+  if (matchedInvoiceId) {
+    await sql`UPDATE invoices SET status = 'outstanding', paid_at = NULL WHERE id = ${matchedInvoiceId} AND status = 'paid'`;
+  }
+  await sql`DELETE FROM budget_revenue WHERE id = ${id}`;
+}
+
+export interface MatchableInvoiceRow {
+  id: number;
+  invoice_number: number;
+  billed_to_name: string;
+  total_amount: number;
+  due_date: string;
+  invoice_type: string;
+}
+
+/** Candidates for "Match to invoice" on one revenue entry -- only ever outstanding invoices (a
+ * paid or cancelled one is never a legitimate match target), an exact amount match sorted first
+ * since that's the single strongest signal a bank transfer actually settles a given invoice, then
+ * an optional free-text search across the billed-to name and invoice number for everything else. */
+export async function getMatchableInvoices(amountIdr: number, query?: string | null): Promise<MatchableInvoiceRow[]> {
+  const q = query?.trim() || null;
+  return (await sql`
+    SELECT id, invoice_number, billed_to_name, total_amount, due_date::text, invoice_type
+    FROM invoices
+    WHERE status = 'outstanding'
+      AND (${q}::text IS NULL OR billed_to_name ILIKE '%' || ${q} || '%' OR invoice_number::text = ${q})
+    ORDER BY (total_amount = ${amountIdr}) DESC, due_date ASC
+    LIMIT 25
+  `) as unknown as MatchableInvoiceRow[];
+}
+
+/** The Xero-style reconciliation step: links a revenue entry to the invoice it settles and marks
+ * that invoice paid in the same action, rather than two separate manual steps that could drift out
+ * of sync. budget_revenue.matched_invoice_id's own UNIQUE constraint (see db.ts) is the real
+ * guarantee against double-matching; the invoice-status check here is a friendlier error on top of
+ * that, not a substitute for it. */
+export async function matchRevenueToInvoice(revenueId: number, invoiceId: number): Promise<void> {
+  const invoiceRows = await sql`SELECT status FROM invoices WHERE id = ${invoiceId}`;
+  if (invoiceRows.length === 0) throw new Error('Invoice not found.');
+  if (invoiceRows[0].status !== 'outstanding') throw new Error('That invoice is not outstanding -- it may already be paid, matched to a different entry, or cancelled.');
+
+  const revenueRows = await sql`SELECT id FROM budget_revenue WHERE id = ${revenueId}`;
+  if (revenueRows.length === 0) throw new Error('Revenue entry not found.');
+
+  await sql`UPDATE budget_revenue SET matched_invoice_id = ${invoiceId} WHERE id = ${revenueId}`;
+  await sql`UPDATE invoices SET status = 'paid', paid_at = now() WHERE id = ${invoiceId}`;
+}
+
+/** Undoes matchRevenueToInvoice -- reverts the invoice back to outstanding only if it's still
+ * marked paid (an admin who separately voided or re-paid it since shouldn't have that overwritten
+ * by unmatching an unrelated, stale entry). */
+export async function unmatchRevenueFromInvoice(revenueId: number): Promise<void> {
+  const rows = await sql`SELECT matched_invoice_id FROM budget_revenue WHERE id = ${revenueId}`;
+  if (rows.length === 0) throw new Error('Revenue entry not found.');
+  const invoiceId = rows[0].matched_invoice_id as number | null;
+  if (!invoiceId) return;
+
+  await sql`UPDATE budget_revenue SET matched_invoice_id = NULL WHERE id = ${revenueId}`;
+  await sql`UPDATE invoices SET status = 'outstanding', paid_at = NULL WHERE id = ${invoiceId} AND status = 'paid'`;
 }
 
 export interface ExpenseRow {
@@ -206,6 +296,27 @@ export async function createExpenseEntry(input: LogExpenseInput, createdBy: numb
     RETURNING id
   `;
   return rows[0].id as number;
+}
+
+/** Corrects a miscoded expense entry in place -- the Transaction Log's own edit action. */
+export async function updateExpenseEntry(id: number, input: LogExpenseInput): Promise<void> {
+  const rows = await sql`
+    UPDATE budget_expenses SET
+      entry_date = ${input.entryDate}::date,
+      amount_idr = ${input.amountIdr},
+      category_id = ${input.categoryId},
+      vendor_description = ${input.vendorDescription},
+      authorized_by = ${input.authorizedBy},
+      receipt_url = ${input.receiptUrl || null}
+    WHERE id = ${id}
+    RETURNING id
+  `;
+  if (rows.length === 0) throw new Error('Expense entry not found.');
+}
+
+export async function deleteExpenseEntry(id: number): Promise<void> {
+  const rows = await sql`DELETE FROM budget_expenses WHERE id = ${id} RETURNING id`;
+  if (rows.length === 0) throw new Error('Expense entry not found.');
 }
 
 export interface CategoryHistoryRow {

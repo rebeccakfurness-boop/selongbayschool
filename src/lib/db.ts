@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 48;
+const SCHEMA_VERSION = 49;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2618,6 +2618,17 @@ export function ensureSchema(): Promise<void> {
       // certificate set -- same shared-with-parent-portal pattern as those three (see ChildCard's
       // and ParentChildProfileCard's own Immigration Documents sections).
       await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS family_card_url TEXT`;
+
+      // Xero-style reconciliation: links a revenue entry to the invoice it settles, and is what
+      // "mark as paid once matched" (see matchRevenueToInvoice in budget.ts) actually keys off.
+      // UNIQUE, not just an index -- Postgres treats multiple NULLs as non-duplicates under a
+      // UNIQUE constraint, so every not-yet-matched row is unaffected, but the same invoice can
+      // never be matched to two different revenue entries by accident. ON DELETE SET NULL rather
+      // than restricting the invoice's own deletion -- a deleted invoice shouldn't be able to trap
+      // the revenue entry that was reconciled against it.
+      await sql`ALTER TABLE budget_revenue ADD COLUMN IF NOT EXISTS matched_invoice_id BIGINT REFERENCES invoices(id) ON DELETE SET NULL`;
+      await sql`ALTER TABLE budget_revenue DROP CONSTRAINT IF EXISTS budget_revenue_matched_invoice_id_key`;
+      await sql`ALTER TABLE budget_revenue ADD CONSTRAINT budget_revenue_matched_invoice_id_key UNIQUE (matched_invoice_id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

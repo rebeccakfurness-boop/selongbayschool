@@ -957,6 +957,11 @@ export const logExpenseSchema = z.object({
 });
 export type LogExpenseInput = z.infer<typeof logExpenseSchema>;
 
+export const matchRevenueToInvoiceSchema = z.object({
+  invoiceId: z.coerce.number().int().positive('Choose an invoice'),
+});
+export type MatchRevenueToInvoiceInput = z.infer<typeof matchRevenueToInvoiceSchema>;
+
 export const createBudgetCategorySchema = z.object({
   name: z.string().trim().min(1, 'Enter a category name').max(200),
   monthlyBudgetIdr: z.coerce.number().int().min(0, 'Enter 0 or more').default(0),
