@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
 
     console.log(`[api/admin/budget/statements/parse] extracting text (${fileType}) from ${parsed.data.fileUrl}`);
     const text = await extractStatementText(parsed.data.fileUrl, fileType);
-    console.log(`[api/admin/budget/statements/parse] extracted ${text.length} chars, calling Claude`);
+    console.log(`[api/admin/budget/statements/parse] extracted ${text.length} chars, parsing`);
     const statement = await parseBankStatementText(text);
     console.log(`[api/admin/budget/statements/parse] parsed ${statement.transactions.length} transaction(s)`);
     return NextResponse.json(statement);
