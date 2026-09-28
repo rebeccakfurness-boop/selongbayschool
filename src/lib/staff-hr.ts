@@ -179,10 +179,13 @@ export interface GeneratePayslipInput {
  * replacement for the old "upload an already-prepared PDF" flow. Everything downstream (the
  * DOB-gated view/download route, delete) is unchanged; it only ever looked at file_url. */
 export async function generatePayslip(adminUserId: number, input: GeneratePayslipInput, generatedByAdminId: number): Promise<number> {
-  const staff = await getStaffDetail(adminUserId);
+  // Independent reads run in parallel -- one less sequential round trip on a cold serverless
+  // function, alongside the PDF render, Blob upload, and insert that still have to happen in order.
+  const [staff, attendance] = await Promise.all([
+    getStaffDetail(adminUserId),
+    computeStaffAttendanceForPeriod(adminUserId, input.periodStart, input.periodEnd),
+  ]);
   if (!staff) throw new Error('Staff member not found.');
-
-  const attendance = await computeStaffAttendanceForPeriod(adminUserId, input.periodStart, input.periodEnd);
 
   const grossSalary = round2(input.basicSalary + input.housingAllowance);
   const jhtEmployeeDeduction = round2(grossSalary * JHT_EMPLOYEE_RATE);

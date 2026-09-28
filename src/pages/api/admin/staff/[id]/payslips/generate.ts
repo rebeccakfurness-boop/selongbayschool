@@ -5,6 +5,12 @@ import { getSessionOptions, type AdminSessionData } from '@/lib/auth';
 import { generatePayslipSchema, firstIssueMessage } from '@/lib/validation';
 import { generatePayslip } from '@/lib/staff-hr';
 
+/** Several sequential round trips on a cold serverless function -- ensureSchema's version check,
+ * the staff-detail and attendance-period queries, the PDF render, the Blob upload, then the
+ * staff_payslips insert -- can add up past the platform's short default on a cold start, same
+ * reasoning as the Course Builder's own maxDuration (see curriculum/import/route.ts). */
+export const config = { maxDuration: 60 };
+
 /** Lives under the Pages Router -- see /api/invoices/[id]/pdf.ts for why (App Router route
  * handlers trigger a "Minified React error #31" inside @react-pdf/renderer's bundled reconciler;
  * Pages Router API routes don't). Admin-only, matching every other write action on the Staff
