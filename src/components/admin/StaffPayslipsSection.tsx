@@ -83,7 +83,7 @@ export default function StaffPayslipsSection({
     setGenerating(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/staff/${adminUserId}/payslips`, {
+      const res = await fetch(`/api/admin/staff/${adminUserId}/payslips/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
