@@ -147,8 +147,8 @@ export async function deletePayslip(id: number): Promise<void> {
 }
 
 /** BPJS Ketenagakerjaan statutory splits that are safe to default (fixed percentages set by
- * regulation, not case-specific): JHT 2% employee / 3.7% employer, JP 1% employee, JKM 0.3%
- * employer. JKK's employer rate depends on the school's registered work-accident risk
+ * regulation, not case-specific): JHT 2% employee / 3.7% employer, JP 1% employee / 2% employer,
+ * JKM 0.3% employer. JKK's employer rate depends on the school's registered work-accident risk
  * classification (0.24%-1.74%) -- there's no single correct default, so it's an admin-entered
  * input on the generation form instead. PPh 21 and any loan/cashbon repayment are entered
  * directly too: PPh 21 is a progressive, legally sensitive calculation this app doesn't attempt,
@@ -156,6 +156,7 @@ export async function deletePayslip(id: number): Promise<void> {
 const JHT_EMPLOYEE_RATE = 0.02;
 const JP_EMPLOYEE_RATE = 0.01;
 const JHT_EMPLOYER_RATE = 0.037;
+const JP_EMPLOYER_RATE = 0.02;
 const JKM_EMPLOYER_RATE = 0.003;
 
 function round2(n: number): number {
@@ -191,6 +192,7 @@ export async function generatePayslip(adminUserId: number, input: GeneratePaysli
   const jhtEmployeeDeduction = round2(grossSalary * JHT_EMPLOYEE_RATE);
   const jpEmployeeDeduction = round2(grossSalary * JP_EMPLOYEE_RATE);
   const jhtEmployerContribution = round2(grossSalary * JHT_EMPLOYER_RATE);
+  const jpEmployerContribution = round2(grossSalary * JP_EMPLOYER_RATE);
   const jkmEmployerContribution = round2(grossSalary * JKM_EMPLOYER_RATE);
   const jkkEmployerContribution = round2(grossSalary * (input.jkkRatePercent / 100));
   const takeHomePay = round2(grossSalary - jhtEmployeeDeduction - jpEmployeeDeduction - input.pph21Deduction - input.loanDeduction);
@@ -216,6 +218,7 @@ export async function generatePayslip(adminUserId: number, input: GeneratePaysli
         loanDeduction: input.loanDeduction,
         takeHomePay,
         jhtEmployerContribution,
+        jpEmployerContribution,
         jkmEmployerContribution,
         jkkEmployerContribution,
         bankName: staff.bank_name,
@@ -243,7 +246,7 @@ export async function generatePayslip(adminUserId: number, input: GeneratePaysli
       period_start, period_end, working_days, days_present,
       basic_salary, housing_allowance, gross_salary,
       jht_employee_deduction, jp_employee_deduction, pph21_deduction, loan_deduction, take_home_pay,
-      jht_employer_contribution, jkm_employer_contribution, jkk_employer_contribution,
+      jht_employer_contribution, jp_employer_contribution, jkm_employer_contribution, jkk_employer_contribution,
       bank_name, bank_account_number, bank_account_name
     )
     VALUES (
@@ -251,7 +254,7 @@ export async function generatePayslip(adminUserId: number, input: GeneratePaysli
       ${input.periodStart}::date, ${input.periodEnd}::date, ${attendance.workingDays}, ${attendance.daysPresent},
       ${input.basicSalary}, ${input.housingAllowance}, ${grossSalary},
       ${jhtEmployeeDeduction}, ${jpEmployeeDeduction}, ${input.pph21Deduction}, ${input.loanDeduction}, ${takeHomePay},
-      ${jhtEmployerContribution}, ${jkmEmployerContribution}, ${jkkEmployerContribution},
+      ${jhtEmployerContribution}, ${jpEmployerContribution}, ${jkmEmployerContribution}, ${jkkEmployerContribution},
       ${staff.bank_name}, ${staff.bank_account_number}, ${staff.bank_account_name}
     )
     RETURNING id

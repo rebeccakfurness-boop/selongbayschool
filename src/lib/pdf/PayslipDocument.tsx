@@ -20,6 +20,7 @@ export interface PayslipData {
   loanDeduction: number;
   takeHomePay: number;
   jhtEmployerContribution: number;
+  jpEmployerContribution: number;
   jkmEmployerContribution: number;
   jkkEmployerContribution: number;
   bankName: string | null;
@@ -61,9 +62,13 @@ const styles = StyleSheet.create({
   takeHomeBox: { marginTop: 20, borderWidth: 1, borderColor: BRAND_COLORS.teal, borderRadius: 6, padding: 14, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: BRAND_COLORS.cream },
   takeHomeLabel: { fontSize: 11, fontWeight: 700, color: BRAND_COLORS.tealDeep },
   takeHomeValue: { fontSize: 18, fontWeight: 800, color: BRAND_COLORS.tealDeep },
-  bankBox: { marginTop: 20 },
+  bottomRow: { flexDirection: 'row', marginTop: 20, gap: 16 },
+  bankBox: { flex: 1 },
   sectionLabel: { fontSize: 9, fontWeight: 700, letterSpacing: 0.5, color: BRAND_COLORS.ink, marginBottom: 4 },
   bankLine: { fontSize: 9.5, color: BRAND_COLORS.ink },
+  keyBox: { flex: 1, borderWidth: 1, borderColor: BRAND_COLORS.sand, borderRadius: 6, backgroundColor: BRAND_COLORS.cream, padding: 10 },
+  keyLine: { flexDirection: 'row', fontSize: 8.5, color: BRAND_COLORS.inkSoft, marginTop: 2 },
+  keyAbbr: { width: 46, fontWeight: 700, color: BRAND_COLORS.ink },
   footer: {
     position: 'absolute',
     bottom: 20,
@@ -77,7 +82,8 @@ const styles = StyleSheet.create({
 
 export function PayslipDocument({ payslip }: { payslip: PayslipData }) {
   const totalDeductions = payslip.jhtEmployeeDeduction + payslip.jpEmployeeDeduction + payslip.pph21Deduction + payslip.loanDeduction;
-  const totalEmployerContributions = payslip.jhtEmployerContribution + payslip.jkmEmployerContribution + payslip.jkkEmployerContribution;
+  const totalEmployerContributions =
+    payslip.jhtEmployerContribution + payslip.jpEmployerContribution + payslip.jkmEmployerContribution + payslip.jkkEmployerContribution;
 
   return (
     <Document title={`Payslip - ${payslip.staffName} - ${payslip.periodLabel}`}>
@@ -164,6 +170,10 @@ export function PayslipDocument({ payslip }: { payslip: PayslipData }) {
               <Text style={styles.lineValue}>{formatMoney(payslip.jhtEmployerContribution)}</Text>
             </View>
             <View style={styles.line}>
+              <Text style={styles.lineLabel}>BPJS JP (Employer)</Text>
+              <Text style={styles.lineValue}>{formatMoney(payslip.jpEmployerContribution)}</Text>
+            </View>
+            <View style={styles.line}>
               <Text style={styles.lineLabel}>BPJS JKM</Text>
               <Text style={styles.lineValue}>{formatMoney(payslip.jkmEmployerContribution)}</Text>
             </View>
@@ -178,17 +188,43 @@ export function PayslipDocument({ payslip }: { payslip: PayslipData }) {
           </View>
         </View>
 
-        <View style={styles.bankBox}>
-          <Text style={styles.sectionLabel}>PAID TO</Text>
-          {payslip.bankName || payslip.bankAccountNumber || payslip.bankAccountName ? (
-            <>
-              <Text style={styles.bankLine}>Bank Name : {payslip.bankName ?? '—'}</Text>
-              <Text style={styles.bankLine}>Account Number : {payslip.bankAccountNumber ?? '—'}</Text>
-              <Text style={styles.bankLine}>Account Name : {payslip.bankAccountName ?? '—'}</Text>
-            </>
-          ) : (
-            <Text style={styles.bankLine}>No bank account on file.</Text>
-          )}
+        <View style={styles.bottomRow}>
+          <View style={styles.bankBox}>
+            <Text style={styles.sectionLabel}>PAID TO</Text>
+            {payslip.bankName || payslip.bankAccountNumber || payslip.bankAccountName ? (
+              <>
+                <Text style={styles.bankLine}>Bank Name : {payslip.bankName ?? '—'}</Text>
+                <Text style={styles.bankLine}>Account Number : {payslip.bankAccountNumber ?? '—'}</Text>
+                <Text style={styles.bankLine}>Account Name : {payslip.bankAccountName ?? '—'}</Text>
+              </>
+            ) : (
+              <Text style={styles.bankLine}>No bank account on file.</Text>
+            )}
+          </View>
+
+          <View style={styles.keyBox}>
+            <Text style={styles.sectionLabel}>KEY</Text>
+            <View style={styles.keyLine}>
+              <Text style={styles.keyAbbr}>JHT</Text>
+              <Text>Jaminan Hari Tua (old-age security)</Text>
+            </View>
+            <View style={styles.keyLine}>
+              <Text style={styles.keyAbbr}>JP</Text>
+              <Text>Jaminan Pensiun (pension)</Text>
+            </View>
+            <View style={styles.keyLine}>
+              <Text style={styles.keyAbbr}>JKM</Text>
+              <Text>Jaminan Kematian (death insurance)</Text>
+            </View>
+            <View style={styles.keyLine}>
+              <Text style={styles.keyAbbr}>JKK</Text>
+              <Text>Jaminan Kecelakaan Kerja (work accident insurance)</Text>
+            </View>
+            <View style={styles.keyLine}>
+              <Text style={styles.keyAbbr}>PPh 21</Text>
+              <Text>Pajak Penghasilan Pasal 21 (income tax withholding)</Text>
+            </View>
+          </View>
         </View>
 
         <Text style={styles.footer}>

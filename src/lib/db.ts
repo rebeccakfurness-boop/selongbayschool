@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 51;
+const SCHEMA_VERSION = 52;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2397,6 +2397,10 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS jht_employer_contribution NUMERIC(14,2)`;
       await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS jkm_employer_contribution NUMERIC(14,2)`;
       await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS jkk_employer_contribution NUMERIC(14,2)`;
+      // Employer-side JP (Jaminan Pensiun) -- the employee-side 1% (jp_employee_deduction) was
+      // already here; this is the matching 2% employer contribution, added after the initial
+      // payslip generator shipped without it.
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS jp_employer_contribution NUMERIC(14,2)`;
       await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS bank_name TEXT`;
       await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS bank_account_number TEXT`;
       await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS bank_account_name TEXT`;
