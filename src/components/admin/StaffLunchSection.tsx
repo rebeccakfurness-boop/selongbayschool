@@ -8,6 +8,7 @@ import { formatDate } from '@/lib/admin-format';
 interface StaffLunchOrder {
   id: number;
   own_lunch: boolean;
+  lunch_type: 'school_lunch' | 'nasi_bungkus' | 'own_lunch';
   start_date: string | null;
   end_date: string | null;
   monday: boolean;
@@ -89,6 +90,25 @@ export default function StaffLunchSection({ adminUserId }: { adminUserId: number
     }
   }
 
+  async function submitNasiBungkus() {
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/staff/${adminUserId}/lunch`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nasiBungkus: true }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not save that.');
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not save that.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   async function submitOrder() {
     if (!endDate || lunchCount === 0) return;
     setSubmitting(true);
@@ -120,7 +140,15 @@ export default function StaffLunchSection({ adminUserId }: { adminUserId: number
       {mode === 'idle' ? (
         <div className="mt-3 flex flex-wrap gap-3">
           <button type="button" onClick={() => setMode('order')} className="rounded-full bg-teal px-5 py-2 text-sm font-bold text-white hover:bg-teal-deep">
-            Request lunches
+            School lunch
+          </button>
+          <button
+            type="button"
+            onClick={submitNasiBungkus}
+            disabled={submitting}
+            className="rounded-full border border-sand-line bg-paper px-5 py-2 text-sm font-bold text-ink hover:border-teal disabled:opacity-40"
+          >
+            {submitting ? 'Saving…' : 'Nasi bungkus'}
           </button>
           <button
             type="button"
@@ -128,7 +156,7 @@ export default function StaffLunchSection({ adminUserId }: { adminUserId: number
             disabled={submitting}
             className="rounded-full border border-sand-line bg-paper px-5 py-2 text-sm font-bold text-ink hover:border-teal disabled:opacity-40"
           >
-            {submitting ? 'Saving…' : "I'll bring my own lunch"}
+            {submitting ? 'Saving…' : "I'll provide my own"}
           </button>
         </div>
       ) : (
@@ -194,8 +222,10 @@ export default function StaffLunchSection({ adminUserId }: { adminUserId: number
       <ul className="mt-4 flex flex-col gap-2">
         {orders?.map((o) => (
           <li key={o.id} className="rounded-sm border border-sand-line p-3 text-sm">
-            {o.own_lunch ? (
-              <span className="text-ink-soft">Bringing own lunch (noted {formatDate(o.created_at.slice(0, 10))}).</span>
+            {o.lunch_type === 'own_lunch' ? (
+              <span className="text-ink-soft">Providing own lunch (noted {formatDate(o.created_at.slice(0, 10))}).</span>
+            ) : o.lunch_type === 'nasi_bungkus' ? (
+              <span className="text-ink-soft">Nasi bungkus (noted {formatDate(o.created_at.slice(0, 10))}).</span>
             ) : (
               <span>
                 <span className="font-semibold capitalize text-ink">{o.lunch_size}</span>

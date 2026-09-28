@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 52;
+const SCHEMA_VERSION = 53;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2427,6 +2427,24 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_staff_lunch_orders_staff ON staff_lunch_orders (admin_user_id)`;
+
+      // A third option alongside the existing "school lunch" (own_lunch = false, sized/dated) and
+      // "own_lunch" (own_lunch = true) rows -- nasi bungkus is a simple packed-rice request with no
+      // size/date-range choice of its own, same one-click shape as own_lunch. lunch_type
+      // disambiguates the three at render time; own_lunch is kept as-is (still true only for the
+      // "bringing my own" case) so nothing reading that column already needs to change.
+      await sql`ALTER TABLE staff_lunch_orders ADD COLUMN IF NOT EXISTS lunch_type TEXT`;
+      await sql`
+        UPDATE staff_lunch_orders SET lunch_type = CASE WHEN own_lunch THEN 'own_lunch' ELSE 'school_lunch' END
+        WHERE lunch_type IS NULL
+      `;
+      await sql`ALTER TABLE staff_lunch_orders ALTER COLUMN lunch_type SET DEFAULT 'school_lunch'`;
+      await sql`ALTER TABLE staff_lunch_orders ALTER COLUMN lunch_type SET NOT NULL`;
+      await sql`ALTER TABLE staff_lunch_orders DROP CONSTRAINT IF EXISTS staff_lunch_orders_lunch_type_check`;
+      await sql`
+        ALTER TABLE staff_lunch_orders ADD CONSTRAINT staff_lunch_orders_lunch_type_check
+        CHECK (lunch_type IN ('school_lunch', 'nasi_bungkus', 'own_lunch'))
+      `;
 
       // Staff duty roster -- deliberately a separate table from class_schedule rather than
       // overloading it with nullable class/subject columns: a duty isn't tied to a class_name or

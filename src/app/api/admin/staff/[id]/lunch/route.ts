@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
 import { createStaffLunchOrderSchema, firstIssueMessage } from '@/lib/validation';
-import { getStaffLunchOrders, createStaffLunchOrder, createStaffOwnLunchRecord } from '@/lib/staff-hr';
+import { getStaffLunchOrders, createStaffLunchOrder, createStaffOwnLunchRecord, createStaffNasiBungkusRecord } from '@/lib/staff-hr';
 import { countLunchDays } from '@/lib/lunch-calc';
 
 /** Mirrors the parent LunchOrderForm/lunch_orders flow, minus invoicing (staff lunches aren't
@@ -57,6 +57,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     await ensureSchema();
     if (d.ownLunch) {
       await createStaffOwnLunchRecord(adminUserId);
+      return NextResponse.json({ ok: true });
+    }
+    if (d.nasiBungkus) {
+      await createStaffNasiBungkusRecord(adminUserId);
       return NextResponse.json({ ok: true });
     }
     if (!d.startDate || !d.endDate || !d.lunchSize) {

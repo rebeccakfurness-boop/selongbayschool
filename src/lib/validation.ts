@@ -256,6 +256,7 @@ export type VerifyPayslipDobInput = z.infer<typeof verifyPayslipDobSchema>;
 
 export const createStaffLunchOrderSchema = z.object({
   ownLunch: z.boolean().optional(),
+  nasiBungkus: z.boolean().optional(),
   startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   monday: z.boolean().optional(),

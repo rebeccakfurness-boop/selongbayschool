@@ -276,6 +276,7 @@ export async function getPayslipWithOwnerDob(payslipId: number): Promise<{ admin
 export interface StaffLunchOrder {
   id: number;
   own_lunch: boolean;
+  lunch_type: 'school_lunch' | 'nasi_bungkus' | 'own_lunch';
   start_date: string | null;
   end_date: string | null;
   monday: boolean;
@@ -292,7 +293,7 @@ export interface StaffLunchOrder {
 
 export async function getStaffLunchOrders(adminUserId: number): Promise<StaffLunchOrder[]> {
   return (await sql`
-    SELECT id, own_lunch, start_date::text, end_date::text, monday, tuesday, wednesday, thursday, friday,
+    SELECT id, own_lunch, lunch_type, start_date::text, end_date::text, monday, tuesday, wednesday, thursday, friday,
       lunch_size, food_preference, allergies_notes, lunch_count, created_at::text
     FROM staff_lunch_orders WHERE admin_user_id = ${adminUserId}
     ORDER BY created_at DESC
@@ -300,7 +301,11 @@ export async function getStaffLunchOrders(adminUserId: number): Promise<StaffLun
 }
 
 export async function createStaffOwnLunchRecord(adminUserId: number): Promise<void> {
-  await sql`INSERT INTO staff_lunch_orders (admin_user_id, own_lunch) VALUES (${adminUserId}, true)`;
+  await sql`INSERT INTO staff_lunch_orders (admin_user_id, own_lunch, lunch_type) VALUES (${adminUserId}, true, 'own_lunch')`;
+}
+
+export async function createStaffNasiBungkusRecord(adminUserId: number): Promise<void> {
+  await sql`INSERT INTO staff_lunch_orders (admin_user_id, own_lunch, lunch_type) VALUES (${adminUserId}, false, 'nasi_bungkus')`;
 }
 
 export async function createStaffLunchOrder(
