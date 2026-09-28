@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 50;
+const SCHEMA_VERSION = 51;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2355,8 +2355,10 @@ export function ensureSchema(): Promise<void> {
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_staff_professional_development_staff ON staff_professional_development (admin_user_id)`;
 
-      // One row per payslip period. file_url is an ordinary (unencrypted) blob -- access is gated
-      // at the application layer instead: a staff member must submit their own date of birth
+      // One row per payslip period. file_url points at a server-generated PDF (see generatePayslip
+      // in staff-hr.ts) rendered from the columns added below -- it's an ordinary (unencrypted)
+      // blob, so access is gated at the application layer instead: a staff member must submit their
+      // own date of birth
       // before the file is served to them (see the payslip download route), since no PDF-encryption
       // library is safe to add here sight-unseen (this app's existing PDF routes already live in
       // the Pages Router specifically to dodge an @react-pdf/renderer rendering bug in the App
@@ -2375,6 +2377,29 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_staff_payslips_staff ON staff_payslips (admin_user_id)`;
+
+      // Payslip generation (replacing plain PDF upload) -- every figure the generator computes or
+      // the admin enters, stored alongside the rendered PDF so a payslip's numbers can be shown or
+      // re-checked without re-parsing the file. All nullable: a payslip row from before this
+      // migration (a plain uploaded PDF) keeps working with these simply unset.
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS period_start DATE`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS period_end DATE`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS working_days INTEGER`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS days_present INTEGER`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS basic_salary NUMERIC(14,2)`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS housing_allowance NUMERIC(14,2)`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS gross_salary NUMERIC(14,2)`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS jht_employee_deduction NUMERIC(14,2)`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS jp_employee_deduction NUMERIC(14,2)`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS pph21_deduction NUMERIC(14,2)`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS loan_deduction NUMERIC(14,2)`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS take_home_pay NUMERIC(14,2)`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS jht_employer_contribution NUMERIC(14,2)`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS jkm_employer_contribution NUMERIC(14,2)`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS jkk_employer_contribution NUMERIC(14,2)`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS bank_name TEXT`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS bank_account_number TEXT`;
+      await sql`ALTER TABLE staff_payslips ADD COLUMN IF NOT EXISTS bank_account_name TEXT`;
 
       // Mirrors lunch_orders (see that table's own comment) minus the invoicing step -- staff
       // lunches aren't billed to the staff member, so there's no invoice_id/line-item to generate.

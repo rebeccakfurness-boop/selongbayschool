@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { upload } from '@vercel/blob/client';
-import { TextInput } from '@/components/forms/FormField';
+import { Field, TextInput } from '@/components/forms/FormField';
 import Button from '@/components/Button';
 import { formatDate } from '@/lib/admin-format';
 
@@ -10,12 +9,33 @@ interface Payslip {
   id: number;
   period_label: string;
   uploaded_at: string;
+  gross_salary: string | null;
+  take_home_pay: string | null;
 }
 
-/** Admin uploads a payslip PDF per period; the owning staff member (or an admin) can open one --
- * an admin skips straight through, but the owning staff member must type their own date of birth
- * first, checked server-side against admin_users.dob (see the download route's own comment for why
- * this is an application-level gate rather than a PDF-embedded password). */
+function formatIDR(value: string | null): string | null {
+  if (value == null) return null;
+  const n = Number(value);
+  if (!Number.isFinite(n)) return null;
+  return `Rp ${new Intl.NumberFormat('id-ID').format(Math.round(n))}`;
+}
+
+const emptyForm = {
+  periodLabel: '',
+  periodStart: '',
+  periodEnd: '',
+  basicSalary: '',
+  housingAllowance: '',
+  pph21Deduction: '',
+  loanDeduction: '',
+  jkkRatePercent: '0.24',
+};
+
+/** Admin generates a payslip PDF per period from entered/computed payroll figures; the owning
+ * staff member (or an admin) can open one -- an admin skips straight through, but the owning
+ * staff member must type their own date of birth first, checked server-side against
+ * admin_users.dob (see the download route's own comment for why this is an application-level
+ * gate rather than a PDF-embedded password). */
 export default function StaffPayslipsSection({
   adminUserId,
   canEdit,
@@ -28,8 +48,8 @@ export default function StaffPayslipsSection({
   staffDobOnFile: boolean;
 }) {
   const [payslips, setPayslips] = useState<Payslip[] | null>(null);
-  const [periodLabel, setPeriodLabel] = useState('');
-  const [uploading, setUploading] = useState(false);
+  const [form, setForm] = useState(emptyForm);
+  const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [dobPromptFor, setDobPromptFor] = useState<number | null>(null);
@@ -56,30 +76,35 @@ export default function StaffPayslipsSection({
     };
   }, [adminUserId]);
 
-  async function handleUploadFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file || !periodLabel.trim()) return;
-    setUploading(true);
+  const canGenerate = form.periodLabel.trim() && form.periodStart && form.periodEnd && form.basicSalary !== '';
+
+  async function generate() {
+    if (!canGenerate) return;
+    setGenerating(true);
     setError(null);
     try {
-      const blob = await upload(`staff/${adminUserId}/payslips/${file.name}`, file, {
-        access: 'public',
-        handleUploadUrl: '/api/admin/staff/upload',
-      });
       const res = await fetch(`/api/admin/staff/${adminUserId}/payslips`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ periodLabel: periodLabel.trim(), fileUrl: blob.url }),
+        body: JSON.stringify({
+          periodLabel: form.periodLabel.trim(),
+          periodStart: form.periodStart,
+          periodEnd: form.periodEnd,
+          basicSalary: form.basicSalary,
+          housingAllowance: form.housingAllowance || 0,
+          pph21Deduction: form.pph21Deduction || 0,
+          loanDeduction: form.loanDeduction || 0,
+          jkkRatePercent: form.jkkRatePercent || 0,
+        }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Could not add that payslip.');
-      setPeriodLabel('');
+      if (!res.ok) throw new Error(data.error || 'Could not generate that payslip.');
+      setForm(emptyForm);
       await load();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not upload that payslip.');
+      setError(err instanceof Error ? err.message : 'Could not generate that payslip.');
     } finally {
-      setUploading(false);
-      e.target.value = '';
+      setGenerating(false);
     }
   }
 
@@ -124,12 +149,42 @@ export default function StaffPayslipsSection({
       )}
 
       {canEdit && (
-        <div className="mt-3 flex flex-wrap items-end gap-3 rounded-sm border border-dashed border-sand-line p-3">
-          <TextInput value={periodLabel} onChange={(e) => setPeriodLabel(e.target.value)} placeholder="e.g. January 2027" className="max-w-xs" />
-          <label className={`cursor-pointer text-sm font-semibold ${periodLabel.trim() ? 'text-teal-deep hover:underline' : 'text-ink-soft'}`}>
-            {uploading ? 'Uploading…' : 'Upload payslip PDF'}
-            <input type="file" accept="application/pdf,image/jpeg,image/png" onChange={handleUploadFile} disabled={uploading || !periodLabel.trim()} className="hidden" />
-          </label>
+        <div className="mt-3 rounded-sm border border-dashed border-sand-line p-4">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <Field label="Period" htmlFor="ps-period" required>
+              <TextInput id="ps-period" value={form.periodLabel} onChange={(e) => setForm((f) => ({ ...f, periodLabel: e.target.value }))} placeholder="e.g. January 2027" />
+            </Field>
+            <Field label="Period start" htmlFor="ps-start" required>
+              <TextInput id="ps-start" type="date" value={form.periodStart} onChange={(e) => setForm((f) => ({ ...f, periodStart: e.target.value }))} />
+            </Field>
+            <Field label="Period end" htmlFor="ps-end" required>
+              <TextInput id="ps-end" type="date" value={form.periodEnd} onChange={(e) => setForm((f) => ({ ...f, periodEnd: e.target.value }))} />
+            </Field>
+            <Field label="Basic salary (IDR)" htmlFor="ps-basic" required>
+              <TextInput id="ps-basic" type="number" min={0} value={form.basicSalary} onChange={(e) => setForm((f) => ({ ...f, basicSalary: e.target.value }))} placeholder="0" />
+            </Field>
+            <Field label="Housing allowance (IDR)" htmlFor="ps-housing">
+              <TextInput id="ps-housing" type="number" min={0} value={form.housingAllowance} onChange={(e) => setForm((f) => ({ ...f, housingAllowance: e.target.value }))} placeholder="0" />
+            </Field>
+            <Field label="PPh 21 deduction (IDR)" htmlFor="ps-pph21">
+              <TextInput id="ps-pph21" type="number" min={0} value={form.pph21Deduction} onChange={(e) => setForm((f) => ({ ...f, pph21Deduction: e.target.value }))} placeholder="0" />
+            </Field>
+            <Field label="Loan / cashbon deduction (IDR)" htmlFor="ps-loan">
+              <TextInput id="ps-loan" type="number" min={0} value={form.loanDeduction} onChange={(e) => setForm((f) => ({ ...f, loanDeduction: e.target.value }))} placeholder="0" />
+            </Field>
+            <Field label="JKK rate (%)" htmlFor="ps-jkk">
+              <TextInput id="ps-jkk" type="number" min={0} max={10} step={0.01} value={form.jkkRatePercent} onChange={(e) => setForm((f) => ({ ...f, jkkRatePercent: e.target.value }))} />
+            </Field>
+          </div>
+          <p className="mt-2 text-xs text-ink-soft">
+            BPJS JHT (2% employee / 3.7% employer) and JP (1% employee) are calculated automatically from Basic Salary + Housing Allowance.
+            Attendance is pulled from check-in records for the period above.
+          </p>
+          <div className="mt-3">
+            <Button type="button" variant="primary" onClick={generate} disabled={generating || !canGenerate}>
+              {generating ? 'Generating…' : 'Generate payslip'}
+            </Button>
+          </div>
         </div>
       )}
       {error && <p className="mt-2 text-xs font-semibold text-orange-deep">{error}</p>}
@@ -139,7 +194,14 @@ export default function StaffPayslipsSection({
           <li key={p.id} className="flex items-center justify-between gap-2 rounded-sm border border-sand-line p-3 text-sm">
             <div>
               <p className="font-semibold text-ink">{p.period_label}</p>
-              <p className="text-xs text-ink-soft">Uploaded {formatDate(p.uploaded_at.slice(0, 10))}</p>
+              <p className="text-xs text-ink-soft">Generated {formatDate(p.uploaded_at.slice(0, 10))}</p>
+              {(formatIDR(p.gross_salary) || formatIDR(p.take_home_pay)) && (
+                <p className="text-xs text-ink-soft">
+                  {formatIDR(p.gross_salary) && <>Gross {formatIDR(p.gross_salary)}</>}
+                  {formatIDR(p.gross_salary) && formatIDR(p.take_home_pay) && ' · '}
+                  {formatIDR(p.take_home_pay) && <>Take-home {formatIDR(p.take_home_pay)}</>}
+                </p>
+              )}
             </div>
             <div className="flex items-center gap-3">
               <button
@@ -157,7 +219,7 @@ export default function StaffPayslipsSection({
             </div>
           </li>
         ))}
-        {payslips?.length === 0 && <li className="text-sm text-ink-soft">No payslips uploaded yet.</li>}
+        {payslips?.length === 0 && <li className="text-sm text-ink-soft">No payslips generated yet.</li>}
         {payslips === null && <li className="text-sm text-ink-soft">Loading…</li>}
       </ul>
 

@@ -1,5 +1,9 @@
+import { renderToBuffer } from '@react-pdf/renderer';
+import { put } from '@vercel/blob';
 import { sql } from './db';
 import type { EmploymentStatus } from './staff-data';
+import { computeStaffAttendanceForPeriod } from './staff-attendance';
+import { PayslipDocument } from './pdf/PayslipDocument';
 
 export interface StaffBoardRow {
   id: number;
@@ -126,27 +130,130 @@ export interface PayslipSummary {
   admin_user_id: number;
   period_label: string;
   uploaded_at: string;
+  gross_salary: string | null;
+  take_home_pay: string | null;
 }
 
 export async function getPayslipsForStaff(adminUserId: number): Promise<PayslipSummary[]> {
   return (await sql`
-    SELECT id, admin_user_id, period_label, uploaded_at::text
+    SELECT id, admin_user_id, period_label, uploaded_at::text, gross_salary, take_home_pay
     FROM staff_payslips WHERE admin_user_id = ${adminUserId}
     ORDER BY uploaded_at DESC
   `) as unknown as PayslipSummary[];
 }
 
-export async function addPayslip(adminUserId: number, periodLabel: string, fileUrl: string, uploadedBy: number): Promise<number> {
+export async function deletePayslip(id: number): Promise<void> {
+  await sql`DELETE FROM staff_payslips WHERE id = ${id}`;
+}
+
+/** BPJS Ketenagakerjaan statutory splits that are safe to default (fixed percentages set by
+ * regulation, not case-specific): JHT 2% employee / 3.7% employer, JP 1% employee, JKM 0.3%
+ * employer. JKK's employer rate depends on the school's registered work-accident risk
+ * classification (0.24%-1.74%) -- there's no single correct default, so it's an admin-entered
+ * input on the generation form instead. PPh 21 and any loan/cashbon repayment are entered
+ * directly too: PPh 21 is a progressive, legally sensitive calculation this app doesn't attempt,
+ * and a loan deduction is inherently case-specific. */
+const JHT_EMPLOYEE_RATE = 0.02;
+const JP_EMPLOYEE_RATE = 0.01;
+const JHT_EMPLOYER_RATE = 0.037;
+const JKM_EMPLOYER_RATE = 0.003;
+
+function round2(n: number): number {
+  return Math.round(n * 100) / 100;
+}
+
+export interface GeneratePayslipInput {
+  periodLabel: string;
+  periodStart: string;
+  periodEnd: string;
+  basicSalary: number;
+  housingAllowance: number;
+  pph21Deduction: number;
+  loanDeduction: number;
+  jkkRatePercent: number;
+}
+
+/** Computes every payroll figure (BPJS wage base = basic salary + housing allowance, matching the
+ * Gross Salary the admin sees on the form), renders the payslip PDF, uploads it to blob storage,
+ * and stores both the figures and the file_url on one staff_payslips row -- the generated
+ * replacement for the old "upload an already-prepared PDF" flow. Everything downstream (the
+ * DOB-gated view/download route, delete) is unchanged; it only ever looked at file_url. */
+export async function generatePayslip(adminUserId: number, input: GeneratePayslipInput, generatedByAdminId: number): Promise<number> {
+  const staff = await getStaffDetail(adminUserId);
+  if (!staff) throw new Error('Staff member not found.');
+
+  const attendance = await computeStaffAttendanceForPeriod(adminUserId, input.periodStart, input.periodEnd);
+
+  const grossSalary = round2(input.basicSalary + input.housingAllowance);
+  const jhtEmployeeDeduction = round2(grossSalary * JHT_EMPLOYEE_RATE);
+  const jpEmployeeDeduction = round2(grossSalary * JP_EMPLOYEE_RATE);
+  const jhtEmployerContribution = round2(grossSalary * JHT_EMPLOYER_RATE);
+  const jkmEmployerContribution = round2(grossSalary * JKM_EMPLOYER_RATE);
+  const jkkEmployerContribution = round2(grossSalary * (input.jkkRatePercent / 100));
+  const takeHomePay = round2(grossSalary - jhtEmployeeDeduction - jpEmployeeDeduction - input.pph21Deduction - input.loanDeduction);
+
+  const staffName = staff.display_name ?? staff.email;
+
+  const pdfBuffer = await renderToBuffer(
+    PayslipDocument({
+      payslip: {
+        staffName,
+        positionTitle: staff.position_title,
+        periodLabel: input.periodLabel,
+        periodStart: input.periodStart,
+        periodEnd: input.periodEnd,
+        workingDays: attendance.workingDays,
+        daysPresent: attendance.daysPresent,
+        basicSalary: input.basicSalary,
+        housingAllowance: input.housingAllowance,
+        grossSalary,
+        jhtEmployeeDeduction,
+        jpEmployeeDeduction,
+        pph21Deduction: input.pph21Deduction,
+        loanDeduction: input.loanDeduction,
+        takeHomePay,
+        jhtEmployerContribution,
+        jkmEmployerContribution,
+        jkkEmployerContribution,
+        bankName: staff.bank_name,
+        bankAccountNumber: staff.bank_account_number,
+        bankAccountName: staff.bank_account_name,
+      },
+    })
+  );
+
+  const safeSlug =
+    input.periodLabel
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 60) || 'payslip';
+  const blob = await put(`staff/${adminUserId}/payslips/${safeSlug}.pdf`, pdfBuffer, {
+    access: 'public',
+    addRandomSuffix: true,
+    contentType: 'application/pdf',
+  });
+
   const rows = (await sql`
-    INSERT INTO staff_payslips (admin_user_id, period_label, file_url, uploaded_by)
-    VALUES (${adminUserId}, ${periodLabel}, ${fileUrl}, ${uploadedBy})
+    INSERT INTO staff_payslips (
+      admin_user_id, period_label, file_url, uploaded_by,
+      period_start, period_end, working_days, days_present,
+      basic_salary, housing_allowance, gross_salary,
+      jht_employee_deduction, jp_employee_deduction, pph21_deduction, loan_deduction, take_home_pay,
+      jht_employer_contribution, jkm_employer_contribution, jkk_employer_contribution,
+      bank_name, bank_account_number, bank_account_name
+    )
+    VALUES (
+      ${adminUserId}, ${input.periodLabel}, ${blob.url}, ${generatedByAdminId},
+      ${input.periodStart}::date, ${input.periodEnd}::date, ${attendance.workingDays}, ${attendance.daysPresent},
+      ${input.basicSalary}, ${input.housingAllowance}, ${grossSalary},
+      ${jhtEmployeeDeduction}, ${jpEmployeeDeduction}, ${input.pph21Deduction}, ${input.loanDeduction}, ${takeHomePay},
+      ${jhtEmployerContribution}, ${jkmEmployerContribution}, ${jkkEmployerContribution},
+      ${staff.bank_name}, ${staff.bank_account_number}, ${staff.bank_account_name}
+    )
     RETURNING id
   `) as unknown as { id: number }[];
   return rows[0].id;
-}
-
-export async function deletePayslip(id: number): Promise<void> {
-  await sql`DELETE FROM staff_payslips WHERE id = ${id}`;
 }
 
 /** For the DOB-gated download route -- joins the owning staff member's dob in the same query so

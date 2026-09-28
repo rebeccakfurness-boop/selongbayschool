@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
-import { addPayslipSchema, firstIssueMessage } from '@/lib/validation';
-import { getPayslipsForStaff, addPayslip } from '@/lib/staff-hr';
+import { generatePayslipSchema, firstIssueMessage } from '@/lib/validation';
+import { getPayslipsForStaff, generatePayslip } from '@/lib/staff-hr';
 
 /** GET: admin, or the staff member listing their own payslips (period labels + dates only --
  * actually opening one goes through the separate DOB-gated download route). POST: admin-only. */
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const staff = await getCurrentStaff();
   if (staff.role !== 'admin') {
-    return NextResponse.json({ error: 'Only admins can upload payslips.' }, { status: 403 });
+    return NextResponse.json({ error: 'Only admins can generate payslips.' }, { status: 403 });
   }
 
   const { id: idParam } = await params;
@@ -45,17 +45,17 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   } catch {
     return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
   }
-  const parsed = addPayslipSchema.safeParse(body);
+  const parsed = generatePayslipSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: firstIssueMessage(parsed.error, 'Invalid payslip.') }, { status: 400 });
   }
 
   try {
     await ensureSchema();
-    const id = await addPayslip(adminUserId, parsed.data.periodLabel, parsed.data.fileUrl, staff.adminUserId);
+    const id = await generatePayslip(adminUserId, parsed.data, staff.adminUserId);
     return NextResponse.json({ id });
   } catch (err) {
-    console.error('[api/admin/staff/:id/payslips] failed to add', err);
-    return NextResponse.json({ error: 'Could not add that payslip.' }, { status: 500 });
+    console.error('[api/admin/staff/:id/payslips] failed to generate', err);
+    return NextResponse.json({ error: `Could not generate that payslip: ${err instanceof Error ? err.message : String(err)}` }, { status: 500 });
   }
 }

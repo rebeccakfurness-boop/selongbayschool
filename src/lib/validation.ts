@@ -232,11 +232,22 @@ export const addProfessionalDevelopmentSchema = z.object({
 });
 export type AddProfessionalDevelopmentInput = z.infer<typeof addProfessionalDevelopmentSchema>;
 
-export const addPayslipSchema = z.object({
-  periodLabel: z.string().trim().min(1, 'Period is required').max(100),
-  fileUrl: z.string().trim().url(),
-});
-export type AddPayslipInput = z.infer<typeof addPayslipSchema>;
+const payslipAmount = z.coerce.number().nonnegative('Must be zero or more').max(1_000_000_000);
+const payslipDate = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be a valid date');
+
+export const generatePayslipSchema = z
+  .object({
+    periodLabel: z.string().trim().min(1, 'Period is required').max(100),
+    periodStart: payslipDate,
+    periodEnd: payslipDate,
+    basicSalary: payslipAmount,
+    housingAllowance: payslipAmount.default(0),
+    pph21Deduction: payslipAmount.default(0),
+    loanDeduction: payslipAmount.default(0),
+    jkkRatePercent: z.coerce.number().min(0, 'Must be zero or more').max(10, 'That looks too high for a JKK rate').default(0.24),
+  })
+  .refine((v) => v.periodEnd >= v.periodStart, { message: 'Period end must be on or after period start', path: ['periodEnd'] });
+export type GeneratePayslipInput = z.infer<typeof generatePayslipSchema>;
 
 export const verifyPayslipDobSchema = z.object({
   dob: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter your date of birth'),

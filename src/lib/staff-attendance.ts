@@ -148,6 +148,38 @@ export interface StaffAttendanceReportRow {
   performed_by_label: string | null;
 }
 
+export interface StaffAttendancePeriodSummary {
+  workingDays: number;
+  daysPresent: number;
+}
+
+/** Attendance figures for a payslip period -- workingDays is every Mon-Fri calendar date in
+ * [from, to], daysPresent is the count of distinct school-local days with at least one check_in
+ * event in that range. Deliberately not cross-referenced against the Academic Calendar's holidays
+ * or teacher absence records: a payslip should never silently understate a working-day count
+ * because that calendar wasn't kept up to date, so this counts weekdays only and leaves any
+ * holiday adjustment to the admin entering the period. */
+export async function computeStaffAttendanceForPeriod(adminUserId: number, from: string, to: string): Promise<StaffAttendancePeriodSummary> {
+  let workingDays = 0;
+  const cursor = new Date(`${from}T00:00:00Z`);
+  const end = new Date(`${to}T00:00:00Z`);
+  while (cursor <= end) {
+    const day = cursor.getUTCDay();
+    if (day !== 0 && day !== 6) workingDays++;
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
+  }
+
+  const rows = (await sql`
+    SELECT COUNT(DISTINCT (occurred_at AT TIME ZONE ${SCHOOL_TIMEZONE})::date) AS days_present
+    FROM staff_attendance_events
+    WHERE admin_user_id = ${adminUserId}
+      AND event_type = 'check_in'
+      AND (occurred_at AT TIME ZONE ${SCHOOL_TIMEZONE})::date BETWEEN ${from}::date AND ${to}::date
+  `) as unknown as { days_present: string }[];
+
+  return { workingDays, daysPresent: Number(rows[0]?.days_present ?? 0) };
+}
+
 export interface StaffAttendanceReportFilters {
   from: string;
   to: string;
