@@ -14,6 +14,7 @@ export type DutyType =
   | 'primary_teaching'
   | 'secondary_teaching'
   | 'all_staff_meeting'
+  | 'cleaning_duty'
   | 'other';
 
 export const DUTY_TYPE_LABELS: Record<DutyType, string> = {
@@ -27,6 +28,7 @@ export const DUTY_TYPE_LABELS: Record<DutyType, string> = {
   primary_teaching: 'Primary Teaching',
   secondary_teaching: 'Secondary Teaching',
   all_staff_meeting: 'All Staff Meeting',
+  cleaning_duty: 'Cleaning Duty',
   other: 'Other',
 };
 
@@ -60,6 +62,10 @@ export const DUTY_PRESETS: DutyPreset[] = [
   { dutyType: 'primary_teaching', label: 'Primary Teaching', startTime: '08:30', endTime: '15:30' },
   { dutyType: 'secondary_teaching', label: 'Secondary Teaching', startTime: '08:30', endTime: '15:30' },
   { dutyType: 'all_staff_meeting', label: 'All Staff Meeting', startTime: '15:30', endTime: '16:30' },
+  // Weekend-only in practice -- day_of_week already covers Saturday/Sunday like any other duty,
+  // this is just a quick-add starting point for that morning slot; pick the day from the selector
+  // above as usual, same as every other preset here.
+  { dutyType: 'cleaning_duty', label: 'Cleaning Duty', startTime: '08:00', endTime: '11:00' },
 ];
 
 export interface DutyRosterRow {

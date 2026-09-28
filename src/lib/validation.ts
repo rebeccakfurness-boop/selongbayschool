@@ -425,6 +425,7 @@ export const dutyRosterEntrySchema = z
       'primary_teaching',
       'secondary_teaching',
       'all_staff_meeting',
+      'cleaning_duty',
       'other',
     ]),
     dayOfWeek: z.enum(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']),
