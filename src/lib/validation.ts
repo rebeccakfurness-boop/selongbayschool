@@ -950,9 +950,21 @@ export type StaffAttendanceCorrectionInput = z.infer<typeof staffAttendanceCorre
 
 // --- Budget Tracker ---
 
+// A ceiling on any single revenue/expense figure, generous enough to never block a real school
+// transaction but tight enough to catch the kind of garbled/misparsed number (an account number
+// or OCR garbage mistaken for an amount) that would otherwise sail through unchecked and silently
+// blow out "Cash on hand" -- these fields previously had no upper bound at all, which is exactly
+// how a 17-digit value once got into a transaction/opening-cash figure undetected.
+const MAX_TRANSACTION_IDR = 10_000_000_000; // 10 billion IDR (~USD 650k) per transaction
+const budgetAmountIdr = z.coerce
+  .number()
+  .int('Whole rupiah only')
+  .positive('Enter an amount greater than 0')
+  .max(MAX_TRANSACTION_IDR, `That looks too large for a single transaction (max ${MAX_TRANSACTION_IDR.toLocaleString('en-US')} IDR) -- check for a typo.`);
+
 export const logRevenueSchema = z.object({
   entryDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date'),
-  amountIdr: z.coerce.number().int('Whole rupiah only').positive('Enter an amount greater than 0'),
+  amountIdr: budgetAmountIdr,
   payerSource: z.string().trim().min(1, 'Enter who this is from').max(300),
   description: optionalStr,
   paymentMethod: z.enum(['bank_transfer', 'cash'], { message: 'Choose a payment method' }),
@@ -962,7 +974,7 @@ export type LogRevenueInput = z.infer<typeof logRevenueSchema>;
 
 export const logExpenseSchema = z.object({
   entryDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date'),
-  amountIdr: z.coerce.number().int('Whole rupiah only').positive('Enter an amount greater than 0'),
+  amountIdr: budgetAmountIdr,
   categoryId: z.coerce.number().int().positive('Choose a category'),
   vendorDescription: z.string().trim().min(1, 'Enter a vendor or description').max(300),
   authorizedBy: z.string().trim().min(1, 'Enter who authorized or made this purchase').max(200),
@@ -977,12 +989,12 @@ export type MatchRevenueToInvoiceInput = z.infer<typeof matchRevenueToInvoiceSch
 
 export const createBudgetCategorySchema = z.object({
   name: z.string().trim().min(1, 'Enter a category name').max(200),
-  monthlyBudgetIdr: z.coerce.number().int().min(0, 'Enter 0 or more').default(0),
+  monthlyBudgetIdr: z.coerce.number().int().min(0, 'Enter 0 or more').max(MAX_TRANSACTION_IDR, 'That looks too large -- check for a typo.').default(0),
 });
 export type CreateBudgetCategoryInput = z.infer<typeof createBudgetCategorySchema>;
 
 export const updateBudgetCategorySchema = z.object({
-  monthlyBudgetIdr: z.coerce.number().int().min(0, 'Enter 0 or more'),
+  monthlyBudgetIdr: z.coerce.number().int().min(0, 'Enter 0 or more').max(MAX_TRANSACTION_IDR, 'That looks too large -- check for a typo.'),
 });
 export type UpdateBudgetCategoryInput = z.infer<typeof updateBudgetCategorySchema>;
 
@@ -990,7 +1002,10 @@ export const updateBudgetSettingsSchema = z.object({
   termLabel: z.string().trim().min(1, 'Enter a term label').max(100),
   termStartDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date'),
   termEndDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date'),
-  openingCashIdr: z.coerce.number().int().min(0, 'Enter 0 or more'),
+  // A larger ceiling than a single transaction -- this is a cumulative balance, which can
+  // legitimately be bigger than any one payment -- but still finite, for the same reason every
+  // other amount field here now has a cap.
+  openingCashIdr: z.coerce.number().int().min(0, 'Enter 0 or more').max(1_000_000_000_000, 'That looks too large -- check for a typo.'),
   openingCashAsOf: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter a valid date'),
 });
 export type UpdateBudgetSettingsInput = z.infer<typeof updateBudgetSettingsSchema>;
@@ -1000,13 +1015,13 @@ const importBatchDateStr = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Enter
 
 export const importBatchRevenueRowSchema = z.object({
   entryDate: importBatchDateStr,
-  amountIdr: z.coerce.number().int('Whole rupiah only').positive('Enter an amount greater than 0'),
+  amountIdr: budgetAmountIdr,
   payerSource: z.string().trim().min(1, 'Enter who this is from').max(300),
   description: optionalStr,
 });
 export const importBatchExpenseRowSchema = z.object({
   entryDate: importBatchDateStr,
-  amountIdr: z.coerce.number().int('Whole rupiah only').positive('Enter an amount greater than 0'),
+  amountIdr: budgetAmountIdr,
   categoryId: z.coerce.number().int().positive('Choose a category'),
   vendorDescription: z.string().trim().min(1, 'Enter a vendor or description').max(300),
   authorizedBy: z.string().trim().min(1, 'Enter who authorized or made this purchase').max(200),
@@ -1810,7 +1825,7 @@ export type RealTeachingExportInput = z.infer<typeof realTeachingExportSchema>;
 export const createResourceRequestSchema = z.object({
   itemDescription: z.string().trim().min(1, 'Describe the item or resource').max(500),
   reason: z.string().trim().max(2000).nullable().optional(),
-  amountIdr: z.coerce.number().int('Whole rupiah only').positive().nullable().optional(),
+  amountIdr: budgetAmountIdr.nullable().optional(),
   receiptUrl: z.string().trim().url().nullable().optional(),
 });
 export type CreateResourceRequestInput = z.infer<typeof createResourceRequestSchema>;
@@ -1820,7 +1835,7 @@ export type CreateResourceRequestInput = z.infer<typeof createResourceRequestSch
  * role split. */
 export const attachResourceRequestReceiptSchema = z.object({
   receiptUrl: z.string().trim().url(),
-  amountIdr: z.coerce.number().int('Whole rupiah only').positive().nullable().optional(),
+  amountIdr: budgetAmountIdr.nullable().optional(),
 });
 export type AttachResourceRequestReceiptInput = z.infer<typeof attachResourceRequestReceiptSchema>;
 
