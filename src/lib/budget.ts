@@ -372,7 +372,9 @@ export type CombinedTransaction =
 /** Combined, newest-first feed for the Transaction Log screen — revenue and expenses share no
  * table, so this merges two already-sorted queries rather than a SQL UNION across differently
  * shaped rows (category info only applies to expenses, payment method only to revenue). */
-export async function getCombinedTransactions(filters: { from?: string; to?: string } = {}): Promise<CombinedTransaction[]> {
+export async function getCombinedTransactions(
+  filters: { from?: string; to?: string; sort?: 'date' | 'amount' } = {}
+): Promise<CombinedTransaction[]> {
   const [revenue, expenses] = await Promise.all([
     getRevenueEntries({ from: filters.from, to: filters.to }),
     getExpenseEntries({ from: filters.from, to: filters.to }),
@@ -381,7 +383,14 @@ export async function getCombinedTransactions(filters: { from?: string; to?: str
     ...revenue.map((r) => ({ kind: 'revenue' as const, ...r })),
     ...expenses.map((e) => ({ kind: 'expense' as const, ...e })),
   ];
-  combined.sort((a, b) => (a.entry_date < b.entry_date ? 1 : a.entry_date > b.entry_date ? -1 : b.id - a.id));
+  // Sorting by amount is a diagnostic view -- largest-first, so an outlier entry (a typo or a
+  // misparsed statement import) surfaces at the very top instead of needing to be spotted among
+  // every row in date order.
+  if (filters.sort === 'amount') {
+    combined.sort((a, b) => b.amount_idr - a.amount_idr);
+  } else {
+    combined.sort((a, b) => (a.entry_date < b.entry_date ? 1 : a.entry_date > b.entry_date ? -1 : b.id - a.id));
+  }
   return combined;
 }
 
