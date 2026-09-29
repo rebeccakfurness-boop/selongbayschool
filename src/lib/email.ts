@@ -695,6 +695,31 @@ export async function sendLearningProfileEmail(input: LearningProfileEmailInput)
   });
 }
 
+export interface PayslipEmailInput {
+  toEmail: string;
+  staffName: string;
+  periodLabel: string;
+  pdfBuffer: Buffer;
+}
+
+/** Sent from the admin-only "Email to staff member" action on a generated payslip -- deliberately
+ * never cc'd to the school inbox (see every other email in this file's cc: NOTIFY_TO pattern),
+ * since a payslip is confidential payroll data that only the owning staff member should receive,
+ * not something the admin inbox needs a copy of. */
+export async function sendPayslipEmail(input: PayslipEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    `Payslip — ${input.periodLabel}`,
+    `<p>Dear ${input.staffName},</p>
+     <p>Please find attached your payslip for ${input.periodLabel}.</p>
+     <p style="margin-top: 16px;">This is confidential and intended only for you. If you have any questions, just reply to this email or speak with the school office.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  const fileName = `payslip-${input.periodLabel}.pdf`.replace(/[^a-z0-9.-]+/gi, '-');
+  return send(input.toEmail, `Payslip — ${input.periodLabel} — Selong Bay School`, html, {
+    attachment: [{ name: fileName, content: input.pdfBuffer.toString('base64') }],
+  });
+}
+
 export interface InvoiceRemittanceEmailInput {
   toEmail: string;
   billedToName: string;

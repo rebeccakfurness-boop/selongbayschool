@@ -273,6 +273,19 @@ export async function getPayslipWithOwnerDob(payslipId: number): Promise<{ admin
   return rows[0] ?? null;
 }
 
+/** For the "Email to staff member" action -- same join shape as getPayslipWithOwnerDob, but
+ * pulling contact details (email + a display name) instead of dob. */
+export async function getPayslipWithStaffContact(
+  payslipId: number
+): Promise<{ admin_user_id: number; file_url: string; period_label: string; email: string; display_name: string | null } | null> {
+  const rows = (await sql`
+    SELECT p.admin_user_id, p.file_url, p.period_label, u.email, u.display_name
+    FROM staff_payslips p JOIN admin_users u ON u.id = p.admin_user_id
+    WHERE p.id = ${payslipId}
+  `) as unknown as { admin_user_id: number; file_url: string; period_label: string; email: string; display_name: string | null }[];
+  return rows[0] ?? null;
+}
+
 export interface StaffLunchOrder {
   id: number;
   own_lunch: boolean;

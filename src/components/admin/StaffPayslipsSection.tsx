@@ -57,6 +57,9 @@ export default function StaffPayslipsSection({
   const [opening, setOpening] = useState(false);
   const [dobError, setDobError] = useState<string | null>(null);
 
+  const [sendingId, setSendingId] = useState<number | null>(null);
+  const [sentMessage, setSentMessage] = useState<string | null>(null);
+
   async function load() {
     const res = await fetch(`/api/admin/staff/${adminUserId}/payslips`);
     const data = await res.json().catch(() => ({}));
@@ -117,6 +120,22 @@ export default function StaffPayslipsSection({
     const res = await fetch(`/api/admin/staff/${adminUserId}/payslips/${id}/download`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
     const data = await res.json().catch(() => ({}));
     if (res.ok) window.open(data.url, '_blank', 'noopener,noreferrer');
+  }
+
+  async function emailPayslip(id: number) {
+    setSendingId(id);
+    setSentMessage(null);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/staff/${adminUserId}/payslips/${id}/send`, { method: 'POST' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not send that payslip.');
+      setSentMessage(`Sent to ${data.email}.`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not send that payslip.');
+    } finally {
+      setSendingId(null);
+    }
   }
 
   async function confirmDob() {
@@ -188,6 +207,7 @@ export default function StaffPayslipsSection({
         </div>
       )}
       {error && <p className="mt-2 text-xs font-semibold text-orange-deep">{error}</p>}
+      {sentMessage && <p className="mt-2 text-xs font-semibold text-teal-deep">{sentMessage}</p>}
 
       <ul className="mt-4 flex flex-col gap-2">
         {payslips?.map((p) => (
@@ -211,6 +231,16 @@ export default function StaffPayslipsSection({
               >
                 View
               </button>
+              {canEdit && (
+                <button
+                  type="button"
+                  onClick={() => emailPayslip(p.id)}
+                  disabled={sendingId === p.id}
+                  className="text-xs font-semibold text-teal-deep hover:underline disabled:opacity-40"
+                >
+                  {sendingId === p.id ? 'Sending…' : 'Email to staff member'}
+                </button>
+              )}
               {canEdit && (
                 <button type="button" onClick={() => remove(p.id)} className="text-xs font-semibold text-orange-deep hover:underline">
                   Remove
