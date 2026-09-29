@@ -174,11 +174,12 @@ export interface GeneratePayslipInput {
   jkkRatePercent: number;
 }
 
-/** Computes every payroll figure (BPJS wage base = basic salary + housing allowance, matching the
- * Gross Salary the admin sees on the form), renders the payslip PDF, uploads it to blob storage,
- * and stores both the figures and the file_url on one staff_payslips row -- the generated
- * replacement for the old "upload an already-prepared PDF" flow. Everything downstream (the
- * DOB-gated view/download route, delete) is unchanged; it only ever looked at file_url. */
+/** Computes every payroll figure (BPJS wage base = basic salary only -- housing allowance is kept
+ * out of every deduction/contribution calculation entirely, and only ever added on top for Gross
+ * Salary and Take Home Pay), renders the payslip PDF, uploads it to blob storage, and stores both
+ * the figures and the file_url on one staff_payslips row -- the generated replacement for the old
+ * "upload an already-prepared PDF" flow. Everything downstream (the DOB-gated view/download
+ * route, delete) is unchanged; it only ever looked at file_url. */
 export async function generatePayslip(adminUserId: number, input: GeneratePayslipInput, generatedByAdminId: number): Promise<number> {
   // Independent reads run in parallel -- one less sequential round trip on a cold serverless
   // function, alongside the PDF render, Blob upload, and insert that still have to happen in order.
@@ -189,12 +190,12 @@ export async function generatePayslip(adminUserId: number, input: GeneratePaysli
   if (!staff) throw new Error('Staff member not found.');
 
   const grossSalary = round2(input.basicSalary + input.housingAllowance);
-  const jhtEmployeeDeduction = round2(grossSalary * JHT_EMPLOYEE_RATE);
-  const jpEmployeeDeduction = round2(grossSalary * JP_EMPLOYEE_RATE);
-  const jhtEmployerContribution = round2(grossSalary * JHT_EMPLOYER_RATE);
-  const jpEmployerContribution = round2(grossSalary * JP_EMPLOYER_RATE);
-  const jkmEmployerContribution = round2(grossSalary * JKM_EMPLOYER_RATE);
-  const jkkEmployerContribution = round2(grossSalary * (input.jkkRatePercent / 100));
+  const jhtEmployeeDeduction = round2(input.basicSalary * JHT_EMPLOYEE_RATE);
+  const jpEmployeeDeduction = round2(input.basicSalary * JP_EMPLOYEE_RATE);
+  const jhtEmployerContribution = round2(input.basicSalary * JHT_EMPLOYER_RATE);
+  const jpEmployerContribution = round2(input.basicSalary * JP_EMPLOYER_RATE);
+  const jkmEmployerContribution = round2(input.basicSalary * JKM_EMPLOYER_RATE);
+  const jkkEmployerContribution = round2(input.basicSalary * (input.jkkRatePercent / 100));
   const takeHomePay = round2(grossSalary - jhtEmployeeDeduction - jpEmployeeDeduction - input.pph21Deduction - input.loanDeduction);
 
   const staffName = staff.display_name ?? staff.email;

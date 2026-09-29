@@ -196,8 +196,9 @@ export default function StaffPayslipsSection({
             </Field>
           </div>
           <p className="mt-2 text-xs text-ink-soft">
-            BPJS JHT (2% employee / 3.7% employer) and JP (1% employee / 2% employer) are calculated automatically from Basic Salary + Housing
-            Allowance. Attendance is pulled from check-in records for the period above.
+            BPJS JHT (2% employee / 3.7% employer) and JP (1% employee / 2% employer) are calculated automatically from Basic Salary only --
+            Housing Allowance is added on top of Gross Salary but never factored into any deduction or contribution. Attendance is pulled from
+            check-in records for the period above.
           </p>
           <div className="mt-3">
             <Button type="button" variant="primary" onClick={generate} disabled={generating || !canGenerate}>
