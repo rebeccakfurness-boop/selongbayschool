@@ -1019,8 +1019,8 @@ export function ensureSchema(): Promise<void> {
 
       // Lunch invoices reuse the same invoices/invoice_children/invoice_line_items tables as
       // tuition/activity — one more line-item-priced invoice type, not a parallel billing system.
-      await sql`ALTER TABLE invoices DROP CONSTRAINT IF EXISTS invoices_invoice_type_check`;
-      await sql`ALTER TABLE invoices ADD CONSTRAINT invoices_invoice_type_check CHECK (invoice_type IN ('tuition', 'activity', 'lunch'))`;
+      // (The actual CHECK constraint widening lives further down, at the LAST such statement in
+      // this file -- see the comment there on why superseded widenings must never re-run.)
 
       // One row per parent-facing lunch order action — either a real order (own_lunch = false,
       // billed via the linked invoice) or a "bringing lunch from home" acknowledgement (own_lunch =
@@ -2087,9 +2087,8 @@ export function ensureSchema(): Promise<void> {
 
       // library membership fees and late fees are billed the same way tuition/activity/lunch
       // already are — one more invoice_type on the existing invoices table (see runLibraryBilling
-      // and chargeLibraryLateFee in library.ts) rather than a parallel billing system.
-      await sql`ALTER TABLE invoices DROP CONSTRAINT IF EXISTS invoices_invoice_type_check`;
-      await sql`ALTER TABLE invoices ADD CONSTRAINT invoices_invoice_type_check CHECK (invoice_type IN ('tuition', 'activity', 'lunch', 'library'))`;
+      // and chargeLibraryLateFee in library.ts) rather than a parallel billing system. (Widening
+      // lives at the LAST such statement in this file — see the comment there.)
 
       // 'other' added after the library_items table already existed on production — the inline
       // CREATE TABLE check above only takes effect on a fresh install, so existing databases need
@@ -2523,15 +2522,8 @@ export function ensureSchema(): Promise<void> {
       // Three area-teaching duty types, alongside the existing whole-school/individual ones --
       // for a general "teaching in Kindergarten/Primary/Secondary" block on someone's roster
       // (e.g. a floating or casual teacher) without needing a full per-subject class_schedule
-      // entry for it. Auto-generated constraint name from the original inline CHECK.
-      await sql`ALTER TABLE duty_roster DROP CONSTRAINT IF EXISTS duty_roster_duty_type_check`;
-      await sql`
-        ALTER TABLE duty_roster ADD CONSTRAINT duty_roster_duty_type_check
-        CHECK (duty_type IN (
-          'welcome_to_school', 'break_duty', 'lunch_duty', 'cca_supervision', 'non_contact_admin', 'online_teaching_duty',
-          'kindergarten_teaching', 'primary_teaching', 'secondary_teaching', 'all_staff_meeting', 'other'
-        ))
-      `;
+      // entry for it. (Widening lives at the LAST such statement in this file -- see the comment
+      // there on why a superseded intermediate widening must never re-run.)
 
       // Kindergarten AI Course Builder jobs have no exam board/series and no syllabus PDF to
       // upload -- there's no exam for a 2-5 year old to sit, so runInitStep skips the PDF-parsing
@@ -2680,6 +2672,13 @@ export function ensureSchema(): Promise<void> {
       // Weekend morning cleaning duty -- day_of_week already allows Saturday/Sunday like any other
       // duty (this constraint only ever restricted duty_type), so this is the one missing piece
       // for it to show up in the admin duty roster editor and staff's own "My Roster" view.
+      //
+      // THE ONLY duty_type widening statement: ensureSchema() replays this entire file's DDL in
+      // full on any SCHEMA_VERSION bump (not just the newly-added tail), so an earlier, narrower
+      // redefinition of this same constraint would re-reject rows already using a value a later
+      // widening allowed (e.g. 'cleaning_duty'), crashing every page that calls ensureSchema() --
+      // this happened in production. When duty_type needs another value, widen the CHECK below in
+      // place; never add a second DROP+ADD pair for it elsewhere in this file.
       await sql`ALTER TABLE duty_roster DROP CONSTRAINT IF EXISTS duty_roster_duty_type_check`;
       await sql`
         ALTER TABLE duty_roster ADD CONSTRAINT duty_roster_duty_type_check
@@ -2800,6 +2799,14 @@ export function ensureSchema(): Promise<void> {
       // CCA invoices reuse the same invoices/invoice_children/invoice_line_items tables as
       // tuition/activity/lunch/library -- one more line-item-priced invoice type, not a parallel
       // billing system (see createCcaInvoiceForSelection in cca.ts).
+      //
+      // THE ONLY invoice_type widening statement: ensureSchema() replays this entire file's DDL in
+      // full on any SCHEMA_VERSION bump (not just the newly-added tail), so an earlier, narrower
+      // redefinition of this same constraint would re-reject invoices already using a value a
+      // later widening allowed (e.g. 'library'), crashing every page that calls ensureSchema() --
+      // the equivalent bug on duty_roster's duty_type constraint actually happened in production.
+      // When invoice_type needs another value, widen the CHECK below in place; never add a second
+      // DROP+ADD pair for it elsewhere in this file.
       await sql`ALTER TABLE invoices DROP CONSTRAINT IF EXISTS invoices_invoice_type_check`;
       await sql`ALTER TABLE invoices ADD CONSTRAINT invoices_invoice_type_check CHECK (invoice_type IN ('tuition', 'activity', 'lunch', 'library', 'cca'))`;
 
