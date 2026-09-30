@@ -43,6 +43,7 @@ export interface ChildDetail {
   family_id: string | null;
   status: ChildStatus;
   is_active: boolean;
+  cca_enabled: boolean;
   programme: string | null;
   class_band: ClassBand | null;
   class_name: string | null;
@@ -467,6 +468,7 @@ export default function ChildCard({
             {canEdit && (
               <CcaOverridesSection
                 childId={child.id}
+                ccaEnabled={child.cca_enabled}
                 overrides={ccaOverrides}
                 activities={ccaActivities}
                 hasSubmittedSelection={ccaHasSubmittedSelection}

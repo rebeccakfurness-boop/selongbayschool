@@ -95,6 +95,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         classroom_student_email = COALESCE(${d.classroomStudentEmail ?? null}, classroom_student_email),
         enrollment_type = COALESCE(${d.enrollmentType ?? null}, enrollment_type),
         online_learning_enabled = COALESCE(${d.onlineLearningEnabled ?? null}, online_learning_enabled),
+        cca_enabled = COALESCE(${d.ccaEnabled ?? null}, cca_enabled),
         updated_at = now()
       WHERE id = ${id}
       RETURNING id

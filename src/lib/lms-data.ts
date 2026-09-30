@@ -88,6 +88,7 @@ export interface GuardianChildRow {
   enrollment_type: 'regular' | 'activities_only';
   schedule_type: 'on_site' | 'hybrid' | 'home_schooling' | null;
   online_learning_enabled: boolean;
+  cca_enabled: boolean;
 }
 
 /** Only returns 'approved' links — a self-service /account/link-child request sits at 'pending'
@@ -102,7 +103,7 @@ export async function getChildrenForGuardian(customerId: number): Promise<Guardi
       c.allergies_medical_notes, c.dietary_requirements, c.religion, c.home_language, c.previous_school, c.lunch_option,
       c.photo_url, c.photo_updated_by_label, c.photo_updated_at::text,
       c.passport_copy_url, c.kitas_copy_url, c.birth_certificate_url, c.family_card_url, c.enrollment_type, c.schedule_type,
-      c.online_learning_enabled
+      c.online_learning_enabled, c.cca_enabled
     FROM guardian_children gc
     JOIN children c ON c.id = gc.child_id
     WHERE gc.customer_id = ${customerId} AND gc.status = 'approved'

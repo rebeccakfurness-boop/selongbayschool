@@ -10,11 +10,13 @@ import type { CcaActivityRow, CcaPriceOverrideRow } from '@/lib/cca';
 
 export default function CcaOverridesSection({
   childId,
+  ccaEnabled,
   overrides,
   activities,
   hasSubmittedSelection,
 }: {
   childId: number;
+  ccaEnabled: boolean;
   overrides: CcaPriceOverrideRow[];
   activities: CcaActivityRow[];
   hasSubmittedSelection: boolean;
@@ -24,6 +26,21 @@ export default function CcaOverridesSection({
   const [priceIDR, setPriceIDR] = useState('0');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [togglingEnabled, setTogglingEnabled] = useState(false);
+
+  async function toggleEnabled() {
+    setTogglingEnabled(true);
+    try {
+      const res = await fetch(`/api/admin/children/${childId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ccaEnabled: !ccaEnabled }),
+      });
+      if (res.ok) router.refresh();
+    } finally {
+      setTogglingEnabled(false);
+    }
+  }
 
   async function addOverride(e: FormEvent) {
     e.preventDefault();
@@ -54,14 +71,31 @@ export default function CcaOverridesSection({
 
   return (
     <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
-      <div className="flex items-center justify-between">
-        <h3 className="font-display text-base font-semibold text-ink">CCA Price Overrides</h3>
-        {hasSubmittedSelection && (
-          <Link href={`/admin/families/${childId}/cca`} className="text-sm font-semibold text-teal-deep hover:underline">
-            + Review CCA selections
-          </Link>
-        )}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h3 className="font-display text-base font-semibold text-ink">Co-Curricular Activities</h3>
+        <div className="flex items-center gap-3">
+          {hasSubmittedSelection && (
+            <Link href={`/admin/families/${childId}/cca`} className="text-sm font-semibold text-teal-deep hover:underline">
+              + Review CCA selections
+            </Link>
+          )}
+          <button
+            type="button"
+            onClick={toggleEnabled}
+            disabled={togglingEnabled}
+            className={`rounded-full px-3 py-1 text-xs font-bold disabled:opacity-50 ${ccaEnabled ? 'bg-teal/15 text-teal-deep' : 'bg-sand text-ink-soft'}`}
+          >
+            {togglingEnabled ? 'Saving…' : ccaEnabled ? 'CCA On' : 'CCA Off'}
+          </button>
+        </div>
       </div>
+      <p className="mt-1 text-xs text-ink-soft">
+        {ccaEnabled
+          ? "This child's parent can select CCAs from their portal."
+          : "Off: this child won't appear on the CCA selection form until turned on."}
+      </p>
+
+      <h4 className="mt-4 text-xs font-bold uppercase tracking-wide text-ink-soft">Price overrides</h4>
       <p className="mt-1 text-xs text-ink-soft">Overrides the normal CCA/option price for this child specifically, e.g. a scholarship or sibling waiver.</p>
 
       <ul className="mt-3 flex flex-col gap-2">

@@ -31,11 +31,12 @@ export default async function AccountCcaPage() {
 
     await ensureSchema();
     const kids = customerId ? await getChildrenForGuardian(customerId) : [];
+    const enabledKids = kids.filter((k) => k.cca_enabled);
     const settings = await getCcaSettings();
     const activities = await getActiveCcaActivities();
 
     const children = await Promise.all(
-      kids.map(async (kid) => {
+      enabledKids.map(async (kid) => {
         const overrides = await getCcaPriceOverridesForChild(kid.id);
         const overrideByCca = new Map(overrides.map((o) => [o.cca_id, o.price_idr]));
         const catalog: CcaCatalogItem[] = activities.map((a) => ({
@@ -60,7 +61,7 @@ export default async function AccountCcaPage() {
       })
     );
 
-    return renderCcaPage({ settings, children });
+    return renderCcaPage({ settings, children, hasAnyChildren: kids.length > 0 });
   } catch (error) {
     console.error('[account/cca] failed to load', error);
     return <OverviewLoadError error={error} />;
@@ -70,9 +71,11 @@ export default async function AccountCcaPage() {
 function renderCcaPage({
   settings,
   children,
+  hasAnyChildren,
 }: {
   settings: Awaited<ReturnType<typeof getCcaSettings>>;
   children: { id: number; label: string; catalog: CcaCatalogItem[]; selection: Awaited<ReturnType<typeof getCcaSelectionForChild>> }[];
+  hasAnyChildren: boolean;
 }) {
   return (
     <div>
@@ -106,7 +109,9 @@ function renderCcaPage({
           ))}
           {children.length === 0 && (
             <div className="rounded-md border border-dashed border-sand-line p-6 text-center text-sm text-ink-soft">
-              No children linked to your account yet.
+              {hasAnyChildren
+                ? "CCA selections aren't turned on for your children yet. Ask the school office if you'd like this enabled."
+                : 'No children linked to your account yet.'}
             </div>
           )}
         </div>

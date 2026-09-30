@@ -391,6 +391,7 @@ export const updateChildSchema = z.object({
   classroomStudentEmail: optionalStr,
   enrollmentType: z.enum(['regular', 'activities_only']).optional(),
   onlineLearningEnabled: z.boolean().optional(),
+  ccaEnabled: z.boolean().optional(),
 });
 export type UpdateChildInput = z.infer<typeof updateChildSchema>;
 

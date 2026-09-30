@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 54;
+const SCHEMA_VERSION = 55;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2809,6 +2809,13 @@ export function ensureSchema(): Promise<void> {
       // DROP+ADD pair for it elsewhere in this file.
       await sql`ALTER TABLE invoices DROP CONSTRAINT IF EXISTS invoices_invoice_type_check`;
       await sql`ALTER TABLE invoices ADD CONSTRAINT invoices_invoice_type_check CHECK (invoice_type IN ('tuition', 'activity', 'lunch', 'library', 'cca'))`;
+
+      // Per-child gate for CCA selections, toggled on the Child Card -- default false, same
+      // opt-in-per-child convention as online_learning_enabled, so a brand-new term doesn't
+      // silently expose every child's parent to a form for a feature the office hasn't rolled out
+      // to them yet. Filters both the parent-facing /account/cca list and (implicitly, via that
+      // filter) which children ever get a cca_selections row.
+      await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS cca_enabled BOOLEAN NOT NULL DEFAULT false`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();
