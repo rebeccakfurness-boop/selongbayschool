@@ -96,12 +96,15 @@ export default function CcaOverridesSection({
       </p>
 
       <h4 className="mt-4 text-xs font-bold uppercase tracking-wide text-ink-soft">Price overrides</h4>
-      <p className="mt-1 text-xs text-ink-soft">Overrides the normal CCA/option price for this child specifically, e.g. a scholarship or sibling waiver.</p>
+      <p className="mt-1 text-xs text-ink-soft">
+        Overrides the normal per-week CCA/option price for this child specifically (e.g. a scholarship or sibling
+        waiver) -- still multiplied by the term&apos;s week count like any other rate.
+      </p>
 
       <ul className="mt-3 flex flex-col gap-2">
         {overrides.map((o) => (
           <li key={o.id} className="flex items-center justify-between gap-2 rounded-sm border border-sand-line px-3 py-2 text-sm">
-            <span className="font-semibold text-ink">{o.cca_name} <span className="text-ink-soft">— {formatIDR(o.price_idr)}</span></span>
+            <span className="font-semibold text-ink">{o.cca_name} <span className="text-ink-soft">— {formatIDR(o.price_idr)}/week</span></span>
             <button type="button" onClick={() => removeOverride(o.id)} className="text-xs font-semibold text-orange-deep hover:underline">
               Remove
             </button>
@@ -121,7 +124,7 @@ export default function CcaOverridesSection({
               <option key={a.id} value={a.id}>{a.name}</option>
             ))}
           </select>
-          <TextInput type="number" min={0} step={1000} value={priceIDR} onChange={(e) => setPriceIDR(e.target.value)} className="w-28 !py-2" />
+          <TextInput type="number" min={0} step={1000} value={priceIDR} onChange={(e) => setPriceIDR(e.target.value)} className="w-28 !py-2" placeholder="Per week" />
           <Button type="submit" variant="ghost" className="px-3 py-1.5 text-xs" disabled={saving}>
             {saving ? 'Saving…' : '+ Add override'}
           </Button>

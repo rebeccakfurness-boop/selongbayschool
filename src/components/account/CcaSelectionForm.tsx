@@ -10,8 +10,11 @@ export interface CcaCatalogItem {
   name: string;
   description: string | null;
   dayOfWeek: string | null;
+  /** Per-week rate as entered by admin -- resolvedPriceIdr (below) is this times weeksInTerm,
+   * the actual amount charged. Shown alongside it so parents can see how the total was reached. */
+  perWeekPriceIdr: number;
   resolvedPriceIdr: number;
-  options: { id: number; name: string; resolvedPriceIdr: number }[];
+  options: { id: number; name: string; perWeekPriceIdr: number; resolvedPriceIdr: number }[];
 }
 
 export default function CcaSelectionForm({
@@ -19,11 +22,13 @@ export default function CcaSelectionForm({
   catalog,
   existingSelection,
   selectionOpen,
+  weeksInTerm,
 }: {
   childId: number;
   catalog: CcaCatalogItem[];
   existingSelection: CcaSelectionRow | null;
   selectionOpen: boolean;
+  weeksInTerm: number;
 }) {
   const router = useRouter();
 
@@ -135,6 +140,11 @@ export default function CcaSelectionForm({
     return <p className="text-sm text-ink-soft">No CCAs are available to select yet.</p>;
   }
 
+  function priceLabel(perWeekPriceIdr: number, resolvedPriceIdr: number): string {
+    if (resolvedPriceIdr <= 0) return 'Free';
+    return weeksInTerm > 1 ? `${formatIDR(resolvedPriceIdr)} (${formatIDR(perWeekPriceIdr)}/wk × ${weeksInTerm})` : formatIDR(resolvedPriceIdr);
+  }
+
   return (
     <div>
       <ul className="flex flex-col gap-3">
@@ -159,7 +169,7 @@ export default function CcaSelectionForm({
                       onChange={(e) => toggleNoOption(item.id, e.target.checked)}
                       className="h-4 w-4"
                     />
-                    {item.resolvedPriceIdr > 0 ? formatIDR(item.resolvedPriceIdr) : 'Free'}
+                    {priceLabel(item.perWeekPriceIdr, item.resolvedPriceIdr)}
                   </label>
                 )}
               </div>
@@ -176,7 +186,7 @@ export default function CcaSelectionForm({
                         onChange={() => pickOption(item.id, option.id)}
                         className="h-4 w-4"
                       />
-                      {option.name} — {option.resolvedPriceIdr > 0 ? formatIDR(option.resolvedPriceIdr) : 'Free'}
+                      {option.name} — {priceLabel(option.perWeekPriceIdr, option.resolvedPriceIdr)}
                     </label>
                   ))}
                   {isPicked && (

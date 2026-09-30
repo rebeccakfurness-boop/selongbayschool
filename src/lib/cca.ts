@@ -81,29 +81,35 @@ export async function updateCcaSettings(input: CcaSettingsInput): Promise<void> 
 
 // --- catalog ---
 
+// BIGINT columns (every *_idr/*_amount field below) come back from this driver as strings, not
+// numbers -- left uncoerced, `sum += row.price_idr` silently does string concatenation instead of
+// addition (this is what broke both the parent-facing and admin-facing CCA totals, and would have
+// broken the stored total_amount_idr/invoice total too). Normalizing to Number() here, once, at
+// the read boundary, means every caller downstream -- JS arithmetic or just display -- gets a real
+// number, instead of each call site having to remember to coerce it itself.
 async function attachOptions(activities: Omit<CcaActivityRow, 'options'>[]): Promise<CcaActivityRow[]> {
   if (activities.length === 0) return [];
   const ids = activities.map((a) => a.id);
-  const options = (await sql`
+  const options = ((await sql`
     SELECT id, cca_id, name, price_idr, sort_order FROM cca_options
     WHERE cca_id = ANY(${ids}) ORDER BY sort_order ASC, id ASC
-  `) as unknown as CcaOptionRow[];
+  `) as unknown as CcaOptionRow[]).map((o) => ({ ...o, price_idr: Number(o.price_idr) }));
   return activities.map((a) => ({ ...a, options: options.filter((o) => o.cca_id === a.id) }));
 }
 
 export async function getAllCcaActivitiesForAdmin(): Promise<CcaActivityRow[]> {
-  const rows = (await sql`
+  const rows = ((await sql`
     SELECT id, name, description, day_of_week, default_price_idr, min_students, is_active, sort_order
     FROM cca_activities ORDER BY sort_order ASC, id ASC
-  `) as unknown as Omit<CcaActivityRow, 'options'>[];
+  `) as unknown as Omit<CcaActivityRow, 'options'>[]).map((r) => ({ ...r, default_price_idr: Number(r.default_price_idr) }));
   return attachOptions(rows);
 }
 
 export async function getActiveCcaActivities(): Promise<CcaActivityRow[]> {
-  const rows = (await sql`
+  const rows = ((await sql`
     SELECT id, name, description, day_of_week, default_price_idr, min_students, is_active, sort_order
     FROM cca_activities WHERE is_active = true ORDER BY sort_order ASC, id ASC
-  `) as unknown as Omit<CcaActivityRow, 'options'>[];
+  `) as unknown as Omit<CcaActivityRow, 'options'>[]).map((r) => ({ ...r, default_price_idr: Number(r.default_price_idr) }));
   return attachOptions(rows);
 }
 
@@ -163,11 +169,11 @@ export interface CcaPriceOverrideRow {
 }
 
 export async function getCcaPriceOverridesForChild(childId: number): Promise<CcaPriceOverrideRow[]> {
-  return (await sql`
+  return ((await sql`
     SELECT po.id, po.cca_id, ca.name AS cca_name, po.price_idr
     FROM cca_price_overrides po JOIN cca_activities ca ON ca.id = po.cca_id
     WHERE po.child_id = ${childId} ORDER BY ca.name
-  `) as unknown as CcaPriceOverrideRow[];
+  `) as unknown as CcaPriceOverrideRow[]).map((o) => ({ ...o, price_idr: Number(o.price_idr) }));
 }
 
 export async function setCcaPriceOverride(input: SetCcaPriceOverrideInput, adminUserId: number): Promise<void> {
@@ -184,19 +190,37 @@ export async function removeCcaPriceOverride(id: number): Promise<void> {
 
 // --- pure pricing ---
 
+const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
+
+/** Every CCA/option/override price is a per-week rate -- the actual charge for the term is that
+ * rate times however many weeks the active term spans (see resolvePrice). Rounds up (a part-week
+ * still counts as a full week) and falls back to 1 when the term's dates aren't set, so pricing
+ * degrades to "one week's rate" rather than throwing or charging nothing. */
+export function computeCcaTermWeeks(termStartDate: string | null, termEndDate: string | null): number {
+  if (!termStartDate || !termEndDate) return 1;
+  const start = new Date(`${termStartDate}T00:00:00Z`).getTime();
+  const end = new Date(`${termEndDate}T00:00:00Z`).getTime();
+  if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return 1;
+  return Math.max(1, Math.ceil((end - start) / MS_PER_WEEK));
+}
+
+/** Resolves the per-week rate (override ?? option ?? activity default) and multiplies it by the
+ * number of weeks in the active term to get the actual amount charged -- this is what's stored on
+ * a selection item and summed into the total, not the bare weekly rate. */
 export function resolvePrice(
   activityDefaultPriceIdr: number,
   optionPriceIdr: number | null,
-  overridePriceIdr: number | null
+  overridePriceIdr: number | null,
+  weeksInTerm: number
 ): number {
-  if (overridePriceIdr != null) return overridePriceIdr;
-  return optionPriceIdr != null ? optionPriceIdr : activityDefaultPriceIdr;
+  const perWeek = overridePriceIdr != null ? overridePriceIdr : optionPriceIdr != null ? optionPriceIdr : activityDefaultPriceIdr;
+  return perWeek * weeksInTerm;
 }
 
 // --- parent selection ---
 
 async function loadSelectionItems(selectionId: number): Promise<CcaSelectionItemRow[]> {
-  return (await sql`
+  return ((await sql`
     SELECT csi.id, csi.cca_id, ca.name AS cca_name, csi.option_id, co.name AS option_name,
       csi.price_idr, csi.excluded_at_invoicing, ca.min_students
     FROM cca_selection_items csi
@@ -204,14 +228,14 @@ async function loadSelectionItems(selectionId: number): Promise<CcaSelectionItem
     LEFT JOIN cca_options co ON co.id = csi.option_id
     WHERE csi.selection_id = ${selectionId}
     ORDER BY ca.sort_order ASC, ca.id ASC
-  `) as unknown as CcaSelectionItemRow[];
+  `) as unknown as CcaSelectionItemRow[]).map((i) => ({ ...i, price_idr: Number(i.price_idr) }));
 }
 
 export async function getCcaSelectionForChild(childId: number, termLabel: string): Promise<CcaSelectionRow | null> {
-  const rows = (await sql`
+  const rows = ((await sql`
     SELECT id, child_id, term_label, status, total_amount_idr, invoice_id
     FROM cca_selections WHERE child_id = ${childId} AND term_label = ${termLabel}
-  `) as unknown as Omit<CcaSelectionRow, 'items'>[];
+  `) as unknown as Omit<CcaSelectionRow, 'items'>[]).map((r) => ({ ...r, total_amount_idr: Number(r.total_amount_idr) }));
   const selection = rows[0];
   if (!selection) return null;
   return { ...selection, items: await loadSelectionItems(selection.id) };
@@ -248,6 +272,7 @@ export async function submitCcaSelection(
   // false (string !== number) and every submission fails as 'invalid_item'.
   const activities = await getActiveCcaActivities();
   const activityById = new Map(activities.map((a) => [Number(a.id), a]));
+  const weeksInTerm = computeCcaTermWeeks(settings.term_start_date, settings.term_end_date);
 
   let total = 0;
   const resolvedItems: { ccaId: number; optionId: number | null; priceIdr: number }[] = [];
@@ -263,7 +288,8 @@ export async function submitCcaSelection(
     const override = (await sql`
       SELECT price_idr FROM cca_price_overrides WHERE cca_id = ${item.ccaId} AND child_id = ${childId}
     `) as unknown as { price_idr: number }[];
-    const priceIdr = resolvePrice(activity.default_price_idr, option?.price_idr ?? null, override[0]?.price_idr ?? null);
+    const overridePriceIdr = override[0] ? Number(override[0].price_idr) : null;
+    const priceIdr = resolvePrice(activity.default_price_idr, option?.price_idr ?? null, overridePriceIdr, weeksInTerm);
     total += priceIdr;
     resolvedItems.push({ ccaId: item.ccaId, optionId: option?.id ?? null, priceIdr });
   }
@@ -399,7 +425,7 @@ export interface CcaSelectionAdminRow {
 }
 
 export async function getAllCcaSelectionsForAdmin(termLabel: string): Promise<CcaSelectionAdminRow[]> {
-  return (await sql`
+  return ((await sql`
     SELECT cs.id AS selection_id, cs.child_id, c.child_full_name, cs.status, cs.total_amount_idr,
       cs.invoice_id, inv.invoice_number,
       (SELECT COUNT(*)::int FROM cca_selection_items WHERE selection_id = cs.id) AS item_count
@@ -408,5 +434,5 @@ export async function getAllCcaSelectionsForAdmin(termLabel: string): Promise<Cc
     LEFT JOIN invoices inv ON inv.id = cs.invoice_id
     WHERE cs.term_label = ${termLabel}
     ORDER BY c.child_full_name
-  `) as unknown as CcaSelectionAdminRow[];
+  `) as unknown as CcaSelectionAdminRow[]).map((r) => ({ ...r, total_amount_idr: Number(r.total_amount_idr) }));
 }

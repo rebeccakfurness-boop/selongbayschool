@@ -46,7 +46,7 @@ function OptionsEditor({ activityId, options, onChanged }: { activityId: number;
       <ul className="mt-2 flex flex-col gap-1">
         {options.map((o) => (
           <li key={o.id} className="flex items-center justify-between gap-2 text-sm">
-            <span className="text-ink">{o.name} <span className="text-ink-soft">— {formatIDR(o.price_idr)}</span></span>
+            <span className="text-ink">{o.name} <span className="text-ink-soft">— {formatIDR(o.price_idr)}/week</span></span>
             <button type="button" onClick={() => removeOption(o.id)} className="text-xs font-semibold text-orange-deep hover:underline">
               Remove
             </button>
@@ -56,7 +56,7 @@ function OptionsEditor({ activityId, options, onChanged }: { activityId: number;
       </ul>
       <form onSubmit={addOption} className="mt-2 flex flex-wrap items-end gap-2">
         <TextInput value={name} onChange={(e) => setName(e.target.value)} placeholder="Option name" className="w-40" required />
-        <TextInput type="number" min={0} step={1000} value={priceIDR} onChange={(e) => setPriceIDR(e.target.value)} className="w-28" />
+        <TextInput type="number" min={0} step={1000} value={priceIDR} onChange={(e) => setPriceIDR(e.target.value)} className="w-28" placeholder="Per week" />
         <Button type="submit" variant="ghost" className="px-3 py-1.5 text-xs" disabled={adding}>
           {adding ? 'Adding…' : '+ Add option'}
         </Button>
@@ -127,7 +127,7 @@ function CcaActivityRow({ activity, onSaved }: { activity: CcaActivityRow; onSav
       <td className="px-3 py-2"><TextArea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} className="w-56 resize-y" /></td>
       <td className="px-3 py-2">
         <TextInput type="number" min={0} step={1000} value={defaultPriceIDR} onChange={(e) => setDefaultPriceIDR(e.target.value)} className="w-28" disabled={activity.options.length > 0} />
-        <div className="mt-1 text-xs font-semibold text-ink-soft">{activity.options.length > 0 ? '(priced per option)' : formatIDR(Number(defaultPriceIDR))}</div>
+        <div className="mt-1 text-xs font-semibold text-ink-soft">{activity.options.length > 0 ? '(priced per option)' : `${formatIDR(Number(defaultPriceIDR))}/week`}</div>
       </td>
       <td className="px-3 py-2"><TextInput type="number" min={1} value={minStudents} onChange={(e) => setMinStudents(e.target.value)} className="w-20" placeholder="None" /></td>
       <td className="px-3 py-2 text-center">
@@ -226,6 +226,9 @@ export default function CcaActivitiesManager() {
     <div className="flex flex-col gap-6">
       <section>
         <h2 className="font-display text-xl font-semibold text-ink">CCA Catalog</h2>
+        <p className="mt-1 text-xs text-ink-soft">
+          Prices are a per-week rate — parents are charged that rate × however many weeks the active term spans (set above).
+        </p>
         {error && <p role="alert" className="mt-2 font-semibold text-orange-deep">{error}</p>}
         <div className="mt-4 overflow-x-auto rounded-md border border-sand-line bg-paper">
           <table className="w-full min-w-[1000px] border-collapse text-sm">
@@ -234,7 +237,7 @@ export default function CcaActivitiesManager() {
                 <th className="px-3 py-3 font-bold text-ink-soft">Name</th>
                 <th className="px-3 py-3 font-bold text-ink-soft">Day</th>
                 <th className="px-3 py-3 font-bold text-ink-soft">Description</th>
-                <th className="px-3 py-3 font-bold text-ink-soft">Price (IDR)</th>
+                <th className="px-3 py-3 font-bold text-ink-soft">Price per week (IDR)</th>
                 <th className="px-3 py-3 font-bold text-ink-soft">Min. students</th>
                 <th className="px-3 py-3 font-bold text-ink-soft">Active</th>
                 <th className="px-3 py-3 font-bold text-ink-soft"></th>
@@ -268,7 +271,7 @@ export default function CcaActivitiesManager() {
           <Field label="Day" htmlFor="cca-day">
             <TextInput id="cca-day" value={newDayOfWeek} onChange={(e) => setNewDayOfWeek(e.target.value)} placeholder="e.g. Tuesdays" />
           </Field>
-          <Field label="Default price (IDR, if no options)" htmlFor="cca-price">
+          <Field label="Price per week (IDR, if no options)" htmlFor="cca-price">
             <TextInput id="cca-price" type="number" min={0} step={1000} value={newDefaultPriceIDR} onChange={(e) => setNewDefaultPriceIDR(e.target.value)} />
           </Field>
           <Field label="Minimum students to run" htmlFor="cca-min">

@@ -3,7 +3,7 @@ import { getIronSession } from 'iron-session';
 import { getCustomerSessionOptions, type CustomerSessionData } from '@/lib/auth';
 import { ensureSchema } from '@/lib/db';
 import { getChildrenForGuardian } from '@/lib/lms-data';
-import { getCcaSettings, getActiveCcaActivities, getCcaPriceOverridesForChild, getCcaSelectionForChild, resolvePrice } from '@/lib/cca';
+import { getCcaSettings, getActiveCcaActivities, getCcaPriceOverridesForChild, getCcaSelectionForChild, resolvePrice, computeCcaTermWeeks } from '@/lib/cca';
 import { formatDate } from '@/lib/admin-format';
 import AccountNav from '@/components/account/AccountNav';
 import CcaSelectionForm, { type CcaCatalogItem } from '@/components/account/CcaSelectionForm';
@@ -34,6 +34,7 @@ export default async function AccountCcaPage() {
     const enabledKids = kids.filter((k) => k.cca_enabled);
     const settings = await getCcaSettings();
     const activities = await getActiveCcaActivities();
+    const weeksInTerm = computeCcaTermWeeks(settings.term_start_date, settings.term_end_date);
 
     const children = await Promise.all(
       enabledKids.map(async (kid) => {
@@ -44,11 +45,13 @@ export default async function AccountCcaPage() {
           name: a.name,
           description: a.description,
           dayOfWeek: a.day_of_week,
-          resolvedPriceIdr: resolvePrice(a.default_price_idr, null, overrideByCca.get(a.id) ?? null),
+          perWeekPriceIdr: overrideByCca.get(a.id) ?? a.default_price_idr,
+          resolvedPriceIdr: resolvePrice(a.default_price_idr, null, overrideByCca.get(a.id) ?? null, weeksInTerm),
           options: a.options.map((o) => ({
             id: o.id,
             name: o.name,
-            resolvedPriceIdr: resolvePrice(a.default_price_idr, o.price_idr, overrideByCca.get(a.id) ?? null),
+            perWeekPriceIdr: overrideByCca.get(a.id) ?? o.price_idr,
+            resolvedPriceIdr: resolvePrice(a.default_price_idr, o.price_idr, overrideByCca.get(a.id) ?? null, weeksInTerm),
           })),
         }));
         const selection = settings.term_label ? await getCcaSelectionForChild(kid.id, settings.term_label) : null;
@@ -61,7 +64,7 @@ export default async function AccountCcaPage() {
       })
     );
 
-    return renderCcaPage({ settings, children, hasAnyChildren: kids.length > 0 });
+    return renderCcaPage({ settings, children, hasAnyChildren: kids.length > 0, weeksInTerm });
   } catch (error) {
     console.error('[account/cca] failed to load', error);
     return <OverviewLoadError error={error} />;
@@ -72,10 +75,12 @@ function renderCcaPage({
   settings,
   children,
   hasAnyChildren,
+  weeksInTerm,
 }: {
   settings: Awaited<ReturnType<typeof getCcaSettings>>;
   children: { id: number; label: string; catalog: CcaCatalogItem[]; selection: Awaited<ReturnType<typeof getCcaSelectionForChild>> }[];
   hasAnyChildren: boolean;
+  weeksInTerm: number;
 }) {
   return (
     <div>
@@ -84,7 +89,7 @@ function renderCcaPage({
         <h1 className="font-display text-2xl font-semibold text-ink">Co-Curricular Activities</h1>
         <p className="mt-1 text-sm text-ink-soft">
           {settings.term_label
-            ? `Choose CCAs for ${settings.term_label}${settings.term_start_date && settings.term_end_date ? ` (${formatDate(settings.term_start_date)} – ${formatDate(settings.term_end_date)})` : ''}.`
+            ? `Choose CCAs for ${settings.term_label}${settings.term_start_date && settings.term_end_date ? ` (${formatDate(settings.term_start_date)} – ${formatDate(settings.term_end_date)}, ${weeksInTerm} week${weeksInTerm === 1 ? '' : 's'})` : ''}. Prices shown are the full-term total (weekly rate × ${weeksInTerm} week${weeksInTerm === 1 ? '' : 's'}).`
             : 'CCA selections haven’t been set up for a term yet.'}
         </p>
         {settings.term_label && !settings.selection_open && (
@@ -103,6 +108,7 @@ function renderCcaPage({
                   catalog={child.catalog}
                   existingSelection={child.selection}
                   selectionOpen={!!settings.term_label && settings.selection_open}
+                  weeksInTerm={weeksInTerm}
                 />
               </div>
             </div>

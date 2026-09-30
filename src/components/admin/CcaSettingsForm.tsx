@@ -6,6 +6,17 @@ import Button from '@/components/Button';
 import { Field, TextInput } from '@/components/forms/FormField';
 import type { CcaSettingsRow } from '@/lib/cca';
 
+/** Mirrors computeCcaTermWeeks in src/lib/cca.ts -- duplicated rather than imported since that
+ * module pulls in the server-only DB client, which can't be bundled into this 'use client' form.
+ * Preview only; the real pricing multiplier is always computed server-side. */
+function previewTermWeeks(termStartDate: string, termEndDate: string): number | null {
+  if (!termStartDate || !termEndDate) return null;
+  const start = new Date(`${termStartDate}T00:00:00Z`).getTime();
+  const end = new Date(`${termEndDate}T00:00:00Z`).getTime();
+  if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) return null;
+  return Math.max(1, Math.ceil((end - start) / (7 * 24 * 60 * 60 * 1000)));
+}
+
 export default function CcaSettingsForm({ initial }: { initial: CcaSettingsRow }) {
   const router = useRouter();
   const [form, setForm] = useState({
@@ -48,6 +59,7 @@ export default function CcaSettingsForm({ initial }: { initial: CcaSettingsRow }
   }
 
   const notConfigured = !initial.term_label || !initial.selection_open;
+  const weeksPreview = previewTermWeeks(form.termStartDate, form.termEndDate);
 
   return (
     <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
@@ -73,6 +85,11 @@ export default function CcaSettingsForm({ initial }: { initial: CcaSettingsRow }
           <TextInput id="cca-term-end" type="date" value={form.termEndDate} onChange={(e) => set('termEndDate', e.target.value)} />
         </Field>
       </div>
+      {weeksPreview != null && (
+        <p className="mt-2 text-xs text-ink-soft">
+          {weeksPreview} week{weeksPreview === 1 ? '' : 's'} — every CCA&apos;s per-week price is multiplied by this when a parent selects it.
+        </p>
+      )}
       <label className="mt-4 flex items-center gap-2 text-sm font-semibold text-ink">
         <input type="checkbox" checked={form.selectionOpen} onChange={(e) => set('selectionOpen', e.target.checked)} className="h-4 w-4" />
         Selections open to parents
