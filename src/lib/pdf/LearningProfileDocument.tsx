@@ -37,9 +37,21 @@ export interface LearningProfileData {
   helps_encourages_others: SocialRating | null;
 }
 
+// The header and footer are both absolutely positioned bands, repeated on every page via
+// `fixed`, so they never participate in the normal content flow/pagination math -- the Page's
+// own paddingTop/paddingBottom below reserve real space matching their rendered heights instead,
+// so flowing body content can never start underneath the header or run into the footer, on page
+// 1 or on any page a long report auto-wraps onto.
+const HEADER_HEIGHT = 119; // paddingVertical 24*2 + the 71pt-tall logo, its tallest child
+const FOOTER_HEIGHT = 40; // padding 10*2 + one line of 8pt text, plus a little breathing room
+
 const styles = StyleSheet.create({
-  page: { padding: 0, fontFamily: 'Nunito Sans', fontSize: 10, color: BRAND_COLORS.ink },
+  page: { paddingTop: HEADER_HEIGHT, paddingBottom: FOOTER_HEIGHT, fontFamily: 'Nunito Sans', fontSize: 10, color: BRAND_COLORS.ink },
   header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     backgroundColor: BRAND_COLORS.tealDeep,
     paddingVertical: 24,
     paddingHorizontal: 36,
@@ -51,7 +63,7 @@ const styles = StyleSheet.create({
   headerRight: { alignItems: 'flex-end' },
   scriptTitle: { fontFamily: 'Shadows Into Light', fontSize: 26, color: '#aafdfa' },
   subTitle: { fontFamily: 'Telex', fontSize: 11, color: '#ffffff', marginTop: 2 },
-  body: { paddingHorizontal: 36, paddingVertical: 20 },
+  body: { paddingHorizontal: 36, paddingVertical: 8 },
   infoBox: {
     borderWidth: 1,
     borderColor: BRAND_COLORS.sand,
