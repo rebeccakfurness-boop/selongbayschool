@@ -4,12 +4,14 @@ import { renderToBuffer } from '@react-pdf/renderer';
 import { getSessionOptions, type AdminSessionData } from '@/lib/auth';
 import { ensureSchema, sql } from '@/lib/db';
 import { getBudgetSettings, getBudgetReportData } from '@/lib/budget';
+import { getSchoolReportData } from '@/lib/school-report';
 import { BudgetReportDocument } from '@/lib/pdf/BudgetReportDocument';
+import { SchoolReportDocument } from '@/lib/pdf/SchoolReportDocument';
 
 /** Lives under the Pages Router -- @react-pdf/renderer throws inside an App Router route handler
  * (see /api/invoices/[id]/pdf.ts for the full explanation). Several sequential queries (settings,
- * balances, category/method breakdowns, and for a term report a month-by-month breakdown too) plus
- * the PDF render can add up on a cold start, same reasoning as the payslip generate route. */
+ * balances, and per-report breakdowns) plus the PDF render can add up on a cold start, same
+ * reasoning as the payslip generate route. */
 export const config = { maxDuration: 30 };
 
 function monthBounds(monthParam: string): { start: string; end: string; label: string } | null {
@@ -30,7 +32,9 @@ function monthBounds(monthParam: string): { start: string; end: string; label: s
 
 /** Admin-only, and additionally requires the Budget Tracker's own unlock (matching
  * requireBudgetUnlocked -- that App Router helper can't be reused here since it reads cookies via
- * next/headers, which isn't available in a Pages Router API route). */
+ * next/headers, which isn't available in a Pages Router API route). The school operations report
+ * isn't really "budget" data, but it's gated the same way since it lives on the same Reports tab
+ * and the school wants it restricted to the same Principal/admin audience as the financial ones. */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     res.status(405).json({ error: 'Method not allowed.' });
@@ -52,6 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(400).json({ error: 'type must be "month" or "term".' });
     return;
   }
+  const reportKind = req.query.report === 'operations' ? 'operations' : 'financial';
 
   try {
     await ensureSchema();
@@ -80,16 +85,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       filenamePart = settings.term_label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     }
 
-    const report = await getBudgetReportData(type, periodStart, periodEnd, periodLabel);
-
     const [admin] = (await sql`SELECT COALESCE(display_name, email) AS label FROM admin_users WHERE id = ${session.adminUserId}`) as unknown as {
       label: string;
     }[];
     const generatedByLabel = admin?.label ?? 'School Administration';
 
-    const buffer = await renderToBuffer(BudgetReportDocument({ report, generatedByLabel }));
+    const buffer =
+      reportKind === 'operations'
+        ? await renderToBuffer(SchoolReportDocument({ report: await getSchoolReportData(periodStart, periodEnd, periodLabel), generatedByLabel }))
+        : await renderToBuffer(BudgetReportDocument({ report: await getBudgetReportData(type, periodStart, periodEnd, periodLabel), generatedByLabel }));
+
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="budget-${type}-report-${filenamePart}.pdf"`);
+    res.setHeader('Content-Disposition', `attachment; filename="${reportKind}-${type}-report-${filenamePart}.pdf"`);
     res.status(200).send(buffer);
   } catch (err) {
     console.error('[api/admin/budget/report] failed to render', err);
