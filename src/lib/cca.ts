@@ -241,8 +241,13 @@ export async function submitCcaSelection(
     return { error: 'locked' };
   }
 
+  // Postgres BIGSERIAL columns (cca_activities.id, cca_options.id, ...) come back from this
+  // driver as strings, not numbers -- Number(...) here so activityById/option lookups below
+  // compare cleanly against item.ccaId/item.optionId, which zod has already coerced to real
+  // numbers (see submitCcaSelectionSchema). Without this, `o.id === item.optionId` is always
+  // false (string !== number) and every submission fails as 'invalid_item'.
   const activities = await getActiveCcaActivities();
-  const activityById = new Map(activities.map((a) => [a.id, a]));
+  const activityById = new Map(activities.map((a) => [Number(a.id), a]));
 
   let total = 0;
   const resolvedItems: { ccaId: number; optionId: number | null; priceIdr: number }[] = [];
@@ -252,7 +257,7 @@ export async function submitCcaSelection(
     let option: CcaOptionRow | null = null;
     if (activity.options.length > 0) {
       if (item.optionId == null) return { error: 'invalid_item' };
-      option = activity.options.find((o) => o.id === item.optionId) ?? null;
+      option = activity.options.find((o) => Number(o.id) === item.optionId) ?? null;
       if (!option) return { error: 'invalid_item' };
     }
     const override = (await sql`
