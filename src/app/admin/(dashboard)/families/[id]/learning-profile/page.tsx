@@ -6,6 +6,7 @@ import { formatDate } from '@/lib/admin-format';
 import Button from '@/components/Button';
 import ApproveLearningProfileButton from '@/components/admin/ApproveLearningProfileButton';
 import SendLearningProfileButton from '@/components/admin/SendLearningProfileButton';
+import DeleteLearningProfileButton from '@/components/admin/DeleteLearningProfileButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -95,6 +96,7 @@ export default async function LearningProfileListPage({ params }: { params: Prom
                 {p.status === 'approved' && (
                   <SendLearningProfileButton profileId={p.id} defaultEmail={defaultEmail} initiallySent={!!p.sent_at} />
                 )}
+                <DeleteLearningProfileButton profileId={p.id} termLabel={p.term_label} />
               </div>
             )}
           </div>

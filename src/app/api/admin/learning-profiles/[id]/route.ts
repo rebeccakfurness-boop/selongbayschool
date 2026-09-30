@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema, sql } from '@/lib/db';
-import { getCurrentStaff, canAccessClass } from '@/lib/current-staff';
+import { getCurrentStaff, canAccessClass, requireAdmin } from '@/lib/current-staff';
 import { upsertLearningProfileSchema } from '@/lib/validation';
 
 async function loadProfileClass(id: number) {
@@ -72,5 +72,30 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   } catch (err) {
     console.error('[api/admin/learning-profiles/:id] failed to update', err);
     return NextResponse.json({ error: 'Could not save report.' }, { status: 500 });
+  }
+}
+
+/** Admin-only, unlike PATCH above (which any teacher assigned to the child's class can do) --
+ * deleting a report is destructive and permanent, so it's restricted the same way staff-account
+ * deletion is. learning_profile_subjects rows cascade automatically (ON DELETE CASCADE), so this
+ * is a single statement. */
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
+  const { id: idParam } = await params;
+  const id = Number(idParam);
+  if (!Number.isInteger(id)) {
+    return NextResponse.json({ error: 'Invalid report id.' }, { status: 400 });
+  }
+
+  try {
+    await ensureSchema();
+    const rows = await sql`DELETE FROM learning_profiles WHERE id = ${id} RETURNING id`;
+    if (rows.length === 0) {
+      return NextResponse.json({ error: 'Report not found.' }, { status: 404 });
+    }
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error('[api/admin/learning-profiles/:id] failed to delete', err);
+    return NextResponse.json({ error: 'Could not delete report.' }, { status: 500 });
   }
 }
