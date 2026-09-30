@@ -56,15 +56,6 @@ export const emptyLearningProfileForm: LearningProfileFormData = {
   subjects: DEFAULT_SUBJECTS,
 };
 
-const socialFields = [
-  'positiveAttitude',
-  'respectsRightsOfOthers',
-  'respectsClassSchoolRules',
-  'worksWellIndependently',
-  'showsInitiativeEnthusiasm',
-  'helpsEncouragesOthers',
-] as const;
-
 export default function LearningProfileForm({
   childId,
   initial,
@@ -183,8 +174,8 @@ export default function LearningProfileForm({
             <div key={item.key} className="flex items-center justify-between gap-3 rounded-sm border border-sand-line px-3 py-2">
               <span className="text-sm font-semibold text-ink">{item.label}</span>
               <select
-                value={form[item.key as (typeof socialFields)[number]]}
-                onChange={(e) => set(item.key as (typeof socialFields)[number], e.target.value as SocialRating | '')}
+                value={form[item.key]}
+                onChange={(e) => set(item.key, e.target.value as SocialRating | '')}
                 className="rounded-sm border border-sand-line bg-white px-2 py-1 text-sm"
               >
                 <option value=""></option>

@@ -73,13 +73,24 @@ export const EFFORT_SCALE: { value: Effort; label: string; description: string }
 
 export const SOCIAL_RATING_LABELS: Record<SocialRating, string> = { C: 'Consistently', U: 'Usually', S: 'Sometimes' };
 
-export const SOCIAL_CRITERIA: { key: string; label: string }[] = [
-  { key: 'positive_attitude', label: 'Displays a positive attitude to learning' },
-  { key: 'works_well_independently', label: 'Works well independently' },
-  { key: 'respects_rights_of_others', label: 'Respects the rights and property of others' },
-  { key: 'shows_initiative_enthusiasm', label: 'Shows initiative and enthusiasm' },
-  { key: 'respects_class_school_rules', label: 'Respects class and school rules' },
-  { key: 'helps_encourages_others', label: 'Helps and encourages others' },
+export type SocialCriterionKey =
+  | 'positiveAttitude'
+  | 'worksWellIndependently'
+  | 'respectsRightsOfOthers'
+  | 'showsInitiativeEnthusiasm'
+  | 'respectsClassSchoolRules'
+  | 'helpsEncouragesOthers';
+
+// Keyed to match the form/API field names (camelCase) exactly, not the snake_case DB columns --
+// a caller reading a DB row maps it into the same camelCase shape locally (see SocialTable in
+// LearningProfileDocument.tsx) rather than this list drifting to a different casing convention.
+export const SOCIAL_CRITERIA: { key: SocialCriterionKey; label: string }[] = [
+  { key: 'positiveAttitude', label: 'Displays a positive attitude to learning' },
+  { key: 'worksWellIndependently', label: 'Works well independently' },
+  { key: 'respectsRightsOfOthers', label: 'Respects the rights and property of others' },
+  { key: 'showsInitiativeEnthusiasm', label: 'Shows initiative and enthusiasm' },
+  { key: 'respectsClassSchoolRules', label: 'Respects class and school rules' },
+  { key: 'helpsEncouragesOthers', label: 'Helps and encourages others' },
 ];
 
 /**

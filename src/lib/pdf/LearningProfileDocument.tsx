@@ -9,6 +9,7 @@ import {
   type Achievement,
   type Effort,
   type SocialRating,
+  type SocialCriterionKey,
 } from '@/lib/family-data';
 
 registerBrandFonts();
@@ -96,13 +97,16 @@ const styles = StyleSheet.create({
 });
 
 function SocialTable({ profile }: { profile: LearningProfileData }) {
-  const values: Record<string, SocialRating | null> = {
-    positive_attitude: profile.positive_attitude,
-    works_well_independently: profile.works_well_independently,
-    respects_rights_of_others: profile.respects_rights_of_others,
-    shows_initiative_enthusiasm: profile.shows_initiative_enthusiasm,
-    respects_class_school_rules: profile.respects_class_school_rules,
-    helps_encourages_others: profile.helps_encourages_others,
+  // SOCIAL_CRITERIA's keys are camelCase (the form/API convention) -- mapped here from the
+  // snake_case DB columns this component actually receives, same as any other DB-row-to-app-shape
+  // mapping in this codebase.
+  const values: Record<SocialCriterionKey, SocialRating | null> = {
+    positiveAttitude: profile.positive_attitude,
+    worksWellIndependently: profile.works_well_independently,
+    respectsRightsOfOthers: profile.respects_rights_of_others,
+    showsInitiativeEnthusiasm: profile.shows_initiative_enthusiasm,
+    respectsClassSchoolRules: profile.respects_class_school_rules,
+    helpsEncouragesOthers: profile.helps_encourages_others,
   };
   return (
     <View style={{ borderWidth: 1, borderColor: BRAND_COLORS.sand, borderRadius: 6, overflow: 'hidden' }}>
