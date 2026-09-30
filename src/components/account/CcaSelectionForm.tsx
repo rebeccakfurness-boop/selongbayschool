@@ -147,7 +147,12 @@ export default function CcaSelectionForm({
 
   return (
     <div>
-      <ul className="flex flex-col gap-3">
+      {!selectionOpen && (
+        <p className="mb-3 rounded-sm border border-orange/30 bg-orange/10 px-3 py-2 text-xs font-semibold text-orange-deep">
+          Selections are closed -- the options below are shown for reference but can&apos;t be changed right now.
+        </p>
+      )}
+      <ul className={`flex flex-col gap-3 ${selectionOpen ? '' : 'opacity-60'}`}>
         {catalog.map((item) => {
           const isPicked = picked.has(item.id);
           return (

@@ -81,19 +81,23 @@ export async function updateCcaSettings(input: CcaSettingsInput): Promise<void> 
 
 // --- catalog ---
 
-// BIGINT columns (every *_idr/*_amount field below) come back from this driver as strings, not
-// numbers -- left uncoerced, `sum += row.price_idr` silently does string concatenation instead of
-// addition (this is what broke both the parent-facing and admin-facing CCA totals, and would have
-// broken the stored total_amount_idr/invoice total too). Normalizing to Number() here, once, at
-// the read boundary, means every caller downstream -- JS arithmetic or just display -- gets a real
-// number, instead of each call site having to remember to coerce it itself.
+// Every BIGINT/BIGSERIAL column in this file (ids, foreign keys, *_idr/*_amount fields) comes back
+// from this driver as a string, not a number. Left uncoerced, that breaks two different ways:
+// `sum += row.price_idr` silently does string concatenation instead of addition (the earlier
+// total-calculation bug), and passing a raw id straight through to a 'use client' component as a
+// prop is fragile -- React Server Components serialize it as whatever type it actually is, so a
+// client-side `===` against a zod-coerced number (or against another id read via a differently-
+// shaped query) can silently fail, which is what broke selecting an option on any CCA with more
+// than one of them. Number()-ing every id/amount once, here at the read boundary, means every
+// downstream caller -- JS comparison, arithmetic, or a client component prop -- gets a real,
+// consistently-typed number instead of each call site having to remember to coerce it itself.
 async function attachOptions(activities: Omit<CcaActivityRow, 'options'>[]): Promise<CcaActivityRow[]> {
   if (activities.length === 0) return [];
   const ids = activities.map((a) => a.id);
   const options = ((await sql`
     SELECT id, cca_id, name, price_idr, sort_order FROM cca_options
     WHERE cca_id = ANY(${ids}) ORDER BY sort_order ASC, id ASC
-  `) as unknown as CcaOptionRow[]).map((o) => ({ ...o, price_idr: Number(o.price_idr) }));
+  `) as unknown as CcaOptionRow[]).map((o) => ({ ...o, id: Number(o.id), cca_id: Number(o.cca_id), price_idr: Number(o.price_idr) }));
   return activities.map((a) => ({ ...a, options: options.filter((o) => o.cca_id === a.id) }));
 }
 
@@ -101,7 +105,7 @@ export async function getAllCcaActivitiesForAdmin(): Promise<CcaActivityRow[]> {
   const rows = ((await sql`
     SELECT id, name, description, day_of_week, default_price_idr, min_students, is_active, sort_order
     FROM cca_activities ORDER BY sort_order ASC, id ASC
-  `) as unknown as Omit<CcaActivityRow, 'options'>[]).map((r) => ({ ...r, default_price_idr: Number(r.default_price_idr) }));
+  `) as unknown as Omit<CcaActivityRow, 'options'>[]).map((r) => ({ ...r, id: Number(r.id), default_price_idr: Number(r.default_price_idr) }));
   return attachOptions(rows);
 }
 
@@ -109,7 +113,7 @@ export async function getActiveCcaActivities(): Promise<CcaActivityRow[]> {
   const rows = ((await sql`
     SELECT id, name, description, day_of_week, default_price_idr, min_students, is_active, sort_order
     FROM cca_activities WHERE is_active = true ORDER BY sort_order ASC, id ASC
-  `) as unknown as Omit<CcaActivityRow, 'options'>[]).map((r) => ({ ...r, default_price_idr: Number(r.default_price_idr) }));
+  `) as unknown as Omit<CcaActivityRow, 'options'>[]).map((r) => ({ ...r, id: Number(r.id), default_price_idr: Number(r.default_price_idr) }));
   return attachOptions(rows);
 }
 
@@ -173,7 +177,7 @@ export async function getCcaPriceOverridesForChild(childId: number): Promise<Cca
     SELECT po.id, po.cca_id, ca.name AS cca_name, po.price_idr
     FROM cca_price_overrides po JOIN cca_activities ca ON ca.id = po.cca_id
     WHERE po.child_id = ${childId} ORDER BY ca.name
-  `) as unknown as CcaPriceOverrideRow[]).map((o) => ({ ...o, price_idr: Number(o.price_idr) }));
+  `) as unknown as CcaPriceOverrideRow[]).map((o) => ({ ...o, id: Number(o.id), cca_id: Number(o.cca_id), price_idr: Number(o.price_idr) }));
 }
 
 export async function setCcaPriceOverride(input: SetCcaPriceOverrideInput, adminUserId: number): Promise<void> {
@@ -228,14 +232,26 @@ async function loadSelectionItems(selectionId: number): Promise<CcaSelectionItem
     LEFT JOIN cca_options co ON co.id = csi.option_id
     WHERE csi.selection_id = ${selectionId}
     ORDER BY ca.sort_order ASC, ca.id ASC
-  `) as unknown as CcaSelectionItemRow[]).map((i) => ({ ...i, price_idr: Number(i.price_idr) }));
+  `) as unknown as CcaSelectionItemRow[]).map((i) => ({
+    ...i,
+    id: Number(i.id),
+    cca_id: Number(i.cca_id),
+    option_id: i.option_id != null ? Number(i.option_id) : null,
+    price_idr: Number(i.price_idr),
+  }));
 }
 
 export async function getCcaSelectionForChild(childId: number, termLabel: string): Promise<CcaSelectionRow | null> {
   const rows = ((await sql`
     SELECT id, child_id, term_label, status, total_amount_idr, invoice_id
     FROM cca_selections WHERE child_id = ${childId} AND term_label = ${termLabel}
-  `) as unknown as Omit<CcaSelectionRow, 'items'>[]).map((r) => ({ ...r, total_amount_idr: Number(r.total_amount_idr) }));
+  `) as unknown as Omit<CcaSelectionRow, 'items'>[]).map((r) => ({
+    ...r,
+    id: Number(r.id),
+    child_id: Number(r.child_id),
+    invoice_id: r.invoice_id != null ? Number(r.invoice_id) : null,
+    total_amount_idr: Number(r.total_amount_idr),
+  }));
   const selection = rows[0];
   if (!selection) return null;
   return { ...selection, items: await loadSelectionItems(selection.id) };
@@ -434,5 +450,12 @@ export async function getAllCcaSelectionsForAdmin(termLabel: string): Promise<Cc
     LEFT JOIN invoices inv ON inv.id = cs.invoice_id
     WHERE cs.term_label = ${termLabel}
     ORDER BY c.child_full_name
-  `) as unknown as CcaSelectionAdminRow[]).map((r) => ({ ...r, total_amount_idr: Number(r.total_amount_idr) }));
+  `) as unknown as CcaSelectionAdminRow[]).map((r) => ({
+    ...r,
+    selection_id: Number(r.selection_id),
+    child_id: Number(r.child_id),
+    invoice_id: r.invoice_id != null ? Number(r.invoice_id) : null,
+    invoice_number: r.invoice_number != null ? Number(r.invoice_number) : null,
+    total_amount_idr: Number(r.total_amount_idr),
+  }));
 }
