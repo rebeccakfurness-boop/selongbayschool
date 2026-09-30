@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
 interface InvoiceRow {
   id: number;
   invoice_number: number;
-  invoice_type: 'tuition' | 'activity' | 'lunch' | 'library';
+  invoice_type: 'tuition' | 'activity' | 'lunch' | 'library' | 'cca';
   billed_to_name: string;
   issue_date: string;
   due_date: string;
@@ -117,7 +117,7 @@ export default async function AdminInvoicesPage({
                       #{String(inv.invoice_number).padStart(3, '0')}
                     </a>
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 capitalize text-ink-soft">{inv.invoice_type}</td>
+                  <td className="whitespace-nowrap px-4 py-3 capitalize text-ink-soft">{inv.invoice_type === 'cca' ? 'CCA' : inv.invoice_type}</td>
                   <td className="px-4 py-3 text-ink">{inv.children_names || '-'}</td>
                   <td className="px-4 py-3 text-ink-soft">{inv.billed_to_name}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-ink-soft">{formatDate(inv.issue_date)}</td>

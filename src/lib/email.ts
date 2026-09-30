@@ -639,7 +639,7 @@ export interface InvoiceEmailInput {
   toEmail: string;
   billedToName: string;
   invoiceNumber: number;
-  invoiceType: 'tuition' | 'activity' | 'lunch' | 'library';
+  invoiceType: 'tuition' | 'activity' | 'lunch' | 'library' | 'cca';
   totalAmount: number;
   currency: string;
   dueDate: string;
@@ -724,7 +724,7 @@ export interface InvoiceRemittanceEmailInput {
   toEmail: string;
   billedToName: string;
   invoiceNumber: number;
-  invoiceType: 'tuition' | 'activity' | 'lunch' | 'library';
+  invoiceType: 'tuition' | 'activity' | 'lunch' | 'library' | 'cca';
   totalAmount: number;
   currency: string;
   paidAtLabel: string;

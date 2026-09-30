@@ -7,6 +7,7 @@ import { getWelcomeLetterForChild } from '@/lib/welcome-letters';
 import { getOffboardingLettersForChild } from '@/lib/offboarding';
 import { getMeetingInvitesForChild } from '@/lib/meeting-scheduling';
 import { getGradebookForChild } from '@/lib/worksheets';
+import { getCcaSettings, getActiveCcaActivities, getCcaPriceOverridesForChild, getCcaSelectionForChild } from '@/lib/cca';
 import { COMPLIANCE_STALE_AFTER_DAYS } from '@/lib/child-lifecycle-shared';
 import ChildCard, { type ChildDetail } from '@/components/admin/ChildCard';
 import type { GuardianLink } from '@/components/admin/GuardianLinksSection';
@@ -82,6 +83,11 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
       ORDER BY c.email
     `) as unknown as GuardianLink[];
 
+    const ccaSettings = await getCcaSettings();
+    const ccaActivities = await getActiveCcaActivities();
+    const ccaOverrides = await getCcaPriceOverridesForChild(id);
+    const ccaSelection = ccaSettings.term_label ? await getCcaSelectionForChild(id, ccaSettings.term_label) : null;
+
     return renderChildCard({
       child,
       canEdit: staff.role === 'admin',
@@ -100,6 +106,9 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
       meetingInvites,
       classroomSubmissions,
       gradebook,
+      ccaActivities,
+      ccaOverrides,
+      ccaHasSubmittedSelection: ccaSelection?.status === 'submitted',
     });
   } catch (error) {
     // redirect()/notFound() work by throwing a special error Next.js's router looks for by

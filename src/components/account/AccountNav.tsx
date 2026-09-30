@@ -11,6 +11,7 @@ const LINKS = [
   { href: '/account/attendance', label: 'Attendance' },
   { href: '/account/bookings', label: 'My Bookings' },
   { href: '/account/library', label: 'Library' },
+  { href: '/account/cca', label: 'Co-Curricular Activities' },
   { href: '/account/policies', label: 'Policies' },
   { href: '/account/feedback', label: 'Report a Concern' },
   { href: '/account/settings', label: 'Settings' },

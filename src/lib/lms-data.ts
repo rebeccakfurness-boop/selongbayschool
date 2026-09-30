@@ -176,7 +176,7 @@ export async function getResourcesForClassBand(classBand: ClassBand | null): Pro
 export interface InvoiceSummaryRow {
   id: number;
   invoice_number: number;
-  invoice_type: 'tuition' | 'activity' | 'lunch' | 'library';
+  invoice_type: 'tuition' | 'activity' | 'lunch' | 'library' | 'cca';
   status: 'outstanding' | 'paid' | 'cancelled';
   issue_date: string;
   due_date: string;

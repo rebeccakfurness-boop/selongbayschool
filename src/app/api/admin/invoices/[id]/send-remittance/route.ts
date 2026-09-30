@@ -37,7 +37,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const invoice = invoices[0] as
       | {
           invoice_number: number;
-          invoice_type: 'tuition' | 'activity' | 'lunch' | 'library';
+          invoice_type: 'tuition' | 'activity' | 'lunch' | 'library' | 'cca';
           billed_to_name: string;
           total_amount: number;
           currency: string;

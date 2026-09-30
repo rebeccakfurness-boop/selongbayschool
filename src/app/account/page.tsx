@@ -35,7 +35,7 @@ function OverviewLoadError({ error }: { error: unknown }) {
 interface OutstandingInvoiceRow {
   id: number;
   invoice_number: number;
-  invoice_type: 'tuition' | 'activity' | 'lunch' | 'library';
+  invoice_type: 'tuition' | 'activity' | 'lunch' | 'library' | 'cca';
   due_date: string;
   total_amount: number;
   days_overdue: number;
@@ -69,6 +69,7 @@ const INVOICE_TYPE_LABELS: Record<string, string> = {
   activity: 'Activity',
   lunch: 'Lunch',
   library: 'Library',
+  cca: 'CCA',
 };
 
 const BOOKING_STATUS_LABELS: Record<string, string> = {

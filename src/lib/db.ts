@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 53;
+const SCHEMA_VERSION = 54;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2688,6 +2688,120 @@ export function ensureSchema(): Promise<void> {
           'kindergarten_teaching', 'primary_teaching', 'secondary_teaching', 'all_staff_meeting', 'cleaning_duty', 'other'
         ))
       `;
+
+      // --- Co-curricular activities (CCA): term-based parent selection, priced per child, ---
+      // --- converted to an invoice by admin review. See src/lib/cca.ts. ---
+
+      // Singleton (id always 1), same pattern as lunch_settings/school_settings. selection_open
+      // gates both the parent-facing form and the submit API route -- closing it after a term's
+      // window doesn't touch anything already submitted.
+      await sql`
+        CREATE TABLE IF NOT EXISTS cca_settings (
+          id INTEGER PRIMARY KEY DEFAULT 1,
+          term_label TEXT NOT NULL DEFAULT '',
+          term_start_date DATE,
+          term_end_date DATE,
+          selection_open BOOLEAN NOT NULL DEFAULT false,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          CHECK (id = 1)
+        )
+      `;
+      await sql`INSERT INTO cca_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`;
+
+      // The catalog. default_price_idr is the flat per-term price for a CCA with no options (0 =
+      // free); a CCA with rows in cca_options uses each option's own price_idr instead (see
+      // resolvePrice in cca.ts). min_students is nullable: null means no minimum, any signup count
+      // runs. Nothing here decrements automatically -- see cca_price_overrides and the admin
+      // review screen for the manual per-child, per-item exclusion gate.
+      await sql`
+        CREATE TABLE IF NOT EXISTS cca_activities (
+          id BIGSERIAL PRIMARY KEY,
+          name TEXT NOT NULL,
+          description TEXT,
+          day_of_week TEXT,
+          default_price_idr BIGINT NOT NULL DEFAULT 0,
+          min_students INTEGER,
+          is_active BOOLEAN NOT NULL DEFAULT true,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+
+      // A CCA with rows here (e.g. "Sports" -> "Football"/"Basketball") requires the parent to
+      // pick exactly one row, not several -- enforced in submitCcaSelectionSchema, not by this
+      // table alone.
+      await sql`
+        CREATE TABLE IF NOT EXISTS cca_options (
+          id BIGSERIAL PRIMARY KEY,
+          cca_id BIGINT NOT NULL REFERENCES cca_activities(id) ON DELETE CASCADE,
+          name TEXT NOT NULL,
+          price_idr BIGINT NOT NULL DEFAULT 0,
+          sort_order INTEGER NOT NULL DEFAULT 0
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_cca_options_cca ON cca_options (cca_id)`;
+
+      // Admin can set one specific child's price for one specific CCA, overriding whatever the
+      // CCA/option would otherwise charge them -- e.g. a scholarship or sibling waiver. Keyed on
+      // the CCA, not the option: an override applies to that child's whole CCA regardless of
+      // which option they pick.
+      await sql`
+        CREATE TABLE IF NOT EXISTS cca_price_overrides (
+          id BIGSERIAL PRIMARY KEY,
+          cca_id BIGINT NOT NULL REFERENCES cca_activities(id) ON DELETE CASCADE,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          price_idr BIGINT NOT NULL,
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (cca_id, child_id)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_cca_price_overrides_child ON cca_price_overrides (child_id)`;
+
+      // One row per child per term = "the submission". term_label is copied from cca_settings at
+      // submit time (not a live reference) so a later term rollover never relabels history -- same
+      // reasoning as lunch_orders storing its own start/end dates rather than pointing at a mutable
+      // settings row. status='invoiced' locks the row read-only (see submitCcaSelection in
+      // cca.ts); while 'submitted', the parent can freely reopen and resubmit (items are replaced
+      // wholesale).
+      await sql`
+        CREATE TABLE IF NOT EXISTS cca_selections (
+          id BIGSERIAL PRIMARY KEY,
+          child_id BIGINT NOT NULL REFERENCES children(id) ON DELETE CASCADE,
+          term_label TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'submitted' CHECK (status IN ('submitted', 'invoiced')),
+          total_amount_idr BIGINT NOT NULL DEFAULT 0,
+          submitted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          invoice_id BIGINT REFERENCES invoices(id),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          UNIQUE (child_id, term_label)
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_cca_selections_child ON cca_selections (child_id)`;
+
+      // One row per selected CCA (at most one option_id per cca_id, per selection -- enforced at
+      // the app layer). price_idr is the resolved price at submission time (override ?? option ??
+      // cca default), stored rather than recomputed later, same "never silently reprices" rule as
+      // lunch_orders.lunch_count/total. excluded_at_invoicing is the admin's manual per-item
+      // checkbox on the review screen -- it is never set automatically by any enrollment count.
+      await sql`
+        CREATE TABLE IF NOT EXISTS cca_selection_items (
+          id BIGSERIAL PRIMARY KEY,
+          selection_id BIGINT NOT NULL REFERENCES cca_selections(id) ON DELETE CASCADE,
+          cca_id BIGINT NOT NULL REFERENCES cca_activities(id),
+          option_id BIGINT REFERENCES cca_options(id),
+          price_idr BIGINT NOT NULL,
+          excluded_at_invoicing BOOLEAN NOT NULL DEFAULT false
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_cca_selection_items_selection ON cca_selection_items (selection_id)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_cca_selection_items_cca ON cca_selection_items (cca_id)`;
+
+      // CCA invoices reuse the same invoices/invoice_children/invoice_line_items tables as
+      // tuition/activity/lunch/library -- one more line-item-priced invoice type, not a parallel
+      // billing system (see createCcaInvoiceForSelection in cca.ts).
+      await sql`ALTER TABLE invoices DROP CONSTRAINT IF EXISTS invoices_invoice_type_check`;
+      await sql`ALTER TABLE invoices ADD CONSTRAINT invoices_invoice_type_check CHECK (invoice_type IN ('tuition', 'activity', 'lunch', 'library', 'cca'))`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

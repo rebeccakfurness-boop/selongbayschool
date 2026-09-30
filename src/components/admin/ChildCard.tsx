@@ -14,6 +14,7 @@ import type { GradebookEntry } from '@/lib/worksheets';
 import ChildPhotoFeedSection, { type PhotoFeedItem } from '@/components/admin/ChildPhotoFeedSection';
 import GuardianLinksSection, { type GuardianLink } from '@/components/admin/GuardianLinksSection';
 import InvoicesSection from '@/components/admin/InvoicesSection';
+import CcaOverridesSection from '@/components/admin/CcaOverridesSection';
 import LetterOfOfferSection from '@/components/admin/LetterOfOfferSection';
 import WelcomeLetterSection from '@/components/admin/WelcomeLetterSection';
 import OffboardingLetterSection from '@/components/admin/OffboardingLetterSection';
@@ -22,6 +23,7 @@ import AttendanceSection from '@/components/admin/AttendanceSection';
 import StudentLoginSection from '@/components/admin/StudentLoginSection';
 import ComplianceFormModal from '@/components/admin/ComplianceFormModal';
 import type { InvoiceSummaryRow, ClassroomSubmissionRow } from '@/lib/lms-data';
+import type { CcaActivityRow, CcaPriceOverrideRow } from '@/lib/cca';
 import type { LetterOfOfferSummaryRow } from '@/lib/letters-of-offer';
 import type { WelcomeLetterSummaryRow } from '@/lib/welcome-letters';
 import type { OffboardingLetterSummaryRow } from '@/lib/offboarding';
@@ -202,6 +204,9 @@ export default function ChildCard({
   meetingInvites,
   classroomSubmissions,
   gradebook,
+  ccaActivities,
+  ccaOverrides,
+  ccaHasSubmittedSelection,
 }: {
   child: ChildDetail;
   canEdit: boolean;
@@ -222,6 +227,9 @@ export default function ChildCard({
   meetingInvites: MeetingInviteSummaryRow[];
   classroomSubmissions: ClassroomSubmissionRow[];
   gradebook: GradebookEntry[];
+  ccaActivities: CcaActivityRow[];
+  ccaOverrides: CcaPriceOverrideRow[];
+  ccaHasSubmittedSelection: boolean;
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
@@ -455,6 +463,15 @@ export default function ChildCard({
             />
 
             <InvoicesSection childId={child.id} invoices={invoices} canEdit={canEdit} defaultEmail={child.primary_contact_email ?? ''} />
+
+            {canEdit && (
+              <CcaOverridesSection
+                childId={child.id}
+                overrides={ccaOverrides}
+                activities={ccaActivities}
+                hasSubmittedSelection={ccaHasSubmittedSelection}
+              />
+            )}
 
             {canEdit && (
               <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">

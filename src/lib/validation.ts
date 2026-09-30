@@ -117,6 +117,69 @@ export const updateActivitySchema = z.object({
 });
 export type UpdateActivityInput = z.infer<typeof updateActivitySchema>;
 
+export const ccaSettingsSchema = z.object({
+  termLabel: z.string().trim().min(1, 'Term label is required').max(100),
+  termStartDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD').nullable().optional(),
+  termEndDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD').nullable().optional(),
+  selectionOpen: z.boolean(),
+});
+export type CcaSettingsInput = z.infer<typeof ccaSettingsSchema>;
+
+export const createCcaActivitySchema = z.object({
+  name: z.string().trim().min(1, 'Name is required').max(200),
+  description: z.string().trim().max(2000).optional().or(z.literal('')),
+  dayOfWeek: z.string().trim().max(100).optional().or(z.literal('')),
+  defaultPriceIDR: priceIDR.default(0),
+  minStudents: z.coerce.number().int().positive().max(500).nullable().optional(),
+});
+export type CreateCcaActivityInput = z.infer<typeof createCcaActivitySchema>;
+
+export const updateCcaActivitySchema = z.object({
+  name: z.string().trim().min(1).max(200).optional(),
+  description: z.string().trim().max(2000).nullable().optional(),
+  dayOfWeek: z.string().trim().max(100).nullable().optional(),
+  defaultPriceIDR: priceIDR.optional(),
+  minStudents: z.coerce.number().int().positive().max(500).nullable().optional(),
+  isActive: z.boolean().optional(),
+  sortOrder: z.coerce.number().int().optional(),
+});
+export type UpdateCcaActivityInput = z.infer<typeof updateCcaActivitySchema>;
+
+const ccaOptionInputSchema = z.object({
+  name: z.string().trim().min(1, 'Option name is required').max(200),
+  priceIDR: priceIDR,
+});
+export const createCcaOptionSchema = ccaOptionInputSchema;
+export type CreateCcaOptionInput = z.infer<typeof createCcaOptionSchema>;
+export const updateCcaOptionSchema = ccaOptionInputSchema.partial();
+export type UpdateCcaOptionInput = z.infer<typeof updateCcaOptionSchema>;
+
+export const setCcaPriceOverrideSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  ccaId: z.coerce.number().int().positive(),
+  priceIDR: priceIDR,
+});
+export type SetCcaPriceOverrideInput = z.infer<typeof setCcaPriceOverrideSchema>;
+
+const ccaSelectionItemInputSchema = z.object({
+  ccaId: z.coerce.number().int().positive(),
+  optionId: z.coerce.number().int().positive().nullable().optional(),
+});
+
+export const submitCcaSelectionSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  items: z
+    .array(ccaSelectionItemInputSchema)
+    .max(50)
+    .refine((items) => new Set(items.map((i) => i.ccaId)).size === items.length, 'Only one selection per CCA is allowed'),
+});
+export type SubmitCcaSelectionInput = z.infer<typeof submitCcaSelectionSchema>;
+
+export const toggleCcaSelectionItemSchema = z.object({
+  excluded: z.boolean(),
+});
+export type ToggleCcaSelectionItemInput = z.infer<typeof toggleCcaSelectionItemSchema>;
+
 export const adminLoginSchema = z.object({
   email: z.string().trim().toLowerCase().email('Enter a valid email address'),
   password: z.string().min(1, 'Password is required'),
