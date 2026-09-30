@@ -7,7 +7,7 @@ import { useState } from 'react';
 export default function BudgetTabs({
   active,
 }: {
-  active: 'dashboard' | 'revenue' | 'expenses' | 'setup' | 'transactions' | 'forecast' | 'import';
+  active: 'dashboard' | 'revenue' | 'expenses' | 'setup' | 'transactions' | 'forecast' | 'import' | 'reports';
 }) {
   const router = useRouter();
   const [locking, setLocking] = useState(false);
@@ -19,6 +19,7 @@ export default function BudgetTabs({
     { key: 'forecast', href: '/admin/budget/forecast', label: 'Forecast' },
     { key: 'setup', href: '/admin/budget/setup', label: 'Budget Setup' },
     { key: 'transactions', href: '/admin/budget/transactions', label: 'Transaction Log' },
+    { key: 'reports', href: '/admin/budget/reports', label: 'Reports' },
   ] as const;
 
   async function lock() {

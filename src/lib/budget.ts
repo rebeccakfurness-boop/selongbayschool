@@ -555,6 +555,147 @@ export async function getForecastSummary(quarterStartDate: string, quarterEndDat
   };
 }
 
+// --- board reports (monthly / school term) ---
+
+export interface BudgetReportCategoryRow {
+  categoryName: string;
+  spentIdr: number;
+  monthlyBudgetIdr: number | null;
+}
+
+export interface BudgetReportMonthRow {
+  label: string;
+  revenueIdr: number;
+  expensesIdr: number;
+  netIdr: number;
+}
+
+export interface BudgetReportData {
+  kind: 'month' | 'term';
+  periodLabel: string;
+  periodStart: string;
+  periodEnd: string;
+  openingBalanceIdr: number;
+  closingBalanceIdr: number;
+  revenueIdr: number;
+  expensesIdr: number;
+  netIdr: number;
+  bankTransferIdr: number;
+  cashIdr: number;
+  categories: BudgetReportCategoryRow[];
+  monthlyBreakdown: BudgetReportMonthRow[];
+  generatedAt: string;
+}
+
+/** One calendar-month label per month the [start, end] range touches, e.g. a term running
+ * 12 Oct - 11 Dec produces ["2026-10-01", "2026-11-01", "2026-12-01"] -- used so the term report's
+ * month-by-month table always shows every month in the term, including one with zero activity,
+ * rather than only the months a query happens to return rows for. */
+function monthsInRange(startDate: string, endDate: string): string[] {
+  const months: string[] = [];
+  const cursor = new Date(`${startDate}T00:00:00Z`);
+  cursor.setUTCDate(1);
+  const end = new Date(`${endDate}T00:00:00Z`);
+  while (cursor <= end) {
+    months.push(cursor.toISOString().slice(0, 10));
+    cursor.setUTCMonth(cursor.getUTCMonth() + 1);
+  }
+  return months;
+}
+
+/** Shared by both the monthly and school-term board reports -- same shape either way, just a
+ * different date range and whether the per-category monthly budget figure is meaningful (only for
+ * a single calendar month; a multi-month term has no single "the" monthly budget to compare
+ * against, so that column is left null and the PDF omits it). */
+export async function getBudgetReportData(
+  kind: 'month' | 'term',
+  periodStart: string,
+  periodEnd: string,
+  periodLabel: string
+): Promise<BudgetReportData> {
+  const settings = await getBudgetSettings();
+
+  const [balanceBefore] = (await sql`
+    SELECT
+      COALESCE((SELECT SUM(amount_idr) FROM budget_revenue WHERE entry_date < ${periodStart}::date), 0)::bigint AS revenue,
+      COALESCE((SELECT SUM(amount_idr) FROM budget_expenses WHERE entry_date < ${periodStart}::date), 0)::bigint AS expenses
+  `) as unknown as { revenue: number; expenses: number }[];
+  const openingBalanceIdr = settings.opening_cash_idr + Number(balanceBefore.revenue) - Number(balanceBefore.expenses);
+
+  const [periodTotals] = (await sql`
+    SELECT
+      COALESCE((SELECT SUM(amount_idr) FROM budget_revenue WHERE entry_date BETWEEN ${periodStart}::date AND ${periodEnd}::date), 0)::bigint AS revenue,
+      COALESCE((SELECT SUM(amount_idr) FROM budget_expenses WHERE entry_date BETWEEN ${periodStart}::date AND ${periodEnd}::date), 0)::bigint AS expenses
+  `) as unknown as { revenue: number; expenses: number }[];
+  const revenueIdr = Number(periodTotals.revenue);
+  const expensesIdr = Number(periodTotals.expenses);
+
+  const [byMethod] = (await sql`
+    SELECT
+      COALESCE(SUM(amount_idr) FILTER (WHERE payment_method = 'bank_transfer'), 0)::bigint AS bank_transfer,
+      COALESCE(SUM(amount_idr) FILTER (WHERE payment_method = 'cash'), 0)::bigint AS cash
+    FROM budget_revenue WHERE entry_date BETWEEN ${periodStart}::date AND ${periodEnd}::date
+  `) as unknown as { bank_transfer: number; cash: number }[];
+
+  const categoryRows = (await sql`
+    SELECT bc.name, bc.monthly_budget_idr, bc.is_archived,
+      COALESCE(SUM(e.amount_idr), 0)::bigint AS spent
+    FROM budget_categories bc
+    LEFT JOIN budget_expenses e ON e.category_id = bc.id AND e.entry_date BETWEEN ${periodStart}::date AND ${periodEnd}::date
+    GROUP BY bc.id, bc.name, bc.monthly_budget_idr, bc.is_archived, bc.sort_order
+    HAVING bc.is_archived = false OR COALESCE(SUM(e.amount_idr), 0) > 0
+    ORDER BY bc.sort_order, bc.name
+  `) as unknown as { name: string; monthly_budget_idr: number; is_archived: boolean; spent: number }[];
+  const categories: BudgetReportCategoryRow[] = categoryRows.map((c) => ({
+    categoryName: c.name,
+    spentIdr: Number(c.spent),
+    monthlyBudgetIdr: kind === 'month' ? Number(c.monthly_budget_idr) : null,
+  }));
+
+  let monthlyBreakdown: BudgetReportMonthRow[] = [];
+  if (kind === 'term') {
+    const [revByMonth, expByMonth] = await Promise.all([
+      sql`
+        SELECT date_trunc('month', entry_date)::date::text AS month, SUM(amount_idr)::bigint AS total
+        FROM budget_revenue WHERE entry_date BETWEEN ${periodStart}::date AND ${periodEnd}::date GROUP BY 1
+      ` as unknown as Promise<{ month: string; total: number }[]>,
+      sql`
+        SELECT date_trunc('month', entry_date)::date::text AS month, SUM(amount_idr)::bigint AS total
+        FROM budget_expenses WHERE entry_date BETWEEN ${periodStart}::date AND ${periodEnd}::date GROUP BY 1
+      ` as unknown as Promise<{ month: string; total: number }[]>,
+    ]);
+    const revByMonthMap = new Map(revByMonth.map((r) => [r.month, Number(r.total)]));
+    const expByMonthMap = new Map(expByMonth.map((r) => [r.month, Number(r.total)]));
+    monthlyBreakdown = monthsInRange(periodStart, periodEnd).map((monthStart) => {
+      const revenue = revByMonthMap.get(monthStart) ?? 0;
+      const expenses = expByMonthMap.get(monthStart) ?? 0;
+      return {
+        label: new Date(`${monthStart}T00:00:00Z`).toLocaleDateString('en-AU', { month: 'long', year: 'numeric', timeZone: 'UTC' }),
+        revenueIdr: revenue,
+        expensesIdr: expenses,
+        netIdr: revenue - expenses,
+      };
+    });
+  }
+
+  return {
+    kind,
+    periodLabel,
+    periodStart,
+    periodEnd,
+    openingBalanceIdr,
+    closingBalanceIdr: openingBalanceIdr + revenueIdr - expensesIdr,
+    revenueIdr,
+    expensesIdr,
+    netIdr: revenueIdr - expensesIdr,
+    bankTransferIdr: Number(byMethod.bank_transfer),
+    cashIdr: Number(byMethod.cash),
+    categories,
+    monthlyBreakdown,
+    generatedAt: new Date().toISOString(),
+  };
+}
+
 export interface ForecastExpenseSuggestion {
   categoryId: number;
   categoryName: string;
