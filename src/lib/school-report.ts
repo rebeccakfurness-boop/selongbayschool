@@ -57,10 +57,15 @@ export interface SchoolReportData {
   generatedAt: string;
 }
 
-/** `< (end + 1 day)` rather than `<= end::date` -- every table queried by created_at here is
- * TIMESTAMPTZ, and a plain `<=` against a bare date would truncate away same-day records after
- * midnight. Every column that's a plain DATE (enrolment_date, start_date) uses a normal BETWEEN
- * instead, matching budget.ts's own convention for date-only columns. */
+/** `< (end + 1 day)` rather than `<= end::date` -- `enquiries`/`bookings` are queried by their
+ * TIMESTAMPTZ created_at (set live, at the moment a parent submits the public form/booking), and a
+ * plain `<=` against a bare date would truncate away same-day records after midnight. Every column
+ * that's a plain DATE (enrolment_date, start_date, and admissions_enquiries' own date fields
+ * below) uses a normal BETWEEN instead, matching budget.ts's own convention for date-only columns.
+ * admissions_enquiries is NOT filtered by created_at at all, unlike the other two -- every row
+ * there is bulk-imported from a spreadsheet (family-import.ts), so created_at is just whenever
+ * that import ran, not when the lead (or, for a school tour, the actual visit) happened; see the
+ * comment at that query for the real date columns used instead. */
 export async function getSchoolReportData(periodStart: string, periodEnd: string, periodLabel: string): Promise<SchoolReportData> {
   const enquiryRows = (await sql`
     SELECT type, COUNT(*)::int AS count FROM enquiries
@@ -71,9 +76,14 @@ export async function getSchoolReportData(periodStart: string, periodEnd: string
   const enquiriesByType = ENQUIRY_TYPES.map((type) => ({ label: ENQUIRY_TYPE_LABELS[type], count: enquiryCountByType.get(type) ?? 0 }));
   const enquiriesTotal = enquiriesByType.reduce((sum, r) => sum + r.count, 0);
 
+  // admissions_enquiries rows are bulk-imported from a spreadsheet (see family-import.ts), never
+  // entered live -- created_at on every row is just whenever that import ran, not when the lead
+  // (or, for a school tour, the actual visit) happened. first_message_date is the real date (it's
+  // what the admissions pipeline admin page itself sorts and displays by), with visit_date/
+  // booking_date as fallbacks for a row that's missing it but does have one of those set.
   const admissionsRows = (await sql`
     SELECT source, COUNT(*)::int AS count FROM admissions_enquiries
-    WHERE created_at >= ${periodStart}::date AND created_at < (${periodEnd}::date + interval '1 day')
+    WHERE COALESCE(first_message_date, visit_date, booking_date) BETWEEN ${periodStart}::date AND ${periodEnd}::date
     GROUP BY source
   `) as unknown as { source: string; count: number }[];
   const admissionsCountBySource = new Map(admissionsRows.map((r) => [r.source, r.count]));
@@ -85,7 +95,7 @@ export async function getSchoolReportData(periodStart: string, periodEnd: string
 
   const [{ count: admissionsLeadsConvertedTotal }] = (await sql`
     SELECT COUNT(*)::int AS count FROM admissions_enquiries
-    WHERE created_at >= ${periodStart}::date AND created_at < (${periodEnd}::date + interval '1 day')
+    WHERE COALESCE(first_message_date, visit_date, booking_date) BETWEEN ${periodStart}::date AND ${periodEnd}::date
       AND converted_child_id IS NOT NULL
   `) as unknown as { count: number }[];
 
