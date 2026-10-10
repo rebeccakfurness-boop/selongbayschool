@@ -429,6 +429,23 @@ export async function createCcaInvoiceForSelection(
   return { invoiceId, invoiceNumber, totalAmount, dueDate };
 }
 
+export type UnlockCcaSelectionOutcome = { ok: true } | { ok: false; reason: 'not_found' | 'invoiced' };
+
+/** The parent portal locks a selection the instant it's submitted -- a parent who wants to change
+ * it afterward is told to contact the school office, not given a self-service edit. This is the
+ * admin side of that: deletes the selection outright (its items cascade), which is enough to
+ * unlock it -- getCcaSelectionForChild then returns null and the parent's form reverts to a fresh,
+ * empty, editable one next time they open it. Never allowed once invoiced -- a parent whose CCAs
+ * are already billed needs an admin to touch the invoice too, not just silently vanish the record
+ * it was built from. */
+export async function unlockCcaSelection(selectionId: number): Promise<UnlockCcaSelectionOutcome> {
+  const rows = (await sql`SELECT status FROM cca_selections WHERE id = ${selectionId}`) as unknown as { status: string }[];
+  if (rows.length === 0) return { ok: false, reason: 'not_found' };
+  if (rows[0].status === 'invoiced') return { ok: false, reason: 'invoiced' };
+  await sql`DELETE FROM cca_selections WHERE id = ${selectionId}`;
+  return { ok: true };
+}
+
 export interface CcaSelectionAdminRow {
   selection_id: number;
   child_id: number;

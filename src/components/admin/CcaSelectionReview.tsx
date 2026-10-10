@@ -11,6 +11,7 @@ export default function CcaSelectionReview({ childId, selection }: { childId: nu
   const [items, setItems] = useState(selection.items);
   const [toggling, setToggling] = useState<number | null>(null);
   const [creating, setCreating] = useState(false);
+  const [unlocking, setUnlocking] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function toggleExcluded(itemId: number, excluded: boolean) {
@@ -46,6 +47,21 @@ export default function CcaSelectionReview({ childId, selection }: { childId: nu
     }
   }
 
+  async function unlock() {
+    if (!confirm('Unlock this selection so the parent can change it? The current selection will be removed -- they’ll need to resubmit from scratch.')) return;
+    setUnlocking(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/cca/selections/${selection.id}/unlock`, { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to unlock');
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to unlock');
+      setUnlocking(false);
+    }
+  }
+
   if (selection.status === 'invoiced') {
     return (
       <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
@@ -64,7 +80,20 @@ export default function CcaSelectionReview({ childId, selection }: { childId: nu
 
   return (
     <div className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
-      <ul className="flex flex-col gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-sand-line pb-4">
+        <p className="text-sm text-ink-soft">
+          Locked on the parent portal -- they can&apos;t change this themselves. Unlock it if they&apos;ve asked for changes.
+        </p>
+        <button
+          type="button"
+          onClick={unlock}
+          disabled={unlocking}
+          className="text-sm font-semibold text-orange-deep hover:underline disabled:opacity-50"
+        >
+          {unlocking ? 'Unlocking…' : 'Unlock for parent to edit'}
+        </button>
+      </div>
+      <ul className="mt-4 flex flex-col gap-3">
         {items.map((item) => {
           const belowMinimum = item.min_students != null && (item.enrollment_count ?? 0) < item.min_students;
           return (
