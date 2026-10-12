@@ -476,3 +476,89 @@ export async function getAllCcaSelectionsForAdmin(termLabel: string): Promise<Cc
     total_amount_idr: Number(r.total_amount_idr),
   }));
 }
+
+export interface CcaSummaryItemRow {
+  cca_name: string;
+  option_name: string | null;
+  price_idr: number;
+  excluded_at_invoicing: boolean;
+}
+
+export interface CcaSummaryChildRow {
+  child_id: number;
+  child_full_name: string;
+  class_name: string | null;
+  status: 'submitted' | 'invoiced';
+  items: CcaSummaryItemRow[];
+  // Sum of this child's non-excluded items only -- matches what they'll actually be invoiced,
+  // not the nominal total recorded at submission time (cca_selections.total_amount_idr), which
+  // never gets adjusted when admin later excludes an under-minimum CCA.
+  total_amount_idr: number;
+}
+
+export interface CcaSummaryReportData {
+  termLabel: string;
+  generatedAt: string;
+  children: CcaSummaryChildRow[];
+  studentCount: number;
+  grandTotalIdr: number;
+}
+
+/** One row per child with every CCA they signed up to and its price, for the admin to download as
+ * a single sheet instead of opening each child's selection individually. A single query (not one
+ * lookup per selection) since a term's worth of selections is small but this still avoids N+1. */
+export async function getCcaSummaryReportData(termLabel: string): Promise<CcaSummaryReportData> {
+  const rows = (await sql`
+    SELECT cs.child_id, c.child_full_name, c.class_name, cs.status,
+      ca.name AS cca_name, ca.sort_order AS cca_sort_order, co.name AS option_name,
+      csi.price_idr, csi.excluded_at_invoicing
+    FROM cca_selections cs
+    JOIN children c ON c.id = cs.child_id
+    LEFT JOIN cca_selection_items csi ON csi.selection_id = cs.id
+    LEFT JOIN cca_activities ca ON ca.id = csi.cca_id
+    LEFT JOIN cca_options co ON co.id = csi.option_id
+    WHERE cs.term_label = ${termLabel}
+    ORDER BY c.child_full_name, ca.sort_order ASC, ca.id ASC
+  `) as unknown as {
+    child_id: number;
+    child_full_name: string;
+    class_name: string | null;
+    status: 'submitted' | 'invoiced';
+    cca_name: string | null;
+    option_name: string | null;
+    price_idr: number | null;
+    excluded_at_invoicing: boolean | null;
+  }[];
+
+  const byChild = new Map<number, CcaSummaryChildRow>();
+  for (const row of rows) {
+    const childId = Number(row.child_id);
+    let child = byChild.get(childId);
+    if (!child) {
+      child = {
+        child_id: childId,
+        child_full_name: row.child_full_name,
+        class_name: row.class_name,
+        status: row.status,
+        items: [],
+        total_amount_idr: 0,
+      };
+      byChild.set(childId, child);
+    }
+    if (row.cca_name) {
+      const priceIdr = Number(row.price_idr);
+      const excluded = row.excluded_at_invoicing ?? false;
+      child.items.push({ cca_name: row.cca_name, option_name: row.option_name, price_idr: priceIdr, excluded_at_invoicing: excluded });
+      if (!excluded) child.total_amount_idr += priceIdr;
+    }
+  }
+
+  const children = [...byChild.values()];
+  return {
+    termLabel,
+    generatedAt: new Date().toISOString(),
+    children,
+    studentCount: children.length,
+    grandTotalIdr: children.reduce((sum, c) => sum + c.total_amount_idr, 0),
+  };
+}

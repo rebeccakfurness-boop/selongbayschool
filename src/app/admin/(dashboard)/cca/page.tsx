@@ -28,9 +28,21 @@ export default async function CcaAdminPage() {
       <CcaActivitiesManager />
 
       <section>
-        <h2 className="font-display text-xl font-semibold text-ink">
-          Submissions {settings.term_label && <span className="text-ink-soft">— {settings.term_label}</span>}
-        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="font-display text-xl font-semibold text-ink">
+            Submissions {settings.term_label && <span className="text-ink-soft">— {settings.term_label}</span>}
+          </h2>
+          {settings.term_label && (
+            <a
+              href="/api/admin/cca/report"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-semibold text-teal-deep hover:underline"
+            >
+              Download summary (all students &amp; costs) &rarr;
+            </a>
+          )}
+        </div>
         <div className="mt-4 overflow-x-auto rounded-md border border-sand-line bg-paper">
           <table className="w-full min-w-[700px] border-collapse text-sm">
             <thead>
