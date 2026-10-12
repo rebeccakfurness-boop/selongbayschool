@@ -672,6 +672,10 @@ export const invoiceLineItemSchema = z.object({
 
 export const invoiceChildSchema = z.object({
   childId: z.coerce.number().int().positive(),
+  // Admin-entered, per child, on every invoice this child appears on -- not computed from sibling
+  // position. Covers a sibling discount (the usual case) but isn't restricted to one; any other
+  // discount admin wants to apply (hardship, staff, promotional) goes through this same field.
+  discountPercent: z.coerce.number().min(0).max(100).default(0),
   lineItems: z.array(invoiceLineItemSchema).min(1, 'Each child needs at least one line item'),
 });
 

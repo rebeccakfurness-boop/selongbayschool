@@ -15,6 +15,7 @@ interface LineItemForm {
 export interface ChildEntry {
   childId: number;
   label: string;
+  discountPercent: string;
   lineItems: LineItemForm[];
 }
 
@@ -26,11 +27,6 @@ interface SearchResult {
 }
 
 const emptyLineItem = (): LineItemForm => ({ description: '', quantity: '1', unitPrice: '' });
-
-function siblingDiscountPercent(index: number, total: number): number {
-  if (total < 2) return 0;
-  return index === 0 ? 5 : 10;
-}
 
 export default function InvoiceForm({
   invoiceId,
@@ -73,7 +69,7 @@ export default function InvoiceForm({
   function addSibling(result: SearchResult) {
     setChildren((prev) => [
       ...prev,
-      { childId: result.id, label: result.child_nickname || result.child_full_name, lineItems: [emptyLineItem()] },
+      { childId: result.id, label: result.child_nickname || result.child_full_name, discountPercent: '0', lineItems: [emptyLineItem()] },
     ]);
     setSiblingQuery('');
     setSiblingResults([]);
@@ -81,6 +77,10 @@ export default function InvoiceForm({
 
   function removeChild(childId: number) {
     setChildren((prev) => prev.filter((c) => c.childId !== childId));
+  }
+
+  function updateDiscountPercent(childId: number, value: string) {
+    setChildren((prev) => prev.map((c) => (c.childId === childId ? { ...c, discountPercent: value } : c)));
   }
 
   function updateLineItem(childId: number, index: number, key: keyof LineItemForm, value: string) {
@@ -105,9 +105,9 @@ export default function InvoiceForm({
     );
   }
 
-  const preview = children.map((c, index) => {
+  const preview = children.map((c) => {
     const subtotal = c.lineItems.reduce((sum, li) => sum + (Number(li.quantity) || 0) * (Number(li.unitPrice) || 0), 0);
-    const discountPercent = siblingDiscountPercent(index, children.length);
+    const discountPercent = Math.min(100, Math.max(0, Number(c.discountPercent) || 0));
     const discount = Math.round((subtotal * discountPercent) / 100);
     return { childId: c.childId, subtotal, discountPercent, discount, total: subtotal - discount };
   });
@@ -125,6 +125,7 @@ export default function InvoiceForm({
         issueDate,
         children: children.map((c) => ({
           childId: c.childId,
+          discountPercent: c.discountPercent === '' ? 0 : Number(c.discountPercent),
           lineItems: c.lineItems
             .filter((li) => li.description.trim())
             .map((li) => ({
@@ -195,18 +196,28 @@ export default function InvoiceForm({
         const p = preview[index];
         return (
           <div key={child.childId} className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
-            <div className="flex items-center justify-between">
-              <h3 className="font-display text-lg font-semibold text-ink">
-                {child.label}
-                {p.discountPercent > 0 && (
-                  <span className="ml-2 text-xs font-bold text-teal-deep">({p.discountPercent}% sibling discount)</span>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h3 className="font-display text-lg font-semibold text-ink">{child.label}</h3>
+              <div className="flex items-center gap-3">
+                <label className="flex items-center gap-2 text-sm text-ink-soft">
+                  Discount
+                  <TextInput
+                    type="number"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={child.discountPercent}
+                    onChange={(e) => updateDiscountPercent(child.childId, e.target.value)}
+                    className="!w-20"
+                  />
+                  %
+                </label>
+                {children.length > 1 && (
+                  <button type="button" onClick={() => removeChild(child.childId)} className="text-xs font-semibold text-orange-deep hover:underline">
+                    Remove
+                  </button>
                 )}
-              </h3>
-              {children.length > 1 && (
-                <button type="button" onClick={() => removeChild(child.childId)} className="text-xs font-semibold text-orange-deep hover:underline">
-                  Remove
-                </button>
-              )}
+              </div>
             </div>
 
             <div className="mt-4 flex flex-col gap-3">
@@ -288,7 +299,7 @@ export default function InvoiceForm({
         </div>
         {grandDiscount > 0 && (
           <p className="mt-1 text-sm text-ink-soft">
-            Subtotal {formatIDR(grandSubtotal)} · Sibling discount -{formatIDR(grandDiscount)}
+            Subtotal {formatIDR(grandSubtotal)} · Discount -{formatIDR(grandDiscount)}
           </p>
         )}
       </div>

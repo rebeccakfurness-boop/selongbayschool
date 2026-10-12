@@ -153,7 +153,7 @@ export function InvoiceDocument({
             </View>
             {invoice.sibling_discount_amount > 0 && (
               <View style={styles.totalsRow}>
-                <Text>Sibling Discount</Text>
+                <Text>Discount</Text>
                 <Text>-{formatMoney(invoice.sibling_discount_amount, invoice.currency)}</Text>
               </View>
             )}

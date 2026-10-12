@@ -25,10 +25,10 @@ export default async function EditInvoicePage({ params }: { params: Promise<{ id
   if (!invoice) notFound();
 
   const childRows = (await sql`
-    SELECT ic.child_id, ic.sort_order, COALESCE(c.child_nickname, c.child_full_name) AS label
+    SELECT ic.child_id, ic.sort_order, ic.discount_percent, COALESCE(c.child_nickname, c.child_full_name) AS label
     FROM invoice_children ic JOIN children c ON c.id = ic.child_id
     WHERE ic.invoice_id = ${id} ORDER BY ic.sort_order
-  `) as unknown as { child_id: number; label: string }[];
+  `) as unknown as { child_id: number; label: string; discount_percent: number }[];
 
   const lineItemRows = (await sql`
     SELECT child_id, description, quantity, unit_price FROM invoice_line_items
@@ -38,6 +38,7 @@ export default async function EditInvoicePage({ params }: { params: Promise<{ id
   const initialChildren: ChildEntry[] = childRows.map((c) => ({
     childId: c.child_id,
     label: c.label,
+    discountPercent: String(c.discount_percent),
     lineItems: lineItemRows
       .filter((li) => li.child_id === c.child_id)
       .map((li) => ({ description: li.description, quantity: String(li.quantity), unitPrice: String(li.unit_price) })),
