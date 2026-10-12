@@ -571,7 +571,7 @@ export interface BudgetReportMonthRow {
 }
 
 export interface BudgetReportData {
-  kind: 'month' | 'term';
+  kind: 'month' | 'term' | 'year';
   periodLabel: string;
   periodStart: string;
   periodEnd: string;
@@ -603,12 +603,12 @@ function monthsInRange(startDate: string, endDate: string): string[] {
   return months;
 }
 
-/** Shared by both the monthly and school-term board reports -- same shape either way, just a
- * different date range and whether the per-category monthly budget figure is meaningful (only for
- * a single calendar month; a multi-month term has no single "the" monthly budget to compare
- * against, so that column is left null and the PDF omits it). */
+/** Shared by the monthly, school-term, and yearly/P&L board reports -- same shape every time, just
+ * a different date range and whether the per-category monthly budget figure is meaningful (only
+ * for a single calendar month; a multi-month term or a full year has no single "the" monthly
+ * budget to compare against, so that column is left null and the PDF omits it). */
 export async function getBudgetReportData(
-  kind: 'month' | 'term',
+  kind: 'month' | 'term' | 'year',
   periodStart: string,
   periodEnd: string,
   periodLabel: string
@@ -653,7 +653,7 @@ export async function getBudgetReportData(
   }));
 
   let monthlyBreakdown: BudgetReportMonthRow[] = [];
-  if (kind === 'term') {
+  if (kind === 'term' || kind === 'year') {
     const [revByMonth, expByMonth] = await Promise.all([
       sql`
         SELECT date_trunc('month', entry_date)::date::text AS month, SUM(amount_idr)::bigint AS total

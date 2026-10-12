@@ -96,7 +96,7 @@ export function BudgetReportDocument({ report, generatedByLabel }: { report: Bud
             <Text style={styles.docSubtitle}>Financial report prepared for the Yayasan board</Text>
           </View>
           <View>
-            <Text style={styles.docTitle}>{report.kind === 'month' ? 'Monthly Report' : 'Term Report'}</Text>
+            <Text style={styles.docTitle}>{report.kind === 'month' ? 'Monthly Report' : report.kind === 'year' ? 'Yearly Report' : 'Term Report'}</Text>
             <Text style={styles.meta}>{report.periodLabel}</Text>
             <Text style={styles.meta}>
               {formatDateLabel(report.periodStart)} – {formatDateLabel(report.periodEnd)}
