@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 55;
+const SCHEMA_VERSION = 56;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2816,6 +2816,12 @@ export function ensureSchema(): Promise<void> {
       // to them yet. Filters both the parent-facing /account/cca list and (implicitly, via that
       // filter) which children ever get a cca_selections row.
       await sql`ALTER TABLE children ADD COLUMN IF NOT EXISTS cca_enabled BOOLEAN NOT NULL DEFAULT false`;
+
+      // A child's per-invoice discount_percent used to apply to every line item of theirs
+      // uniformly -- admin now ticks this per line item instead (e.g. the sibling discount covers
+      // tuition but not a one-off excursion fee on the same invoice). Defaults true so every
+      // existing line item keeps behaving exactly as it did before this column existed.
+      await sql`ALTER TABLE invoice_line_items ADD COLUMN IF NOT EXISTS discount_eligible BOOLEAN NOT NULL DEFAULT true`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

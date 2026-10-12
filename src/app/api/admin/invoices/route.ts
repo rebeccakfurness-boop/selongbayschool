@@ -53,8 +53,8 @@ export async function POST(req: NextRequest) {
       for (const li of child.lineItems) {
         const lineTotal = Math.round(li.quantity * li.unitPrice);
         await sql`
-          INSERT INTO invoice_line_items (invoice_id, child_id, description, quantity, unit_price, line_total, sort_order)
-          VALUES (${invoiceId}, ${child.childId}, ${li.description}, ${li.quantity}, ${li.unitPrice}, ${lineTotal}, ${liSortOrder})
+          INSERT INTO invoice_line_items (invoice_id, child_id, description, quantity, unit_price, line_total, sort_order, discount_eligible)
+          VALUES (${invoiceId}, ${child.childId}, ${li.description}, ${li.quantity}, ${li.unitPrice}, ${lineTotal}, ${liSortOrder}, ${li.discountEligible})
         `;
         liSortOrder++;
       }

@@ -10,6 +10,7 @@ interface LineItemForm {
   description: string;
   quantity: string;
   unitPrice: string;
+  discountEligible: boolean;
 }
 
 export interface ChildEntry {
@@ -26,7 +27,7 @@ interface SearchResult {
   class_name: string | null;
 }
 
-const emptyLineItem = (): LineItemForm => ({ description: '', quantity: '1', unitPrice: '' });
+const emptyLineItem = (): LineItemForm => ({ description: '', quantity: '1', unitPrice: '', discountEligible: true });
 
 export default function InvoiceForm({
   invoiceId,
@@ -83,11 +84,21 @@ export default function InvoiceForm({
     setChildren((prev) => prev.map((c) => (c.childId === childId ? { ...c, discountPercent: value } : c)));
   }
 
-  function updateLineItem(childId: number, index: number, key: keyof LineItemForm, value: string) {
+  function updateLineItem(childId: number, index: number, key: 'description' | 'quantity' | 'unitPrice', value: string) {
     setChildren((prev) =>
       prev.map((c) =>
         c.childId === childId
           ? { ...c, lineItems: c.lineItems.map((li, i) => (i === index ? { ...li, [key]: value } : li)) }
+          : c
+      )
+    );
+  }
+
+  function toggleLineItemDiscountEligible(childId: number, index: number) {
+    setChildren((prev) =>
+      prev.map((c) =>
+        c.childId === childId
+          ? { ...c, lineItems: c.lineItems.map((li, i) => (i === index ? { ...li, discountEligible: !li.discountEligible } : li)) }
           : c
       )
     );
@@ -106,9 +117,11 @@ export default function InvoiceForm({
   }
 
   const preview = children.map((c) => {
-    const subtotal = c.lineItems.reduce((sum, li) => sum + (Number(li.quantity) || 0) * (Number(li.unitPrice) || 0), 0);
+    const lineTotal = (li: LineItemForm) => (Number(li.quantity) || 0) * (Number(li.unitPrice) || 0);
+    const subtotal = c.lineItems.reduce((sum, li) => sum + lineTotal(li), 0);
+    const discountEligibleSubtotal = c.lineItems.filter((li) => li.discountEligible).reduce((sum, li) => sum + lineTotal(li), 0);
     const discountPercent = Math.min(100, Math.max(0, Number(c.discountPercent) || 0));
-    const discount = Math.round((subtotal * discountPercent) / 100);
+    const discount = Math.round((discountEligibleSubtotal * discountPercent) / 100);
     return { childId: c.childId, subtotal, discountPercent, discount, total: subtotal - discount };
   });
   const grandSubtotal = preview.reduce((s, p) => s + p.subtotal, 0);
@@ -132,6 +145,7 @@ export default function InvoiceForm({
               description: li.description,
               quantity: li.quantity === '' ? 0 : Number(li.quantity),
               unitPrice: li.unitPrice === '' ? 0 : Number(li.unitPrice),
+              discountEligible: li.discountEligible,
             })),
         })),
       };
@@ -221,41 +235,55 @@ export default function InvoiceForm({
             </div>
 
             <div className="mt-4 flex flex-col gap-3">
-              {child.lineItems.map((li, i) => (
-                <div key={i} className="grid grid-cols-12 gap-2">
-                  <div className="col-span-6">
-                    <TextInput
-                      value={li.description}
-                      onChange={(e) => updateLineItem(child.childId, i, 'description', e.target.value)}
-                      placeholder="Description"
-                    />
+              {(() => {
+                const hasDiscount = Math.min(100, Math.max(0, Number(child.discountPercent) || 0)) > 0;
+                return child.lineItems.map((li, i) => (
+                  <div key={i} className="grid grid-cols-12 gap-2">
+                    <div className={hasDiscount ? 'col-span-5' : 'col-span-6'}>
+                      <TextInput
+                        value={li.description}
+                        onChange={(e) => updateLineItem(child.childId, i, 'description', e.target.value)}
+                        placeholder="Description"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <TextInput
+                        type="number"
+                        min={0}
+                        value={li.quantity}
+                        onChange={(e) => updateLineItem(child.childId, i, 'quantity', e.target.value)}
+                        placeholder="Qty"
+                      />
+                    </div>
+                    <div className={hasDiscount ? 'col-span-2' : 'col-span-3'}>
+                      <TextInput
+                        type="number"
+                        min={0}
+                        step={1000}
+                        value={li.unitPrice}
+                        onChange={(e) => updateLineItem(child.childId, i, 'unitPrice', e.target.value)}
+                        placeholder="Price (IDR)"
+                      />
+                    </div>
+                    {hasDiscount && (
+                      <label className="col-span-2 flex items-center gap-1.5 text-xs text-ink-soft" title="Apply this child's discount to this line item">
+                        <input
+                          type="checkbox"
+                          checked={li.discountEligible}
+                          onChange={() => toggleLineItemDiscountEligible(child.childId, i)}
+                          className="h-4 w-4 rounded-sm border-sand-line text-teal-deep focus:ring-teal-deep"
+                        />
+                        Discount applies
+                      </label>
+                    )}
+                    <div className="col-span-1 flex items-center justify-center">
+                      <button type="button" onClick={() => removeLineItem(child.childId, i)} className="text-xs font-semibold text-orange-deep hover:underline">
+                        ✕
+                      </button>
+                    </div>
                   </div>
-                  <div className="col-span-2">
-                    <TextInput
-                      type="number"
-                      min={0}
-                      value={li.quantity}
-                      onChange={(e) => updateLineItem(child.childId, i, 'quantity', e.target.value)}
-                      placeholder="Qty"
-                    />
-                  </div>
-                  <div className="col-span-3">
-                    <TextInput
-                      type="number"
-                      min={0}
-                      step={1000}
-                      value={li.unitPrice}
-                      onChange={(e) => updateLineItem(child.childId, i, 'unitPrice', e.target.value)}
-                      placeholder="Price (IDR)"
-                    />
-                  </div>
-                  <div className="col-span-1 flex items-center justify-center">
-                    <button type="button" onClick={() => removeLineItem(child.childId, i)} className="text-xs font-semibold text-orange-deep hover:underline">
-                      ✕
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ));
+              })()}
             </div>
 
             <div className="mt-3 flex flex-wrap gap-3">

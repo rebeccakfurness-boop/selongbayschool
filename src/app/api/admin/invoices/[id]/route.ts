@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     WHERE ic.invoice_id = ${id} ORDER BY ic.sort_order
   `;
   const lineItems = await sql`
-    SELECT child_id, description, quantity, unit_price FROM invoice_line_items
+    SELECT child_id, description, quantity, unit_price, discount_eligible FROM invoice_line_items
     WHERE invoice_id = ${id} ORDER BY child_id, sort_order
   `;
 
@@ -140,8 +140,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       for (const li of child.lineItems) {
         const lineTotal = Math.round(li.quantity * li.unitPrice);
         await sql`
-          INSERT INTO invoice_line_items (invoice_id, child_id, description, quantity, unit_price, line_total, sort_order)
-          VALUES (${id}, ${child.childId}, ${li.description}, ${li.quantity}, ${li.unitPrice}, ${lineTotal}, ${liSortOrder})
+          INSERT INTO invoice_line_items (invoice_id, child_id, description, quantity, unit_price, line_total, sort_order, discount_eligible)
+          VALUES (${id}, ${child.childId}, ${li.description}, ${li.quantity}, ${li.unitPrice}, ${lineTotal}, ${liSortOrder}, ${li.discountEligible})
         `;
         liSortOrder++;
       }

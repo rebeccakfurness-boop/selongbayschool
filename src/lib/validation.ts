@@ -668,6 +668,11 @@ export const invoiceLineItemSchema = z.object({
   // qty/price/total at all, rather than needing a separate freeform notes field for that.
   quantity: z.coerce.number().min(0).max(10000),
   unitPrice: z.coerce.number().int('Price must be a whole number of IDR').nonnegative().max(1_000_000_000),
+  // Whether this specific line item counts toward the child's discountPercent below -- on by
+  // default so a line item admin never touches keeps behaving the way the old child-wide discount
+  // did. Lets e.g. a sibling discount cover tuition but not a one-off excursion fee on the same
+  // invoice.
+  discountEligible: z.boolean().default(true),
 });
 
 export const invoiceChildSchema = z.object({

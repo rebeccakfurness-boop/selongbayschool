@@ -44,7 +44,7 @@ export default async function NewInvoicePage({
           initialInvoiceType={invoiceType}
           initialBilledToName={billedToName}
           initialIssueDate={new Date().toISOString().slice(0, 10)}
-          initialChildren={[{ childId, label, discountPercent: '0', lineItems: [{ description: defaultFirstLineItem, quantity: '1', unitPrice: '' }] }]}
+          initialChildren={[{ childId, label, discountPercent: '0', lineItems: [{ description: defaultFirstLineItem, quantity: '1', unitPrice: '', discountEligible: true }] }]}
           redirectTo={`/admin/families/${childId}`}
         />
       </div>
