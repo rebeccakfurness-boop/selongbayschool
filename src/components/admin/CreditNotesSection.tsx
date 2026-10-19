@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { formatIDR } from '@/lib/site-content';
+import SendCreditNoteButton from '@/components/admin/SendCreditNoteButton';
 
 export interface CreditNoteApplicationSummary {
   id: number;
@@ -47,11 +48,13 @@ export default function CreditNotesSection({
   creditNotes,
   outstandingInvoices,
   canEdit,
+  defaultEmail,
 }: {
   childId: number;
   creditNotes: CreditNoteSummary[];
   outstandingInvoices: OutstandingInvoiceOption[];
   canEdit: boolean;
+  defaultEmail: string;
 }) {
   const router = useRouter();
   const [busyId, setBusyId] = useState<number | null>(null);
@@ -158,6 +161,12 @@ export default function CreditNotesSection({
                   </li>
                 ))}
               </ul>
+            )}
+
+            {canEdit && (
+              <div className="flex flex-wrap items-center gap-3 border-t border-sand-line/70 pt-2">
+                <SendCreditNoteButton creditNoteId={cn.id} defaultEmail={defaultEmail} />
+              </div>
             )}
 
             {canEdit && cn.status === 'open' && (

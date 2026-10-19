@@ -4,6 +4,7 @@ import { requireAdmin } from '@/lib/current-staff';
 import { formatDate } from '@/lib/admin-format';
 import { formatIDR } from '@/lib/site-content';
 import { getAllCreditNotesForAdmin } from '@/lib/credit-notes';
+import SendCreditNoteButton from '@/components/admin/SendCreditNoteButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -71,9 +72,12 @@ export default async function AdminCreditNotesPage() {
                   <span className={`rounded-full px-2 py-0.5 text-xs font-bold capitalize ${STATUS_STYLES[cn.status]}`}>{cn.status}</span>
                 </td>
                 <td className="whitespace-nowrap px-4 py-3">
-                  <Link href={`/admin/families/${cn.child_id}`} className="text-xs font-semibold text-teal-deep hover:underline">
-                    View &rarr;
-                  </Link>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <SendCreditNoteButton creditNoteId={cn.id} defaultEmail={cn.default_email ?? ''} />
+                    <Link href={`/admin/families/${cn.child_id}`} className="text-xs font-semibold text-teal-deep hover:underline">
+                      View &rarr;
+                    </Link>
+                  </div>
                 </td>
               </tr>
             ))}

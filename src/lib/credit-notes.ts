@@ -123,12 +123,13 @@ export interface CreditNoteAdminRow {
   remaining_idr: number;
   status: 'open' | 'applied' | 'refunded' | 'cancelled';
   issued_at: string;
+  default_email: string | null;
 }
 
 export async function getAllCreditNotesForAdmin(): Promise<CreditNoteAdminRow[]> {
   return ((await sql`
     SELECT cn.id, cn.credit_note_number, cn.child_id, COALESCE(c.child_nickname, c.child_full_name) AS child_full_name,
-      cn.kind, cn.reason, cn.amount_idr, cn.remaining_idr, cn.status, cn.issued_at::text
+      cn.kind, cn.reason, cn.amount_idr, cn.remaining_idr, cn.status, cn.issued_at::text, c.primary_contact_email AS default_email
     FROM credit_notes cn
     JOIN children c ON c.id = cn.child_id
     ORDER BY cn.issued_at DESC

@@ -669,6 +669,44 @@ export async function sendInvoiceEmail(input: InvoiceEmailInput): Promise<boolea
   });
 }
 
+export interface CreditNoteEmailInput {
+  toEmail: string;
+  childFullName: string;
+  creditNoteNumber: number;
+  kind: 'refund' | 'credit_hold';
+  amountIdr: number;
+  reason: string;
+  pdfBuffer: Buffer;
+}
+
+/** Sent from the admin-only "Send to parent" action on a credit note -- same cc-to-school-inbox,
+ * PDF-attachment pattern as sendInvoiceEmail. The body wording differs by kind: a refund tells the
+ * parent money is coming back to them, a credit hold tells them it'll be applied to a future
+ * invoice instead -- same distinction the PDF itself makes. */
+export async function sendCreditNoteEmail(input: CreditNoteEmailInput): Promise<boolean> {
+  const amount = formatIDR(input.amountIdr);
+  const explanation =
+    input.kind === 'refund'
+      ? `A refund of ${amount} has been issued for ${input.childFullName} and will be paid back to you.`
+      : `A credit of ${amount} has been issued for ${input.childFullName}. It will be held and applied to a future invoice rather than paid out directly.`;
+  const html = wrapEmail(
+    `Credit Note #${String(input.creditNoteNumber).padStart(3, '0')}`,
+    `<p>Dear parent/guardian of ${input.childFullName},</p>
+     <p>${explanation}</p>
+     ${fieldRows([
+       ['Credit note number', `#${String(input.creditNoteNumber).padStart(3, '0')}`],
+       ['Amount', amount],
+       ['Reason', input.reason],
+     ])}
+     <p style="margin-top: 16px;">Please find the full details attached. If you have any questions, just reply to this email.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `Credit Note #${String(input.creditNoteNumber).padStart(3, '0')} — Selong Bay School`, html, {
+    cc: NOTIFY_TO,
+    attachment: [{ name: `credit-note-${input.creditNoteNumber}.pdf`, content: input.pdfBuffer.toString('base64') }],
+  });
+}
+
 export interface LearningProfileEmailInput {
   toEmail: string;
   childFullName: string;

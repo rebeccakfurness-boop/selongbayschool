@@ -475,6 +475,7 @@ export default function ChildCard({
                 .filter((inv) => inv.status === 'outstanding')
                 .map((inv) => ({ id: inv.id, invoiceNumber: inv.invoice_number, amountDue: Math.max(0, inv.total_amount - inv.credit_applied_idr) }))}
               canEdit={canEdit}
+              defaultEmail={child.primary_contact_email ?? ''}
             />
 
             {canEdit && (
