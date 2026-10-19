@@ -14,6 +14,7 @@ import type { GradebookEntry } from '@/lib/worksheets';
 import ChildPhotoFeedSection, { type PhotoFeedItem } from '@/components/admin/ChildPhotoFeedSection';
 import GuardianLinksSection, { type GuardianLink } from '@/components/admin/GuardianLinksSection';
 import InvoicesSection from '@/components/admin/InvoicesSection';
+import CreditNotesSection, { type CreditNoteSummary } from '@/components/admin/CreditNotesSection';
 import CcaOverridesSection from '@/components/admin/CcaOverridesSection';
 import LetterOfOfferSection from '@/components/admin/LetterOfOfferSection';
 import WelcomeLetterSection from '@/components/admin/WelcomeLetterSection';
@@ -199,6 +200,7 @@ export default function ChildCard({
   photos,
   guardians,
   invoices,
+  creditNotes,
   letters,
   welcomeLetter,
   offboardingLetters,
@@ -222,6 +224,7 @@ export default function ChildCard({
   photos: PhotoFeedItem[];
   guardians: GuardianLink[];
   invoices: InvoiceSummaryRow[];
+  creditNotes: CreditNoteSummary[];
   letters: LetterOfOfferSummaryRow[];
   welcomeLetter: WelcomeLetterSummaryRow | null;
   offboardingLetters: OffboardingLetterSummaryRow[];
@@ -464,6 +467,15 @@ export default function ChildCard({
             />
 
             <InvoicesSection childId={child.id} invoices={invoices} canEdit={canEdit} defaultEmail={child.primary_contact_email ?? ''} />
+
+            <CreditNotesSection
+              childId={child.id}
+              creditNotes={creditNotes}
+              outstandingInvoices={invoices
+                .filter((inv) => inv.status === 'outstanding')
+                .map((inv) => ({ id: inv.id, invoiceNumber: inv.invoice_number, amountDue: Math.max(0, inv.total_amount - inv.credit_applied_idr) }))}
+              canEdit={canEdit}
+            />
 
             {canEdit && (
               <CcaOverridesSection

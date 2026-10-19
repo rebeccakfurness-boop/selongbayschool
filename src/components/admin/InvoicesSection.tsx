@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { InvoiceSummaryRow } from '@/lib/lms-data';
+import { formatIDR } from '@/lib/site-content';
 import MarkInvoicePaidButton from '@/components/admin/MarkInvoicePaidButton';
 import SendInvoiceButton from '@/components/admin/SendInvoiceButton';
 import SendRemittanceButton from '@/components/admin/SendRemittanceButton';
@@ -45,6 +46,9 @@ export default function InvoicesSection({
             <Link href={`/admin/families/${childId}/invoices/new?type=activity`} className="font-semibold text-teal-deep hover:underline">
               + Activity invoice
             </Link>
+            <Link href={`/admin/families/${childId}/credit-notes/new`} className="font-semibold text-teal-deep hover:underline">
+              + Credit note
+            </Link>
           </div>
         )}
       </div>
@@ -57,6 +61,11 @@ export default function InvoicesSection({
                   Invoice #{String(inv.invoice_number).padStart(3, '0')}
                 </a>
                 <span className="ml-2 text-xs text-ink-soft capitalize">{inv.invoice_type}</span>
+                {inv.credit_applied_idr > 0 && (
+                  <p className="mt-0.5 text-xs text-teal-deep">
+                    Credit applied -{formatIDR(inv.credit_applied_idr)} · Amount due {formatIDR(Math.max(0, inv.total_amount - inv.credit_applied_idr))}
+                  </p>
+                )}
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 <span className={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-bold ${STATUS_STYLES[inv.status]}`}>

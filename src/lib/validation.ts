@@ -703,6 +703,28 @@ export const attachInvoiceProofOfPaymentSchema = z.object({
 });
 export type AttachInvoiceProofOfPaymentInput = z.infer<typeof attachInvoiceProofOfPaymentSchema>;
 
+export const createCreditNoteSchema = z.object({
+  childId: z.coerce.number().int().positive(),
+  // The invoice this credit relates to (e.g. the one being partially refunded) -- purely for
+  // record-keeping/context, not the invoice it will later be applied against.
+  originalInvoiceId: z.coerce.number().int().positive().nullable().optional(),
+  kind: z.enum(['refund', 'credit_hold']),
+  amountIdr: z.coerce.number().int('Amount must be a whole number of IDR').positive().max(1_000_000_000),
+  reason: z.string().trim().min(1, 'Reason is required').max(1000),
+});
+export type CreateCreditNoteInput = z.infer<typeof createCreditNoteSchema>;
+
+export const applyCreditNoteSchema = z.object({
+  invoiceId: z.coerce.number().int().positive(),
+  amountIdr: z.coerce.number().int('Amount must be a whole number of IDR').positive().max(1_000_000_000),
+});
+export type ApplyCreditNoteInput = z.infer<typeof applyCreditNoteSchema>;
+
+export const creditNoteActionSchema = z.object({
+  action: z.enum(['mark_refunded', 'cancel']),
+});
+export type CreditNoteActionInput = z.infer<typeof creditNoteActionSchema>;
+
 export const sendInvoiceRemittanceSchema = z.object({
   email: z.string().trim().toLowerCase().email('Enter a valid email address'),
 });

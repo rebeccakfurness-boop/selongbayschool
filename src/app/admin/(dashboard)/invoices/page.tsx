@@ -18,6 +18,7 @@ interface InvoiceRow {
   issue_date: string;
   due_date: string;
   total_amount: number;
+  credit_applied_idr: number;
   status: 'outstanding' | 'paid' | 'cancelled';
   days_overdue: number;
   children_names: string | null;
@@ -40,10 +41,11 @@ export default async function AdminInvoicesPage({
   const { status } = await searchParams;
   const statusFilter = status && ['outstanding', 'paid', 'cancelled', 'overdue'].includes(status) ? status : null;
 
-  const invoices = (await sql`
+  const invoices = ((await sql`
     SELECT
       i.id, i.invoice_number, i.invoice_type, i.billed_to_name, i.issue_date::text, i.due_date::text,
       i.total_amount, i.status,
+      COALESCE((SELECT SUM(cna.amount_idr) FROM credit_note_applications cna WHERE cna.invoice_id = i.id), 0) AS credit_applied_idr,
       GREATEST(0, (CURRENT_DATE - i.due_date))::int AS days_overdue,
       string_agg(COALESCE(c.child_nickname, c.child_full_name), ', ' ORDER BY ic.sort_order) AS children_names,
       (array_agg(c.primary_contact_email ORDER BY ic.sort_order))[1] AS default_email
@@ -52,7 +54,7 @@ export default async function AdminInvoicesPage({
     LEFT JOIN children c ON c.id = ic.child_id
     GROUP BY i.id
     ORDER BY i.issue_date DESC, i.invoice_number DESC
-  `) as unknown as InvoiceRow[];
+  `) as unknown as InvoiceRow[]).map((r) => ({ ...r, credit_applied_idr: Number(r.credit_applied_idr) }));
 
   const filtered = invoices.filter((inv) => {
     if (!statusFilter) return true;
@@ -122,7 +124,14 @@ export default async function AdminInvoicesPage({
                   <td className="px-4 py-3 text-ink-soft">{inv.billed_to_name}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-ink-soft">{formatDate(inv.issue_date)}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-ink-soft">{formatDate(inv.due_date)}</td>
-                  <td className="whitespace-nowrap px-4 py-3 font-semibold text-ink">{formatIDR(inv.total_amount)}</td>
+                  <td className="whitespace-nowrap px-4 py-3 font-semibold text-ink">
+                    {formatIDR(inv.total_amount)}
+                    {inv.credit_applied_idr > 0 && (
+                      <div className="mt-0.5 text-xs font-normal text-teal-deep">
+                        Credit -{formatIDR(inv.credit_applied_idr)} · due {formatIDR(Math.max(0, inv.total_amount - inv.credit_applied_idr))}
+                      </div>
+                    )}
+                  </td>
                   <td className="whitespace-nowrap px-4 py-3">
                     <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${STATUS_STYLES[inv.status]}`}>
                       {inv.status === 'paid' ? 'Paid' : overdue ? `${inv.days_overdue}d overdue` : inv.status === 'cancelled' ? 'Cancelled' : 'Outstanding'}

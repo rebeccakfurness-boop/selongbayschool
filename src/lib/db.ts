@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 56;
+const SCHEMA_VERSION = 57;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -746,6 +746,56 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_invoice_line_items_invoice ON invoice_line_items (invoice_id)`;
+
+      // Credit notes let admin issue either a refund (money goes back to the parent outside this
+      // system -- the admin just records that it happened) or a credit hold (kept here until
+      // applied against a later invoice). remaining_idr starts equal to amount_idr and is drawn
+      // down by credit_note_applications below -- a credit_hold note can be split across several
+      // future invoices rather than only ever used in full against one.
+      //
+      // kind/status are CHECK constraints defined only here, in the CREATE TABLE itself -- unlike
+      // invoice_type and duty_type elsewhere in this file, there is no separate widening
+      // statement for either. If one is ever needed, add exactly one DROP+ADD pair for it and
+      // never a second (see the invoice_type widening below for why: ensureSchema() replays this
+      // whole file's DDL from the top on every version bump, so a second, narrower redefinition
+      // left in place would be replayed last and reject values the first one allowed).
+      await sql`CREATE SEQUENCE IF NOT EXISTS credit_note_number_seq START 1`;
+      await sql`
+        CREATE TABLE IF NOT EXISTS credit_notes (
+          id BIGSERIAL PRIMARY KEY,
+          credit_note_number INTEGER NOT NULL UNIQUE,
+          child_id BIGINT NOT NULL REFERENCES children(id),
+          -- SET NULL, not the default NO ACTION -- this is just contextual ("which invoice was
+          -- this refund about"), and must never block deleting the invoice it refers to.
+          original_invoice_id BIGINT REFERENCES invoices(id) ON DELETE SET NULL,
+          kind TEXT NOT NULL CHECK (kind IN ('refund', 'credit_hold')),
+          reason TEXT NOT NULL,
+          amount_idr BIGINT NOT NULL,
+          remaining_idr BIGINT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'applied', 'refunded', 'cancelled')),
+          issued_by BIGINT REFERENCES admin_users(id),
+          issued_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          resolved_at TIMESTAMPTZ,
+          notes TEXT
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_credit_notes_child ON credit_notes (child_id)`;
+
+      // One row per invoice a credit_hold note's balance has been drawn against -- a single
+      // credit note can fund several invoices over time (one row each), and a single invoice can
+      // have several different credit notes applied to it.
+      await sql`
+        CREATE TABLE IF NOT EXISTS credit_note_applications (
+          id BIGSERIAL PRIMARY KEY,
+          credit_note_id BIGINT NOT NULL REFERENCES credit_notes(id) ON DELETE CASCADE,
+          invoice_id BIGINT NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
+          amount_idr BIGINT NOT NULL,
+          applied_by BIGINT REFERENCES admin_users(id),
+          applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_credit_note_applications_invoice ON credit_note_applications (invoice_id)`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_credit_note_applications_credit_note ON credit_note_applications (credit_note_id)`;
 
       // --- Phase 5: Google Classroom integration ---
 

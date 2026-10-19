@@ -182,22 +182,24 @@ export interface InvoiceSummaryRow {
   issue_date: string;
   due_date: string;
   total_amount: number;
+  credit_applied_idr: number;
   days_overdue: number;
   proof_of_payment_url: string | null;
   remittance_sent_at: string | null;
 }
 
 export async function getInvoicesForChild(childId: number): Promise<InvoiceSummaryRow[]> {
-  return (await sql`
+  return ((await sql`
     SELECT
       i.id, i.invoice_number, i.invoice_type, i.status, i.issue_date::text, i.due_date::text, i.total_amount,
+      COALESCE((SELECT SUM(cna.amount_idr) FROM credit_note_applications cna WHERE cna.invoice_id = i.id), 0) AS credit_applied_idr,
       GREATEST(0, (CURRENT_DATE - i.due_date))::int AS days_overdue,
       i.proof_of_payment_url, i.remittance_sent_at::text
     FROM invoices i
     JOIN invoice_children ic ON ic.invoice_id = i.id
     WHERE ic.child_id = ${childId}
     ORDER BY i.issue_date DESC
-  `) as unknown as InvoiceSummaryRow[];
+  `) as unknown as InvoiceSummaryRow[]).map((r) => ({ ...r, credit_applied_idr: Number(r.credit_applied_idr) }));
 }
 
 export interface ClassroomAssignmentRow {

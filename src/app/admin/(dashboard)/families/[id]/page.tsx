@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { ensureSchema, sql } from '@/lib/db';
 import { getCurrentStaff } from '@/lib/current-staff';
 import { getWorkSamplesForChild, getPhotoFeedForChild, getInvoicesForChild, getClassroomSubmissionsForChild } from '@/lib/lms-data';
+import { getCreditNotesForChild } from '@/lib/credit-notes';
 import { getLettersOfOfferForChild } from '@/lib/letters-of-offer';
 import { getWelcomeLetterForChild } from '@/lib/welcome-letters';
 import { getOffboardingLettersForChild } from '@/lib/offboarding';
@@ -70,6 +71,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
     const workSamples = await getWorkSamplesForChild(id);
     const photos = await getPhotoFeedForChild(id, child.class_name);
     const invoices = await getInvoicesForChild(id);
+    const creditNotes = await getCreditNotesForChild(id);
     const letters = await getLettersOfOfferForChild(id);
     const welcomeLetter = await getWelcomeLetterForChild(id);
     const offboardingLetters = await getOffboardingLettersForChild(id);
@@ -100,6 +102,7 @@ export default async function ChildDetailPage({ params }: { params: Promise<{ id
       photos,
       guardians,
       invoices,
+      creditNotes,
       letters,
       welcomeLetter,
       offboardingLetters,

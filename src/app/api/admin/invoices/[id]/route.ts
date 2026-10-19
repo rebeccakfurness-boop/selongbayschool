@@ -3,6 +3,7 @@ import { ensureSchema, sql } from '@/lib/db';
 import { requireAdmin } from '@/lib/current-staff';
 import { updateInvoiceStatusSchema, createInvoiceSchema } from '@/lib/validation';
 import { computeInvoiceTotals } from '@/lib/invoice-calc';
+import { releaseCreditApplicationsForInvoice } from '@/lib/credit-notes';
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
@@ -58,6 +59,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   try {
     await ensureSchema();
+    // Voiding releases any credit note balance applied to this invoice back to the credit note --
+    // otherwise that balance would just vanish along with the cancelled invoice.
+    if (parsed.data.status === 'cancelled') {
+      await releaseCreditApplicationsForInvoice(id);
+    }
     const rows = await sql`
       UPDATE invoices SET
         status = ${parsed.data.status},
@@ -169,6 +175,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
   try {
     await ensureSchema();
+    // Same reasoning as voiding -- release any applied credit note balance before the invoice
+    // (and its applications, which cascade) disappears.
+    await releaseCreditApplicationsForInvoice(id);
     const rows = await sql`DELETE FROM invoices WHERE id = ${id} RETURNING id`;
     if (rows.length === 0) {
       return NextResponse.json({ error: 'Invoice not found.' }, { status: 404 });
