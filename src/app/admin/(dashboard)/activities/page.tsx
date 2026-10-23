@@ -6,6 +6,7 @@ import Button from '@/components/Button';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import { formatIDR } from '@/lib/site-content';
 import PhotoUploadField from '@/components/admin/PhotoUploadField';
+import DocumentUploadField from '@/components/DocumentUploadField';
 import CancelSessionButton from '@/components/admin/CancelSessionButton';
 import RescheduleActivitiesButton from '@/components/admin/RescheduleActivitiesButton';
 
@@ -148,6 +149,40 @@ export default function ActivitiesPage() {
   const [addingActivity, setAddingActivity] = useState(false);
   const [addActivityError, setAddActivityError] = useState<string | null>(null);
 
+  const [academicCalendarPdfUrl, setAcademicCalendarPdfUrl] = useState<string | null>(null);
+  const [calendarSaving, setCalendarSaving] = useState(false);
+  const [calendarError, setCalendarError] = useState<string | null>(null);
+
+  async function loadCalendarSettings() {
+    try {
+      const res = await fetch('/api/admin/school-settings');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load');
+      setAcademicCalendarPdfUrl(data.academicCalendarPdfUrl ?? null);
+    } catch {
+      setCalendarError('Could not load the current academic calendar.');
+    }
+  }
+
+  async function saveAcademicCalendarPdf(url: string) {
+    setCalendarSaving(true);
+    setCalendarError(null);
+    try {
+      const res = await fetch('/api/admin/school-settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ academicCalendarPdfUrl: url }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save');
+      setAcademicCalendarPdfUrl(url);
+    } catch (err) {
+      setCalendarError(err instanceof Error ? err.message : 'Failed to save');
+    } finally {
+      setCalendarSaving(false);
+    }
+  }
+
   async function loadSlots() {
     setError(null);
     try {
@@ -181,6 +216,7 @@ export default function ActivitiesPage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     loadSlots();
     loadActivities();
+    loadCalendarSettings();
   }, []);
 
   async function handleAddActivity(e: FormEvent) {
@@ -291,6 +327,26 @@ export default function ActivitiesPage() {
       {error && <p role="alert" className="font-semibold text-orange-deep">{error}</p>}
 
       <RescheduleActivitiesButton onDone={() => { loadSlots(); loadActivities(); }} />
+
+      <section>
+        <h2 className="font-display text-xl font-semibold text-ink">Academic Calendar (website)</h2>
+        <p className="mt-1 text-sm text-ink-soft">
+          Replaces the PDF embedded in the Academic Calendar section of the public How It Works page. Updates appear on the
+          website within about a minute.
+        </p>
+        <div className="mt-4 flex items-center gap-3 rounded-md border border-sand-line bg-paper p-6 shadow-soft">
+          <DocumentUploadField
+            currentUrl={academicCalendarPdfUrl}
+            pathPrefix="academic-calendar"
+            label="academic calendar"
+            accept="application/pdf"
+            uploadEndpoint="/api/admin/academic-calendar/upload"
+            onUploaded={saveAcademicCalendarPdf}
+          />
+          {calendarSaving && <span className="text-xs font-semibold text-ink-soft">Saving…</span>}
+          {calendarError && <span className="text-xs font-semibold text-orange-deep">{calendarError}</span>}
+        </div>
+      </section>
 
       <section>
         <h2 className="font-display text-xl font-semibold text-ink">Activities</h2>

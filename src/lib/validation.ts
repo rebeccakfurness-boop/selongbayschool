@@ -867,6 +867,7 @@ export const updateSchoolSettingsSchema = z.object({
   clearingCode: z.string().trim().max(50).nullable().optional(),
   currency: z.string().trim().min(1).max(10).optional(),
   invoiceDueDays: z.coerce.number().int().min(0).max(365).optional(),
+  academicCalendarPdfUrl: z.string().trim().url('Enter a valid URL').max(2000).optional(),
 });
 export type UpdateSchoolSettingsInput = z.infer<typeof updateSchoolSettingsSchema>;
 

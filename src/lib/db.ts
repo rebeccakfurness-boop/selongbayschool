@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 57;
+const SCHEMA_VERSION = 58;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -692,6 +692,12 @@ export function ensureSchema(): Promise<void> {
         )
         ON CONFLICT (id) DO NOTHING
       `;
+
+      // The academic calendar PDF embedded on the public How It Works page used to be a static
+      // file in /public/files -- only a code deploy could change it. NULL here means "use that
+      // static file" (see academicCalendarPdfUrl in site-content.ts); once admin uploads a new
+      // one from the Activities & Calendar page, this takes over.
+      await sql`ALTER TABLE school_settings ADD COLUMN IF NOT EXISTS academic_calendar_pdf_url TEXT`;
 
       // Continues the school's existing manual invoice numbering (samples seen were #040/#050 in
       // early July 2026); confirmed with the school to start the software's sequence at 51 so it

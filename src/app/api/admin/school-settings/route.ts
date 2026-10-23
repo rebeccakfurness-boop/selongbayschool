@@ -3,6 +3,18 @@ import { ensureSchema, sql } from '@/lib/db';
 import { requireAdmin } from '@/lib/current-staff';
 import { updateSchoolSettingsSchema } from '@/lib/validation';
 
+/** Just the one field the Activities & Calendar admin page needs (it's a client component that
+ * fetches its own data, unlike the Settings page which reads school_settings server-side) --
+ * deliberately not the whole row, since that also holds the school's bank account details. */
+export async function GET() {
+  await requireAdmin();
+  await ensureSchema();
+  const [row] = (await sql`SELECT academic_calendar_pdf_url FROM school_settings WHERE id = 1`) as unknown as {
+    academic_calendar_pdf_url: string | null;
+  }[];
+  return NextResponse.json({ academicCalendarPdfUrl: row?.academic_calendar_pdf_url ?? null });
+}
+
 export async function PATCH(req: NextRequest) {
   await requireAdmin();
 
@@ -34,6 +46,7 @@ export async function PATCH(req: NextRequest) {
         clearing_code = COALESCE(${d.clearingCode ?? null}, clearing_code),
         currency = COALESCE(${d.currency ?? null}, currency),
         invoice_due_days = COALESCE(${d.invoiceDueDays ?? null}, invoice_due_days),
+        academic_calendar_pdf_url = COALESCE(${d.academicCalendarPdfUrl ?? null}, academic_calendar_pdf_url),
         updated_at = now()
       WHERE id = 1
     `;

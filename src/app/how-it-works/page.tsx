@@ -1,21 +1,43 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import { unstable_cache } from 'next/cache';
 import PhotoBanner from '@/components/PhotoBanner';
 import Reveal from '@/components/Reveal';
 import Button from '@/components/Button';
 import AdmissionsStepper from '@/components/AdmissionsStepper';
 import HowItWorksNav from '@/components/HowItWorksNav';
+import { ensureSchema, sql } from '@/lib/db';
 import {
   principalWelcome,
   hybridApproach,
   googleClassroom,
   policyLinks,
   freeShuttle,
-  academicCalendarPdf,
+  academicCalendarPdf as staticAcademicCalendarPdf,
   ourApproach,
   dailySchedule,
   temporaryEnrolments,
 } from '@/lib/site-content';
+
+// Kept dynamic (rendered at request time) rather than relying on Next's default static
+// detection, so this never gets prerendered at *build* time (which would require a working
+// database connection on every deploy). Same reasoning, and same unstable_cache pairing, as
+// src/app/activities/page.tsx.
+export const dynamic = 'force-dynamic';
+
+/** NULL means admin hasn't replaced it from the Activities & Calendar page yet -- fall back to
+ * the static file this app shipped with (see academicCalendarPdf in site-content.ts). */
+async function fetchAcademicCalendarPdfUrl(): Promise<string> {
+  await ensureSchema();
+  const [row] = (await sql`SELECT academic_calendar_pdf_url FROM school_settings WHERE id = 1`) as unknown as {
+    academic_calendar_pdf_url: string | null;
+  }[];
+  return row?.academic_calendar_pdf_url || staticAcademicCalendarPdf;
+}
+
+const getAcademicCalendarPdfUrl = unstable_cache(fetchAcademicCalendarPdfUrl, ['how-it-works-academic-calendar-pdf-url'], {
+  revalidate: 60,
+});
 
 export const metadata: Metadata = {
   title: 'How It Works',
@@ -37,7 +59,8 @@ const sections = [
   { id: 'enrol', label: 'How to Enrol' },
 ];
 
-export default function HowItWorksPage() {
+export default async function HowItWorksPage() {
+  const academicCalendarPdf = await getAcademicCalendarPdfUrl();
   return (
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
       <PhotoBanner
