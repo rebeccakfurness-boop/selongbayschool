@@ -31,7 +31,7 @@ export default function AboutPage() {
           <StorySection
             eyebrowScript="Who we are"
             heading="Built by families, for families"
-            image={{ src: '/images/about-community.jpg', alt: 'Selong Bay School students and families gathered on the beach after a surf session' }}
+            image={{ src: '/images/about-community.jpg', alt: 'Selong Bay School students, families, and staff gathered together for a group photo outside the school' }}
           >
             <p>
               Selong Bay School began with families who came to South Lombok for a season and stayed for the community.
