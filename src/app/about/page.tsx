@@ -77,6 +77,15 @@ export default function AboutPage() {
         <div id="teachers" className="mx-auto max-w-6xl scroll-mt-24 px-6 md:px-8">
           <p className="font-script text-3xl text-orange-deep md:text-4xl">Our teachers</p>
           <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">The people your child learns with</h2>
+          <div className="mt-6 overflow-hidden rounded-md border border-sand-line shadow-soft">
+            <Image
+              src="/images/about-teachers-group.jpg"
+              alt="The Selong Bay School teaching team together on campus"
+              width={2400}
+              height={1650}
+              className="w-full"
+            />
+          </div>
           <div className="mt-8 grid gap-6 md:grid-cols-3">
             {teachers.map((teacher) => (
               <div key={teacher.name} className="rounded-md border border-sand-line bg-paper p-6">
