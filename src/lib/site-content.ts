@@ -221,6 +221,13 @@ export const ourCommitment = [
 
 export const teachers = [
   {
+    name: 'Indhira Shinta Dewi, M. Pd (Ms Indhira)',
+    role: 'Principal',
+    shortIntro: 'Our Principal, bringing over 20 years of experience in education leadership, curriculum development, and teaching across all levels.',
+    bio: "Ms Indhira brings over 20 years of experience in education, including leadership roles as a school principal, curriculum developer, and teacher across preschool, primary, and secondary levels. With a Master's degree in English Language Education, she is passionate about creating engaging, student-centred learning environments that nurture curiosity, independence, social skills, and a lifelong love of learning. Her leadership combines strong educational expertise with a commitment to supporting teachers, partnering with families, and helping every child reach their full potential.",
+    image: { src: '/images/principal-indhira.jpg', alt: 'Indhira Shinta Dewi, M. Pd (Ms Indhira), Principal of Selong Bay School' },
+  },
+  {
     name: 'Amorita Christella Anggamsari (Ms Ella)',
     role: 'Early Years & Preschool Teacher',
     shortIntro: 'An experienced Early Years and Preschool teacher with a background in psychology and child development.',
@@ -261,6 +268,13 @@ export const teachers = [
     shortIntro: 'A Specialist High School Tutor with a strong background in business, leadership, and economics.',
     bio: "Rebecca Furness is an experienced online tutor and workshop facilitator with a background in business, leadership, organisational psychology, and microeconomics. She brings real-world industry experience into her teaching, helping students understand economic concepts through practical examples and engaging discussions. Rebecca's teaching approach focuses on developing critical thinking, analytical skills, and confidence across areas including markets, global economies, business decision-making, and exam preparation. She supports students in connecting Economics to real-world applications and future career pathways. Rebecca is also experienced in scholarship applications and has been awarded several scholarships, including the New Zealand Prime Minister's Scholarship, enabling her to travel and study internationally.",
     image: { src: '/images/teacher-rebecca.jpg', alt: 'Rebecca Furness, Specialist High School Tutor at Selong Bay School' },
+  },
+  {
+    name: 'Mariatun Hasanah (Ms Mariya)',
+    role: 'Business, Administration & Human Resources',
+    shortIntro: 'An experienced Human Resources and administration professional with a background in English education and journalism.',
+    bio: "Mariatun Hasanah holds a Bachelor's degree in English Language and Arts Education from Universitas Mataram (2015-2019). She has over three years of experience in Human Resources, bringing skills in administration, communication, and people management. She is also an experienced journalist, having worked for the Lombok Post. Her background combines strong organisational abilities with a commitment to supporting effective operations and community engagement.",
+    image: { src: '/images/staff-mariya.jpg', alt: 'Mariatun Hasanah (Ms Mariya), Business, Administration & Human Resources at Selong Bay School' },
   },
 ];
 
