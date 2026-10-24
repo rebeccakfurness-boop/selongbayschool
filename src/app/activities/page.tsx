@@ -99,7 +99,13 @@ async function fetchActivitiesSettings(): Promise<ActivitiesSettings> {
   return { bookingsOpen: row?.bookings_open ?? true, closedMessage: row?.closed_message ?? null };
 }
 
-const getActivitiesSettings = unstable_cache(fetchActivitiesSettings, ['activities-page-settings'], { revalidate: 60 });
+// Tagged (unlike getActivities above) so the admin "Bookings Open/Closed" toggle can clear this
+// specific cache entry the instant it's saved (see /api/admin/activities-settings's PATCH), rather
+// than parents seeing the old open/closed state for up to the full 60-second window.
+const getActivitiesSettings = unstable_cache(fetchActivitiesSettings, ['activities-page-settings'], {
+  revalidate: 60,
+  tags: ['activities-bookings-settings'],
+});
 
 const activityImages: Record<string, { src: string; alt: string }> = {
   football: {

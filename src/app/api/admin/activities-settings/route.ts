@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { ensureSchema, sql } from '@/lib/db';
 import { requireAdmin } from '@/lib/current-staff';
 import { updateActivitiesSettingsSchema } from '@/lib/validation';
@@ -38,6 +39,11 @@ export async function PATCH(req: NextRequest) {
         updated_at = now()
       WHERE id = 1
     `;
+    // Without this, the public Activities page's cached read of this setting (60s TTL) could
+    // keep showing the old open/closed state for up to a minute after admin saves here.
+    // { expire: 0 } is Next 16's way of saying "purge immediately" -- revalidateTag(tag) alone
+    // is deprecated as of this version and only warns rather than actually doing nothing.
+    revalidateTag('activities-bookings-settings', { expire: 0 });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error('[api/admin/activities-settings] failed to update', err);
