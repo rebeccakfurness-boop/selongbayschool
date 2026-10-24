@@ -85,6 +85,22 @@ async function fetchActivities(): Promise<Activity[]> {
 // rendered at request time as before, just with the expensive part cached.
 const getActivities = unstable_cache(fetchActivities, ['activities-page-list'], { revalidate: 60 });
 
+interface ActivitiesSettings {
+  bookingsOpen: boolean;
+  closedMessage: string | null;
+}
+
+async function fetchActivitiesSettings(): Promise<ActivitiesSettings> {
+  await ensureSchema();
+  const [row] = (await sql`SELECT bookings_open, closed_message FROM activities_settings WHERE id = 1`) as unknown as {
+    bookings_open: boolean;
+    closed_message: string | null;
+  }[];
+  return { bookingsOpen: row?.bookings_open ?? true, closedMessage: row?.closed_message ?? null };
+}
+
+const getActivitiesSettings = unstable_cache(fetchActivitiesSettings, ['activities-page-settings'], { revalidate: 60 });
+
 const activityImages: Record<string, { src: string; alt: string }> = {
   football: {
     src: '/images/activity-football.jpg',
@@ -133,11 +149,19 @@ const activityImages: Record<string, { src: string; alt: string }> = {
 };
 
 export default async function ActivitiesPage() {
-  const activities = await getActivities();
+  const [activities, activitiesSettings] = await Promise.all([getActivities(), getActivitiesSettings()]);
 
   return (
     <div className="flex flex-col gap-16 pb-20 md:gap-24">
       <MaintenanceNotice />
+      {!activitiesSettings.bookingsOpen && (
+        <div className="border-b border-amber-300 bg-amber-50">
+          <div className="mx-auto max-w-6xl px-6 py-4 text-[14.5px] leading-relaxed text-amber-900 md:px-8">
+            {activitiesSettings.closedMessage ||
+              'Activity bookings are currently closed. Please check back soon, or contact us directly to arrange a spot.'}
+          </div>
+        </div>
+      )}
       <PhotoBanner
         height="sm"
         image={{
@@ -165,7 +189,12 @@ export default async function ActivitiesPage() {
           <h2 className="font-display text-2xl font-semibold text-ink">Book an activity</h2>
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {activities.map((activity) => (
-              <ActivityCard key={activity.slug} activity={activity} image={activityImages[activity.slug]} />
+              <ActivityCard
+                key={activity.slug}
+                activity={activity}
+                image={activityImages[activity.slug]}
+                bookingsOpen={activitiesSettings.bookingsOpen}
+              />
             ))}
           </div>
         </div>

@@ -153,6 +153,43 @@ export default function ActivitiesPage() {
   const [calendarSaving, setCalendarSaving] = useState(false);
   const [calendarError, setCalendarError] = useState<string | null>(null);
 
+  const [bookingsOpen, setBookingsOpen] = useState<boolean | null>(null);
+  const [closedMessage, setClosedMessage] = useState('');
+  const [bookingsSaving, setBookingsSaving] = useState(false);
+  const [bookingsError, setBookingsError] = useState<string | null>(null);
+
+  async function loadBookingsSettings() {
+    try {
+      const res = await fetch('/api/admin/activities-settings');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load');
+      setBookingsOpen(data.bookingsOpen);
+      setClosedMessage(data.closedMessage ?? '');
+    } catch {
+      setBookingsError('Could not load booking settings.');
+    }
+  }
+
+  async function saveBookingsSettings(next: { bookingsOpen?: boolean; closedMessage?: string }) {
+    setBookingsSaving(true);
+    setBookingsError(null);
+    try {
+      const res = await fetch('/api/admin/activities-settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(next),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save');
+      if (next.bookingsOpen !== undefined) setBookingsOpen(next.bookingsOpen);
+      if (next.closedMessage !== undefined) setClosedMessage(next.closedMessage);
+    } catch (err) {
+      setBookingsError(err instanceof Error ? err.message : 'Failed to save');
+    } finally {
+      setBookingsSaving(false);
+    }
+  }
+
   async function loadCalendarSettings() {
     try {
       const res = await fetch('/api/admin/school-settings');
@@ -217,6 +254,7 @@ export default function ActivitiesPage() {
     loadSlots();
     loadActivities();
     loadCalendarSettings();
+    loadBookingsSettings();
   }, []);
 
   async function handleAddActivity(e: FormEvent) {
@@ -325,6 +363,52 @@ export default function ActivitiesPage() {
       <h1 className="font-display text-2xl font-semibold text-ink">Activities &amp; Calendar</h1>
 
       {error && <p role="alert" className="font-semibold text-orange-deep">{error}</p>}
+
+      <section className="rounded-md border border-sand-line bg-paper p-6 shadow-soft">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="font-display text-xl font-semibold text-ink">Bookings</h2>
+            <p className="mt-1 text-sm text-ink-soft">
+              Controls whether parents can book an activity session on the public Activities page, school-wide.
+            </p>
+          </div>
+          {bookingsOpen !== null && (
+            <button
+              type="button"
+              onClick={() => saveBookingsSettings({ bookingsOpen: !bookingsOpen })}
+              disabled={bookingsSaving}
+              className={`rounded-full px-5 py-2 text-sm font-bold transition-colors disabled:opacity-50 ${
+                bookingsOpen ? 'bg-teal/15 text-teal-deep' : 'bg-orange/20 text-orange-deep'
+              }`}
+            >
+              {bookingsSaving ? 'Saving…' : bookingsOpen ? 'Bookings Open' : 'Bookings Closed'}
+            </button>
+          )}
+        </div>
+
+        <div className="mt-4">
+          <Field label="Message shown to parents while closed (optional)" htmlFor="bookings-closed-message">
+            <TextArea
+              id="bookings-closed-message"
+              rows={2}
+              value={closedMessage}
+              onChange={(e) => setClosedMessage(e.target.value)}
+              placeholder="e.g. Bookings reopen for Term 2 on 12 January."
+            />
+          </Field>
+          <Button
+            type="button"
+            variant="ghost"
+            className="mt-2 px-4 py-1.5 text-xs"
+            onClick={() => saveBookingsSettings({ closedMessage })}
+            disabled={bookingsSaving}
+          >
+            Save message
+          </Button>
+        </div>
+
+        {bookingsError && <p role="alert" className="mt-2 text-sm font-semibold text-orange-deep">{bookingsError}</p>}
+      </section>
 
       <RescheduleActivitiesButton onDone={() => { loadSlots(); loadActivities(); }} />
 

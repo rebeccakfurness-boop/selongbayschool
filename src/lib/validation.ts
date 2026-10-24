@@ -80,6 +80,12 @@ export const updateBookingStatusSchema = z.object({
 });
 export type BookingInput = z.infer<typeof bookingSchema>;
 
+export const updateActivitiesSettingsSchema = z.object({
+  bookingsOpen: z.boolean().optional(),
+  closedMessage: z.string().trim().max(500).nullable().optional(),
+});
+export type UpdateActivitiesSettingsInput = z.infer<typeof updateActivitiesSettingsSchema>;
+
 export const availabilitySlotSchema = z.object({
   activitySlug: z.string().trim().min(1).max(100),
   activityName: z.string().trim().min(1).max(200),

@@ -38,6 +38,20 @@ export async function POST(req: NextRequest) {
   try {
     await ensureSchema();
 
+    // Server-side re-check of the admin's school-wide open/closed switch -- the public page
+    // already hides the booking flow when closed, but that's only a UI nicety; this is what
+    // actually stops a request sent straight to the API while bookings are closed.
+    const [settings] = (await sql`SELECT bookings_open, closed_message FROM activities_settings WHERE id = 1`) as unknown as {
+      bookings_open: boolean;
+      closed_message: string | null;
+    }[];
+    if (settings && !settings.bookings_open) {
+      return NextResponse.json(
+        { error: settings.closed_message || 'Activity bookings are currently closed. Please check back soon.' },
+        { status: 403 }
+      );
+    }
+
     // Single atomic statement: only inserts the booking if the slot still has capacity
     // (and, when using a pack, only if the pass is still valid and re-checked server-side,
     // never trusting the client's earlier "you have an active pack" check), preventing both

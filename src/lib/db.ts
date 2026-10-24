@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 58;
+const SCHEMA_VERSION = 59;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -165,6 +165,22 @@ export function ensureSchema(): Promise<void> {
         CREATE INDEX IF NOT EXISTS idx_sessions_activity_date
         ON sessions (activity_id, session_date)
       `;
+
+      // School-wide switch admin uses to close new activity bookings (e.g. over a break, or while
+      // sorting out a scheduling backlog) without touching individual sessions or activities --
+      // the public /activities page and the booking API both check this. Defaults open so this
+      // addition doesn't silently take down booking for every database it rolls out to.
+      await sql`
+        CREATE TABLE IF NOT EXISTS activities_settings (
+          id INTEGER PRIMARY KEY DEFAULT 1,
+          bookings_open BOOLEAN NOT NULL DEFAULT true,
+          closed_message TEXT,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          CHECK (id = 1)
+        )
+      `;
+      await sql`INSERT INTO activities_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`;
+
       await sql`
         CREATE TABLE IF NOT EXISTS bookings (
           id BIGSERIAL PRIMARY KEY,

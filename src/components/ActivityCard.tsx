@@ -7,7 +7,17 @@ import BookingPanel from './BookingPanel';
 import { MaintenanceNoticeCompact } from './MaintenanceNotice';
 import { formatIDR, type Activity } from '@/lib/site-content';
 
-export default function ActivityCard({ activity, image }: { activity: Activity; image?: { src: string; alt: string } }) {
+export default function ActivityCard({
+  activity,
+  image,
+  bookingsOpen = true,
+}: {
+  activity: Activity;
+  image?: { src: string; alt: string };
+  /** The admin's school-wide "Bookings open" switch (Activities & Calendar admin page) --
+   * defaults true so this component still works in contexts that don't pass it. */
+  bookingsOpen?: boolean;
+}) {
   const [booking, setBooking] = useState(false);
   const photo = activity.photoUrl ? { src: activity.photoUrl, alt: activity.name } : image;
 
@@ -50,6 +60,10 @@ export default function ActivityCard({ activity, image }: { activity: Activity; 
 
         {booking ? (
           <BookingPanel activitySlug={activity.slug} onClose={() => setBooking(false)} />
+        ) : !bookingsOpen ? (
+          <div className="mt-4 w-full rounded-full border border-sand-line bg-sand/40 py-3.5 text-center text-[15.5px] font-extrabold text-ink-soft">
+            Bookings closed
+          </div>
         ) : activity.availability === 'full' ? (
           <div className="mt-4 w-full rounded-full border border-orange/40 bg-orange/10 py-3.5 text-center text-[15.5px] font-extrabold text-orange-deep">
             Fully booked
