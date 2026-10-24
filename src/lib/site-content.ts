@@ -270,6 +270,13 @@ export const teachers = [
     image: { src: '/images/teacher-rebecca.jpg', alt: 'Rebecca Furness, Specialist High School Tutor at Selong Bay School' },
   },
   {
+    name: 'Ms Iyan',
+    role: 'Specialist Science and Technology Teacher',
+    shortIntro: 'A Specialist Science and Technology teacher with a background in Physics and experience across Cambridge and Australian curricula.',
+    bio: 'Ms Iyan is a dedicated educator from Lombok with a Bachelor of Science in Physics from the University of Mataram. With experience teaching Mathematics and Science across international curricula, including Cambridge and the Australian Curriculum, she brings a strong foundation in scientific thinking, inquiry-based learning, and curriculum development. Passionate about nurturing curiosity and problem-solving skills, Ms Iyan encourages students to explore ideas, learn through hands-on experiences, and develop confidence as independent thinkers. She also brings experience in coding and interdisciplinary sustainability education, helping connect classroom learning with real-world challenges.',
+    image: { src: '/images/staff-iyan.jpg', alt: 'Ms Iyan, Specialist Science and Technology Teacher at Selong Bay School' },
+  },
+  {
     name: 'Mariatun Hasanah (Ms Mariya)',
     role: 'Business, Administration & Human Resources',
     shortIntro: 'An experienced Human Resources and administration professional with a background in English education and journalism.',
