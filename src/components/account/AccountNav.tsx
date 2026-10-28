@@ -6,6 +6,9 @@ import { useState } from 'react';
 import LogoutButton from '@/components/account/LogoutButton';
 
 const LINKS = [
+  { href: '/account/community', label: 'Community' },
+  { href: '/account/discount-card', label: 'Discount Card' },
+  { href: '/account/lombok-guide', label: 'Lombok Guide' },
   { href: '/account/learning', label: 'My Children' },
   { href: '/account/online-learning', label: 'Online Learning' },
   { href: '/account/attendance', label: 'Attendance' },

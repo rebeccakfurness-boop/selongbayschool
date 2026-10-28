@@ -1946,3 +1946,90 @@ export const decideResourceRequestSchema = z.object({
   adminNotes: z.string().trim().max(2000).nullable().optional(),
 });
 export type DecideResourceRequestInput = z.infer<typeof decideResourceRequestSchema>;
+
+const contractOptionalText = z.string().trim().max(4000).optional().or(z.literal(''));
+const contractDate = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be a valid date');
+
+export const generateStaffContractSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(200),
+  positionTitle: z.string().trim().min(1, 'Position is required').max(200),
+  roleSummary: contractOptionalText,
+  targetGroup: contractOptionalText,
+  workDays: contractOptionalText,
+  workingHoursPerDay: contractOptionalText,
+  salaryIdr: z.coerce.number().nonnegative('Must be zero or more').max(1_000_000_000),
+  termEndDate: contractDate,
+  ktpNumber: contractOptionalText,
+  employeeAddress: contractOptionalText,
+  signedPlace: contractOptionalText,
+  additionalTerms: contractOptionalText,
+  send: z.boolean().default(false),
+});
+export type GenerateStaffContractInput = z.infer<typeof generateStaffContractSchema>;
+
+export const uploadStaffContractSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(200),
+  fileUrl: z.string().trim().url(),
+});
+export type UploadStaffContractInput = z.infer<typeof uploadStaffContractSchema>;
+
+export const signStaffContractSchema = z.object({
+  signedByName: z.string().trim().min(1, 'Signed-by name is required').max(200),
+  signatureDataUrl: z
+    .string()
+    .trim()
+    .regex(/^data:image\/png;base64,[A-Za-z0-9+/]+=*$/, 'Invalid signature image'),
+});
+export type SignStaffContractInput = z.infer<typeof signStaffContractSchema>;
+
+export const verifyStaffContractPinSchema = z.object({
+  pin: z.string().trim().min(1, 'Enter the access code'),
+});
+export type VerifyStaffContractPinInput = z.infer<typeof verifyStaffContractPinSchema>;
+
+export const createCommunityPostSchema = z.object({
+  title: z.string().trim().max(200).optional().or(z.literal('')),
+  body: z.string().trim().min(1, 'Write something before posting').max(5000),
+  photoUrls: z.array(z.string().trim().url()).max(20).default([]),
+  attachmentUrl: z.string().trim().url().optional().or(z.literal('')),
+  attachmentName: z.string().trim().max(200).optional().or(z.literal('')),
+});
+export type CreateCommunityPostInput = z.infer<typeof createCommunityPostSchema>;
+
+export const updateAdultsInHouseholdSchema = z.object({
+  adultsInHousehold: z.coerce.number().int().min(1, 'Must be at least 1').max(10, 'That looks too high -- contact the office if it is correct'),
+});
+export type UpdateAdultsInHouseholdInput = z.infer<typeof updateAdultsInHouseholdSchema>;
+
+const discountOptionalText = z.string().trim().max(500).optional().or(z.literal(''));
+
+export const upsertPartnerDiscountSchema = z.object({
+  businessName: z.string().trim().min(1, 'Business name is required').max(200),
+  category: z.enum(['restaurant', 'activity', 'other']).default('other'),
+  discountDescription: z.string().trim().min(1, 'Describe the discount').max(500),
+  address: discountOptionalText,
+  phone: discountOptionalText,
+  website: z.string().trim().max(300).optional().or(z.literal('')),
+  isActive: z.boolean().default(true),
+});
+export type UpsertPartnerDiscountInput = z.infer<typeof upsertPartnerDiscountSchema>;
+
+const guideOptionalText = z.string().trim().max(500).optional().or(z.literal(''));
+export const LOMBOK_GUIDE_CATEGORIES = ['car_rental', 'attraction', 'activity', 'food_shopping', 'medical', 'real_estate', 'other'] as const;
+
+export const upsertLombokGuideEntrySchema = z.object({
+  category: z.enum(LOMBOK_GUIDE_CATEGORIES).default('other'),
+  title: z.string().trim().min(1, 'Title is required').max(200),
+  description: z.string().trim().min(1, 'Description is required').max(1000),
+  address: guideOptionalText,
+  phone: guideOptionalText,
+  website: z.string().trim().max(300).optional().or(z.literal('')),
+  isActive: z.boolean().default(true),
+});
+export type UpsertLombokGuideEntryInput = z.infer<typeof upsertLombokGuideEntrySchema>;
+
+export const sendLombokGuideSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+  childFullName: z.string().trim().max(200).optional().or(z.literal('')),
+});
+export type SendLombokGuideInput = z.infer<typeof sendLombokGuideSchema>;

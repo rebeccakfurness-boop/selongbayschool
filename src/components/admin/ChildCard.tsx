@@ -18,6 +18,7 @@ import CreditNotesSection, { type CreditNoteSummary } from '@/components/admin/C
 import CcaOverridesSection from '@/components/admin/CcaOverridesSection';
 import LetterOfOfferSection from '@/components/admin/LetterOfOfferSection';
 import WelcomeLetterSection from '@/components/admin/WelcomeLetterSection';
+import LombokGuideSection from '@/components/admin/LombokGuideSection';
 import OffboardingLetterSection from '@/components/admin/OffboardingLetterSection';
 import ClassroomSection from '@/components/admin/ClassroomSection';
 import AttendanceSection from '@/components/admin/AttendanceSection';
@@ -455,6 +456,12 @@ export default function ChildCard({
             <WelcomeLetterSection
               childId={child.id}
               letter={welcomeLetter}
+              canEdit={canEdit}
+              defaultEmail={child.primary_contact_email ?? ''}
+            />
+
+            <LombokGuideSection
+              childFullName={child.child_full_name}
               canEdit={canEdit}
               defaultEmail={child.primary_contact_email ?? ''}
             />

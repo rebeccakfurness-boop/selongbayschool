@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 59;
+const SCHEMA_VERSION = 63;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -2894,6 +2894,143 @@ export function ensureSchema(): Promise<void> {
       // tuition but not a one-off excursion fee on the same invoice). Defaults true so every
       // existing line item keeps behaving exactly as it did before this column existed.
       await sql`ALTER TABLE invoice_line_items ADD COLUMN IF NOT EXISTS discount_eligible BOOLEAN NOT NULL DEFAULT true`;
+
+      // Staff employment contracts -- either generated from the fixed-term agreement template
+      // (source = 'generated', filled in and rendered to PDF, then sent to the staff member's own
+      // Staff Card for them to review and sign in-portal with SignaturePad) or an already-executed
+      // contract an admin uploads directly (source = 'uploaded', via the same staff-document Blob
+      // upload route as CV/passport/etc.). Either way it lands on file_url.
+      //
+      // locked mirrors staff_payslips' DOB gate in spirit but with a fixed PIN instead of a
+      // per-staff secret (the school explicitly asked for one shared code) -- same reasoning as
+      // that table's own comment for why this is an application-level gate rather than a real
+      // PDF-embedded open password (no PDF-encryption dependency in this repo is safe to add sight
+      // unseen). Sits on the row, not just derived from status, so a contract's lock state can
+      // never flip just because a later migration changes what counts as "signed".
+      await sql`
+        CREATE TABLE IF NOT EXISTS staff_contracts (
+          id BIGSERIAL PRIMARY KEY,
+          admin_user_id BIGINT NOT NULL REFERENCES admin_users(id) ON DELETE CASCADE,
+          title TEXT NOT NULL,
+          source TEXT NOT NULL CHECK (source IN ('generated', 'uploaded')),
+          status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'sent', 'signed', 'uploaded')),
+          position_title TEXT,
+          role_summary TEXT,
+          target_group TEXT,
+          work_days TEXT,
+          working_hours_per_day TEXT,
+          salary_idr NUMERIC(14,2),
+          term_end_date DATE,
+          ktp_number TEXT,
+          employee_address TEXT,
+          signed_place TEXT,
+          additional_terms TEXT,
+          file_url TEXT,
+          signed_by_name TEXT,
+          signature_data_url TEXT,
+          signed_at TIMESTAMPTZ,
+          sent_at TIMESTAMPTZ,
+          locked BOOLEAN NOT NULL DEFAULT false,
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_staff_contracts_staff ON staff_contracts (admin_user_id)`;
+
+      // The parent portal's Community feed -- school-wide updates from any staff member (admin or
+      // teacher, same "any logged-in staff" allowance as Family Board/Teaching), each optionally
+      // carrying photos and/or one attached document (a newsletter PDF, most often). Deliberately
+      // schoolwide only, no per-class targeting -- the per-child Photo Feed (photo_feed_items)
+      // already covers "photos of my child"; this is the separate, broader "what's happening at
+      // the school" feed the parent portal didn't have one of yet.
+      await sql`
+        CREATE TABLE IF NOT EXISTS community_posts (
+          id BIGSERIAL PRIMARY KEY,
+          author_admin_user_id BIGINT NOT NULL REFERENCES admin_users(id),
+          title TEXT,
+          body TEXT NOT NULL,
+          attachment_url TEXT,
+          attachment_name TEXT,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_community_posts_created ON community_posts (created_at DESC)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS community_post_photos (
+          id BIGSERIAL PRIMARY KEY,
+          post_id BIGINT NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+          file_url TEXT NOT NULL,
+          sort_order INTEGER NOT NULL DEFAULT 0
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_community_post_photos_post ON community_post_photos (post_id)`;
+
+      // The Selong Families discount card -- a QR code, scannable by a local partner business
+      // without that business needing a portal login, pointing at the public (unauthenticated)
+      // /discount-card/:token page, which shows only the minimum needed to honour a discount
+      // (first name, adult/child counts, member-since year) -- never a child's full name, dob, or
+      // any of the compliance/health fields on `children`. discount_card_token is generated lazily
+      // the first time a family opens their own card (see ensureDiscountCardToken in
+      // lib/family-discount.ts), not backfilled here, so existing rows just start NULL.
+      //
+      // Named discount_card_token, deliberately not family_card_*, to avoid colliding with the
+      // unrelated children.family_card_url column (an uploaded Kartu Keluarga document scan).
+      //
+      // adults_in_household is self-reported by the parent (Settings has no equivalent -- there's
+      // no reliable existing source: guardian_children only counts portal accounts, which
+      // undercounts a two-parent family where only one parent signed up). Children count is never
+      // stored -- it's always computed live from guardian_children/children.is_active so it can
+      // never drift from the real enrolment.
+      await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS adults_in_household INTEGER NOT NULL DEFAULT 2`;
+      await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS discount_card_token TEXT UNIQUE`;
+
+      // Admin-managed directory of local restaurant/activity discounts for Selong Families
+      // cardholders -- shown on the same parent-portal page as the QR code.
+      await sql`
+        CREATE TABLE IF NOT EXISTS local_partner_discounts (
+          id BIGSERIAL PRIMARY KEY,
+          business_name TEXT NOT NULL,
+          category TEXT NOT NULL DEFAULT 'other' CHECK (category IN ('restaurant', 'activity', 'other')),
+          discount_description TEXT NOT NULL,
+          address TEXT,
+          phone TEXT,
+          website TEXT,
+          is_active BOOLEAN NOT NULL DEFAULT true,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_local_partner_discounts_active ON local_partner_discounts (is_active, sort_order)`;
+
+      // The Lombok Guide -- admin-curated "settling in" info for new families (car rentals, local
+      // attractions, activities, where to buy food, medical services, real estate agents, etc.),
+      // browsable in the parent portal and also rendered on demand to a PDF emailed to a family
+      // (see the Child Card's "Send Lombok Guide" action / lib/pdf/LombokGuideDocument.tsx). No
+      // per-family send-tracking table here, unlike welcome_letters -- there's no automatic cron
+      // needing idempotency to key off, just a manual "Send" action, same stateless shape as the
+      // Payslips section's "Email to staff member".
+      await sql`
+        CREATE TABLE IF NOT EXISTS lombok_guide_entries (
+          id BIGSERIAL PRIMARY KEY,
+          category TEXT NOT NULL DEFAULT 'other'
+            CHECK (category IN ('car_rental', 'attraction', 'activity', 'food_shopping', 'medical', 'real_estate', 'other')),
+          title TEXT NOT NULL,
+          description TEXT NOT NULL,
+          address TEXT,
+          phone TEXT,
+          website TEXT,
+          is_active BOOLEAN NOT NULL DEFAULT true,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          created_by BIGINT REFERENCES admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_lombok_guide_entries_active ON lombok_guide_entries (is_active, category, sort_order)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

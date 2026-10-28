@@ -1212,3 +1212,54 @@ export async function sendIncidentReportNotification(input: {
   const subject = `${input.flagged ? '⚠️ ' : ''}Incident report — ${input.incidentTypeLabel} — Selong Bay School`;
   return send(NOTIFY_TO, subject, html);
 }
+
+export interface StaffContractReadyEmailInput {
+  toEmail: string;
+  staffName: string;
+  title: string;
+  adminUserId: number;
+}
+
+/** Sent when an admin sends a generated contract to a staff member -- no PDF attached (unlike
+ * sendPayslipEmail): the staff member reviews and signs it inside their own Staff Card, and once
+ * signed the file is locked behind the access code, so there's never an unsigned or signed copy
+ * loose in an inbox. */
+export async function sendStaffContractReadyEmail(input: StaffContractReadyEmailInput): Promise<boolean> {
+  const html = wrapEmail(
+    'A contract is ready for your signature',
+    `<p>Dear ${input.staffName},</p>
+     <p>A new contract, &ldquo;${input.title}&rdquo;, is ready for you to review and sign on your Staff Card.</p>
+     <p style="margin-top: 16px;"><a href="${siteConfig.url}/admin/staff/${input.adminUserId}" style="color: #007c83; font-weight: 700;">Open your Staff Card to review and sign</a></p>
+     <p style="margin-top: 16px;">If you have any questions, just reply to this email or speak with the school office.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, `Contract ready for signature — ${input.title} — Selong Bay School`, html);
+}
+
+export interface LombokGuideEmailInput {
+  toEmail: string;
+  childFullName: string | null;
+  pdfBuffer: Buffer;
+}
+
+/** Sent from the "Send Lombok Guide" action on the Child Card -- same attach-the-PDF-directly
+ * shape as sendWelcomeLetterEmail, but on demand only (no automatic cron, see the schema comment
+ * on lombok_guide_entries for why there's no send-tracking table to key an idempotency check
+ * off). Also reachable from the parent portal's own Lombok Guide page ("Email me this guide"),
+ * where childFullName is null since it isn't addressed to a specific child. */
+export async function sendLombokGuideEmail(input: LombokGuideEmailInput): Promise<boolean> {
+  const greeting = input.childFullName ? `Dear parent/guardian of ${input.childFullName},` : 'Hello,';
+  const html = wrapEmail(
+    'Your Lombok Guide',
+    `<p>${greeting}</p>
+     <p>Please find attached our Lombok Guide -- practical, locally-sourced tips on real estate, medical care, car
+       rental, food shopping, activities, and attractions around Selong Belanak, put together to help your family
+       settle in.</p>
+     <p style="margin-top: 16px;">If you have any questions, just reply to this email or speak with the school office.</p>
+     <p style="margin-top: 24px;">Warmly,<br />The Selong Bay School team</p>`
+  );
+  return send(input.toEmail, 'Your Lombok Guide — Selong Bay School', html, {
+    cc: NOTIFY_TO,
+    attachment: [{ name: 'lombok-guide.pdf', content: input.pdfBuffer.toString('base64') }],
+  });
+}

@@ -109,6 +109,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
+  signatureBox: {
+    borderWidth: 1,
+    borderColor: BRAND_COLORS.sand,
+    borderRadius: 6,
+    padding: 10,
+  },
+  signatureRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 12, marginTop: 16 },
+  signatureLine: { flex: 1, borderBottomWidth: 1, borderBottomColor: BRAND_COLORS.ink, height: 26 },
+  signatureLineNarrow: { width: 90, borderBottomWidth: 1, borderBottomColor: BRAND_COLORS.ink, height: 26 },
+  signatureCaption: { fontSize: 7.5, color: BRAND_COLORS.inkSoft, marginTop: 3 },
+  subjectTeacherRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 5, paddingHorizontal: 2 },
+  subjectTeacherLabel: { fontSize: 7.5, color: BRAND_COLORS.inkSoft, textTransform: 'uppercase', letterSpacing: 0.3 },
+  subjectTeacherLine: { flex: 1, maxWidth: 220, borderBottomWidth: 1, borderBottomColor: BRAND_COLORS.sand, height: 12 },
+  principalBox: {
+    borderWidth: 1,
+    borderColor: BRAND_COLORS.orange,
+    backgroundColor: '#fff8ef',
+    borderRadius: 6,
+    padding: 12,
+    marginTop: 14,
+  },
+  principalName: { fontFamily: 'Telex', fontSize: 13, color: BRAND_COLORS.tealDeep },
+  principalTitle: { fontSize: 8, color: BRAND_COLORS.inkSoft, marginTop: 1 },
 });
 
 function SocialTable({ profile }: { profile: LearningProfileData }) {
@@ -161,6 +184,48 @@ function ScaleLegend() {
             <Text style={[styles.tableCell, { flex: 1 }]}>{item.description}</Text>
           </View>
         ))}
+      </View>
+    </View>
+  );
+}
+
+function SignatureSection() {
+  return (
+    <View wrap={false}>
+      <Text style={styles.sectionTitle}>Signatures</Text>
+
+      <View style={styles.signatureBox}>
+        <Text style={styles.infoLabel}>Homeroom Teacher</Text>
+        <View style={styles.signatureRow}>
+          <View style={{ flex: 1 }}>
+            <View style={styles.signatureLine} />
+            <Text style={styles.signatureCaption}>Name</Text>
+          </View>
+          <View style={{ flex: 1 }}>
+            <View style={styles.signatureLine} />
+            <Text style={styles.signatureCaption}>Signature</Text>
+          </View>
+          <View>
+            <View style={styles.signatureLineNarrow} />
+            <Text style={styles.signatureCaption}>Date</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.principalBox}>
+        <Text style={styles.infoLabel}>Approved by</Text>
+        <Text style={styles.principalName}>Ms Indhira Dewi</Text>
+        <Text style={styles.principalTitle}>Principal, Selong Bay School</Text>
+        <View style={styles.signatureRow}>
+          <View style={{ flex: 1 }}>
+            <View style={styles.signatureLine} />
+            <Text style={styles.signatureCaption}>Signature</Text>
+          </View>
+          <View>
+            <View style={styles.signatureLineNarrow} />
+            <Text style={styles.signatureCaption}>Date</Text>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -246,6 +311,8 @@ export function LearningProfileDocument({
               </View>
             </>
           )}
+
+          <SignatureSection />
         </View>
         <Footer />
       </Page>
@@ -270,6 +337,10 @@ export function LearningProfileDocument({
                         <Text>{row.teacher_comment}</Text>
                       </View>
                     )}
+                    <View style={styles.subjectTeacherRow}>
+                      <Text style={styles.subjectTeacherLabel}>Teacher</Text>
+                      <View style={styles.subjectTeacherLine} />
+                    </View>
                   </View>
                 ))}
               </View>
