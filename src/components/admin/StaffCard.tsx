@@ -33,7 +33,6 @@ function toFormState(staff: StaffDetail) {
     emergencyContactName: staff.emergency_contact_name ?? '',
     emergencyContactPhone: staff.emergency_contact_phone ?? '',
     cvUrl: staff.cv_url,
-    contractUrl: staff.contract_url,
     qualifications: staff.qualifications ?? '',
     visaStatus: staff.visa_status ?? '',
     kitasNumber: staff.kitas_number ?? '',
@@ -241,18 +240,6 @@ export default function StaffCard({
                 />
               </div>
             </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Contract</p>
-              <div className="mt-1">
-                <DocumentUploadField
-                  currentUrl={form.contractUrl}
-                  pathPrefix={`staff/${staff.id}/contract`}
-                  label="contract"
-                  uploadEndpoint={UPLOAD_ENDPOINT}
-                  onUploaded={(url) => set('contractUrl', url)}
-                />
-              </div>
-            </div>
 
             <div className="rounded-md border border-dashed border-sand-line p-4">
               <p className="text-xs font-bold uppercase tracking-wide text-ink-soft">Visa &amp; immigration</p>
@@ -409,7 +396,7 @@ export default function StaffCard({
               <InfoRow label="End date" value={staff.end_date ? formatDate(staff.end_date) : null} />
               <InfoRow label="Qualifications" value={staff.qualifications} />
               <InfoRow label="CV" value={staff.cv_url ? 'On file' : null} link={staff.cv_url} />
-              <InfoRow label="Contract" value={staff.contract_url ? 'On file' : null} link={staff.contract_url} />
+              {staff.contract_url && <InfoRow label="Contract (legacy file)" value="On file" link={staff.contract_url} />}
             </InfoBlock>
             <InfoBlock title="Visa & immigration">
               <InfoRow label="Visa status" value={staff.visa_status} />
