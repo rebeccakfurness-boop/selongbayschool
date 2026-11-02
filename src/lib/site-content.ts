@@ -16,8 +16,7 @@ export const siteConfig = {
 };
 
 /** Canonical bank details, confirmed against the Term 1 tuition invoice template — this
- * supersedes an older account (Elizabeth Berryman / Wise) that had been left here from an
- * earlier invoice sample. */
+ * supersedes an older personal account that had been left here from an earlier invoice sample. */
 export const bankTransferDetails = {
   payableTo: 'Yayasan Selong Bay Sekolah',
   bank: 'PT Bank Mandiri (Persero)',
@@ -107,23 +106,6 @@ export const testimonials = [
     name: 'Dylan Martin',
     detail: 'Grade 9 Student',
     image: { src: '/images/testimonial-dylan.jpg', alt: 'Dylan Martin' },
-  },
-];
-
-export const foundingFamilies = [
-  {
-    name: 'Mark & Liz Berryman',
-    detail: 'New Zealand, 2 years in Lombok with sons Elijah & Caleb',
-    image: { src: '/images/berryman-family.jpg', alt: 'The Berryman family' },
-    blurb:
-      'New Zealand family living in Lombok for 2 years, with two boys, Elijah and Caleb. Liz is a medical doctor, university lecturer, and researcher in medical and business schools in Dubai and New Zealand. She is the CEO of a corporate mental health startup and is passionate about science and the future of education. Mark is a serial entrepreneur from the construction industry and holds an MBA, but his current focus is honing his surfing skills.',
-  },
-  {
-    name: 'Jael & Levi Wunderli',
-    detail: 'Switzerland, 4 years in Lombok with sons Jonah, Ari & Rio',
-    image: { src: '/images/wunderli-family.jpg', alt: 'The Wunderli family' },
-    blurb:
-      'Swiss family living in Lombok for 4 years, with three boys, Jonah, Ari, and Rio. Jael is an experienced Swiss-trained elementary school teacher with experience leading education in Cambodia and social impact projects. Levi is a dedicated surfer and purpose-driven builder with a passion for community development; after founding a wakepark project for an NGO in Cambodia, he brings strong experience in youth empowerment and building supportive environments.',
   },
 ];
 

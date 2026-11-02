@@ -5,7 +5,7 @@ import StorySection from '@/components/StorySection';
 import OurValues from '@/components/OurValues';
 import Reveal from '@/components/Reveal';
 import { PlaceholderImage } from '@/components/PlaceholderBox';
-import { campusFacts, foundingFamilies, teachers } from '@/lib/site-content';
+import { campusFacts, teachers } from '@/lib/site-content';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -99,29 +99,6 @@ export default function AboutPage() {
                 <h3 className="font-display text-lg font-semibold text-ink">{teacher.name}</h3>
                 <p className="mt-0.5 text-sm font-bold uppercase tracking-wide text-teal-deep">{teacher.role}</p>
                 <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">{teacher.bio}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Reveal>
-
-      <Reveal>
-        <div className="mx-auto max-w-4xl px-6 md:px-8">
-          <p className="font-script text-3xl text-orange-deep md:text-4xl">Our community</p>
-          <h2 className="mt-1 font-display text-3xl font-semibold text-ink md:text-4xl">Founding families who call Selong Bay Home</h2>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2">
-            {foundingFamilies.map((family) => (
-              <div key={family.name} className="overflow-hidden rounded-md border border-sand-line bg-aqua/30">
-                {family.image && (
-                  <div className="relative aspect-[4/5] w-full">
-                    <Image src={family.image.src} alt={family.image.alt} fill sizes="(min-width: 640px) 50vw, 100vw" className="object-cover object-top" />
-                  </div>
-                )}
-                <div className="p-6">
-                  <h3 className="font-display text-lg font-semibold text-ink">{family.name}</h3>
-                  <p className="mt-1 text-[15px] text-ink-soft">{family.detail}</p>
-                  {family.blurb && <p className="mt-3 text-[14.5px] leading-relaxed text-ink-soft">{family.blurb}</p>}
-                </div>
               </div>
             ))}
           </div>
