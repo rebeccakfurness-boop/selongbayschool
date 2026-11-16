@@ -4,9 +4,11 @@ import {
   getSessionOptions,
   getCustomerSessionOptions,
   getStudentSessionOptions,
+  getSeranganSessionOptions,
   type AdminSessionData,
   type CustomerSessionData,
   type StudentSessionData,
+  type SeranganSessionData,
 } from '@/lib/auth';
 
 const PUBLIC_ADMIN_PATHS = ['/admin/login', '/admin/forgot-password', '/admin/reset-password'];
@@ -21,9 +23,20 @@ const PUBLIC_ADMIN_API_PATHS = [
 ];
 const PUBLIC_ACCOUNT_PATHS = ['/account/login', '/account/signup'];
 const PUBLIC_STUDENT_PATHS = ['/student/login'];
+const PUBLIC_SERANGAN_PATHS = ['/serangan/login', '/serangan/forgot-password', '/serangan/reset-password'];
+const PUBLIC_SERANGAN_API_PATHS = ['/api/serangan/login', '/api/serangan/forgot-password', '/api/serangan/reset-password'];
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*', '/account/:path*', '/student/:path*', '/kiosk/:path*', '/api/kiosk/:path*'],
+  matcher: [
+    '/admin/:path*',
+    '/api/admin/:path*',
+    '/account/:path*',
+    '/student/:path*',
+    '/serangan/:path*',
+    '/api/serangan/:path*',
+    '/kiosk/:path*',
+    '/api/kiosk/:path*',
+  ],
 };
 
 export async function proxy(req: NextRequest) {
@@ -51,6 +64,26 @@ export async function proxy(req: NextRequest) {
     const session = await getIronSession<StudentSessionData>(req, res, await getStudentSessionOptions());
     if (!session.studentAccountId) {
       const loginUrl = new URL('/student/login', req.url);
+      loginUrl.searchParams.set('next', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+    return res;
+  }
+
+  // The Serangan English School dashboard -- a fully separate login from the main school admin
+  // (see the SeranganSessionData comment in lib/auth.ts for why), so it gets its own branch here
+  // rather than falling into the admin check below.
+  if (pathname === '/serangan' || pathname.startsWith('/serangan/') || pathname.startsWith('/api/serangan/')) {
+    if (PUBLIC_SERANGAN_PATHS.includes(pathname) || PUBLIC_SERANGAN_API_PATHS.includes(pathname)) {
+      return NextResponse.next();
+    }
+    const res = NextResponse.next();
+    const session = await getIronSession<SeranganSessionData>(req, res, await getSeranganSessionOptions());
+    if (!session.seranganAdminId) {
+      if (pathname.startsWith('/api/')) {
+        return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+      }
+      const loginUrl = new URL('/serangan/login', req.url);
       loginUrl.searchParams.set('next', pathname);
       return NextResponse.redirect(loginUrl);
     }

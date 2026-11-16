@@ -120,6 +120,9 @@ export default function Footer() {
           <a href={financePolicyPdf} target="_blank" rel="noopener noreferrer" className="hover:text-orange hover:underline">
             Finance Policy
           </a>
+          <Link href="/serangan/login" className="hover:text-orange hover:underline">
+            Serangan English School Log In
+          </Link>
         </p>
       </div>
     </footer>

@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 63;
+const SCHEMA_VERSION = 64;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -3031,6 +3031,106 @@ export function ensureSchema(): Promise<void> {
         )
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_lombok_guide_entries_active ON lombok_guide_entries (is_active, category, sort_order)`;
+
+      // The Serangan English School dashboard -- a fully separate login system from admin_users
+      // (see the SeranganSessionData comment in lib/auth.ts for why: Shaun and Elizabeth run this
+      // one charity programme and have no reason to see children's records, staff payroll, or
+      // anything else under /admin). Mirrors admin_users' own password-reset columns so the
+      // forgot-password flow can be a straight copy of the admin one.
+      await sql`
+        CREATE TABLE IF NOT EXISTS serangan_admin_users (
+          id BIGSERIAL PRIMARY KEY,
+          email TEXT NOT NULL UNIQUE,
+          password_hash TEXT NOT NULL,
+          display_name TEXT,
+          reset_token TEXT,
+          reset_token_expires_at TIMESTAMPTZ,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          last_login_at TIMESTAMPTZ
+        )
+      `;
+
+      // One row per weekly session (the programme runs every Sunday morning, per the
+      // foundation-and-charity page) -- staff/visitors are free text (a volunteer-run log, not a
+      // roster with its own accounts) while the headcount and gender split are plain integers so
+      // monthly/quarterly/yearly reports can sum them; age is an "estimate" by nature (nobody is
+      // checking IDs at a free community class), so it stays a free-text note rather than a
+      // fabricated precise breakdown.
+      await sql`
+        CREATE TABLE IF NOT EXISTS serangan_entries (
+          id BIGSERIAL PRIMARY KEY,
+          entry_date DATE NOT NULL,
+          activity TEXT NOT NULL,
+          staff_present TEXT,
+          visitors_present TEXT,
+          children_count INTEGER,
+          boys_estimate INTEGER,
+          girls_estimate INTEGER,
+          age_estimate_note TEXT,
+          notes TEXT,
+          created_by BIGINT REFERENCES serangan_admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_serangan_entries_date ON serangan_entries (entry_date DESC)`;
+
+      // One budget row per year (not a single ongoing figure) so a report for a past year still
+      // compares against what that year's budget actually was, not whatever it's since been
+      // changed to.
+      await sql`
+        CREATE TABLE IF NOT EXISTS serangan_budgets (
+          id BIGSERIAL PRIMARY KEY,
+          year INTEGER NOT NULL UNIQUE,
+          budget_amount_idr NUMERIC(14,2) NOT NULL DEFAULT 0,
+          notes TEXT,
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_by BIGINT REFERENCES serangan_admin_users(id)
+        )
+      `;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS serangan_donations (
+          id BIGSERIAL PRIMARY KEY,
+          donation_date DATE NOT NULL,
+          donor_name TEXT,
+          amount_idr NUMERIC(14,2) NOT NULL,
+          notes TEXT,
+          created_by BIGINT REFERENCES serangan_admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_serangan_donations_date ON serangan_donations (donation_date DESC)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS serangan_expenditures (
+          id BIGSERIAL PRIMARY KEY,
+          expense_date DATE NOT NULL,
+          category TEXT,
+          description TEXT NOT NULL,
+          amount_idr NUMERIC(14,2) NOT NULL,
+          created_by BIGINT REFERENCES serangan_admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_serangan_expenditures_date ON serangan_expenditures (expense_date DESC)`;
+
+      // Campaigns (e.g. "Design new T-shirts", "Fundraiser day", "Learn to swim day") -- one-off
+      // initiatives tracked separately from the weekly entries log above.
+      await sql`
+        CREATE TABLE IF NOT EXISTS serangan_campaigns (
+          id BIGSERIAL PRIMARY KEY,
+          title TEXT NOT NULL,
+          description TEXT,
+          status TEXT NOT NULL DEFAULT 'planned' CHECK (status IN ('planned', 'active', 'completed')),
+          start_date DATE,
+          end_date DATE,
+          notes TEXT,
+          created_by BIGINT REFERENCES serangan_admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

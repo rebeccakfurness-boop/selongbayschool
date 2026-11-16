@@ -1263,3 +1263,16 @@ export async function sendLombokGuideEmail(input: LombokGuideEmailInput): Promis
     attachment: [{ name: 'lombok-guide.pdf', content: input.pdfBuffer.toString('base64') }],
   });
 }
+
+/** Mirrors sendAdminPasswordResetEmail, for the separate Serangan English School dashboard
+ * login (see the SeranganSessionData comment in lib/auth.ts for why it's a separate account
+ * system from admin_users). */
+export async function sendSeranganPasswordResetEmail(email: string, resetUrl: string): Promise<boolean> {
+  const html = wrapEmail(
+    'Reset your Serangan English School password',
+    `<p>We received a request to reset the password for the Serangan English School dashboard account associated with this email address.</p>
+     <p><a href="${resetUrl}" style="color:#007c83; font-weight:700;">Reset your password</a></p>
+     <p>This link is valid for 1 hour. If you did not request this, you can safely ignore this email and your password will stay the same.</p>`
+  );
+  return send(email, 'Reset your Serangan English School password', html);
+}

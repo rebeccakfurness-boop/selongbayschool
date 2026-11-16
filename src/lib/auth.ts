@@ -4,6 +4,7 @@ import { DEVICE_TOKEN_TTL_MS } from '@/lib/device-trust';
 export const ADMIN_COOKIE_NAME = 'sbs_admin_session';
 export const CUSTOMER_COOKIE_NAME = 'sbs_customer_session';
 export const STUDENT_COOKIE_NAME = 'sbs_student_session';
+export const SERANGAN_COOKIE_NAME = 'sbs_serangan_session';
 export const RESET_TOKEN_TTL_MS = 1000 * 60 * 60; // 1 hour
 export const MAGIC_LINK_TOKEN_TTL_MS = 1000 * 60 * 30; // 30 minutes
 
@@ -39,6 +40,15 @@ export interface AdminSessionData {
 
 export interface CustomerSessionData {
   customerId?: number;
+  email?: string;
+}
+
+/** The Serangan English School dashboard's own login -- a fully separate account system from
+ * admin_users (not a new StaffRole), since Shaun and Elizabeth run that one charity programme
+ * and have no reason to see children's records, staff payroll, or anything else under /admin.
+ * Same "own table, own session, own cookie" isolation as the Customer/Student split above. */
+export interface SeranganSessionData {
+  seranganAdminId?: number;
   email?: string;
 }
 
@@ -114,6 +124,20 @@ export async function getStudentSessionOptions(): Promise<SessionOptions> {
     cookieName: STUDENT_COOKIE_NAME,
     password: await derivedSessionPassword('student'),
     ttl: 60 * 60 * 24 * 30,
+    cookieOptions: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    },
+  };
+}
+
+export async function getSeranganSessionOptions(): Promise<SessionOptions> {
+  return {
+    cookieName: SERANGAN_COOKIE_NAME,
+    password: await derivedSessionPassword('serangan'),
+    ttl: 60 * 60 * 24 * 7, // 7 days -- a volunteer-run weekly programme, not a daily-use tool
     cookieOptions: {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

@@ -2033,3 +2033,88 @@ export const sendLombokGuideSchema = z.object({
   childFullName: z.string().trim().max(200).optional().or(z.literal('')),
 });
 export type SendLombokGuideInput = z.infer<typeof sendLombokGuideSchema>;
+
+// --- Serangan English School dashboard ---
+
+export const seranganLoginSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+  password: z.string().min(1, 'Password is required'),
+});
+export type SeranganLoginInput = z.infer<typeof seranganLoginSchema>;
+
+export const seranganForgotPasswordSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+});
+export type SeranganForgotPasswordInput = z.infer<typeof seranganForgotPasswordSchema>;
+
+export const seranganResetPasswordSchema = z.object({
+  token: z.string().trim().min(1, 'Missing reset token'),
+  password: z.string().min(8, 'Password must be at least 8 characters').max(200),
+});
+export type SeranganResetPasswordInput = z.infer<typeof seranganResetPasswordSchema>;
+
+const seranganDate = z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, 'Must be a valid date');
+const seranganOptionalText = z.string().trim().max(2000).optional().or(z.literal(''));
+const seranganOptionalCount = z.coerce.number().int().min(0).max(10_000).nullable().optional();
+const seranganAmountIdr = z.coerce.number().nonnegative('Must be zero or more').max(100_000_000_000);
+
+export const upsertSeranganEntrySchema = z.object({
+  entryDate: seranganDate,
+  activity: z.string().trim().min(1, 'Activity is required').max(300),
+  staffPresent: seranganOptionalText,
+  visitorsPresent: seranganOptionalText,
+  childrenCount: seranganOptionalCount,
+  boysEstimate: seranganOptionalCount,
+  girlsEstimate: seranganOptionalCount,
+  ageEstimateNote: seranganOptionalText,
+  notes: seranganOptionalText,
+});
+export type UpsertSeranganEntryInput = z.infer<typeof upsertSeranganEntrySchema>;
+
+export const upsertSeranganBudgetSchema = z.object({
+  year: z.coerce.number().int().min(2000).max(2100),
+  budgetAmountIdr: seranganAmountIdr,
+  notes: seranganOptionalText,
+});
+export type UpsertSeranganBudgetInput = z.infer<typeof upsertSeranganBudgetSchema>;
+
+export const upsertSeranganDonationSchema = z.object({
+  donationDate: seranganDate,
+  donorName: seranganOptionalText,
+  amountIdr: seranganAmountIdr,
+  notes: seranganOptionalText,
+});
+export type UpsertSeranganDonationInput = z.infer<typeof upsertSeranganDonationSchema>;
+
+export const upsertSeranganExpenditureSchema = z.object({
+  expenseDate: seranganDate,
+  category: seranganOptionalText,
+  description: z.string().trim().min(1, 'Description is required').max(500),
+  amountIdr: seranganAmountIdr,
+});
+export type UpsertSeranganExpenditureInput = z.infer<typeof upsertSeranganExpenditureSchema>;
+
+export const upsertSeranganCampaignSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(200),
+  description: seranganOptionalText,
+  status: z.enum(['planned', 'active', 'completed']).default('planned'),
+  startDate: seranganDate.optional().or(z.literal('')),
+  endDate: seranganDate.optional().or(z.literal('')),
+  notes: seranganOptionalText,
+});
+export type UpsertSeranganCampaignInput = z.infer<typeof upsertSeranganCampaignSchema>;
+
+export const seranganParseBankStatementSchema = z.object({
+  fileUrl: z.string().trim().url('Enter a valid file URL'),
+});
+export type SeranganParseBankStatementInput = z.infer<typeof seranganParseBankStatementSchema>;
+
+/** The reviewed, human-confirmed rows from a parsed bank/Wise statement (see
+ * SeranganStatementImportReview.tsx) -- reuses the same per-row shapes as the manual
+ * donation/expenditure forms, since by the time this is submitted each row is just an ordinary
+ * donation or expenditure that happened to start life as a transcribed statement line. */
+export const importSeranganStatementSchema = z.object({
+  donations: z.array(upsertSeranganDonationSchema).max(500),
+  expenditures: z.array(upsertSeranganExpenditureSchema).max(500),
+});
+export type ImportSeranganStatementInput = z.infer<typeof importSeranganStatementSchema>;
