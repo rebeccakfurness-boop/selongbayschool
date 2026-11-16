@@ -34,13 +34,15 @@ const styles = StyleSheet.create({
   docSubtitle: { fontSize: 9, color: BRAND_COLORS.inkSoft, marginTop: 2 },
   meta: { textAlign: 'right', marginTop: 4, fontSize: 9.5 },
   footer: {
+    // No lineHeight here -- on this @react-pdf/renderer version, a `lineHeight` style on a
+    // `fixed` absolutely-positioned View makes the whole View silently fail to render (it never
+    // throws; the footer just never appears in the output PDF).
     position: 'absolute',
     bottom: 16,
     left: 40,
     right: 40,
     fontSize: 7.5,
     color: BRAND_COLORS.inkSoft,
-    lineHeight: 1.4,
     borderTopWidth: 1,
     borderTopColor: BRAND_COLORS.sand,
     paddingTop: 8,
