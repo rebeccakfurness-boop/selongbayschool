@@ -2068,6 +2068,7 @@ export const upsertSeranganEntrySchema = z.object({
   girlsEstimate: seranganOptionalCount,
   ageEstimateNote: seranganOptionalText,
   notes: seranganOptionalText,
+  photoUrls: z.array(z.string().trim().url()).max(20).optional().default([]),
 });
 export type UpsertSeranganEntryInput = z.infer<typeof upsertSeranganEntrySchema>;
 
@@ -2118,3 +2119,30 @@ export const importSeranganStatementSchema = z.object({
   expenditures: z.array(upsertSeranganExpenditureSchema).max(500),
 });
 export type ImportSeranganStatementInput = z.infer<typeof importSeranganStatementSchema>;
+
+export const upsertSeranganObjectiveSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(200),
+  description: seranganOptionalText,
+});
+export type UpsertSeranganObjectiveInput = z.infer<typeof upsertSeranganObjectiveSchema>;
+
+export const upsertSeranganGoalSchema = z.object({
+  objectiveId: z.coerce.number().int().positive(),
+  title: z.string().trim().min(1, 'Title is required').max(300),
+  status: z.enum(['not_started', 'in_progress', 'achieved']).default('not_started'),
+  targetDate: seranganDate.optional().or(z.literal('')),
+  notes: seranganOptionalText,
+});
+export type UpsertSeranganGoalInput = z.infer<typeof upsertSeranganGoalSchema>;
+
+export const createSeranganUserSchema = z.object({
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+  displayName: seranganOptionalText,
+  role: z.enum(['admin', 'staff']).default('staff'),
+});
+export type CreateSeranganUserInput = z.infer<typeof createSeranganUserSchema>;
+
+export const updateSeranganUserSchema = z.object({
+  isActive: z.boolean(),
+});
+export type UpdateSeranganUserInput = z.infer<typeof updateSeranganUserSchema>;

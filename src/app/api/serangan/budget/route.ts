@@ -1,17 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema } from '@/lib/db';
-import { getCurrentSeranganAdmin } from '@/lib/current-serangan';
+import { requireSeranganAdminApi } from '@/lib/current-serangan';
 import { upsertSeranganBudgetSchema } from '@/lib/validation';
 import { getAllBudgets, upsertBudget } from '@/lib/serangan';
 
 export async function GET() {
+  try {
+    await requireSeranganAdminApi();
+  } catch {
+    return NextResponse.json({ error: 'Not authorized to view the budget.' }, { status: 403 });
+  }
   await ensureSchema();
   const budgets = await getAllBudgets();
   return NextResponse.json({ budgets });
 }
 
 export async function POST(req: NextRequest) {
-  const staff = await getCurrentSeranganAdmin();
+  let staff;
+  try {
+    staff = await requireSeranganAdminApi();
+  } catch {
+    return NextResponse.json({ error: 'Not authorized to set the budget.' }, { status: 403 });
+  }
+
   const body = await req.json().catch(() => null);
   const parsed = upsertSeranganBudgetSchema.safeParse(body);
   if (!parsed.success) {

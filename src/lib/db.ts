@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 64;
+const SCHEMA_VERSION = 66;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -3131,6 +3131,67 @@ export function ensureSchema(): Promise<void> {
           updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
         )
       `;
+
+      // Photos attached to a weekly session entry -- same one-row-per-photo/sort_order shape as
+      // community_post_photos above, for the same reason (a session can have several photos, and
+      // this avoids fanning out the entry row per photo in a join).
+      await sql`
+        CREATE TABLE IF NOT EXISTS serangan_entry_photos (
+          id BIGSERIAL PRIMARY KEY,
+          entry_id BIGINT NOT NULL REFERENCES serangan_entries(id) ON DELETE CASCADE,
+          file_url TEXT NOT NULL,
+          sort_order INTEGER NOT NULL DEFAULT 0
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_serangan_entry_photos_entry ON serangan_entry_photos (entry_id, sort_order, id)`;
+
+      // The school's main objectives (the dashboard caps this at 5 -- see upsertObjective in
+      // lib/serangan.ts) and, under each, the concrete goals toward achieving it. Goals carry
+      // their own status/target date so progress can be tracked per goal rather than just per
+      // objective.
+      await sql`
+        CREATE TABLE IF NOT EXISTS serangan_objectives (
+          id BIGSERIAL PRIMARY KEY,
+          title TEXT NOT NULL,
+          description TEXT,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          created_by BIGINT REFERENCES serangan_admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_serangan_objectives_sort ON serangan_objectives (sort_order, id)`;
+
+      await sql`
+        CREATE TABLE IF NOT EXISTS serangan_goals (
+          id BIGSERIAL PRIMARY KEY,
+          objective_id BIGINT NOT NULL REFERENCES serangan_objectives(id) ON DELETE CASCADE,
+          title TEXT NOT NULL,
+          status TEXT NOT NULL DEFAULT 'not_started' CHECK (status IN ('not_started', 'in_progress', 'achieved')),
+          target_date DATE,
+          notes TEXT,
+          sort_order INTEGER NOT NULL DEFAULT 0,
+          created_by BIGINT REFERENCES serangan_admin_users(id),
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+          updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_serangan_goals_objective ON serangan_goals (objective_id, sort_order, id)`;
+
+      // 'admin' (Shaun, Elizabeth) can see every finance page and add other Serangan logins;
+      // 'staff' (accounts an admin creates) can only log weekly entries and expenses -- never
+      // budgets, bank statement import, donations, or overall transaction totals (see
+      // requireSeranganAdmin in lib/current-serangan.ts). New accounts default to 'staff' (least
+      // privilege) unless an admin explicitly grants 'admin' when creating them; the backfill
+      // below promotes the two existing accounts, created before this column existed.
+      await sql`ALTER TABLE serangan_admin_users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'staff'`;
+      await sql`ALTER TABLE serangan_admin_users ADD CONSTRAINT serangan_admin_users_role_check CHECK (role IN ('admin', 'staff'))`;
+      await sql`UPDATE serangan_admin_users SET role = 'admin' WHERE email IN ('shauncrittendon@gmail.com', 'liz@chnnl.app')`;
+      // Deactivate rather than delete -- a user's id is referenced by created_by/updated_by on
+      // every entries/budgets/donations/expenditures/campaigns/objectives/goals row, so deleting
+      // an account with any real history would hit those foreign keys. Same convention as
+      // admin_users.is_active.
+      await sql`ALTER TABLE serangan_admin_users ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT true`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

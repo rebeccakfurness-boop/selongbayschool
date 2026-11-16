@@ -1,11 +1,19 @@
 import { sql } from './db';
+import type { SeranganRole } from './auth';
 import type {
   UpsertSeranganEntryInput,
   UpsertSeranganBudgetInput,
   UpsertSeranganDonationInput,
   UpsertSeranganExpenditureInput,
   UpsertSeranganCampaignInput,
+  UpsertSeranganObjectiveInput,
+  UpsertSeranganGoalInput,
 } from './validation';
+
+export interface SeranganEntryPhoto {
+  id: number;
+  file_url: string;
+}
 
 export interface SeranganEntry {
   id: number;
@@ -19,21 +27,52 @@ export interface SeranganEntry {
   age_estimate_note: string | null;
   notes: string | null;
   created_at: string;
+  photos: SeranganEntryPhoto[];
+}
+
+/** Attaches each entry's photos via a second query keyed off the first query's entry ids, same
+ * two-query shape as community.ts's getCommunityPosts -- avoids an entry with several photos
+ * fanning out and duplicating the entry row per photo in a join. */
+async function attachPhotos(entries: Omit<SeranganEntry, 'photos'>[]): Promise<SeranganEntry[]> {
+  if (entries.length === 0) return [];
+  const entryIds = entries.map((e) => e.id);
+  const photoRows = (await sql`
+    SELECT id, entry_id, file_url FROM serangan_entry_photos
+    WHERE entry_id = ANY(${entryIds})
+    ORDER BY entry_id, sort_order, id
+  `) as unknown as { id: number; entry_id: number; file_url: string }[];
+
+  const photosByEntry = new Map<number, SeranganEntryPhoto[]>();
+  for (const row of photoRows) {
+    const list = photosByEntry.get(row.entry_id) ?? [];
+    list.push({ id: row.id, file_url: row.file_url });
+    photosByEntry.set(row.entry_id, list);
+  }
+  return entries.map((e) => ({ ...e, photos: photosByEntry.get(e.id) ?? [] }));
 }
 
 export async function getRecentEntries(limit: number): Promise<SeranganEntry[]> {
-  return (await sql`
+  const entries = (await sql`
     SELECT id, entry_date::text, activity, staff_present, visitors_present, children_count, boys_estimate, girls_estimate, age_estimate_note, notes, created_at::text
     FROM serangan_entries ORDER BY entry_date DESC, id DESC LIMIT ${limit}
-  `) as unknown as SeranganEntry[];
+  `) as unknown as Omit<SeranganEntry, 'photos'>[];
+  return attachPhotos(entries);
 }
 
 export async function getEntriesForPeriod(start: string, end: string): Promise<SeranganEntry[]> {
-  return (await sql`
+  const entries = (await sql`
     SELECT id, entry_date::text, activity, staff_present, visitors_present, children_count, boys_estimate, girls_estimate, age_estimate_note, notes, created_at::text
     FROM serangan_entries WHERE entry_date BETWEEN ${start} AND ${end}
     ORDER BY entry_date, id
-  `) as unknown as SeranganEntry[];
+  `) as unknown as Omit<SeranganEntry, 'photos'>[];
+  return attachPhotos(entries);
+}
+
+async function replacePhotos(entryId: number, photoUrls: string[]): Promise<void> {
+  await sql`DELETE FROM serangan_entry_photos WHERE entry_id = ${entryId}`;
+  for (let i = 0; i < photoUrls.length; i++) {
+    await sql`INSERT INTO serangan_entry_photos (entry_id, file_url, sort_order) VALUES (${entryId}, ${photoUrls[i]}, ${i})`;
+  }
 }
 
 export async function createEntry(input: UpsertSeranganEntryInput, createdBy: number): Promise<number> {
@@ -43,7 +82,11 @@ export async function createEntry(input: UpsertSeranganEntryInput, createdBy: nu
       ${input.childrenCount ?? null}, ${input.boysEstimate ?? null}, ${input.girlsEstimate ?? null}, ${input.ageEstimateNote || null}, ${input.notes || null}, ${createdBy})
     RETURNING id
   `) as unknown as { id: number }[];
-  return rows[0].id;
+  const entryId = rows[0].id;
+  if (input.photoUrls.length > 0) {
+    await replacePhotos(entryId, input.photoUrls);
+  }
+  return entryId;
 }
 
 export async function updateEntry(id: number, input: UpsertSeranganEntryInput): Promise<void> {
@@ -55,6 +98,7 @@ export async function updateEntry(id: number, input: UpsertSeranganEntryInput): 
         age_estimate_note = ${input.ageEstimateNote || null}, notes = ${input.notes || null}, updated_at = now()
     WHERE id = ${id}
   `;
+  await replacePhotos(id, input.photoUrls);
 }
 
 export async function deleteEntry(id: number): Promise<void> {
@@ -256,4 +300,119 @@ export async function getSeranganReportData(periodStart: string, periodEnd: stri
     campaigns,
     annualBudget,
   };
+}
+
+export interface SeranganGoal {
+  id: number;
+  objective_id: number;
+  title: string;
+  status: 'not_started' | 'in_progress' | 'achieved';
+  target_date: string | null;
+  notes: string | null;
+}
+
+export interface SeranganObjective {
+  id: number;
+  title: string;
+  description: string | null;
+  sort_order: number;
+  goals: SeranganGoal[];
+}
+
+/** The dashboard's own cap -- "5 main objectives" per the brief, enforced here rather than at the
+ * schema level so lifting it later (if the school ever wants more) is a one-line change, not a
+ * migration. */
+export const MAX_SERANGAN_OBJECTIVES = 5;
+
+export async function getObjectivesWithGoals(): Promise<SeranganObjective[]> {
+  const objectives = (await sql`
+    SELECT id, title, description, sort_order FROM serangan_objectives ORDER BY sort_order, id
+  `) as unknown as Omit<SeranganObjective, 'goals'>[];
+
+  if (objectives.length === 0) return [];
+
+  const objectiveIds = objectives.map((o) => o.id);
+  const goalRows = (await sql`
+    SELECT id, objective_id, title, status, target_date::text, notes FROM serangan_goals
+    WHERE objective_id = ANY(${objectiveIds})
+    ORDER BY objective_id, sort_order, id
+  `) as unknown as SeranganGoal[];
+
+  const goalsByObjective = new Map<number, SeranganGoal[]>();
+  for (const row of goalRows) {
+    const list = goalsByObjective.get(row.objective_id) ?? [];
+    list.push(row);
+    goalsByObjective.set(row.objective_id, list);
+  }
+
+  return objectives.map((o) => ({ ...o, goals: goalsByObjective.get(o.id) ?? [] }));
+}
+
+export async function createObjective(input: UpsertSeranganObjectiveInput, createdBy: number): Promise<number> {
+  const [{ count }] = (await sql`SELECT COUNT(*)::int AS count FROM serangan_objectives`) as unknown as { count: number }[];
+  if (count >= MAX_SERANGAN_OBJECTIVES) {
+    throw new Error(`Only ${MAX_SERANGAN_OBJECTIVES} main objectives can be set at once -- remove one before adding another.`);
+  }
+  const rows = (await sql`
+    INSERT INTO serangan_objectives (title, description, sort_order, created_by)
+    VALUES (${input.title}, ${input.description || null}, ${count}, ${createdBy})
+    RETURNING id
+  `) as unknown as { id: number }[];
+  return rows[0].id;
+}
+
+export async function updateObjective(id: number, input: UpsertSeranganObjectiveInput): Promise<void> {
+  await sql`
+    UPDATE serangan_objectives
+    SET title = ${input.title}, description = ${input.description || null}, updated_at = now()
+    WHERE id = ${id}
+  `;
+}
+
+export async function deleteObjective(id: number): Promise<void> {
+  await sql`DELETE FROM serangan_objectives WHERE id = ${id}`;
+}
+
+export async function createGoal(input: UpsertSeranganGoalInput, createdBy: number): Promise<number> {
+  const [{ count }] = (await sql`SELECT COUNT(*)::int AS count FROM serangan_goals WHERE objective_id = ${input.objectiveId}`) as unknown as { count: number }[];
+  const rows = (await sql`
+    INSERT INTO serangan_goals (objective_id, title, status, target_date, notes, sort_order, created_by)
+    VALUES (${input.objectiveId}, ${input.title}, ${input.status}, ${input.targetDate || null}::date, ${input.notes || null}, ${count}, ${createdBy})
+    RETURNING id
+  `) as unknown as { id: number }[];
+  return rows[0].id;
+}
+
+export async function updateGoal(id: number, input: UpsertSeranganGoalInput): Promise<void> {
+  await sql`
+    UPDATE serangan_goals
+    SET title = ${input.title}, status = ${input.status}, target_date = ${input.targetDate || null}::date,
+        notes = ${input.notes || null}, updated_at = now()
+    WHERE id = ${id}
+  `;
+}
+
+export async function deleteGoal(id: number): Promise<void> {
+  await sql`DELETE FROM serangan_goals WHERE id = ${id}`;
+}
+
+export interface SeranganUser {
+  id: number;
+  email: string;
+  display_name: string | null;
+  role: SeranganRole;
+  is_active: boolean;
+  created_at: string;
+  last_login_at: string | null;
+}
+
+export async function getAllSeranganUsers(): Promise<SeranganUser[]> {
+  return (await sql`
+    SELECT id, email, display_name, role, is_active, created_at::text, last_login_at::text
+    FROM serangan_admin_users ORDER BY created_at
+  `) as unknown as SeranganUser[];
+}
+
+export async function setSeranganUserActive(id: number, isActive: boolean): Promise<void> {
+  await sql`UPDATE serangan_admin_users SET is_active = ${isActive} WHERE id = ${id}`;
 }

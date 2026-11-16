@@ -1,17 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema } from '@/lib/db';
-import { getCurrentSeranganAdmin } from '@/lib/current-serangan';
+import { requireSeranganAdminApi } from '@/lib/current-serangan';
 import { upsertSeranganDonationSchema } from '@/lib/validation';
 import { getRecentDonations, createDonation } from '@/lib/serangan';
 
 export async function GET() {
+  try {
+    await requireSeranganAdminApi();
+  } catch {
+    return NextResponse.json({ error: 'Not authorized to view donations.' }, { status: 403 });
+  }
   await ensureSchema();
   const donations = await getRecentDonations(200);
   return NextResponse.json({ donations });
 }
 
 export async function POST(req: NextRequest) {
-  const staff = await getCurrentSeranganAdmin();
+  let staff;
+  try {
+    staff = await requireSeranganAdminApi();
+  } catch {
+    return NextResponse.json({ error: 'Not authorized to record donations.' }, { status: 403 });
+  }
+
   const body = await req.json().catch(() => null);
   const parsed = upsertSeranganDonationSchema.safeParse(body);
   if (!parsed.success) {

@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema } from '@/lib/db';
-import { getCurrentSeranganAdmin } from '@/lib/current-serangan';
+import { getCurrentSeranganAdmin, requireSeranganAdminApi } from '@/lib/current-serangan';
 import { upsertSeranganExpenditureSchema } from '@/lib/validation';
 import { getRecentExpenditures, createExpenditure } from '@/lib/serangan';
 
+// Listing/totals are the "transactions" a 'staff' account must never see -- but POST below stays
+// open to both roles, since logging a new expense is explicitly allowed for 'staff'.
 export async function GET() {
+  try {
+    await requireSeranganAdminApi();
+  } catch {
+    return NextResponse.json({ error: 'Not authorized to view expenditures.' }, { status: 403 });
+  }
   await ensureSchema();
   const expenditures = await getRecentExpenditures(200);
   return NextResponse.json({ expenditures });

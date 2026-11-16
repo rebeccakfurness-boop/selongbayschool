@@ -1,15 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureSchema } from '@/lib/db';
-import { getCurrentSeranganAdmin } from '@/lib/current-serangan';
+import { requireSeranganAdminApi } from '@/lib/current-serangan';
 import { importSeranganStatementSchema } from '@/lib/validation';
 import { createDonation, createExpenditure } from '@/lib/serangan';
 
 /** Commits the rows a human has already reviewed and confirmed in SeranganStatementImportReview
  * -- each row is just an ordinary donation or expenditure at this point, so this writes through
  * the same createDonation/createExpenditure functions the manual entry forms use, rather than a
- * separate bulk-insert path. */
+ * separate bulk-insert path. Admin-only, same as every other statement-import route -- a 'staff'
+ * account must never see bank statements or donations. */
 export async function POST(req: NextRequest) {
-  const staff = await getCurrentSeranganAdmin();
+  let staff;
+  try {
+    staff = await requireSeranganAdminApi();
+  } catch {
+    return NextResponse.json({ error: 'Not authorized to import bank statements.' }, { status: 403 });
+  }
   const body = await req.json().catch(() => null);
   const parsed = importSeranganStatementSchema.safeParse(body);
   if (!parsed.success) {

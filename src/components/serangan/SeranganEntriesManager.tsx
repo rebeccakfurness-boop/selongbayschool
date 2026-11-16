@@ -1,11 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { upload } from '@vercel/blob/client';
+import Image from 'next/image';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import Button from '@/components/Button';
 import { formatDate } from '@/lib/admin-format';
 
 const ENDPOINT = '/api/serangan/entries';
+const UPLOAD_ENDPOINT = '/api/serangan/entries/upload';
 
 export interface SeranganEntryItem {
   id: number;
@@ -18,6 +21,7 @@ export interface SeranganEntryItem {
   girls_estimate: number | null;
   age_estimate_note: string | null;
   notes: string | null;
+  photos: { id: number; file_url: string }[];
 }
 
 function todayValue(): string {
@@ -39,6 +43,8 @@ const emptyForm = {
 export default function SeranganEntriesManager({ initial }: { initial: SeranganEntryItem[] }) {
   const [entries, setEntries] = useState(initial);
   const [form, setForm] = useState(emptyForm);
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -62,15 +68,33 @@ export default function SeranganEntriesManager({ initial }: { initial: SeranganE
       ageEstimateNote: e.age_estimate_note ?? '',
       notes: e.notes ?? '',
     });
+    setPhotoUrls(e.photos.map((p) => p.file_url));
   }
 
   function cancelEdit() {
     setEditingId(null);
     setForm(emptyForm);
+    setPhotoUrls([]);
     setError(null);
   }
 
-  const canSave = form.entryDate && form.activity.trim();
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setUploadingPhoto(true);
+    setError(null);
+    try {
+      const blob = await upload(`serangan-entry-photos/${Date.now()}-${file.name}`, file, { access: 'public', handleUploadUrl: UPLOAD_ENDPOINT });
+      setPhotoUrls((prev) => [...prev, blob.url]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not upload that photo.');
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
+
+  const canSave = form.entryDate && form.activity.trim() && !uploadingPhoto;
 
   async function save() {
     if (!canSave) return;
@@ -85,6 +109,7 @@ export default function SeranganEntriesManager({ initial }: { initial: SeranganE
           childrenCount: form.childrenCount === '' ? null : Number(form.childrenCount),
           boysEstimate: form.boysEstimate === '' ? null : Number(form.boysEstimate),
           girlsEstimate: form.girlsEstimate === '' ? null : Number(form.girlsEstimate),
+          photoUrls,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -140,6 +165,31 @@ export default function SeranganEntriesManager({ initial }: { initial: SeranganE
             <TextArea id="se-notes" rows={3} value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} placeholder="Anything else worth recording about this session." />
           </Field>
         </div>
+
+        <div className="mt-4">
+          <span className="text-sm font-bold text-ink">Photos (optional)</span>
+          {photoUrls.length > 0 && (
+            <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
+              {photoUrls.map((url) => (
+                <div key={url} className="relative aspect-square overflow-hidden rounded-md border border-sand-line">
+                  <Image src={url} alt="" fill sizes="120px" className="object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setPhotoUrls((prev) => prev.filter((u) => u !== url))}
+                    className="absolute right-1 top-1 rounded-full bg-ink/70 px-1.5 text-xs font-bold text-white hover:bg-ink"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          <label className="mt-2 inline-block cursor-pointer text-sm font-semibold text-teal-deep hover:underline">
+            {uploadingPhoto ? 'Uploading…' : '+ Add photo'}
+            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handlePhotoChange} disabled={uploadingPhoto} className="hidden" />
+          </label>
+        </div>
+
         <div className="mt-4 flex items-center gap-3">
           <Button type="button" variant="primary" onClick={save} disabled={!canSave || saving}>
             {saving ? 'Saving…' : editingId ? 'Save changes' : 'Add session'}
@@ -173,6 +223,15 @@ export default function SeranganEntriesManager({ initial }: { initial: SeranganE
                 </p>
               )}
               {e.notes && <p className="mt-1 text-xs text-ink-soft">{e.notes}</p>}
+              {e.photos.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {e.photos.map((p) => (
+                    <a key={p.id} href={p.file_url} target="_blank" rel="noopener noreferrer" className="relative block h-14 w-14 overflow-hidden rounded-sm border border-sand-line">
+                      <Image src={p.file_url} alt="" fill sizes="56px" className="object-cover" />
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="flex shrink-0 flex-col items-end gap-1">
               <button type="button" onClick={() => startEdit(e)} className="text-xs font-semibold text-teal-deep hover:underline">Edit</button>

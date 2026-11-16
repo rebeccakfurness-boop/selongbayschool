@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ensureSchema } from '@/lib/db';
+import { getCurrentSeranganAdmin } from '@/lib/current-serangan';
 import { getSeranganReportData, getAllCampaigns } from '@/lib/serangan';
 import SeranganNav from '@/components/serangan/SeranganNav';
 
@@ -11,6 +12,8 @@ function formatIDR(n: number): string {
 
 export default async function SeranganOverviewPage() {
   await ensureSchema();
+  const admin = await getCurrentSeranganAdmin();
+  const isAdmin = admin.role === 'admin';
   const now = new Date();
   const yearStart = `${now.getUTCFullYear()}-01-01`;
   const yearEnd = `${now.getUTCFullYear()}-12-31`;
@@ -23,7 +26,7 @@ export default async function SeranganOverviewPage() {
 
   return (
     <div className="min-h-screen bg-cream">
-      <SeranganNav active="/serangan" />
+      <SeranganNav active="/serangan" role={admin.role} />
 
       <div className="mx-auto max-w-5xl px-6 py-10">
         <h1 className="font-display text-2xl font-semibold text-ink">Overview</h1>
@@ -32,8 +35,8 @@ export default async function SeranganOverviewPage() {
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard label="Sessions held" value={String(report.sessionsCount)} />
           <StatCard label="Children reached (total)" value={String(report.totalChildrenAttendance)} />
-          <StatCard label="Donations received" value={formatIDR(report.donationsTotal)} />
-          <StatCard label="Expenditure" value={formatIDR(report.expenditureTotal)} />
+          {isAdmin && <StatCard label="Donations received" value={formatIDR(report.donationsTotal)} />}
+          {isAdmin && <StatCard label="Expenditure" value={formatIDR(report.expenditureTotal)} />}
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -43,15 +46,31 @@ export default async function SeranganOverviewPage() {
               <Link href="/serangan/entries" className="text-sm font-semibold text-teal-deep hover:underline">
                 + Log this week&apos;s session
               </Link>
-              <Link href="/serangan/finances" className="text-sm font-semibold text-teal-deep hover:underline">
-                Record a donation or expense
-              </Link>
+              {isAdmin ? (
+                <Link href="/serangan/finances" className="text-sm font-semibold text-teal-deep hover:underline">
+                  Record a donation or expense
+                </Link>
+              ) : (
+                <Link href="/serangan/log-expense" className="text-sm font-semibold text-teal-deep hover:underline">
+                  Log an expense
+                </Link>
+              )}
               <Link href="/serangan/campaigns" className="text-sm font-semibold text-teal-deep hover:underline">
                 Manage campaigns
               </Link>
-              <Link href="/serangan/reports" className="text-sm font-semibold text-teal-deep hover:underline">
-                Generate a report
+              <Link href="/serangan/objectives" className="text-sm font-semibold text-teal-deep hover:underline">
+                View objectives &amp; goals
               </Link>
+              {isAdmin && (
+                <Link href="/serangan/reports" className="text-sm font-semibold text-teal-deep hover:underline">
+                  Generate a report
+                </Link>
+              )}
+              {isAdmin && (
+                <Link href="/serangan/users" className="text-sm font-semibold text-teal-deep hover:underline">
+                  Manage users
+                </Link>
+              )}
             </div>
           </div>
 

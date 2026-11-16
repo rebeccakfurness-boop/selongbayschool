@@ -58,6 +58,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(403).json({ error: 'Please log in to download reports.' });
     return;
   }
+  // Reports surface exactly the donation/expenditure/budget figures a 'staff' account must never
+  // see -- same admin-only gate as every other finance route. Sessions predating the role column
+  // have none stored; treat those as admin, same fallback as getCurrentSeranganAdmin.
+  if ((session.role ?? 'admin') !== 'admin') {
+    res.status(403).json({ error: 'Not authorized to generate reports.' });
+    return;
+  }
 
   const type = req.query.type === 'quarter' ? 'quarter' : req.query.type === 'year' ? 'year' : req.query.type === 'month' ? 'month' : null;
   if (!type) {

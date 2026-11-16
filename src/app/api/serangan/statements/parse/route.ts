@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireSeranganAdminApi } from '@/lib/current-serangan';
 import { seranganParseBankStatementSchema } from '@/lib/validation';
 import { statementFileTypeFromUrl, extractStatementText } from '@/lib/budget-statement-extract';
 import { parseBankStatementText } from '@/lib/budget-statement-ai';
@@ -10,6 +11,12 @@ import { parseBankStatementText } from '@/lib/budget-statement-ai';
 export const maxDuration = 300;
 
 export async function POST(req: NextRequest) {
+  try {
+    await requireSeranganAdminApi();
+  } catch {
+    return NextResponse.json({ error: 'Not authorized to read bank statements.' }, { status: 403 });
+  }
+
   try {
     let body: unknown;
     try {

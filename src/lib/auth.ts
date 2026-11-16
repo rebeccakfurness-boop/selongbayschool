@@ -47,9 +47,17 @@ export interface CustomerSessionData {
  * admin_users (not a new StaffRole), since Shaun and Elizabeth run that one charity programme
  * and have no reason to see children's records, staff payroll, or anything else under /admin.
  * Same "own table, own session, own cookie" isolation as the Customer/Student split above. */
+export type SeranganRole = 'admin' | 'staff';
+
 export interface SeranganSessionData {
   seranganAdminId?: number;
   email?: string;
+  /** Set at login time from serangan_admin_users.role, same "stored in the session, not
+   * re-queried every request" tradeoff as AdminSessionData.role above: a role change takes effect
+   * next login, not mid-session. 'admin' (Shaun, Elizabeth) can see all finances and add other
+   * Serangan logins; 'staff' can log weekly entries and expenses but never sees budgets,
+   * statements, donations, or the overall transaction history. */
+  role?: SeranganRole;
 }
 
 /** Student role session: one account per child (see student_accounts table), username/password

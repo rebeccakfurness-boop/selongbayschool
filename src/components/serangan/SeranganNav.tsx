@@ -5,18 +5,32 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import SeranganLogoutButton from '@/components/serangan/SeranganLogoutButton';
 
-const LINKS = [
+const ADMIN_ONLY_LINKS = [
   { href: '/serangan', label: 'Overview' },
   { href: '/serangan/entries', label: 'Weekly Entries' },
   { href: '/serangan/finances', label: 'Budget & Donations' },
   { href: '/serangan/campaigns', label: 'Campaigns' },
+  { href: '/serangan/objectives', label: 'Objectives & Goals' },
   { href: '/serangan/reports', label: 'Reports' },
+  { href: '/serangan/users', label: 'Manage Users' },
+];
+
+// 'staff' never sees budgets/statements/transactions, so no Finances or Reports link -- and no
+// user management, since only 'admin' can add other logins. Gets its own "Log an Expense" link
+// instead, a write-only form with no list/totals shown back.
+const STAFF_LINKS = [
+  { href: '/serangan', label: 'Overview' },
+  { href: '/serangan/entries', label: 'Weekly Entries' },
+  { href: '/serangan/campaigns', label: 'Campaigns' },
+  { href: '/serangan/objectives', label: 'Objectives & Goals' },
+  { href: '/serangan/log-expense', label: 'Log an Expense' },
 ];
 
 /** Same collapsing-hamburger shape as AccountNav, just for the separate Serangan session. */
-export default function SeranganNav({ active }: { active?: string }) {
+export default function SeranganNav({ active, role }: { active?: string; role: 'admin' | 'staff' }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const LINKS = role === 'admin' ? ADMIN_ONLY_LINKS : STAFF_LINKS;
 
   const [lastPathname, setLastPathname] = useState(pathname);
   if (pathname !== lastPathname) {
