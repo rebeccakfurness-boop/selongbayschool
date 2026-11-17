@@ -118,7 +118,7 @@ export function WelcomeLetterDocument({ letter }: { letter: WelcomeLetterPdfData
                 </View>
                 <View style={styles.detailRow}>
                   <Text style={styles.detailLabel}>Pick-up</Text>
-                  <Text style={styles.detailValue}>3:30pm — from school, or from Lantis Resto on Tuesdays and Thursdays</Text>
+                  <Text style={styles.detailValue}>3:30pm — from school, or from Lantis Resto on Tuesdays and Wednesdays</Text>
                 </View>
               </View>
             </View>
@@ -181,11 +181,11 @@ export function WelcomeLetterDocument({ letter }: { letter: WelcomeLetterPdfData
           </View>
 
           <View style={styles.section} wrap={false}>
-            <Text style={styles.sectionTitle}>Tuesday & Thursday activities</Text>
+            <Text style={styles.sectionTitle}>Tuesday & Wednesday activities</Text>
             <View style={styles.box}>
               <View style={styles.detailRow}>
                 <Text style={styles.detailLabel}>When</Text>
-                <Text style={styles.detailValue}>1:30pm – 3:30pm, Tuesdays and Thursdays</Text>
+                <Text style={styles.detailValue}>1:30pm – 3:30pm, Tuesdays and Wednesdays</Text>
               </View>
               <View style={styles.detailRow}>
                 <Text style={styles.detailLabel}>Where</Text>
