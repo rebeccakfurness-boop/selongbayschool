@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 69;
+const SCHEMA_VERSION = 70;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -203,7 +203,13 @@ export function ensureSchema(): Promise<void> {
       // still silently pointing at the old, unused `booking_slots` table instead of `sessions`
       // — every booking insert fails with a foreign key violation until this runs.
       await sql`ALTER TABLE bookings DROP CONSTRAINT IF EXISTS bookings_slot_id_fkey`;
-      await sql`ALTER TABLE bookings ADD CONSTRAINT bookings_slot_id_fkey FOREIGN KEY (slot_id) REFERENCES sessions(id)`;
+      await sql`
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'bookings_slot_id_fkey') THEN
+            ALTER TABLE bookings ADD CONSTRAINT bookings_slot_id_fkey FOREIGN KEY (slot_id) REFERENCES sessions(id);
+          END IF;
+        END $$;
+      `;
       await sql`ALTER TABLE bookings ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'pay_at_session'`;
       // Drop the old (confirmed/cancelled) constraint before touching any row values below,
       // otherwise the UPDATE would itself violate the constraint it's trying to migrate away from.
@@ -213,8 +219,12 @@ export function ensureSchema(): Promise<void> {
       // with nothing outstanding, the closest fit among the new values.
       await sql`UPDATE bookings SET status = 'paid' WHERE status = 'confirmed'`;
       await sql`
-        ALTER TABLE bookings ADD CONSTRAINT bookings_status_check
-        CHECK (status IN ('pending_payment', 'pay_at_session', 'paid', 'cancelled'))
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'bookings_status_check') THEN
+            ALTER TABLE bookings ADD CONSTRAINT bookings_status_check
+            CHECK (status IN ('pending_payment', 'pay_at_session', 'paid', 'cancelled'));
+          END IF;
+        END $$;
       `;
       await sql`
         ALTER TABLE bookings ADD COLUMN IF NOT EXISTS payment_method TEXT
@@ -299,8 +309,12 @@ export function ensureSchema(): Promise<void> {
       // A pack-paid booking needs a third payment_method value alongside the original two.
       await sql`ALTER TABLE bookings DROP CONSTRAINT IF EXISTS bookings_payment_method_check`;
       await sql`
-        ALTER TABLE bookings ADD CONSTRAINT bookings_payment_method_check
-        CHECK (payment_method IN ('pay_online', 'pay_at_session', 'pack_session'))
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'bookings_payment_method_check') THEN
+            ALTER TABLE bookings ADD CONSTRAINT bookings_payment_method_check
+            CHECK (payment_method IN ('pay_online', 'pay_at_session', 'pack_session'));
+          END IF;
+        END $$;
       `;
 
       await sql`
@@ -2178,7 +2192,13 @@ export function ensureSchema(): Promise<void> {
       // CREATE TABLE check above only takes effect on a fresh install, so existing databases need
       // their constraint widened explicitly here too.
       await sql`ALTER TABLE library_items DROP CONSTRAINT IF EXISTS library_items_item_type_check`;
-      await sql`ALTER TABLE library_items ADD CONSTRAINT library_items_item_type_check CHECK (item_type IN ('book', 'toy', 'sports_equipment', 'other'))`;
+      await sql`
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'library_items_item_type_check') THEN
+            ALTER TABLE library_items ADD CONSTRAINT library_items_item_type_check CHECK (item_type IN ('book', 'toy', 'sports_equipment', 'other'));
+          END IF;
+        END $$;
+      `;
 
       // Set once the "due back tomorrow" reminder has gone out for this loan (whether the daily
       // cron sent it or an admin used the manual "Send reminder" button) -- see
@@ -2240,8 +2260,12 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE curriculum_lesson_quiz_questions ADD COLUMN IF NOT EXISTS question_type TEXT NOT NULL DEFAULT 'multiple_choice'`;
       await sql`ALTER TABLE curriculum_lesson_quiz_questions DROP CONSTRAINT IF EXISTS curriculum_lesson_quiz_questions_question_type_check`;
       await sql`
-        ALTER TABLE curriculum_lesson_quiz_questions ADD CONSTRAINT curriculum_lesson_quiz_questions_question_type_check
-        CHECK (question_type IN ('multiple_choice', 'open_response'))
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'curriculum_lesson_quiz_questions_question_type_check') THEN
+            ALTER TABLE curriculum_lesson_quiz_questions ADD CONSTRAINT curriculum_lesson_quiz_questions_question_type_check
+            CHECK (question_type IN ('multiple_choice', 'open_response'));
+          END IF;
+        END $$;
       `;
       await sql`ALTER TABLE curriculum_lesson_quiz_questions ADD COLUMN IF NOT EXISTS allow_voice_answer BOOLEAN NOT NULL DEFAULT true`;
 
@@ -2350,8 +2374,12 @@ export function ensureSchema(): Promise<void> {
       // grading) -- only the bucket a question is filed under is new.
       await sql`ALTER TABLE curriculum_lesson_quiz_questions DROP CONSTRAINT IF EXISTS curriculum_lesson_quiz_questions_quiz_type_check`;
       await sql`
-        ALTER TABLE curriculum_lesson_quiz_questions ADD CONSTRAINT curriculum_lesson_quiz_questions_quiz_type_check
-        CHECK (quiz_type IN ('starter', 'exit', 'discussion'))
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'curriculum_lesson_quiz_questions_quiz_type_check') THEN
+            ALTER TABLE curriculum_lesson_quiz_questions ADD CONSTRAINT curriculum_lesson_quiz_questions_quiz_type_check
+            CHECK (quiz_type IN ('starter', 'exit', 'discussion'));
+          END IF;
+        END $$;
       `;
       await sql`ALTER TABLE child_lesson_online_progress ADD COLUMN IF NOT EXISTS discussion_done BOOLEAN NOT NULL DEFAULT false`;
 
@@ -2379,8 +2407,12 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE admin_users ALTER COLUMN employment_status SET DEFAULT 'applicant'`;
       await sql`ALTER TABLE admin_users DROP CONSTRAINT IF EXISTS admin_users_employment_status_check`;
       await sql`
-        ALTER TABLE admin_users ADD CONSTRAINT admin_users_employment_status_check
-        CHECK (employment_status IN ('applicant', 'casual_employee', 'teaching_staff', 'admin_staff', 'past_employee'))
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'admin_users_employment_status_check') THEN
+            ALTER TABLE admin_users ADD CONSTRAINT admin_users_employment_status_check
+            CHECK (employment_status IN ('applicant', 'casual_employee', 'teaching_staff', 'admin_staff', 'past_employee'));
+          END IF;
+        END $$;
       `;
 
       // Personal / HR fields -- dob doubles as the payslip access password (see staff_payslips
@@ -2406,15 +2438,23 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bpjs_kesehatan_status TEXT`;
       await sql`ALTER TABLE admin_users DROP CONSTRAINT IF EXISTS admin_users_bpjs_kesehatan_status_check`;
       await sql`
-        ALTER TABLE admin_users ADD CONSTRAINT admin_users_bpjs_kesehatan_status_check
-        CHECK (bpjs_kesehatan_status IS NULL OR bpjs_kesehatan_status IN ('active', 'pending', 'inactive', 'not_applicable'))
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'admin_users_bpjs_kesehatan_status_check') THEN
+            ALTER TABLE admin_users ADD CONSTRAINT admin_users_bpjs_kesehatan_status_check
+            CHECK (bpjs_kesehatan_status IS NULL OR bpjs_kesehatan_status IN ('active', 'pending', 'inactive', 'not_applicable'));
+          END IF;
+        END $$;
       `;
       await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bpjs_ketenagakerjaan_number TEXT`;
       await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bpjs_ketenagakerjaan_status TEXT`;
       await sql`ALTER TABLE admin_users DROP CONSTRAINT IF EXISTS admin_users_bpjs_ketenagakerjaan_status_check`;
       await sql`
-        ALTER TABLE admin_users ADD CONSTRAINT admin_users_bpjs_ketenagakerjaan_status_check
-        CHECK (bpjs_ketenagakerjaan_status IS NULL OR bpjs_ketenagakerjaan_status IN ('active', 'pending', 'inactive', 'not_applicable'))
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'admin_users_bpjs_ketenagakerjaan_status_check') THEN
+            ALTER TABLE admin_users ADD CONSTRAINT admin_users_bpjs_ketenagakerjaan_status_check
+            CHECK (bpjs_ketenagakerjaan_status IS NULL OR bpjs_ketenagakerjaan_status IN ('active', 'pending', 'inactive', 'not_applicable'));
+          END IF;
+        END $$;
       `;
       await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bank_name TEXT`;
       await sql`ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS bank_account_number TEXT`;
@@ -2525,8 +2565,12 @@ export function ensureSchema(): Promise<void> {
       await sql`ALTER TABLE staff_lunch_orders ALTER COLUMN lunch_type SET NOT NULL`;
       await sql`ALTER TABLE staff_lunch_orders DROP CONSTRAINT IF EXISTS staff_lunch_orders_lunch_type_check`;
       await sql`
-        ALTER TABLE staff_lunch_orders ADD CONSTRAINT staff_lunch_orders_lunch_type_check
-        CHECK (lunch_type IN ('school_lunch', 'nasi_bungkus', 'own_lunch'))
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'staff_lunch_orders_lunch_type_check') THEN
+            ALTER TABLE staff_lunch_orders ADD CONSTRAINT staff_lunch_orders_lunch_type_check
+            CHECK (lunch_type IN ('school_lunch', 'nasi_bungkus', 'own_lunch'));
+          END IF;
+        END $$;
       `;
 
       // Staff duty roster -- deliberately a separate table from class_schedule rather than
@@ -2634,7 +2678,13 @@ export function ensureSchema(): Promise<void> {
       // portal again until it's re-approved and re-sent.
       await sql`ALTER TABLE learning_profiles ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'draft'`;
       await sql`ALTER TABLE learning_profiles DROP CONSTRAINT IF EXISTS learning_profiles_status_check`;
-      await sql`ALTER TABLE learning_profiles ADD CONSTRAINT learning_profiles_status_check CHECK (status IN ('draft', 'approved'))`;
+      await sql`
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'learning_profiles_status_check') THEN
+            ALTER TABLE learning_profiles ADD CONSTRAINT learning_profiles_status_check CHECK (status IN ('draft', 'approved'));
+          END IF;
+        END $$;
+      `;
       await sql`ALTER TABLE learning_profiles ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ`;
       await sql`ALTER TABLE learning_profiles ADD COLUMN IF NOT EXISTS approved_by BIGINT REFERENCES admin_users(id)`;
       await sql`ALTER TABLE learning_profiles ADD COLUMN IF NOT EXISTS sent_at TIMESTAMPTZ`;
@@ -2715,7 +2765,13 @@ export function ensureSchema(): Promise<void> {
       // so every expired 12-hour admin session forced a fresh password entry. account_id means
       // admin_users.id when account_type='admin', same polymorphic convention as the other two.
       await sql`ALTER TABLE device_tokens DROP CONSTRAINT IF EXISTS device_tokens_account_type_check`;
-      await sql`ALTER TABLE device_tokens ADD CONSTRAINT device_tokens_account_type_check CHECK (account_type IN ('customer', 'student', 'admin'))`;
+      await sql`
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'device_tokens_account_type_check') THEN
+            ALTER TABLE device_tokens ADD CONSTRAINT device_tokens_account_type_check CHECK (account_type IN ('customer', 'student', 'admin'));
+          END IF;
+        END $$;
+      `;
 
       // A short code alongside the magic-link token (see lib/customer-magic-link.ts) -- typed into
       // the login page rather than clicked, so it lands in whichever browser the parent is
@@ -2751,7 +2807,13 @@ export function ensureSchema(): Promise<void> {
       // the revenue entry that was reconciled against it.
       await sql`ALTER TABLE budget_revenue ADD COLUMN IF NOT EXISTS matched_invoice_id BIGINT REFERENCES invoices(id) ON DELETE SET NULL`;
       await sql`ALTER TABLE budget_revenue DROP CONSTRAINT IF EXISTS budget_revenue_matched_invoice_id_key`;
-      await sql`ALTER TABLE budget_revenue ADD CONSTRAINT budget_revenue_matched_invoice_id_key UNIQUE (matched_invoice_id)`;
+      await sql`
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'budget_revenue_matched_invoice_id_key') THEN
+            ALTER TABLE budget_revenue ADD CONSTRAINT budget_revenue_matched_invoice_id_key UNIQUE (matched_invoice_id);
+          END IF;
+        END $$;
+      `;
 
       // Weekend morning cleaning duty -- day_of_week already allows Saturday/Sunday like any other
       // duty (this constraint only ever restricted duty_type), so this is the one missing piece
@@ -2765,11 +2827,15 @@ export function ensureSchema(): Promise<void> {
       // place; never add a second DROP+ADD pair for it elsewhere in this file.
       await sql`ALTER TABLE duty_roster DROP CONSTRAINT IF EXISTS duty_roster_duty_type_check`;
       await sql`
-        ALTER TABLE duty_roster ADD CONSTRAINT duty_roster_duty_type_check
-        CHECK (duty_type IN (
-          'welcome_to_school', 'break_duty', 'lunch_duty', 'cca_supervision', 'non_contact_admin', 'online_teaching_duty',
-          'kindergarten_teaching', 'primary_teaching', 'secondary_teaching', 'all_staff_meeting', 'cleaning_duty', 'other'
-        ))
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'duty_roster_duty_type_check') THEN
+            ALTER TABLE duty_roster ADD CONSTRAINT duty_roster_duty_type_check
+            CHECK (duty_type IN (
+              'welcome_to_school', 'break_duty', 'lunch_duty', 'cca_supervision', 'non_contact_admin', 'online_teaching_duty',
+              'kindergarten_teaching', 'primary_teaching', 'secondary_teaching', 'all_staff_meeting', 'cleaning_duty', 'other'
+            ));
+          END IF;
+        END $$;
       `;
 
       // --- Co-curricular activities (CCA): term-based parent selection, priced per child, ---
@@ -2892,7 +2958,13 @@ export function ensureSchema(): Promise<void> {
       // When invoice_type needs another value, widen the CHECK below in place; never add a second
       // DROP+ADD pair for it elsewhere in this file.
       await sql`ALTER TABLE invoices DROP CONSTRAINT IF EXISTS invoices_invoice_type_check`;
-      await sql`ALTER TABLE invoices ADD CONSTRAINT invoices_invoice_type_check CHECK (invoice_type IN ('tuition', 'activity', 'lunch', 'library', 'cca'))`;
+      await sql`
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'invoices_invoice_type_check') THEN
+            ALTER TABLE invoices ADD CONSTRAINT invoices_invoice_type_check CHECK (invoice_type IN ('tuition', 'activity', 'lunch', 'library', 'cca'));
+          END IF;
+        END $$;
+      `;
 
       // Per-child gate for CCA selections, toggled on the Child Card -- default false, same
       // opt-in-per-child convention as online_learning_enabled, so a brand-new term doesn't
