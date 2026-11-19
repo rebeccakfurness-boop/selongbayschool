@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 68;
+const SCHEMA_VERSION = 69;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -3197,7 +3197,17 @@ export function ensureSchema(): Promise<void> {
       // privilege) unless an admin explicitly grants 'admin' when creating them; the backfill
       // below promotes the two existing accounts, created before this column existed.
       await sql`ALTER TABLE serangan_admin_users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'staff'`;
-      await sql`ALTER TABLE serangan_admin_users ADD CONSTRAINT serangan_admin_users_role_check CHECK (role IN ('admin', 'staff'))`;
+      // Postgres has no "ADD CONSTRAINT IF NOT EXISTS" -- without this guard, two concurrent
+      // cold starts racing into the migration (both seeing a stale schema_version) crash the
+      // second one with "constraint already exists" the moment the first one commits it,
+      // taking down every page that calls ensureSchema() until the process is recycled.
+      await sql`
+        DO $$ BEGIN
+          IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'serangan_admin_users_role_check') THEN
+            ALTER TABLE serangan_admin_users ADD CONSTRAINT serangan_admin_users_role_check CHECK (role IN ('admin', 'staff'));
+          END IF;
+        END $$;
+      `;
       await sql`UPDATE serangan_admin_users SET role = 'admin' WHERE email IN ('shauncrittendon@gmail.com', 'liz@chnnl.app')`;
       // Deactivate rather than delete -- a user's id is referenced by created_by/updated_by on
       // every entries/budgets/donations/expenditures/campaigns/objectives/goals row, so deleting
