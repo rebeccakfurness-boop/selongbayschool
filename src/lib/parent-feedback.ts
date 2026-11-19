@@ -14,6 +14,11 @@ export const FEEDBACK_CATEGORY_LABELS: Record<string, string> = {
 
 export type FeedbackStatus = 'new' | 'in_review' | 'resolved';
 
+export interface ParentFeedbackPhoto {
+  id: number;
+  file_url: string;
+}
+
 export interface ParentFeedbackRow {
   id: number;
   category: string;
@@ -23,17 +28,40 @@ export interface ParentFeedbackRow {
   status: FeedbackStatus;
   child_full_name: string | null;
   created_at: string;
+  photos: ParentFeedbackPhoto[];
+}
+
+/** Attaches each feedback item's photos via a second query keyed off the first query's ids --
+ * same two-query shape as incident-reports.ts's attachPhotos, so an item with several photos
+ * doesn't fan out and duplicate the row per photo in a join. */
+async function attachPhotos<T extends { id: number }>(items: T[]): Promise<(T & { photos: ParentFeedbackPhoto[] })[]> {
+  if (items.length === 0) return [];
+  const ids = items.map((i) => i.id);
+  const photoRows = (await sql`
+    SELECT id, feedback_id, file_url FROM parent_feedback_photos
+    WHERE feedback_id = ANY(${ids})
+    ORDER BY feedback_id, sort_order, id
+  `) as unknown as { id: number; feedback_id: number; file_url: string }[];
+
+  const photosByFeedback = new Map<number, ParentFeedbackPhoto[]>();
+  for (const row of photoRows) {
+    const list = photosByFeedback.get(row.feedback_id) ?? [];
+    list.push({ id: row.id, file_url: row.file_url });
+    photosByFeedback.set(row.feedback_id, list);
+  }
+  return items.map((i) => ({ ...i, photos: photosByFeedback.get(i.id) ?? [] }));
 }
 
 export async function getFeedbackForCustomer(customerId: number): Promise<ParentFeedbackRow[]> {
-  return (await sql`
+  const rows = (await sql`
     SELECT f.id, f.category, f.description, f.desired_outcome, f.urgent, f.status,
       c.child_full_name, f.created_at::text
     FROM parent_feedback f
     LEFT JOIN children c ON c.id = f.child_id
     WHERE f.customer_id = ${customerId}
     ORDER BY f.created_at DESC
-  `) as unknown as ParentFeedbackRow[];
+  `) as unknown as Omit<ParentFeedbackRow, 'photos'>[];
+  return attachPhotos(rows);
 }
 
 export async function createParentFeedback(
@@ -45,6 +73,13 @@ export async function createParentFeedback(
     VALUES (${customerId}, ${input.childId ?? null}, ${input.category}, ${input.description}, ${input.desiredOutcome ?? null}, ${input.urgent ?? false})
     RETURNING id, created_at::text
   `) as unknown as { id: number; created_at: string }[];
+
+  if (input.photoUrls.length > 0) {
+    for (let i = 0; i < input.photoUrls.length; i++) {
+      await sql`INSERT INTO parent_feedback_photos (feedback_id, file_url, sort_order) VALUES (${row.id}, ${input.photoUrls[i]}, ${i})`;
+    }
+  }
+
   return row;
 }
 
@@ -52,24 +87,16 @@ export async function markFeedbackNotifyStatus(id: number, status: 'sent' | 'fai
   await sql`UPDATE parent_feedback SET notify_email_status = ${status} WHERE id = ${id}`;
 }
 
-export interface AdminParentFeedbackRow {
-  id: number;
-  category: string;
-  description: string;
-  desired_outcome: string | null;
-  urgent: boolean;
-  status: FeedbackStatus;
+export interface AdminParentFeedbackRow extends ParentFeedbackRow {
   admin_notes: string | null;
   is_read: boolean;
   notify_email_status: string;
   parent_name: string | null;
   parent_email: string;
-  child_full_name: string | null;
-  created_at: string;
 }
 
 export async function getAllFeedback(): Promise<AdminParentFeedbackRow[]> {
-  return (await sql`
+  const rows = (await sql`
     SELECT f.id, f.category, f.description, f.desired_outcome, f.urgent, f.status, f.admin_notes,
       f.is_read, f.notify_email_status, cu.name AS parent_name, cu.email AS parent_email,
       ch.child_full_name, f.created_at::text
@@ -78,7 +105,8 @@ export async function getAllFeedback(): Promise<AdminParentFeedbackRow[]> {
     LEFT JOIN children ch ON ch.id = f.child_id
     ORDER BY f.urgent DESC, f.is_read ASC, f.created_at DESC
     LIMIT 300
-  `) as unknown as AdminParentFeedbackRow[];
+  `) as unknown as Omit<AdminParentFeedbackRow, 'photos'>[];
+  return attachPhotos(rows);
 }
 
 export async function updateFeedback(id: number, input: UpdateParentFeedbackInput): Promise<void> {

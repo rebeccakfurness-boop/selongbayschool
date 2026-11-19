@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 67;
+const SCHEMA_VERSION = 68;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -3204,6 +3204,18 @@ export function ensureSchema(): Promise<void> {
       // an account with any real history would hit those foreign keys. Same convention as
       // admin_users.is_active.
       await sql`ALTER TABLE serangan_admin_users ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT true`;
+
+      // Photos a parent attaches to a "Report a concern" submission -- same one-row-per-photo/
+      // sort_order shape as incident_report_photos.
+      await sql`
+        CREATE TABLE IF NOT EXISTS parent_feedback_photos (
+          id BIGSERIAL PRIMARY KEY,
+          feedback_id BIGINT NOT NULL REFERENCES parent_feedback(id) ON DELETE CASCADE,
+          file_url TEXT NOT NULL,
+          sort_order INTEGER NOT NULL DEFAULT 0
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_parent_feedback_photos_feedback ON parent_feedback_photos (feedback_id, sort_order, id)`;
 
       await setSchemaVersion(SCHEMA_VERSION);
     })();

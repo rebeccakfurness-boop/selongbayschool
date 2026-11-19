@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import MarkReadButton from '@/components/admin/MarkReadButton';
 import { formatDateTime } from '@/lib/admin-format';
 import { FEEDBACK_CATEGORY_LABELS, type AdminParentFeedbackRow, type FeedbackStatus } from '@/lib/parent-feedback';
@@ -69,6 +70,16 @@ function Row({ item }: { item: AdminParentFeedbackRow }) {
           <p className="mt-1 text-sm text-ink">{item.desired_outcome || <span className="text-ink-soft">Not specified</span>}</p>
         </div>
       </div>
+
+      {item.photos.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {item.photos.map((p) => (
+            <a key={p.id} href={p.file_url} target="_blank" rel="noopener noreferrer" className="relative block h-16 w-16 overflow-hidden rounded-sm border border-sand-line">
+              <Image src={p.file_url} alt="" fill sizes="64px" className="object-cover" />
+            </a>
+          ))}
+        </div>
+      )}
 
       <div className="mt-4 flex flex-wrap items-end gap-3 border-t border-sand-line pt-4">
         <div>

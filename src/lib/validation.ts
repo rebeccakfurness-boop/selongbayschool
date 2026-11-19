@@ -618,6 +618,7 @@ export const createParentFeedbackSchema = z.object({
   description: z.string().trim().min(10, 'Please give a few more details.').max(4000),
   desiredOutcome: z.string().trim().max(2000).nullable().optional(),
   urgent: z.boolean().optional(),
+  photoUrls: z.array(z.string().trim().url()).max(20).optional().default([]),
 });
 export type CreateParentFeedbackInput = z.infer<typeof createParentFeedbackSchema>;
 
