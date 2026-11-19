@@ -17,6 +17,11 @@ export const INJURY_SEVERITY_LABELS: Record<string, string> = {
 
 export type IncidentStatus = 'open' | 'in_review' | 'closed';
 
+export interface IncidentReportPhoto {
+  id: number;
+  file_url: string;
+}
+
 export interface IncidentReportRow {
   id: number;
   incident_type: string;
@@ -32,10 +37,32 @@ export interface IncidentReportRow {
   parent_notified: boolean;
   status: IncidentStatus;
   created_at: string;
+  photos: IncidentReportPhoto[];
+}
+
+/** Attaches each report's photos via a second query keyed off the first query's report ids --
+ * same two-query shape as community.ts's getCommunityPosts, so a report with several photos
+ * doesn't fan out and duplicate the report row per photo in a join. */
+async function attachPhotos<T extends { id: number }>(reports: T[]): Promise<(T & { photos: IncidentReportPhoto[] })[]> {
+  if (reports.length === 0) return [];
+  const reportIds = reports.map((r) => r.id);
+  const photoRows = (await sql`
+    SELECT id, incident_report_id, file_url FROM incident_report_photos
+    WHERE incident_report_id = ANY(${reportIds})
+    ORDER BY incident_report_id, sort_order, id
+  `) as unknown as { id: number; incident_report_id: number; file_url: string }[];
+
+  const photosByReport = new Map<number, IncidentReportPhoto[]>();
+  for (const row of photoRows) {
+    const list = photosByReport.get(row.incident_report_id) ?? [];
+    list.push({ id: row.id, file_url: row.file_url });
+    photosByReport.set(row.incident_report_id, list);
+  }
+  return reports.map((r) => ({ ...r, photos: photosByReport.get(r.id) ?? [] }));
 }
 
 export async function getIncidentReportsForStaff(adminUserId: number): Promise<IncidentReportRow[]> {
-  return (await sql`
+  const reports = (await sql`
     SELECT r.id, r.incident_type, c.child_full_name, r.class_name, r.location, r.occurred_at::text,
       r.description, r.action_taken, r.witnesses, r.injury_severity, r.follow_up_required,
       r.parent_notified, r.status, r.created_at::text
@@ -43,7 +70,8 @@ export async function getIncidentReportsForStaff(adminUserId: number): Promise<I
     LEFT JOIN children c ON c.id = r.child_id
     WHERE r.reported_by = ${adminUserId}
     ORDER BY r.occurred_at DESC
-  `) as unknown as IncidentReportRow[];
+  `) as unknown as Omit<IncidentReportRow, 'photos'>[];
+  return attachPhotos(reports);
 }
 
 export async function createIncidentReport(
@@ -63,6 +91,13 @@ export async function createIncidentReport(
     )
     RETURNING id, created_at::text
   `) as unknown as { id: number; created_at: string }[];
+
+  if (input.photoUrls.length > 0) {
+    for (let i = 0; i < input.photoUrls.length; i++) {
+      await sql`INSERT INTO incident_report_photos (incident_report_id, file_url, sort_order) VALUES (${row.id}, ${input.photoUrls[i]}, ${i})`;
+    }
+  }
+
   return row;
 }
 
@@ -79,7 +114,7 @@ export interface AdminIncidentReportRow extends IncidentReportRow {
 }
 
 export async function getAllIncidentReports(): Promise<AdminIncidentReportRow[]> {
-  return (await sql`
+  const reports = (await sql`
     SELECT r.id, r.incident_type, c.child_full_name, r.class_name, r.location, r.occurred_at::text,
       r.description, r.action_taken, r.witnesses, r.injury_severity, r.follow_up_required,
       r.parent_notified, r.status, r.admin_notes, r.is_read, r.notify_email_status,
@@ -89,7 +124,8 @@ export async function getAllIncidentReports(): Promise<AdminIncidentReportRow[]>
     LEFT JOIN children c ON c.id = r.child_id
     ORDER BY r.status = 'closed', r.is_read ASC, r.occurred_at DESC
     LIMIT 300
-  `) as unknown as AdminIncidentReportRow[];
+  `) as unknown as Omit<AdminIncidentReportRow, 'photos'>[];
+  return attachPhotos(reports);
 }
 
 export async function updateIncidentReport(id: number, input: UpdateIncidentReportInput): Promise<void> {

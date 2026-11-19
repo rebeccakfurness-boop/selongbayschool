@@ -1,6 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { upload } from '@vercel/blob/client';
+import Image from 'next/image';
 import { Field, TextInput, TextArea } from '@/components/forms/FormField';
 import Button from '@/components/Button';
 import FormStatusBanner from '@/components/forms/FormStatusBanner';
@@ -8,6 +10,8 @@ import { useFormSubmit } from '@/lib/useFormSubmit';
 import { formatDateTime } from '@/lib/admin-format';
 import { INCIDENT_TYPE_LABELS, INJURY_SEVERITY_LABELS, type IncidentReportRow } from '@/lib/incident-reports';
 import { INCIDENT_TYPES, INJURY_SEVERITIES } from '@/lib/validation';
+
+const UPLOAD_ENDPOINT = '/api/admin/incidents/upload';
 
 const selectClasses =
   'w-full rounded-sm border border-sand-line bg-white px-4 py-2.5 text-[15px] text-ink focus:border-teal focus:outline-none focus:ring-2 focus:ring-teal/30';
@@ -44,8 +48,27 @@ export default function IncidentReportForm({
   const [injurySeverity, setInjurySeverity] = useState('');
   const [followUpRequired, setFollowUpRequired] = useState(false);
   const [parentNotified, setParentNotified] = useState(false);
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const { status, errorMessage, submit, reset } = useFormSubmit<{ id: number }>('/api/admin/incidents');
+
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setUploadingPhoto(true);
+    setUploadError(null);
+    try {
+      const blob = await upload(`incident-photos/${Date.now()}-${file.name}`, file, { access: 'public', handleUploadUrl: UPLOAD_ENDPOINT });
+      setPhotoUrls((prev) => [...prev, blob.url]);
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Could not upload that photo.');
+    } finally {
+      setUploadingPhoto(false);
+    }
+  }
 
   const showInjuryField = incidentType === 'first_aid_injury' || incidentType === 'child_incident';
   const showParentNotified = Boolean(childId) || incidentType === 'child_incident' || incidentType === 'first_aid_injury';
@@ -67,6 +90,7 @@ export default function IncidentReportForm({
       injurySeverity: showInjuryField && injurySeverity ? injurySeverity : null,
       followUpRequired,
       parentNotified,
+      photoUrls,
     });
     if (result) {
       setHistory((prev) => [
@@ -85,6 +109,7 @@ export default function IncidentReportForm({
           parent_notified: parentNotified,
           status: 'open',
           created_at: new Date().toISOString(),
+          photos: photoUrls.map((file_url, i) => ({ id: -1 - i, file_url })),
         },
         ...prev,
       ]);
@@ -92,6 +117,7 @@ export default function IncidentReportForm({
       setChildId('');
       setClassName('');
       setLocation('');
+      setPhotoUrls([]);
       setOccurredAt(nowForInput());
       setDescription('');
       setActionTaken('');
@@ -220,11 +246,36 @@ export default function IncidentReportForm({
           )}
         </div>
 
+        <div className="mt-4">
+          <span className="text-sm font-bold text-ink">Photos (optional)</span>
+          {photoUrls.length > 0 && (
+            <div className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-5">
+              {photoUrls.map((url) => (
+                <div key={url} className="relative aspect-square overflow-hidden rounded-md border border-sand-line">
+                  <Image src={url} alt="" fill sizes="120px" className="object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setPhotoUrls((prev) => prev.filter((u) => u !== url))}
+                    className="absolute right-1 top-1 rounded-full bg-ink/70 px-1.5 text-xs font-bold text-white hover:bg-ink"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          <label className="mt-2 inline-block cursor-pointer text-sm font-semibold text-teal-deep hover:underline">
+            {uploadingPhoto ? 'Uploading…' : '+ Add photo'}
+            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handlePhotoChange} disabled={uploadingPhoto} className="hidden" />
+          </label>
+          {uploadError && <p className="mt-1 text-xs font-semibold text-orange-deep">{uploadError}</p>}
+        </div>
+
         <div className="mt-5">
           <FormStatusBanner status={status} errorMessage={errorMessage} successMessage="Report filed — the school office has been notified." />
         </div>
         <div className="mt-4">
-          <Button type="submit" variant="primary" disabled={status === 'submitting'}>
+          <Button type="submit" variant="primary" disabled={status === 'submitting' || uploadingPhoto}>
             {status === 'submitting' ? 'Filing…' : 'File report'}
           </Button>
           {status === 'error' && (
@@ -254,6 +305,15 @@ export default function IncidentReportForm({
                 </div>
                 <p className="mt-2 text-sm text-ink-soft">{item.description}</p>
                 <p className="mt-2 text-xs text-ink-soft">{formatDateTime(item.occurred_at)}{item.location ? ` · ${item.location}` : ''}</p>
+                {item.photos.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {item.photos.map((p) => (
+                      <a key={p.id} href={p.file_url} target="_blank" rel="noopener noreferrer" className="relative block h-14 w-14 overflow-hidden rounded-sm border border-sand-line">
+                        <Image src={p.file_url} alt="" fill sizes="56px" className="object-cover" />
+                      </a>
+                    ))}
+                  </div>
+                )}
               </li>
             ))}
           </ul>

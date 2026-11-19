@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import MarkReadButton from '@/components/admin/MarkReadButton';
 import { formatDateTime } from '@/lib/admin-format';
 import {
@@ -91,6 +92,16 @@ function Row({ item }: { item: AdminIncidentReportRow }) {
         <span>Follow-up required: {item.follow_up_required ? 'Yes' : 'No'}</span>
         <span>Parent notified: {item.parent_notified ? 'Yes' : 'No'}</span>
       </div>
+
+      {item.photos.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {item.photos.map((p) => (
+            <a key={p.id} href={p.file_url} target="_blank" rel="noopener noreferrer" className="relative block h-16 w-16 overflow-hidden rounded-sm border border-sand-line">
+              <Image src={p.file_url} alt="" fill sizes="64px" className="object-cover" />
+            </a>
+          ))}
+        </div>
+      )}
 
       <div className="mt-4 flex flex-wrap items-end gap-3 border-t border-sand-line pt-4">
         <div>

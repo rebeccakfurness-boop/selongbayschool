@@ -56,7 +56,7 @@ let schemaReady: Promise<void> | null = null;
 /** Bump this whenever a statement is added to (or changed in) the migration body below —
  * otherwise an already-current database skips the version check and the new statement never
  * runs. This is the one manual step the fast-path below requires; there's no automatic diffing. */
-const SCHEMA_VERSION = 66;
+const SCHEMA_VERSION = 67;
 
 /** Returns the stored schema version, or null if schema_meta doesn't exist yet (first-ever run
  * on this database) or the read otherwise fails — either way, callers fall back to running the
@@ -1906,6 +1906,18 @@ export function ensureSchema(): Promise<void> {
       `;
       await sql`CREATE INDEX IF NOT EXISTS idx_incident_reports_reported_by ON incident_reports (reported_by)`;
       await sql`CREATE INDEX IF NOT EXISTS idx_incident_reports_child ON incident_reports (child_id)`;
+
+      // Photos attached to an incident report -- same one-row-per-photo/sort_order shape as
+      // community_post_photos (multiple photos per report, no fan-out on the report row).
+      await sql`
+        CREATE TABLE IF NOT EXISTS incident_report_photos (
+          id BIGSERIAL PRIMARY KEY,
+          incident_report_id BIGINT NOT NULL REFERENCES incident_reports(id) ON DELETE CASCADE,
+          file_url TEXT NOT NULL,
+          sort_order INTEGER NOT NULL DEFAULT 0
+        )
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_incident_report_photos_report ON incident_report_photos (incident_report_id, sort_order, id)`;
 
       // Teacher-facing lesson-planning fields on top of the existing authoring columns above --
       // phase/syllabus_ref/occurrence_id are metadata a teacher plans against (what kind of session

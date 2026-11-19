@@ -643,6 +643,7 @@ export const createIncidentReportSchema = z.object({
   injurySeverity: z.enum(INJURY_SEVERITIES).nullable().optional(),
   followUpRequired: z.boolean().optional(),
   parentNotified: z.boolean().optional(),
+  photoUrls: z.array(z.string().trim().url()).max(20).optional().default([]),
 });
 export type CreateIncidentReportInput = z.infer<typeof createIncidentReportSchema>;
 
